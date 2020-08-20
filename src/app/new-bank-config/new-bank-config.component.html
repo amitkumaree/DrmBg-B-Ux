@@ -1,0 +1,59 @@
+<div class="container" >
+
+  <table class="table ml-5 mb-0" style="width:1000px;">
+    <tr class="divc3">
+      <td style="width: 15%;">
+        <button type="button" class="btn btn-primary" (click)="navigateBack()">
+          <i class="fa fa-arrow-circle-left fa-1x "></i></button>
+      </td>
+      <td style="width: 45%; text-align: center;">
+        <h4>Bank Configuration
+          </h4>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+
+<table class="table ml-5 mt-0" style="width:1000px;">
+
+  <tr class="divc5">
+    <td class="text" style="width: 20%"><b>Bank Name</b></td>
+    <td class="text" style="width: 40%"><b>Description</b></td>
+    <td class="text" class="text"style="width: 40%"><b>Bank URL</b></td>
+  </tr>
+  <tr class="divc4"></tr>
+
+  <tr *ngFor="let t of bcMst" class="divc3">
+    <td><section>{{t.name}}</section></td>
+    <td> {{t.description}} </td>
+    <td> {{t.apiUrl}} </td>
+  </tr>
+
+
+  <tr *ngIf="addRec" class="divc3">
+    <td><input mdbInput class="inp1" size="25" placeholder="Enter Bank Name.." [(ngModel)]="tempBankConfiguration.name"
+        type="text"></td>
+    <td><input mdbInput class="inp1" size="45" placeholder="Enter Description.." [(ngModel)]="tempBankConfiguration.description"
+          type="text"></td>
+    <td><input mdbInput class="inp1" size="30" placeholder="Enter IP and Container.." [(ngModel)]="tempBankConfiguration.apiUrl"
+            type="text"></td>
+  </tr>
+
+
+
+</table>
+
+<div *ngIf="showAlert" style="width:1050px;">
+    <div class="alert alert-danger alert-dismissible fade show ml-5 w" role="alert">
+      <strong>Error!</strong> {{alertMsg}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+
+<button *ngIf="addFlg" type="button" class="btn btn-primary btn-sm ml-5" (click)="addBank()">Add</button>
+<button *ngIf="SaveFlg" type="button" class="btn btn-primary btn-sm ml-5" (click)="saveData()">Save</button>
+<button  type="button" class="btn btn-primary btn-sm m-1" (click)="cancel()">Cancel</button>
+
+</div>

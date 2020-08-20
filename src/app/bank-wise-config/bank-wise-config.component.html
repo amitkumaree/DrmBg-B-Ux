@@ -1,0 +1,38 @@
+  <div class="container" >
+
+    <table class="table ml-5 mb-0" style="width:800px;">
+      <tr class="divc3">
+        <td style="width: 15%;">
+          <button type="button" class="btn btn-primary" (click)="navigateBack()">
+            <i class="fa fa-arrow-circle-left fa-1x "></i></button>
+        </td>
+        <td style="width: 45%; text-align: center;">
+          <h4>Bank-wise Configuration
+            </h4>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+
+  <table class="table ml-5 mt-0" style="width:800px;">
+
+    <tr class="divc5">
+      <td class="text" style="width: 25%"><b>Bank Name</b></td>
+      <td class="text" style="width: 50%"><b>Description</b></td>
+      <!-- <td class="text" class="text"style="width: 35%"><b>Bank URL</b></td> -->
+      <td class="text" style="width: 15%"><b>Menu Config</b></td>
+    </tr>
+    <tr class="divc4"></tr>
+
+    <tr *ngFor="let t of allBankConfig" class="divc3">
+      <td><section>{{t.name}}</section></td>
+      <td> {{t.description}} </td>
+      <!-- <td> {{t.ApiUrl}} </td> -->
+      <td>
+        <button type="button" class="btn btn-primary btn-sm ml-3" (click)="navBankConfig(t.name , t.apiUrl, t.description)">
+          <i class="fa fa-arrow-circle-right fa-x "></i></button>
+      </td>
+    </tr>
+    <tr class="divc4"></tr>
+  </table>
+</div>

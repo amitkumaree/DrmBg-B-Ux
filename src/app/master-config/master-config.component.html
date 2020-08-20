@@ -1,0 +1,210 @@
+<div *ngIf="spinner" class="rox d-flex justify-content-center">
+  <div class="spinner-border text-info" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+
+
+<div *ngIf="!spinner">
+
+  <div class="container" class="divc3">
+
+    <table class="table ml-2 mb-0" style="width:1250px;">
+      <tr class="divc6">
+        <td style="width: 5%;">
+          <button type="button" class="btn btn-primary" (click)="navigateBack()">
+            <i class="fa fa-arrow-circle-left fa-1x "></i></button>
+        </td>
+        <td style="width: 70%; text-align: center;">
+          <h4>Master Configuration
+          </h4>
+        </td>
+        <td style="width: 35%;"></td>
+      </tr>
+    </table>
+
+
+    <div style="width:1250px;">
+      <div *ngIf="showAlert">
+      <hr>
+        <div class="alert alert-danger alert-dismissible fade show ml-3 w" role="alert">
+          <strong>Error!</strong> {{alertMsg}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
+          <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+
+      <table class="table" m-1>
+        <tr>
+          <td style="width: 25%">
+
+            <div class="divc">
+              <strong class="mg1">Module</strong>
+              <section *ngFor="let t1 of masterBankConfigMst.menu">
+                <input disabled class="inp2" placeholder="Enter Module Name.." [(ngModel)]="t1.name" type="text">
+
+                <label> Active
+                  <input class="chk" type="checkbox" [checked]="t1.activeflag == 'Y'"
+                    (change)="t1.activeflag = $event.target.checked ? 'Y' : 'N' " />
+                </label>
+
+                <button type="button" class="btn btn-primary btn-sm" (click)="showSubMenu(t1.name, t1.menu)"> <i
+                    class="fa fa-arrow-circle-right fa-x "></i></button>
+              </section>
+
+              <section *ngIf="menuFlg">
+                <input class="inp" placeholder="Enter Module like UCIC.." [(ngModel)]="tempMenu.name" type="text">
+
+                <label> Active
+                  <input type="checkbox" [checked]="tempMenu.activeflag == 'Y'"
+                    (change)="tempMenu.activeflag = $event.target.checked ? 'Y' : 'N' " />
+                </label>
+              </section>
+              <p></p>
+              <button *ngIf="addModuleFlg" type="button" class="btn btn-primary btn-sm ml-5" (click)="createMenu()">Add
+                Module</button>
+              <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="menuFlg"
+                (click)="acceptMenu()">Accept</button>
+              <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="menuFlg"
+                (click)="cancelMenu()">Cancel</button>
+            </div>
+            <p></p>
+          </td>
+
+          <!-- <p>-----------------MENU-----------------------------</p> -->
+
+
+          <td style="width: 25%">
+        <tr>
+          <div class="divc" *ngIf="showSubMenuFlg">
+            <strong class="mg1">Menu: {{tempManuName}}</strong>
+            <section *ngFor="let t2 of viewSubmenu">
+              <input disabled class="inp2" placeholder="Enter Menu Name.." [(ngModel)]="t2.name" type="text">
+
+              <label> Active
+                <input class="chk" type="checkbox" [checked]="t2.activeflag == 'Y'"
+                  (change)="t2.activeflag = $event.target.checked ? 'Y' : 'N' " />
+              </label>
+
+              <button type="button" class="btn btn-primary btn-sm" (click)="showScreenList(t2.name, t2.menu)"><i
+                  class="fa fa-arrow-circle-right fa-1x "></i></button>
+            </section>
+
+            <section *ngIf="createSubMenuFlg">
+              <input class="inp" placeholder="Enter Menu.." [(ngModel)]="tempSubMenu.name" type="text">
+              <label> Active
+                <input type="checkbox" [checked]="tempSubMenu.activeflag == 'Y'"
+                  (change)="tempSubMenu.activeflag = $event.target.checked ? 'Y' : 'N' " />
+              </label>
+
+            </section>
+
+            <p></p>
+            <button *ngIf="addMenuFlg" type="button" class="btn btn-primary btn-sm ml-5" (click)="createSubMenu()">Add
+              Menu</button>
+            <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="createSubMenuFlg"
+              (click)="acceptSubMenu()">Accept</button>
+            <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="createSubMenuFlg"
+              (click)="cancelSubMenu()">Cancel</button>
+          </div>
+          <p></p>
+
+          </td>
+          <!-----------------------SCREEN--------------------------->
+          <td style="width: 50%">
+            <div class="divc2" *ngIf="showScreenFlg">
+              <strong class="mg1">Screen: {{tempSubManuName}}</strong>
+              <section *ngFor="let t3 of viewScreenlist">
+                <input disabled class="inp2" placeholder="Enter Screen Name.." [(ngModel)]="t3.screen" type="text">
+                <input disabled class="inp2" placeholder="Enter Screen Value.." [(ngModel)]="t3.value" type="text">
+                <label> Active
+                  <input type="checkbox" name="sc1" [checked]="t3.activeflag == 'Y'"
+                    (change)="t3.activeflag = $event.target.checked ? 'Y' : 'N' " />
+                </label>
+
+              </section>
+
+              <section *ngIf="createScreenFlg">
+                <input class="inp" placeholder="Enter Screen Name.." [(ngModel)]="tempScreenlist.screen" type="text">
+                <input class="inp" placeholder="Enter Screen Value.." [(ngModel)]="tempScreenlist.value" type="text">
+
+                <label> Active
+                  <input type="checkbox" name="sc2" [checked]="tempScreenlist.activeflag == 'Y'"
+                    (change)="tempScreenlist.activeflag = $event.target.checked ? 'Y' : 'N' " />
+                </label>
+
+              </section>
+
+              <p></p>
+              <button *ngIf="addScreenFlg" type="button" class="btn btn-primary btn-sm ml-5"
+                (click)="createScreenList()">Add Screen</button>
+              <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="createScreenFlg"
+                (click)="acceptScreenList()">Accept</button>
+              <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="createScreenFlg"
+                (click)="cancelScreen()">Cancel</button>
+            </div>
+            <p></p>
+
+          </td>
+        </tr>
+
+        <div *ngIf="!saveAllFlg">
+          <button type="button" class="btn btn-primary btn-sm ml-3 mb-3" (click)="cancelReset()">Cance</button>
+        </div>
+
+      </table>
+
+
+
+
+      <div *ngIf="saveAllFlg">
+
+        <table class="table" ml-5>
+
+          <button type="button" class="btn btn-primary btn-sm m-1" (click)="updateData()">Save All</button>
+          <button type="button" class="btn btn-primary btn-sm m-1" (click)="cancelReset()">Cancel</button>
+
+          <tr class="divc5">
+
+            <td style="width: 30%"><b>Bank Name</b></td>
+            <td style="width: 12%"><b>Module Name</b></td>
+            <td style="width: 15%"><b>Menu Name</b></td>
+            <td style="width: 15%"><b>Screen Name</b></td>
+            <td style="width: 15%"><b>Screen Value</b></td>
+            <td style="width: 10%"><b>Status</b></td>
+          </tr>
+
+          <tr *ngFor="let c1 of tempAllBankNewConfigRecList">
+            <td>{{c1.BankConfigMst.bankname}}</td>
+            <td>{{this.tempMasterNewConfigRec.module}}</td>
+            <td>{{this.tempMasterNewConfigRec.menu}}</td>
+            <td>{{this.tempMasterNewConfigRec.screen}}</td>
+            <td> {{this.tempMasterNewConfigRec.value}} </td>
+            <td>
+              <label> Active
+                <input class="chk" type="checkbox" [checked]="c1.active == 'Y'"
+                  (change)="c1.active = $event.target.checked ? 'Y' : 'N' " />
+              </label>
+            </td>
+          </tr>
+          <tr></tr>
+        </table>
+
+
+
+        <tr>
+          <td style="width: 50%">
+            <button type="button" class="btn btn-primary btn-sm m-1" (click)="updateData()">Save All</button>
+            <button type="button" class="btn btn-primary btn-sm m-1" (click)="cancelReset()">Cancel</button>
+          </td>
+        </tr>
+      </div>
+
+
+      <hr>
+
+    </div>
+  </div>
+</div>

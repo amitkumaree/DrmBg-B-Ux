@@ -1,0 +1,28 @@
+[
+  {
+    "name": "MasterConfig",
+    "description": "MasterConfig",
+    "apiUrl":"http://36.255.3.143/MasterConfig/"
+  },
+  {
+    "name": "VCCB",
+    "description": "Vidyasagar Central Coperative Bank",
+    "apiUrl":"http://36.255.3.143/Bank1/"
+  },
+  {
+    "name": "BCB",
+    "description": "Bishnupur Coperative Bank",
+    "apiUrl":"http://36.255.3.143/Bank2/"
+  },
+  {
+    "name": "GBA",
+    "description": "Gramin Bank of Assansol",
+    "apiUrl":"http://213.175.201.201/plesk-site-preview/svc.worldlegaldocs.com/"
+  },
+  {
+    "name": "Local",
+    "description": "Gramin Bank of Chinsurah",
+    "apiUrl":"http://localhost:5001/"
+  }
+
+]

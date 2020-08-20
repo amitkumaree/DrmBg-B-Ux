@@ -1,0 +1,123 @@
+
+
+
+<ng-template #content let-modal data-keyboard="false" data-backdrop="false">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Report Criteria</h4>
+    <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Error! </strong> {{alertMsg}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+    <form [formGroup]="reportcriteria">
+      <div>
+        <label for="fromDate">From Date</label>
+        <div class="input-group">
+          <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" formControlName="fromDate" id="fd" type="date" >
+        </div>
+      </div>
+      <div >
+          <label for="toDate">To Date</label>
+          <div class="input-group">
+            <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td" formControlName="toDate" id="td" type="date">
+          </div>
+        </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-primary" (click)="SubmitReport()">Submit</button>
+    <button class="btn btn-primary" (click)="modal.close('Close click')">Close</button>
+    <!-- <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Submit</button> -->
+  </div>
+</ng-template>
+
+
+
+
+<div class="row d-flex justify-content-center align-items-center pt-4 bg-light"
+style="min-height: 20vh;" *ngIf="showReport">
+
+<div  class="container col-xs-12 col-sm-12 col-md-10 col-lg-10 shadow-lg mb-4 bg-white p-3" id="reportcontent" #reportcontent>
+  <div style="text-align: center;"><strong> Synergic Banking </strong>  </div>
+  <div style="text-align: center;"><b> Branch: Main Branch</b></div>
+  <div style="text-align: center;"><b> Branch Code: 101</b></div>
+  <div style="text-align: center;"><b> Run Date: {{dt}}</b></div>
+  <div style="text-align: center;"><b><u>Cash Account For The Period {{fd}} - {{td}} </u> </b></div>
+<div>
+  <table >
+      <tbody>
+          <tr>
+              <td class="col-xs-1"><b>Receipts</b></td>
+              <td class="col-xs-3"><b></b></td>
+              <td class="col-xs-2"><b></b></td>
+              <td class="col-xs-1"><b>Payments</b></td>
+              <td class="col-xs-3"><b></b></td>
+              <td class="col-xs-2"><b></b></td>
+          </tr>
+          <tr>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+          </tr>
+          <tr>
+              <td><b>Acc Cd</b></td>
+              <td><b>Particulars</b></td>
+              <td><b>Amount</b></td>
+              <td><b>Acc Cd</b></td>
+              <td><b>Particulars</b></td>
+              <td><b>Amount</b></td>
+          </tr>
+          <tr *ngFor="let t of dailyCash ; let i=index" >
+              <td class="col-xs-1">{{t.dr_acc_cd==0?"":t.dr_acc_cd}}</td>
+              <td class="col-xs-3"> {{t.dr_acc_cd==0?"":t.dr_particulars}} </td>
+              <td class="col-xs-2"> {{t.dr_acc_cd==0?"":t.dr_amt}} </td>
+              <td class="col-xs-1"> {{t.cr_acc_cd==0?"":t.cr_acc_cd}} </td>
+              <td class="col-xs-3"> {{t.cr_acc_cd==0?"":t.cr_particulars}}</td>
+              <td class="col-xs-2"> {{t.cr_acc_cd==0?"":t.cr_amt}}</td>
+          </tr>
+          <tr>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+          </tr>
+          <tr>
+              <td><b></b></td>
+              <td><b>Grand Total</b></td>
+              <td><b>{{totalDr}}</b></td>
+              <td><b></b></td>
+              <td><b></b></td>
+              <td><b>{{totalCr}}</b></td>
+          </tr>
+          <tr>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+              <td><b><hr></b></td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+</div>
+<div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
+  <div>
+  <button type="button" class="btn btn-rounded btn-primary m-1" (click)="downloadPDF()">Download PDF</button>
+  <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
+  <button type="button" class="btn btn-rounded btn-primary m-1" style="position: absolute;right: 10px;">Close</button>
+</div>
+</div>
+</div>
