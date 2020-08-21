@@ -6,12 +6,13 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 
+
 @Component({
-  selector: 'app-dailybook',
-  templateUrl: './dailybook.component.html',
-  styleUrls: ['./dailybook.component.css']
+  selector: 'app-cashaccount',
+  templateUrl: './cashaccount.component.html',
+  styleUrls: ['./cashaccount.component.css']
 })
-export class DailybookComponent implements OnInit {
+export class CashaccountComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('DailyCashBook') child: WebDataRocksPivot;
   dailyCash: tt_cash_account[] = [];
@@ -276,12 +277,12 @@ exportPDFTitle() {
   var options = this.child.webDataRocks.getOptions();
   this.child.webDataRocks.setOptions( {
     grid: {
-      title: 'Day Book For The Period' +this.fd +'-' +this.td
+      title: 'Cash Account For The Period' +this.fd +'-' +this.td
     }
   } 
   );
   this.child.webDataRocks.refresh();
-  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##</div>",filename:"DayBook"});
+  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##</div>",filename:"CashAccount"});
   this.child.webDataRocks.on('exportcomplete', function () {
     this.child.webDataRocks.off('exportcomplete')
     this.child.webDataRocks.setOptions(options);

@@ -15,6 +15,7 @@ import { MasterConfigComponent } from '../master-config/master-config.component'
 import { DailybookComponent } from './finance/report/dailybook/dailybook.component';
 import { BankWiseConfigComponent } from '../bank-wise-config/bank-wise-config.component';
 import { NewBankConfigComponent } from '../new-bank-config/new-bank-config.component';
+import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -32,7 +33,8 @@ const routes: Routes = [
       { path: 'UT_CustomerProfile', component: UTCustomerProfileComponent },
       { path: 'UT_SelfHelp', component: UTSelfHelpComponent },
       { path: 'FT_Voucher', component: VoucherComponent },
-      { path: 'FR_CashBook', component: DailybookComponent },
+      { path: 'FR_DayBook', component: DailybookComponent },
+      { path: 'FR_CashAccount', component: CashaccountComponent },
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,

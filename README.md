@@ -36,3 +36,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 dependency :
 > import  html2pdf from 'html2pdf.js';
+npm i webdatarocks --save

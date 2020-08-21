@@ -12,11 +12,13 @@ import { LandingComponent } from './landing/landing.component';
 import { UTCustomerProfileComponent } from './UCIC/utcustomer-profile/utcustomer-profile.component';
 import { UTSelfHelpComponent } from './UCIC/utself-help/utself-help.component';
 import { DailybookComponent } from './finance/report/dailybook/dailybook.component';
+import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.component';
+import { WebDataRocksPivot } from '../webdatarocks/webdatarocks.angular4';
 
 @NgModule({
   declarations: [
     BankResolverComponent, LoginComponent, VoucherNewComponent, HeaderComponent, LandingComponent,
-    UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent
+    UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,WebDataRocksPivot
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule
