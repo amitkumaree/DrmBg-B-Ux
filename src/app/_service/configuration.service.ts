@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as configuration from '../../assets/constants/bank-config.json';
+import * as configuration from '../../assets/constants/bankconfig.json';
 import { BankConfiguration } from '../bank-resolver/Models';
 
 @Injectable({

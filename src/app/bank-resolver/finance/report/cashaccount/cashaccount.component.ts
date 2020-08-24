@@ -14,7 +14,7 @@ import { STRING_TYPE } from '@angular/compiler';
 })
 export class CashaccountComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
-  @ViewChild('DailyCashBook') child: WebDataRocksPivot;
+  @ViewChild('CashAccount') child: WebDataRocksPivot;
   dailyCash: tt_cash_account[] = [];
   prp =new p_report_param();
   reportcriteria: FormGroup;
@@ -76,7 +76,7 @@ export class CashaccountComponent implements OnInit {
     this.showAlert = false;
   }
   //private pdfmake : pdfMake;
-  onPivotReady(DailyCashBook: WebDataRocksPivot): void {
+  onPivotReady(CashAccount: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
   } 
   

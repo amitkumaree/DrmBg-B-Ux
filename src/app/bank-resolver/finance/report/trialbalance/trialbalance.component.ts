@@ -5,16 +5,18 @@ import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
+import { tt_trial_balance } from 'src/app/bank-resolver/Models/tt_trial_balance';
 
 @Component({
-  selector: 'app-dailybook',
-  templateUrl: './dailybook.component.html',
-  styleUrls: ['./dailybook.component.css']
+  selector: 'app-trialbalance',
+  templateUrl: './trialbalance.component.html',
+  styleUrls: ['./trialbalance.component.css']
 })
-export class DailybookComponent implements OnInit {
+export class TrialbalanceComponent implements OnInit {
+
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
-  @ViewChild('DailyCashBook') child: WebDataRocksPivot;
-  dailyCash: tt_cash_account[] = [];
+  @ViewChild('TrialBalance') child: WebDataRocksPivot;
+  trailbalance: tt_trial_balance[] = [];
   prp =new p_report_param();
   reportcriteria: FormGroup;
   closeResult = '';
@@ -30,7 +32,7 @@ export class DailybookComponent implements OnInit {
   ngOnInit(): void {
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
-      toDate: [null, Validators.required]
+      toDate: [null, null]
     });
     this.onLoadScreen(this.content);
   }
@@ -57,15 +59,11 @@ export class DailybookComponent implements OnInit {
       this.alertMsg = "Invalid Input.";
       return false;
     }
-    else if (new Date(this.reportcriteria.value['fromDate']) > new Date(this.reportcriteria.value['toDate'])) {
-      this.showAlert = true;
-      this.alertMsg = "To Date cannot be greater than From Date!";
-      return false;
-    }
+   
     else {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
-      this.toDate=this.reportcriteria.value['toDate'];
+      //this.toDate=this.reportcriteria.value['toDate'];
       this.onReportComplete();
       this.modalService.dismissAll(this.content);
     }
@@ -75,44 +73,17 @@ export class DailybookComponent implements OnInit {
     this.showAlert = false;
   }
   //private pdfmake : pdfMake;
-  onPivotReady(DailyCashBook: WebDataRocksPivot): void {
+  onPivotReady(TrialBalance: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
   } 
   
-  // generatePdf(){
-  //   debugger;
-  //   const documentDefinition = { content: 'This is an sample PDF printed with pdfMake' };
-  //   this.pdfmake.createPdf(documentDefinition).open();
-  //  }
-  // onReportComplete(): void {
-  //   debugger;
-  //   this.prp.brn_cd='101';
-  //   this.prp.from_dt= new Date("2018-08-13");
-  //   this.prp.to_dt=new Date("2018-08-13");
-  //   this.prp.acc_cd=28101;
-  //   this.child.webDataRocks.off("reportcomplete");
-  //   this.svc.addUpdDel<any>('Report/PopulateDailyCashBook',this.prp).subscribe(
-  //     (data: tt_cash_account[]) => this.dailyCash = data,
-  //     error => { console.log(error); },
-  //     () => {
-  //         debugger;
-  //         this.child.webDataRocks.setReport({
-  //         dataSource: {
-  //           //filename: "https://cdn.webdatarocks.com/data/data.json"
-  //           data:this.dailyCash
-  //         }
-  //       });
-  //     }
-  //   );
-  // }
-
-
+  
   onReportComplete(): void {
     debugger;
     this.prp.brn_cd='101';
-    this.prp.from_dt= this.fromdate;
-    this.prp.to_dt=this.toDate;
-    this.prp.acc_cd=28101;
+    this.prp.trial_dt= this.fromdate;
+    this.prp.pl_acc_cd=28101;
+    this.prp.gp_acc_cd=28101;
     let fdate = new Date(this.fromdate);
     let tdate = new Date(this.toDate);
     this.fd = (("0" + fdate.getDate()).slice(-2)) + "/" + (("0" + (fdate.getMonth() + 1)).slice(-2)) + "/" + (fdate.getFullYear());
@@ -120,8 +91,8 @@ export class DailybookComponent implements OnInit {
     this.dt = new Date();
     this.dt = (("0" + this.dt.getDate()).slice(-2)) + "/" + (("0" + (this.dt.getMonth() + 1)).slice(-2)) + "/" + (this.dt.getFullYear()) + " " + this.dt.getHours() + ":" + this.dt.getMinutes();
     this.child.webDataRocks.off("reportcomplete");
-    this.svc.addUpdDel<any>('Report/PopulateDailyCashBook',this.prp).subscribe(
-      (data: tt_cash_account[]) => this.dailyCash = data,
+    this.svc.addUpdDel<any>('Report/PopulateTrialBalance',this.prp).subscribe(
+      (data: tt_trial_balance[]) => this.trailbalance = data,
       error => { console.log(error); },
       () => {
           debugger;
@@ -129,23 +100,9 @@ export class DailybookComponent implements OnInit {
          // this.generatePdf();
          let totalCr=0;
          let totalDr=0;
-         let tmp_cash_account=new tt_cash_account();
-         this.dailyCash.forEach(x => totalCr += x.cr_amt);
-         this.dailyCash.forEach(x => totalDr += x.dr_amt);
-         this.dailyCash.forEach(x=>x.cr_acc_cd=(x.cr_acc_cd=='0'?'':''+x.cr_acc_cd.toString()));
-         this.dailyCash.forEach(x=>x.dr_acc_cd=(x.dr_acc_cd=='0'?'':''+x.dr_acc_cd.toString()));
-         this.dailyCash.forEach(x=>x.dr_amt=(x.dr_amt==0.00?null:x.dr_amt));
-         this.dailyCash.forEach(x=>x.cr_amt=(x.cr_amt==0.00?null:x.cr_amt));
-         this.dailyCash.forEach(x=>x.dr_particulars=(x.dr_particulars==null?' ':x.dr_particulars));
-         this.dailyCash.forEach(x=>x.cr_particulars=(x.cr_particulars==null?' ':x.cr_particulars));
-         tmp_cash_account.cr_amt=totalCr;
-         tmp_cash_account.dr_amt=totalDr;
-         tmp_cash_account.dr_particulars='Total Debit: ';
-         tmp_cash_account.cr_particulars='Total Credit: ';
-         this.dailyCash.push(tmp_cash_account);
          this.child.webDataRocks.setReport({
           dataSource: {
-             data:this.dailyCash
+             data:this.trailbalance
           },
           tableSizes: {
             columns: [
@@ -155,7 +112,7 @@ export class DailybookComponent implements OnInit {
               },
               {
                 idx: 1,
-                width: 200
+                width: 400
               },
               {
                 idx: 2,
@@ -163,14 +120,6 @@ export class DailybookComponent implements OnInit {
               },
               {
                 idx: 3,
-                width: 75
-              },
-              {
-                idx: 4,
-                width: 200
-              },
-              {
-                idx: 5,
                 width: 100
               }
             ]
@@ -185,44 +134,30 @@ export class DailybookComponent implements OnInit {
             "slice": {
               "rows": [
                   {
-                      "uniqueName": "dr_acc_cd",
-                      "caption": "Debit",
+                      "uniqueName": "acc_cd",
+                      "caption": "Account Code",
                       "sort": "unsorted"
                       
                   },
                   {
-                      "uniqueName": "dr_particulars",
-                      "caption": "Dr Description",
+                      "uniqueName": "acc_name",
+                      "caption": "Account Name",
                       "sort": "unsorted"
                   },
                   {
-                      "uniqueName": "dr_amt",
-                      "caption": "Dr Amount",
+                      "uniqueName": "dr",
+                      "caption": "Debit",
                       "sort": "unsorted"
                   },
                   {
-                    "uniqueName": "cr_acc_cd",
+                    "uniqueName": "cr",
                     "caption": "Credit",
-                      "sort": "unsorted"
-                },
-                {
-                    "uniqueName": "cr_particulars",
-                    "caption": "Cr Description",
-                      "sort": "unsorted"
-                },
-                {
-                    "uniqueName": "cr_amt",
-                    "caption": "Cr Amount",
                       "sort": "unsorted"
                 }
               ],
               "measures": [
                 {
-                  uniqueName: "dr_acc_cd",
-                  format: "decimal0"
-                },
-                {
-                  uniqueName: "cr_acc_cd",
+                  uniqueName: "acc_cd",
                   format: "decimal0"
                 }],
               "flatOrder": [
@@ -276,12 +211,12 @@ exportPDFTitle() {
   var options = this.child.webDataRocks.getOptions();
   this.child.webDataRocks.setOptions( {
     grid: {
-      title: 'Day Book For The Period' +this.fd +'-' +this.td
+      title: 'Trial Balance as on ' +this.fd 
     }
   } 
   );
   this.child.webDataRocks.refresh();
-  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##</div>",filename:"DayBook"});
+  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##</div>",filename:"TrialBalance"});
   this.child.webDataRocks.on('exportcomplete', function () {
     this.child.webDataRocks.off('exportcomplete')
     this.child.webDataRocks.setOptions(options);

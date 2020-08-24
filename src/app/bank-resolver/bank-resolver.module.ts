@@ -14,11 +14,13 @@ import { UTSelfHelpComponent } from './UCIC/utself-help/utself-help.component';
 import { DailybookComponent } from './finance/report/dailybook/dailybook.component';
 import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.component';
 import { WebDataRocksPivot } from '../webdatarocks/webdatarocks.angular4';
+import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
+import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
 
 @NgModule({
   declarations: [
     BankResolverComponent, LoginComponent, VoucherNewComponent, HeaderComponent, LandingComponent,
-    UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,WebDataRocksPivot
+    UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule

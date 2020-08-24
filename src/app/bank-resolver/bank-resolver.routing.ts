@@ -16,6 +16,8 @@ import { DailybookComponent } from './finance/report/dailybook/dailybook.compone
 import { BankWiseConfigComponent } from '../bank-wise-config/bank-wise-config.component';
 import { NewBankConfigComponent } from '../new-bank-config/new-bank-config.component';
 import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.component';
+import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
+import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -35,6 +37,9 @@ const routes: Routes = [
       { path: 'FT_Voucher', component: VoucherComponent },
       { path: 'FR_DayBook', component: DailybookComponent },
       { path: 'FR_CashAccount', component: CashaccountComponent },
+      { path: 'FR_CashCumTrial', component: CashcumtrialComponent },
+      { path: 'FR_TrialBalance', component: TrialbalanceComponent },
+      
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,
