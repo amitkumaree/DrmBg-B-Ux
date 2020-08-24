@@ -107,6 +107,7 @@
                 <h3>
                   <select name="voucherTyp" class="rounded-inputs20 select-select col-md-6"
                     (change)="onChange($event.target.value)">
+                    <option >Select..</option>
                     <option value="C">Cash</option>
                     <option value="L">Clearing</option>
                     <option value="T">Transfer</option>
@@ -166,9 +167,9 @@
                     <!-- </div> -->
                   </td>
                   <!-- <td style="width: 40%"><input formControlName="desc"  type="text" class="form-control"></td> -->
-                  <td style="width: 10%"><input formControlName="dr_amt" (input)="drAmountInput(i,$event)" type="text"
+                  <td style="width: 10%"><input formControlName="dr_amt" (input)="drAmountInput(i,$event)" type="number"
                       class="form-control"></td>
-                  <td style="width: 10%"><input formControlName="cr_amt" (input)="crAmountInput(i,$event)" type="text"
+                  <td style="width: 10%"><input formControlName="cr_amt" (input)="crAmountInput(i,$event)" type="number"
                       class="form-control"></td>
                   <td style="width: 10%"><button class="btn btn-rounded btn-primary btn-primary-spacing"
                       (click)="RemoveItem(i)" [disabled]="isDel">Del</button>

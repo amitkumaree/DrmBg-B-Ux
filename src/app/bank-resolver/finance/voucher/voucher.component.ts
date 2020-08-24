@@ -18,6 +18,7 @@ export class VoucherComponent implements OnInit {
   tvnRet: T_VOUCHER_DTLS[] = [];
   tvnRetFilter: T_VOUCHER_DTLS[] = [];
   maccmaster: m_acc_master[] = [];
+  maccmasterRet: m_acc_master[] = [];
   keyword = 'acc_name';
   tvdGroupRes: any;
   reportcriteria: FormGroup;
@@ -88,7 +89,15 @@ export class VoucherComponent implements OnInit {
     // this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
     // this.VoucherF.push(this.editVoucherFromGroup(this.tvdRet[x].acc_cd,this.tvdRet[x].debit_credit_flag,this.tvdRet[x].cr_amount,this.tvdRet[x].dr_amount));
   }
-
+  InitializeListOnly() {
+    try {
+      let VoucherFCnt = this.VoucherF.value.length;
+      for (var i = 0; i < VoucherFCnt; i++) {
+        this.RemoveItem(0);
+      }
+    }
+    catch (exception) { let x = 0; }
+  }
 
   Retrieve() {
     this.Initialize();
@@ -251,7 +260,22 @@ export class VoucherComponent implements OnInit {
     // do something with selected item
   }
   onChange(event) {
+    debugger;
+   
     this._voucherTyp = event;
+    if (this._voucherTyp=='T'){
+    this.InitializeListOnly();
+    this.maccmaster=this.maccmasterRet.filter(x=>x.acc_cd!=28101);}
+    else if (this._voucherTyp=='C'){
+    this.InitializeListOnly();
+    this.Add()
+    this.maccmaster=this.maccmasterRet.filter(x=>x.acc_cd!=28101);
+    this.VoucherF.controls[0].get('acc_cd').setValue(28101);
+    this.VoucherF.controls[0].get('desc').setValue(this.maccmasterRet.find(x=>x.acc_cd===28101).acc_name);
+    }
+    else{
+      this.InitializeListOnly();
+      this.maccmaster=this.maccmasterRet;}
   }
   changeAppFlg() {
     debugger;
@@ -448,7 +472,7 @@ export class VoucherComponent implements OnInit {
       for (var i = 0; i < this.VoucherF.value.length; i++) {
         if (this.VoucherF.value[i].dr_amt > 0) {
           total = total + Number(this.VoucherF.value[i].dr_amt);
-          this._totalDr = total;
+          //this._totalDr = total;
         }
       }
     }
@@ -461,10 +485,18 @@ export class VoucherComponent implements OnInit {
   public drAmountInput(row, event) {
     try {
       debugger;
-      if (event.data > 0) {
+      if (this.VoucherF.controls[row].get('dr_amt').value > 0) {
         this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
         this.VoucherF.controls[row].get('dr_cr').setValue("D");
         this.VoucherF.controls[row].get('cr_amt').setValue(null);
+        if(this._voucherTyp=='C')
+        {
+          this.VoucherF.controls[0].get('dr_amt').setValue(null);
+          this.VoucherF.controls[0].get('dr_cr').setValue("C");
+          debugger;
+          this.VoucherF.controls[0].get('cr_amt').setValue(this.getTotalDr());
+
+        }
       }
     }
     catch (exception) { let x = 0; }
@@ -472,10 +504,18 @@ export class VoucherComponent implements OnInit {
   public crAmountInput(row, event) {
     try {
       debugger;
-      if (event.data > 0) {
+      if (this.VoucherF.controls[row].get('cr_amt').value > 0) {
         this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
         this.VoucherF.controls[row].get('dr_cr').setValue("C");
         this.VoucherF.controls[row].get('dr_amt').setValue(null);
+        if(this._voucherTyp=='C')
+        {
+          this.VoucherF.controls[0].get('cr_amt').setValue(null);
+          this.VoucherF.controls[0].get('dr_cr').setValue("D");
+          debugger;
+          this.VoucherF.controls[0].get('dr_amt').setValue(this.getTotalCr());
+
+        }
       }
     }
     catch (exception) { let x = 0; }
@@ -498,7 +538,8 @@ export class VoucherComponent implements OnInit {
     this.svc.addUpdDel<any>('AccMst/GetmAccMaster', null).subscribe(
       res => {
         debugger;
-        this.maccmaster = res;
+        this.maccmasterRet = res;
+        this.maccmaster=this.maccmasterRet;
       },
       err => { }
     );
