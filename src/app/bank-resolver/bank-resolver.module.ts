@@ -1,3 +1,4 @@
+import { LoadingComponent } from './loading';
 import { LoginComponent } from './login/login.component';
 import { BankResolverComponent } from './bank-resolver.component';
 import { NgModule, ErrorHandler } from '@angular/core';
@@ -6,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { GlobalErrorHandler, ServerErrorInterceptor } from '../_utility';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { VoucherNewComponent } from './finance/voucher-new/voucher-new.component';
+// import { VoucherNewComponent } from './finance/voucher-new/voucher-new.component';
 import { HeaderComponent } from './header/header.component';
 import { LandingComponent } from './landing/landing.component';
 import { UTCustomerProfileComponent } from './UCIC/utcustomer-profile/utcustomer-profile.component';
@@ -20,7 +21,7 @@ import { GenLedgerComponent } from './finance/report/gen-ledger/gen-ledger.compo
 
 @NgModule({
   declarations: [
-    BankResolverComponent, LoginComponent, VoucherNewComponent, HeaderComponent, LandingComponent,
+    BankResolverComponent, LoginComponent, HeaderComponent, LandingComponent, LoadingComponent,
     UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, GenLedgerComponent
   ],
   imports: [

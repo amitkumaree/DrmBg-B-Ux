@@ -47,7 +47,7 @@ const routes: Routes = [
         path: 'finance', component: FinanceComponent,
         children: [
           { path: 'voucher', component: VoucherComponent },
-          { path: 'voucherNew', component: VoucherNewComponent },
+          // { path: 'voucherNew', component: VoucherNewComponent },
 
         ]
       }
