@@ -16,11 +16,12 @@ import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.c
 import { WebDataRocksPivot } from '../webdatarocks/webdatarocks.angular4';
 import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
 import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
+import { GenLedgerComponent } from './finance/report/gen-ledger/gen-ledger.component';
 
 @NgModule({
   declarations: [
     BankResolverComponent, LoginComponent, VoucherNewComponent, HeaderComponent, LandingComponent,
-    UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent
+    UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, GenLedgerComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule

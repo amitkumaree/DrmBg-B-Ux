@@ -1,3 +1,4 @@
+import { GenLedgerComponent } from './finance/report/gen-ledger/gen-ledger.component';
 
 import { LandingComponent } from './landing/landing.component';
 import { LoginComponent } from './login/login.component';
@@ -39,13 +40,14 @@ const routes: Routes = [
       { path: 'FR_CashAccount', component: CashaccountComponent },
       { path: 'FR_CashCumTrial', component: CashcumtrialComponent },
       { path: 'FR_TrialBalance', component: TrialbalanceComponent },
-      
+      { path: 'FR_GeneralLadger', component: GenLedgerComponent },
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,
         children: [
           { path: 'voucher', component: VoucherComponent },
-          { path: 'voucherNew', component: VoucherNewComponent }
+          { path: 'voucherNew', component: VoucherNewComponent },
+
         ]
       }
     ]
