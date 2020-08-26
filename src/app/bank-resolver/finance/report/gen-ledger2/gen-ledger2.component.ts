@@ -5,13 +5,12 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
-
 @Component({
-  selector: 'app-gen-ledger',
-  templateUrl: './gen-ledger.component.html',
-  styleUrls: ['./gen-ledger.component.css']
+  selector: 'app-gen-ledger2',
+  templateUrl: './gen-ledger2.component.html',
+  styleUrls: ['./gen-ledger2.component.css']
 })
-export class GenLedgerComponent implements OnInit {
+export class GenLedger2Component implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('CashCumTrial') child: WebDataRocksPivot;
   genLdgerTrans: tt_gl_trans[] = [];
@@ -28,8 +27,8 @@ export class GenLedgerComponent implements OnInit {
   fromdate: Date;
   toDate: Date;
   constructor(private svc: RestService,
-              private formBuilder: FormBuilder,
-              private modalService: NgbModal) { }
+    private formBuilder: FormBuilder,
+    private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.reportcriteria = this.formBuilder.group({
@@ -107,9 +106,8 @@ export class GenLedgerComponent implements OnInit {
     this.dt = (('0' + this.dt.getDate()).slice(-2)) + '/' + (('0' + (this.dt.getMonth() + 1)).slice(-2)) + '/' + (this.dt.getFullYear()) + ' ' + this.dt.getHours() + ':' + this.dt.getMinutes();
     this.child.webDataRocks.off('reportcomplete');
     // Api call to get data
-    this.svc.addUpdDel<any>('Report/GLTD', this.prp).subscribe(
-      (data: tt_gl_trans[]) =>
-      {
+    this.svc.addUpdDel<any>('Report/GLTD2', this.prp).subscribe(
+      (data: tt_gl_trans[]) => {
         this.genLdgerTrans = data;
         debugger;
       },
@@ -263,10 +261,11 @@ export class GenLedgerComponent implements OnInit {
     );
     this.child.webDataRocks.refresh();
     this.child.webDataRocks.exportTo('pdf', { pageOrientation: 'potrait', header: '<div>##CURRENT-DATE##</div>', filename: 'GeneralLedgerTransactions' });
-    this.child.webDataRocks.on('exportcomplete', function() {
+    this.child.webDataRocks.on('exportcomplete', function () {
       this.child.webDataRocks.off('exportcomplete');
       this.child.webDataRocks.setOptions(options);
       this.child.webDataRocks.refresh();
     });
   }
+
 }

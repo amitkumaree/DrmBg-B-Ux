@@ -19,6 +19,7 @@ import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.c
 import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
 import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
 import { VoucherprintComponent } from './finance/voucherprint/voucherprint.component';
+import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -42,6 +43,7 @@ const routes: Routes = [
       { path: 'FR_CashCumTrial', component: CashcumtrialComponent },
       { path: 'FR_TrialBalance', component: TrialbalanceComponent },
       { path: 'FR_GeneralLadger', component: GenLedgerComponent },
+      { path: 'FR_GLTD', component: GenLedger2Component },
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
