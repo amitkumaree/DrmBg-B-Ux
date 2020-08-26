@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { GlobalErrorHandler, ServerErrorInterceptor } from '../_utility';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { VoucherNewComponent } from './finance/voucher-new/voucher-new.component';
 import { HeaderComponent } from './header/header.component';
 import { LandingComponent } from './landing/landing.component';
 import { UTCustomerProfileComponent } from './UCIC/utcustomer-profile/utcustomer-profile.component';
@@ -16,11 +15,15 @@ import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.c
 import { WebDataRocksPivot } from '../webdatarocks/webdatarocks.angular4';
 import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
 import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
+import { VoucherprintComponent } from './finance/voucherprint/voucherprint.component';
+import { LoadingComponent } from './loading'
 
 @NgModule({
   declarations: [
-    BankResolverComponent, LoginComponent, VoucherNewComponent, HeaderComponent, LandingComponent,
-    UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent
+    BankResolverComponent, LoginComponent, VoucherprintComponent, HeaderComponent, LandingComponent,
+    UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,
+    WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, VoucherprintComponent,
+    LoadingComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule

@@ -26,6 +26,7 @@ export class DailybookComponent implements OnInit {
   dt: any;
   fromdate: Date;
   toDate:Date;
+  isLoading = false;
   constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
   ngOnInit(): void {
     this.reportcriteria = this.formBuilder.group({
@@ -109,6 +110,7 @@ export class DailybookComponent implements OnInit {
 
   onReportComplete(): void {
     debugger;
+    this.isLoading=true;
     this.prp.brn_cd='101';
     this.prp.from_dt= this.fromdate;
     this.prp.to_dt=this.toDate;
@@ -143,6 +145,7 @@ export class DailybookComponent implements OnInit {
          tmp_cash_account.dr_particulars='Total Debit: ';
          tmp_cash_account.cr_particulars='Total Credit: ';
          this.dailyCash.push(tmp_cash_account);
+         this.isLoading=false;
          this.child.webDataRocks.setReport({
           dataSource: {
              data:this.dailyCash

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VoucherNewComponent } from './voucher-new.component';
+import { VoucherprintComponent } from './voucherprint.component';
 
-describe('VoucherNewComponent', () => {
-  let component: VoucherNewComponent;
-  let fixture: ComponentFixture<VoucherNewComponent>;
+describe('VoucherprintComponent', () => {
+  let component: VoucherprintComponent;
+  let fixture: ComponentFixture<VoucherprintComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VoucherNewComponent ]
+      declarations: [ VoucherprintComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VoucherNewComponent);
+    fixture = TestBed.createComponent(VoucherprintComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
