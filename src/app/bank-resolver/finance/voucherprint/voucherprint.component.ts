@@ -20,7 +20,7 @@ export class VoucherprintComponent implements OnInit {
   showAlert = false;
   alertMsg = '';
   fromdate: Date;
-  toDate:Date;
+  toDate:Date; 
   isLoading = false;
   
   constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal) { }

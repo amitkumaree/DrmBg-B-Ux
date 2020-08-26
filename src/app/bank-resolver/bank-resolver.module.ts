@@ -17,7 +17,7 @@ import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalanc
 import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
 import { VoucherprintComponent } from './finance/voucherprint/voucherprint.component';
 import { LoadingComponent } from './loading'
-
+ 
 @NgModule({
   declarations: [
     BankResolverComponent, LoginComponent, VoucherprintComponent, HeaderComponent, LandingComponent,
