@@ -54,7 +54,6 @@ export class DailybookComponent implements OnInit {
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
-      this.showAlert = true;
       this.alertMsg = "Invalid Input.";
       return false;
     }
@@ -67,6 +66,7 @@ export class DailybookComponent implements OnInit {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.toDate=this.reportcriteria.value['toDate'];
+      this.isLoading=true;
       this.onReportComplete();
       this.modalService.dismissAll(this.content);
     }
@@ -110,7 +110,6 @@ export class DailybookComponent implements OnInit {
 
   onReportComplete(): void {
     debugger;
-    this.isLoading=true;
     this.prp.brn_cd='101';
     this.prp.from_dt= this.fromdate;
     this.prp.to_dt=this.toDate;

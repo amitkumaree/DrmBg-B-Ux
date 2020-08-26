@@ -42,6 +42,7 @@ const routes: Routes = [
       { path: 'FR_CashCumTrial', component: CashcumtrialComponent },
       { path: 'FR_TrialBalance', component: TrialbalanceComponent },
       { path: 'FR_GeneralLadger', component: GenLedgerComponent },
+
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,
