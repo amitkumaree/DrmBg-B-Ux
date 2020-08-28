@@ -17,5 +17,6 @@ export class T_VOUCHER_DTLS {
   public instrument_dt: Date;
   public voucher_dt: Date;
   public narrationdtl: string;
+  public acc_name:string;
 
 }

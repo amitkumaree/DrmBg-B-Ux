@@ -7,6 +7,6 @@ export class T_VOUCHER_NARRATION {
   public voucher_id: number;
   public voucher_dt: Date;
   public narration: string;
-  public tvd : T_VOUCHER_DTLS[]=[];
+  public vd : T_VOUCHER_DTLS[]=[];
 
 }

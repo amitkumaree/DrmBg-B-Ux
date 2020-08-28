@@ -1,17 +1,22 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import { p_report_param } from '../../Models';
 import { T_VOUCHER_NARRATION } from '../../Models/T_VOUCHER_NARRATION';
 import { RestService } from 'src/app/_service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import html2pdf from 'html2pdf.js';
+import jsPDF from 'jspdf';
+import { ExportAsService, ExportAsConfig } from 'ngx-export-as';
 
 @Component({
   selector: 'app-voucherprint',
   templateUrl: './voucherprint.component.html',
-  styleUrls: ['./voucherprint.component.css']
+  styleUrls: ['./voucherprint.component.css'],
+  providers:[ExportAsService]
 })
 export class VoucherprintComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
+  @ViewChild('reportcontent') reportcontent: ElementRef;
   prp =new p_report_param();
   tvn:  T_VOUCHER_NARRATION[]=[];
   reportcriteria: FormGroup;
@@ -22,8 +27,13 @@ export class VoucherprintComponent implements OnInit {
   fromdate: Date;
   toDate:Date; 
   isLoading = false;
+  exportAsConfig: ExportAsConfig = {
+    type: 'png', 
+    elementIdOrContent: 'reportcontent' 
+  }
   
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder,
+     private modalService: NgbModal,private exportAsService: ExportAsService) { }
 
   ngOnInit(): void {
     this.reportcriteria = this.formBuilder.group({
@@ -85,6 +95,74 @@ export class VoucherprintComponent implements OnInit {
       err => { }
     );
   }
+
+  //   public downloadPDF() {
+  //   debugger;
+  //   let content = this.reportcontent.nativeElement;
+  //   let doc = new jsPDF();
+  //   let _elementHandlers =
+  //   {
+  //     '#editor': function (element, renderer) {
+  //       return true;
+  //     }
+  //   };
+  //   doc.fromHTML(content.innerHTML, 30, 30, {
+
+  //     'width': 250,
+  //     'elementHandlers': _elementHandlers
+  //   });
+  //   doc.save("VoucherPrint.pdf");
+  // }
+
+  // public downloadPDF () {
+  //   debugger;
+  //   {
+  //     // download the file using old school javascript method
+  //     this.exportAsService.save(this.exportAsConfig, 'VoucherPrint').subscribe(() => {
+  //       // save started
+  //     });
+  //     // get the data as base64 or json object for json type - this will be helpful in ionic or SSR
+  //    // this.exportAsService.get(this.config).subscribe(content => {
+  //    //   console.log(content);
+  //    // });
+  //   }
+  // }
+
+  // public downloadPDF() {
+  //   const option = {
+  //     name: 'VoucherPrint.pdf',
+  //     image: { type: 'jpeg' },
+  //     html2pdf: {},
+  //     jsPDF: { orientation: 'portrait' }
+  //   }
+  //   const element: Element = document.getElementById('reportcontent');
+
+  //   html2pdf()
+  //     .from(element)
+  //     .set(option)
+  //     .save()
+  // }
+  public downloadPDF() {
+  var element = document.getElementById('reportcontent');
+  var option = {
+margin:       0,
+filename:     'myfile.pdf',
+image:        { type: 'jpeg', quality: 0.98 },
+html2canvas:  { scale:1},
+jsPDF:        { unit: 'mm', format: 'a4', orientation: 'p' }
+};
+html2pdf()
+       .from(element)
+       .set(option)
+       .save()
+  }
+ public FormatNumber(num) {
+  try {
+      return parseFloat(num).toFixed(2);
+  } catch (error) {
+      return 0;
+  }
+}
 
 
 }

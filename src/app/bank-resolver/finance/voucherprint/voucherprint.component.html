@@ -40,6 +40,45 @@
 <div class="row d-flex justify-content-center align-items-center pt-4"
 style="background-color: #78c2ad21; min-height: 20vh;">
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
-
-</div>
+  <div id="reportcontent" #reportcontent>
+<table style="width: 100%" >     
+<tr *ngFor="let item of tvn; let i = index;">
+  <!-- <p *ngIf="tvn[i].vd.length> 2" style="page-break-after: always;">&nbsp;</p> -->
+  <table style="width: 100%" >
+  <tr> <label>Voucher Id : {{item.voucher_id}}</label></tr>
+  <tr><label>Voucher Date : {{item.voucher_dt | date}}</label> </tr>
+  <tr><label>Voucher Type : {{item.voucher_typ==='C' ?'CASH':'TRANSFER'}}</label> </tr>
+  <tr><label>Approval Status : {{item.voucher_status==='A'?'Approved':'Un Approved'}}</label> </tr>
+  <tr>
+    <table style="width: 100%" >
+      <tr>
+        <td style="width: 15%"> <label><b>Dr/Cr</b></label></td>
+        <td style="width: 15%"> <label><b>Account Cd</b></label> </td>
+        <td style="width: 40%"> <label><b>Account Name</b></label> </td>
+        <td style="width: 15%;text-align:right;"> <label><b>Debit Amt</b></label> </td>
+        <td style="width: 15%;text-align:right;"> <label><b>Credit Amt</b></label> </td>
+      </tr>
+      <tr *ngFor="let vitem of tvn[i].vd; let i = index;">
+        <td style="width: 15%"> <label> {{vitem.debit_credit_flag==='D'?'Debit':'Credit'}} </label></td>
+        <td style="width: 15%"> <label>{{vitem.acc_cd}}</label> </td>
+        <td style="width: 40%"> <label>{{vitem.acc_name}}</label> </td>
+        <td style="width: 15%;text-align:right;"> <label>{{FormatNumber(vitem.dr_amount) }}</label> </td>
+        <td style="width: 15%;text-align:right;"> <label>{{FormatNumber(vitem.cr_amount) }}</label> </td>
+      </tr>
+    </table>  
+</tr>
+<tr><label> ({{item.narration}}) </label></tr>
+<tr><hr></tr>
+  </table>
+</tr>
+   </table>
   </div>
+  <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
+    <div>
+    <button type="button" class="btn btn-rounded btn-primary m-1" (click)="downloadPDF()">Download PDF</button>
+    <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
+    <button type="button" class="btn btn-rounded btn-primary m-1" style="position: absolute;right: 10px;">Close</button>
+  </div>
+  </div>
+</div>
+  </div> 
