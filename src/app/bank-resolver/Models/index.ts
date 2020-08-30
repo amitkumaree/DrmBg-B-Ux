@@ -10,3 +10,5 @@ export * from './tt_cash_account';
 export * from './m_acc_master';
 export * from './connstring';
 export * from './NewConfigRec';
+export * from './tt_cash_cum_trial';
+export * from './tt_gl_trans';

@@ -15,15 +15,19 @@ import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.c
 import { WebDataRocksPivot } from '../webdatarocks/webdatarocks.angular4';
 import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
 import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
+import { GenLedgerComponent } from './finance/report/gen-ledger/gen-ledger.component';
+
 import { VoucherprintComponent } from './finance/voucherprint/voucherprint.component';
-import { LoadingComponent } from './loading'
- 
+import { LoadingComponent } from './loading';
+import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
+
 @NgModule({
   declarations: [
-    BankResolverComponent, LoginComponent, VoucherprintComponent, HeaderComponent, LandingComponent,
+    BankResolverComponent, LoginComponent, HeaderComponent, LandingComponent, LoadingComponent,
     UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,
-    WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, VoucherprintComponent,
-    LoadingComponent
+    WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, GenLedgerComponent,
+    VoucherprintComponent,
+    GenLedger2Component
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule

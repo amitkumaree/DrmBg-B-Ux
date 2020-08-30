@@ -29,8 +29,8 @@ export class RestService {
         url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
       }
     url += 'api/';
-    console.log(url);
-    return url
+    // console.log(url);
+    return url;
   }
 
   public getAll<T>(ofwhat: string): Observable<T> {

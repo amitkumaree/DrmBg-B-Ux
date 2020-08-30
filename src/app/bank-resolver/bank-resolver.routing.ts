@@ -1,3 +1,4 @@
+import { GenLedgerComponent } from './finance/report/gen-ledger/gen-ledger.component';
 
 import { LandingComponent } from './landing/landing.component';
 import { LoginComponent } from './login/login.component';
@@ -18,6 +19,7 @@ import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.c
 import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
 import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
 import { VoucherprintComponent } from './finance/voucherprint/voucherprint.component';
+import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -40,13 +42,16 @@ const routes: Routes = [
       { path: 'FR_CashAccount', component: CashaccountComponent },
       { path: 'FR_CashCumTrial', component: CashcumtrialComponent },
       { path: 'FR_TrialBalance', component: TrialbalanceComponent },
-       
+      { path: 'FR_GeneralLadger', component: GenLedgerComponent },
+      { path: 'FR_GLTD', component: GenLedger2Component },
+
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,
         children: [
-          { path: 'FT_Voucher', component: VoucherComponent },
-          { path: 'FT_PrintVoucher', component: VoucherprintComponent }
+          { path: 'voucher', component: VoucherComponent },
+          // { path: 'voucherNew', component: VoucherNewComponent },
+
         ]
       }
     ]
