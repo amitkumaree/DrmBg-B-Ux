@@ -51,7 +51,6 @@ const routes: Routes = [
         children: [
           { path: 'voucher', component: VoucherComponent },
           // { path: 'voucherNew', component: VoucherNewComponent },
-
         ]
       }
     ]

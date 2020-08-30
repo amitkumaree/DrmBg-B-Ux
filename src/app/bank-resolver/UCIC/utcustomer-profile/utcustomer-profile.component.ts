@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-utcustomer-profile',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UTCustomerProfileComponent implements OnInit {
 
-  constructor() { }
+  custMstrFrm: FormGroup;
+  constructor(private frmBldr: FormBuilder) { }
 
   ngOnInit(): void {
+    // this.custMstrFrm = this.frmBldr.group(
+    //   {
+    //     CustType:
+    //   }
+    )
   }
 
 }

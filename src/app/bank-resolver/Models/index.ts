@@ -12,3 +12,4 @@ export * from './connstring';
 export * from './NewConfigRec';
 export * from './tt_cash_cum_trial';
 export * from './tt_gl_trans';
+export * from './mm_customer';
