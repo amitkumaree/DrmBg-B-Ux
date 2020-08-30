@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
     login.user_id = this.f.username.value;
     login.password = this.f.password.value;;
     login.brn_cd = '101';
-    this.rstSvc.addUpdDel('AccMst/GetUserDtls', login).subscribe(
+    this.rstSvc.addUpdDel('Mst/GetUserDtls', login).subscribe(
       res => {
         debugger;
         console.log('Login Sucess');

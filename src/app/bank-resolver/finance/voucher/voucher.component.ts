@@ -535,7 +535,7 @@ export class VoucherComponent implements OnInit {
 
   private getmAccMaster(): void {
     debugger;
-    this.svc.addUpdDel<any>('AccMst/GetmAccMaster', null).subscribe(
+    this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
       res => {
         debugger;
         this.maccmasterRet = res;
