@@ -21,7 +21,7 @@ export class mm_customer {
   public ward_no: number;
   public state: string;
   public dist: string;
-  public int pin: number;
+  public pin: number;
   public vill_cd: string;
   public block_cd: string;
   public service_area_cd: string;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-utcustomer-profile',
@@ -12,11 +12,53 @@ export class UTCustomerProfileComponent implements OnInit {
   constructor(private frmBldr: FormBuilder) { }
 
   ngOnInit(): void {
-    // this.custMstrFrm = this.frmBldr.group(
-    //   {
-    //     CustType:
-    //   }
-    )
+    // form defination
+    this.custMstrFrm = this.frmBldr.group({
+        brn_cd: [''],
+        cust_cd: [''],
+        cust_type: ['', Validators.required],
+        title: [''],
+        first_name: ['', Validators.required],
+        middle_name: [''],
+        last_name: [''],
+        cust_name: [''],
+        guardian_name: ['', Validators.required],
+        cust_dt: [''],
+        old_cust_cd: [''],
+        dt_of_birth: [''],
+        age: [''],
+        sex: [''],
+        marital_status: [''],
+        catg_cd: [''],
+        community: [''],
+        caste: [''],
+        permanent_address: [''],
+        ward_no: [''],
+        state: [''],
+        dist: [''],
+        pin: [''],
+        vill_cd: [''],
+        block_cd: [''],
+        service_area_cd: [''],
+        occupation: [''],
+        phone: [''],
+        present_address: [''],
+        farmer_type: [''],
+        email: [''],
+        monthly_income: [''],
+        date_of_death: [''],
+        sms_flag: [''],
+        status: [''],
+        pan: [''],
+        nominee: [''],
+        nom_relation: [''],
+        kyc_photo_type: [''],
+        kyc_photo_no: [''],
+        kyc_address_type: [''],
+        kyc_address_no: [''],
+        org_status: [''],
+        org_reg_no: ['']
+      });
   }
 
 }
