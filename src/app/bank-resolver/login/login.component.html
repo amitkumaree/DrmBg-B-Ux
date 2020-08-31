@@ -11,12 +11,25 @@
         <label for="exampleInputEmail1">User ID</label>
         <input type="text" class="form-control" id="exampleInputEmail1" formControlName="username"
           aria-describedby="emailHelp" placeholder="Enter user" autocomplete="nope">
-
       </div>
       <div class="form-group">
         <label for="exampleInputPassword1">Password</label>
         <input type="password" class="form-control" id="exampleInputPassword1" formControlName="password"
           placeholder="Password" autocomplete="nope">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Branch</label>
+        <!-- <select name="voucherTyp" class="rounded-inputs20 select-select col-md-6"
+        (change)="onChange($event.target.value)">
+        <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
+      </select> -->
+      <label *ngFor="let option of brnDtls">{{ option.brn_name }}</label>
+      <select placeholder="Choose your option" label="Example label">
+        <option *ngFor="let option of brnDtls;let i = index" [value]="option[i].brn_cd" formControlName="branch">{{ option[i].brn_name }}</option>
+      </select>
+      <!-- <mdb-select-2 [multiple]="true" placeholder="Choose your option" label="Example label">
+        <mdb-select-option *ngFor="let option of brnDtls" [value]="option.brn_cd" formControlName="branch">{{ option.brn_name }}</mdb-select-option>
+      </mdb-select-2> -->
       </div>
       <!-- <div class="form-group form-check ">
               <input type="checkbox" class="form-check-input" id="exampleCheck1">

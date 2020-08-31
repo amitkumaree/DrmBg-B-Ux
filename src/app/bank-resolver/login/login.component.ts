@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LOGIN_MASTER } from '../Models';
 import { InAppMessageService } from 'src/app/_service';
+import { m_branch } from '../Models/m_branch';
 
 @Component({
   selector: 'app-login',
@@ -15,16 +16,20 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   returnUrl: string;
   isError = false;
+  brnDtls: m_branch[]=[];
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private rstSvc: RestService,
     private msg: InAppMessageService) { }
 
   ngOnInit(): void {
+    debugger;
+    this.GetBranchMaster();
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
   }
   get f() { return this.loginForm.controls; }
 
@@ -55,5 +60,17 @@ export class LoginComponent implements OnInit {
   cancel() {
     localStorage.removeItem('__bName');
     this.router.navigate(['/']);
+  }
+
+  GetBranchMaster()
+  {
+    debugger;
+    this.rstSvc.addUpdDel('Mst/GetBranchMaster', null).subscribe(
+      res => {
+        debugger;
+        this.brnDtls=res;
+      },
+      err => { debugger;}
+    )
   }
 }
