@@ -16,7 +16,8 @@
         <div class="form-group col-2">
           <label for="title">Title</label>
           <select id="title" class="form-control form-control-sm" formControlName="title">
-            <!-- TODO this will come from table <option></option> -->
+            <option *ngIf="titles" disabled>Choose</option>
+            <option *ngFor="let title of titles" value="title.title_code">{{title.title}}</option>
           </select>
         </div>
         <div class="form-group col-3">
@@ -78,7 +79,8 @@
         <div class="form-group col-3">
           <label for="catg_cd">Category</label>
           <select id="catg_cd" class="form-control form-control-sm" formControlName="catg_cd">
-            <!-- TODO this will come from table <option></option> -->
+            <option *ngIf="categories" disabled>Choose</option>
+            <option *ngFor="let category of categories" value="category.catg_cd">{{category.catg_desc}}</option>
           </select>
         </div>
         <div class="form-group col-3">
@@ -107,13 +109,15 @@
         <div class="form-group col-3">
           <label for="state">State</label>
           <select id="state" class="form-control form-control-sm" formControlName="state">
-            <!-- TODO this will come from table <option></option> -->
+            <option *ngIf="states" disabled>Choose</option>
+            <option *ngFor="let state of states" value="state.state_cd">{{state.state_name}}</option>
           </select>
         </div>
         <div class="form-group col-3">
           <label for="dist">District</label>
           <select id="dist" class="form-control form-control-sm" formControlName="dist">
-            <!-- TODO this will come from table <option></option> -->
+            <option *ngIf="districts" disabled>Choose</option>
+            <option *ngFor="let district of districts" value="district.dist_cd">{{district.dist_name}}</option>
           </select>
         </div>
         <div class="form-group col-2">
@@ -123,8 +127,9 @@
         </div>
         <div class="form-group col-4">
           <label for="vill_cd">Village</label>
-          <select id="vill_cd" class="form-control form-control-sm" formControlName="vill_cd">
-            <!-- TODO this will come from table <option></option> -->
+          <select id="vill_cd" class="form-control form-control-sm" formControlName="vill_cd" (change)="onVillageChnage($event.target.value)">
+            <option *ngIf="villages" disabled>Choose</option>
+            <option *ngFor="let village of villages" [value]="village.vill_cd">{{village.vill_name}}</option>
           </select>
         </div>
       </div> <!-- form group row end -->
@@ -144,11 +149,14 @@
         <div class="form-group col-3">
           <label for="occupation">Occupation</label>
           <select id="occupation" class="form-control form-control-sm" formControlName="occupation">
-            <!-- TODO this will come from table <option></option> -->
+            <option value="Service">Service</option>
+            <option value="Teacher">Teacher</option>
+            <option value="Bussiness">Bussiness</option>
+            <option value="Housewife">Housewife</option>
           </select>
         </div>
         <div class="form-group col-3">
-          <label for="phone">Village</label>
+          <label for="phone">Phone Number</label>
           <input type="number" class="form-control form-control-sm" formControlName="phone" id="phone"
             placeholder="Phone Number">
         </div>
@@ -162,7 +170,9 @@
         <div class="form-group col-3">
           <label for="farmer_type">Farmer Type</label>
           <select id="farmer_type" class="form-control form-control-sm" formControlName="farmer_type">
-            <!-- TODO this will come from table <option></option> -->
+            <option value="S">Small</option>
+            <option value="M">Medium</option>
+            <option value="B">Big</option>
           </select>
         </div>
         <div class="form-group col-3">
@@ -192,7 +202,8 @@
         <div class="form-group col-3">
           <label for="status">Customer Status</label>
           <select id="status" class="form-control form-control-sm" formControlName="status">
-            <!-- TODO this will come from table <option></option> -->
+            <option value="A">Active</option>
+            <option value="D">Death</option>
           </select>
         </div>
         <div class="form-group col-3">
@@ -221,7 +232,8 @@
         <div class="form-group col-2">
           <label for="kyc_photo_type">Photo ID Type</label>
           <select id="kyc_photo_type" class="form-control form-control-sm" formControlName="kyc_photo_type">
-            <!-- TODO this will come from table <option></option> -->
+            <option *ngIf="KYCTypes" disabled>Choose</option>
+            <option *ngFor="let KYCType of KYCTypes" value="KYCType.kyc_type">{{KYCType.kyc_desc}}</option>
           </select>
         </div>
         <div class="form-group col-2">
@@ -236,7 +248,8 @@
         <div class="form-group col-2">
           <label for="kyc_address_type">Address ID Type</label>
           <select id="kyc_address_type" class="form-control form-control-sm" formControlName="kyc_address_type">
-            <!-- TODO this will come from table <option></option> -->
+            <option *ngIf="KYCTypes" disabled>Choose</option>
+            <option *ngFor="let KYCType of KYCTypes" value="KYCType.kyc_type">{{KYCType.kyc_desc}}</option>
           </select>
         </div>
         <div class="form-group col-2">

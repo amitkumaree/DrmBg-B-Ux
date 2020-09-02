@@ -1,5 +1,8 @@
+import { mm_title, mm_category, mm_state, mm_dist, mm_vill,
+  mm_kyc, mm_service_area, mm_block } from './../../Models';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RestService } from 'src/app/_service';
 
 @Component({
   selector: 'app-utcustomer-profile',
@@ -8,10 +11,26 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class UTCustomerProfileComponent implements OnInit {
 
+  titles: mm_title[] = [];
+  KYCTypes: mm_kyc[] = [];
+  blocks: mm_block[] = [];
+  serviceAreas: mm_service_area[] = [];
+  villages: mm_vill[] = [];
+  states: mm_state[] = [];
+  districts: mm_dist[] = [];
+  categories: mm_category[] = [];
   custMstrFrm: FormGroup;
-  constructor(private frmBldr: FormBuilder) { }
+  /* possible values of operation
+    New, Retrieve, Modify, delete
+    We will use to globally set operation of the page
+  */
+  operation: string;
+  constructor(private frmBldr: FormBuilder,
+    // tslint:disable-next-line:align
+    private svc: RestService) { }
 
   ngOnInit(): void {
+    this.operation = 'New';
     // form defination
     this.custMstrFrm = this.frmBldr.group({
         brn_cd: [''],
@@ -59,6 +78,79 @@ export class UTCustomerProfileComponent implements OnInit {
         org_status: [''],
         org_reg_no: ['']
       });
+    this.getTitleMaster();
+    this.getCategoryMaster();
+    this.getStateMaster();
+    this.getDistMaster();
+    this.getVillageMaster();
+    this.getKYCTypMaster();
   }
-
+  private getTitleMaster(): void {
+    this.svc.addUpdDel<mm_title[]>('Mst/GetTitleMaster', null).subscribe(
+      res => {
+        this.titles = res;
+      },
+      err => {}
+    );
+  }
+  private getCategoryMaster(): void {
+    this.svc.addUpdDel<mm_category[]>('Mst/GetCategoryMaster', null).subscribe(
+      res => {
+        this.categories = res;
+      },
+      err => {}
+    );
+  }
+  private getStateMaster(): void {
+    this.svc.addUpdDel<mm_state[]>('Mst/GetStateMaster', null).subscribe(
+      res => {
+        this.states = res;
+      },
+      err => {}
+    );
+  }
+  private getDistMaster(): void {
+    this.svc.addUpdDel<mm_dist[]>('Mst/GetDistMaster', null).subscribe(
+      res => {
+        this.districts = res;
+      },
+      err => {}
+    );
+  }
+  private getVillageMaster(): void {
+    this.svc.addUpdDel<mm_vill[]>('Mst/GetVillageMaster', null).subscribe(
+      res => {
+        this.villages = res;
+      },
+      err => {}
+    );
+  }
+  onVillageChnage(vill_cd: number): void {
+    // add logic to select block and area.
+    console.log(vill_cd);
+  }
+  private getBlockMster(): void {
+    this.svc.addUpdDel<mm_block[]>('Mst/GetBlockMaster', null).subscribe(
+      res => {
+        this.blocks = res;
+      },
+      err => {}
+    );
+  }
+  private getServiceAreaMaster(): void {
+    this.svc.addUpdDel<mm_service_area[]>('Mst/GetServiceAreaMaster', null).subscribe(
+      res => {
+        this.serviceAreas = res;
+      },
+      err => {}
+    );
+  }
+  private getKYCTypMaster(): void {
+    this.svc.addUpdDel<mm_kyc[]>('Mst/GetKycMaster', null).subscribe(
+      res => {
+        this.KYCTypes = res;
+      },
+      err => {}
+    );
+  }
 }
