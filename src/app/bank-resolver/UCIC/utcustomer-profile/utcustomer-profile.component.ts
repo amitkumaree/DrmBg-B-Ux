@@ -1,6 +1,6 @@
 import { mm_title, mm_category, mm_state, mm_dist, mm_vill,
-  mm_kyc, mm_service_area, mm_block } from './../../Models';
-import { Component, OnInit } from '@angular/core';
+  mm_kyc, mm_service_area, mm_block, mm_customer } from './../../Models';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
 
@@ -11,6 +11,10 @@ import { RestService } from 'src/app/_service';
 })
 export class UTCustomerProfileComponent implements OnInit {
 
+  @ViewChild('cust_name') cust_name: ElementRef;
+  isLoading = false;
+  existingCustomers: mm_customer[] = [];
+  suggestedCustomer: mm_customer[] = [];
   titles: mm_title[] = [];
   KYCTypes: mm_kyc[] = [];
   blocks: mm_block[] = [];
@@ -90,6 +94,7 @@ export class UTCustomerProfileComponent implements OnInit {
     this.getServiceAreaMaster();
   }
   get f() { return this.custMstrFrm.controls; }
+
   private getTitleMaster(): void {
     this.svc.addUpdDel<mm_title[]>('Mst/GetTitleMaster', null).subscribe(
       res => {
@@ -98,6 +103,7 @@ export class UTCustomerProfileComponent implements OnInit {
       err => {}
     );
   }
+
   private getCategoryMaster(): void {
     this.svc.addUpdDel<mm_category[]>('Mst/GetCategoryMaster', null).subscribe(
       res => {
@@ -106,6 +112,7 @@ export class UTCustomerProfileComponent implements OnInit {
       err => {}
     );
   }
+
   private getStateMaster(): void {
     this.svc.addUpdDel<mm_state[]>('Mst/GetStateMaster', null).subscribe(
       res => {
@@ -114,6 +121,7 @@ export class UTCustomerProfileComponent implements OnInit {
       err => {}
     );
   }
+
   private getDistMaster(): void {
     this.svc.addUpdDel<mm_dist[]>('Mst/GetDistMaster', null).subscribe(
       res => {
@@ -122,6 +130,7 @@ export class UTCustomerProfileComponent implements OnInit {
       err => {}
     );
   }
+
   private getVillageMaster(): void {
     this.svc.addUpdDel<mm_vill[]>('Mst/GetVillageMaster', null).subscribe(
       res => {
@@ -143,6 +152,7 @@ export class UTCustomerProfileComponent implements OnInit {
       block_cd: this.selectedBlock.block_name
     });
   }
+
   private getBlockMster(): void {
     this.svc.addUpdDel<mm_block[]>('Mst/GetBlockMaster', null).subscribe(
       res => {
@@ -151,6 +161,7 @@ export class UTCustomerProfileComponent implements OnInit {
       err => {}
     );
   }
+
   private getServiceAreaMaster(): void {
     this.svc.addUpdDel<mm_service_area[]>('Mst/GetServiceAreaMaster', null).subscribe(
       res => {
@@ -159,6 +170,7 @@ export class UTCustomerProfileComponent implements OnInit {
       err => {}
     );
   }
+
   private getKYCTypMaster(): void {
     this.svc.addUpdDel<mm_kyc[]>('Mst/GetKycMaster', null).subscribe(
       res => {
@@ -167,4 +179,38 @@ export class UTCustomerProfileComponent implements OnInit {
       err => {}
     );
   }
+
+  public onRetrieveClick(): void {
+    this.isLoading = true;
+    this.custMstrFrm.disable();
+    this.f.cust_name.enable();
+    // this.cust_name.nativeElement.focus();
+    const cust = new mm_customer(); cust.cust_cd = 0;
+    this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
+      res => {
+        this.existingCustomers = res;
+        this.isLoading = false;
+      },
+      err => {this.isLoading = false;}
+    );
+  }
+
+  public suggestCustomer(): void {
+    debugger;
+    this.suggestedCustomer = this.existingCustomers
+      .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase()))
+      .slice(0, 10);
+  }
+
+  public onNewClick(): void {
+    this.custMstrFrm.enable();
+    this.f.cust_name.disable();
+    this.f.service_area_cd.disable();
+    this.f.block_cd.disable();
+  }
+
+  public onClearClick(): void {
+    this.custMstrFrm.reset();
+  }
+
 }

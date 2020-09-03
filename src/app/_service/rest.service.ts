@@ -21,7 +21,7 @@ export class RestService {
   }
 
   private getUrl(): string {
-    debugger;
+    // debugger;
     let url = '';
     const __bName = localStorage.getItem('__bName');
     if (null !== RestService.configuration
