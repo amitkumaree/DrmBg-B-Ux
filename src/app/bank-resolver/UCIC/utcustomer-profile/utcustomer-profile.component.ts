@@ -25,6 +25,8 @@ export class UTCustomerProfileComponent implements OnInit {
     We will use to globally set operation of the page
   */
   operation: string;
+  selectedBlock: mm_block;
+  selectedServiceArea: mm_service_area;
   constructor(private frmBldr: FormBuilder,
     // tslint:disable-next-line:align
     private svc: RestService) { }
@@ -84,7 +86,10 @@ export class UTCustomerProfileComponent implements OnInit {
     this.getDistMaster();
     this.getVillageMaster();
     this.getKYCTypMaster();
+    this.getBlockMster();
+    this.getServiceAreaMaster();
   }
+  get f() { return this.custMstrFrm.controls; }
   private getTitleMaster(): void {
     this.svc.addUpdDel<mm_title[]>('Mst/GetTitleMaster', null).subscribe(
       res => {
@@ -125,9 +130,18 @@ export class UTCustomerProfileComponent implements OnInit {
       err => {}
     );
   }
-  onVillageChnage(vill_cd: number): void {
+
+  onVillageChnage(vill_cd: string): void {
     // add logic to select block and area.
-    console.log(vill_cd);
+    const selectedVillage = this.villages.filter(e => e.vill_cd === vill_cd)[0];
+    this.selectedBlock = this.blocks.filter(e => e.block_cd ===
+      selectedVillage.block_cd)[0];
+    this.selectedServiceArea = this.serviceAreas.filter(e => e.service_area_cd ===
+        selectedVillage.service_area_cd)[0];
+    this.custMstrFrm.patchValue({
+      service_area_cd: this.selectedServiceArea.service_area_name,
+      block_cd: this.selectedBlock.block_name
+    });
   }
   private getBlockMster(): void {
     this.svc.addUpdDel<mm_block[]>('Mst/GetBlockMaster', null).subscribe(

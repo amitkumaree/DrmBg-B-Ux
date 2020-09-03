@@ -1,11 +1,23 @@
 <div class="row d-flex justify-content-center align-items-center"
+style="background-color: #78c2ad21; text-align: center;">
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">New</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Retrieve</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Modify</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Clear</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
+  </div>
+</div>
+<div class="row d-flex justify-content-center align-items-center"
   style="background-color: #78c2ad21; min-height: 90vh;">
-  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-5 bg-white p-3">
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
     <h6 class="bg-light">Customer Personal Detils:</h6>
     <form [formGroup]="custMstrFrm">
       <div class="form-row">
         <div class="form-group col-2">
-          <label for="cust_type">Customer Type <span class="text-danger">*</span></label>
+          <small for="cust_type">Customer Type <span class="text-danger">*</span></small>
           <select id="cust_type" class="form-control form-control-sm" formControlName="cust_type">
             <option selected>Choose...</option>
             <option value="M">Member</option>
@@ -13,53 +25,51 @@
             <option value="C">Customer</option>
           </select>
         </div>
-        <div class="form-group col-2">
-          <label for="title">Title</label>
+        <div class="form-group col-1">
+          <small for="title">Title</small>
           <select id="title" class="form-control form-control-sm" formControlName="title">
             <option *ngIf="titles" disabled>Choose</option>
             <option *ngFor="let title of titles" value="title.title_code">{{title.title}}</option>
           </select>
         </div>
-        <div class="form-group col-3">
-          <label for="first_name">First Name <span class="text-danger">*</span></label>
+        <div class="form-group col-2">
+          <small for="first_name">First Name <span class="text-danger">*</span></small>
           <input type="text" class="form-control form-control-sm" formControlName="first_name" id="first_name"
             placeholder="First Name">
         </div>
         <div class="form-group col-2">
-          <label for="middle_name">Middle Name</label>
+          <small for="middle_name">Middle Name</small>
           <input type="text" class="form-control form-control-sm" formControlName="middle_name" id="middle_name"
             placeholder="Middle Name">
         </div>
-        <div class="form-group col-3">
-          <label for="last_name">Last Name</label>
+        <div class="form-group col-2">
+          <small for="last_name">Last Name</small>
           <input type="text" class="form-control form-control-sm" formControlName="last_name" id="last_name"
             placeholder="Last Name">
         </div>
-      </div> <!-- form group row end -->
-      <div class="form-row">
-        <div class="form-group col-5">
-          <label for="cust_name">Name</label>
+        <div class="form-group col-3">
+          <small for="cust_name">Name</small>
           <input type="text" class="form-control form-control-sm" formControlName="cust_name" id="cust_name"
             placeholder="Name" disabled>
         </div>
-        <div class="form-group col-4">
-          <label for="guardian_name">Guardian Name</label>
+      </div> <!-- form group row end -->
+      <div class="form-row">
+        <div class="form-group col-3">
+          <small for="guardian_name">Guardian Name</small>
           <input type="text" class="form-control form-control-sm" formControlName="guardian_name" id="guardian_name"
             placeholder="Guardian Name">
         </div>
-        <div class="form-group col-3">
-          <label for="dt_of_birth">Date Of Birth <span class="text-danger">*</span></label>
-          <input type="date" class="form-control form-control-sm" formControlName="dt_of_birth"
-            id="dt_of_birth" placeholder="Date of Birth">
+        <div class="form-group col-2">
+          <small for="dt_of_birth">Date Of Birth <span class="text-danger">*</span></small>
+          <input type="date" class="form-control form-control-sm" formControlName="dt_of_birth" id="dt_of_birth"
+            placeholder="Date of Birth">
         </div>
-      </div><!-- form group row end -->
-      <div class="form-row">
         <div class="form-group col-1">
-          <label for="age">Age</label>
+          <small for="age">Age</small>
           <input type="number" class="form-control form-control-sm" formControlName="age" id="age" placeholder="Age">
         </div>
         <div class="form-group col-1">
-          <label for="sex">Sex</label>
+          <small for="sex">Sex</small>
           <select id="sex" class="form-control form-control-sm" formControlName="sex">
             <option selected>Choose...</option>
             <option value="M">Male</option>
@@ -67,8 +77,8 @@
             <option value="O">Others</option>
           </select>
         </div>
-        <div class="form-group col-2">
-          <label for="marital_status">Marital Status</label>
+        <div class="form-group col-1">
+          <small for="marital_status">Marital Status</small>
           <select id="marital_status" class="form-control form-control-sm" formControlName="marital_status">
             <option selected>Choose...</option>
             <option value="Married">Married</option>
@@ -76,15 +86,15 @@
             <option value="O">Others</option>
           </select>
         </div>
-        <div class="form-group col-3">
-          <label for="catg_cd">Category</label>
+        <div class="form-group col-2">
+          <small for="catg_cd">Category</small>
           <select id="catg_cd" class="form-control form-control-sm" formControlName="catg_cd">
             <option *ngIf="categories" disabled>Choose</option>
             <option *ngFor="let category of categories" value="category.catg_cd">{{category.catg_desc}}</option>
           </select>
         </div>
-        <div class="form-group col-3">
-          <label for="community">Community</label>
+        <div class="form-group col-1">
+          <small for="community">Community</small>
           <select id="community" class="form-control form-control-sm" formControlName="community">
             <option selected>Choose...</option>
             <option value="1">Hindu</option>
@@ -92,8 +102,8 @@
             <option value="3">Others</option>
           </select>
         </div>
-        <div class="form-group col-2">
-          <label for="caste">Caste</label>
+        <div class="form-group col-1">
+          <small for="caste">Caste</small>
           <select id="caste" class="form-control form-control-sm" formControlName="caste">
             <option selected>Choose...</option>
             <option value="1">General</option>
@@ -103,51 +113,51 @@
           </select>
         </div>
       </div><!-- form group row end -->
-      <hr>
+      <!-- <hr> -->
       <h6 class="bg-light">Correspondance Detils:</h6>
       <div class="form-row">
-        <div class="form-group col-3">
-          <label for="state">State</label>
+        <div class="form-group col-2">
+          <small for="state">State</small>
           <select id="state" class="form-control form-control-sm" formControlName="state">
             <option *ngIf="states" disabled>Choose</option>
             <option *ngFor="let state of states" value="state.state_cd">{{state.state_name}}</option>
           </select>
         </div>
-        <div class="form-group col-3">
-          <label for="dist">District</label>
+        <div class="form-group col-2">
+          <small for="dist">District</small>
           <select id="dist" class="form-control form-control-sm" formControlName="dist">
             <option *ngIf="districts" disabled>Choose</option>
             <option *ngFor="let district of districts" value="district.dist_cd">{{district.dist_name}}</option>
           </select>
         </div>
-        <div class="form-group col-2">
-          <label for="pin">Pin Code</label>
+        <div class="form-group col-1">
+          <small for="pin">Pin Code</small>
           <input type="number" class="form-control form-control-sm" formControlName="pin" id="pin"
             placeholder="Pin code">
         </div>
-        <div class="form-group col-4">
-          <label for="vill_cd">Village</label>
-          <select id="vill_cd" class="form-control form-control-sm" formControlName="vill_cd" (change)="onVillageChnage($event.target.value)">
+        <div class="form-group col-2">
+          <small for="vill_cd">Village</small>
+          <select id="vill_cd" class="form-control form-control-sm" formControlName="vill_cd"
+            (change)="onVillageChnage($event.target.value)">
             <option *ngIf="villages" disabled>Choose</option>
             <option *ngFor="let village of villages" [value]="village.vill_cd">{{village.vill_name}}</option>
           </select>
         </div>
-      </div> <!-- form group row end -->
-      <div class="form-row">
-        <div class="form-group col-3">
-          <label for="service_area_cd">G.P</label>
-          <select id="service_area_cd" class="form-control form-control-sm" formControlName="service_area_cd" disabled>
-            <!-- TODO this will come from table <option></option> -->
-          </select>
+        <div class="form-group col-2">
+          <small for="service_area_cd">G.P</small>
+          <!-- <select id="service_area_cd" class="form-control form-control-sm" formControlName="service_area_cd" >
+          </select> -->
+          <input type="text" class="form-control form-control-sm" formControlName="service_area_cd" id="service_area_cd"
+            disabled>
         </div>
-        <div class="form-group col-3">
-          <label for="block_cd">Block</label>
-          <select id="block_cd" class="form-control form-control-sm" formControlName="block_cd" disabled>
-            <!-- TODO this will come from table <option></option> -->
-          </select>
+        <div class="form-group col-2">
+          <small for="block_cd">Block</small>
+          <!-- <select id="block_cd" class="form-control form-control-sm" formControlName="block_cd" disabled>
+          </select> -->
+          <input type="text" class="form-control form-control-sm" formControlName="block_cd" id="block_cd" disabled>
         </div>
-        <div class="form-group col-3">
-          <label for="occupation">Occupation</label>
+        <div class="form-group col-1">
+          <small for="occupation">Occupation</small>
           <select id="occupation" class="form-control form-control-sm" formControlName="occupation">
             <option value="Service">Service</option>
             <option value="Teacher">Teacher</option>
@@ -155,122 +165,128 @@
             <option value="Housewife">Housewife</option>
           </select>
         </div>
-        <div class="form-group col-3">
-          <label for="phone">Phone Number</label>
-          <input type="number" class="form-control form-control-sm" formControlName="phone" id="phone"
-            placeholder="Phone Number">
+      </div> <!-- form group row end -->
+      <div class="form-row">
+        <div class="form-group col-12">
+          <small for="present_address">Address</small>
+          <input type="text" class="form-control form-control-sm" id="present_address" formControlName="present_address"
+            placeholder="Address">
         </div>
       </div> <!-- form group row end -->
-      <div class="form-group">
-        <label for="present_address">Address</label>
-        <input type="text" class="form-control form-control-sm" id="present_address" formControlName="present_address"
-          placeholder="Address">
-      </div>
       <div class="form-row">
-        <div class="form-group col-3">
-          <label for="farmer_type">Farmer Type</label>
+        <div class="form-group col-1">
+          <small for="pan">PAN</small>
+          <input type="text" class="form-control form-control-sm" id="pan" formControlName="pan"
+            placeholder="PAN Number">
+        </div>
+        <div class="form-group col-1">
+          <small for="farmer_type">Farmer Type</small>
           <select id="farmer_type" class="form-control form-control-sm" formControlName="farmer_type">
             <option value="S">Small</option>
             <option value="M">Medium</option>
             <option value="B">Big</option>
           </select>
         </div>
-        <div class="form-group col-3">
-          <label for="ldgr">Ledger No</label>
+        <div class="form-group col-1">
+          <small for="ldgr">Ledger No</small>
           <input type="number" class="form-control form-control-sm" id="ldgr" placeholder="Ledger Number">
         </div>
-        <div class="form-group col-3">
-          <label for="monthly_income">Monthly Income</label>
+        <div class="form-group col-2">
+          <small for="monthly_income">Monthly Income</small>
           <input type="number" class="form-control form-control-sm" id="monthly_income" formControlName="monthly_income"
             placeholder="Ledger Number">
         </div>
-        <div class="form-group col-3">
-          <label for="date_of_death">Date Of Death <span class="text-danger">*</span></label>
+        <div class="form-group col-2">
+          <small for="phone">Phone Number</small>
+          <input type="number" class="form-control form-control-sm" formControlName="phone" id="phone"
+            placeholder="Phone Number">
+        </div>
+        <div class="form-group col-1 mt-4">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="sms_flag" formControlName="sms_flag">
+            <small class="form-check-small" for="sms_flag">
+              SMS
+            </small>
+          </div>
+        </div>
+        <div class="form-group col-2">
+          <small for="date_of_death">Date Of Death <span class="text-danger">*</span></small>
           <input type="date" class="form-control form-control-sm" formControlName="date_of_death" id="date_of_death"
             placeholder="Date of Death">
         </div>
-      </div> <!-- form group row end -->
-      <div class="form-row">
-        <div class="form-group col-3">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="sms_flag" formControlName="sms_flag" >
-            <label class="form-check-label" for="sms_flag">
-              SMS
-            </label>
-          </div>
-        </div>
-        <div class="form-group col-3">
-          <label for="status">Customer Status</label>
+        <div class="form-group col-2">
+          <small for="status">Customer Status</small>
           <select id="status" class="form-control form-control-sm" formControlName="status">
             <option value="A">Active</option>
             <option value="D">Death</option>
           </select>
         </div>
-        <div class="form-group col-3">
-          <label for="pan">PAN</label>
-          <input type="text" class="form-control form-control-sm" id="pan" formControlName="pan"
-            placeholder="PAN Number">
-        </div>
       </div> <!-- form group row end -->
-      <hr>
+
+      <!-- <hr> -->
       <h6 class="bg-light">Share Nominee Detils(Only for Members)</h6>
       <div class="form-row">
         <div class="form-group col-8">
-          <label for="nominee">Nominee Name</label>
+          <small for="nominee">Nominee Name</small>
           <input type="text" class="form-control form-control-sm" formControlName="nominee" id="nominee"
             placeholder="Nominee Name">
         </div>
         <div class="form-group col-4">
-          <label for="nom_relation">Nominee Name</label>
+          <small for="nom_relation">Nominee Relation</small>
           <input type="text" class="form-control form-control-sm" formControlName="nom_relation" id="nom_relation"
             placeholder="Nominee Name">
         </div>
-      </div>
-      <hr> <!-- form group row end -->
+      </div><!-- form group row end -->
+      <!-- <hr>  -->
       <h6 class="bg-light">Customer ID Proof Details</h6>
       <div class="form-row">
         <div class="form-group col-2">
-          <label for="kyc_photo_type">Photo ID Type</label>
+          <small for="kyc_photo_type">Photo ID Type</small>
           <select id="kyc_photo_type" class="form-control form-control-sm" formControlName="kyc_photo_type">
             <option *ngIf="KYCTypes" disabled>Choose</option>
             <option *ngFor="let KYCType of KYCTypes" value="KYCType.kyc_type">{{KYCType.kyc_desc}}</option>
           </select>
         </div>
         <div class="form-group col-2">
-          <label for="kyc_photo_no">Photo ID Number</label>
+          <small for="kyc_photo_no">Photo ID Number</small>
           <input type="text" class="form-control form-control-sm" formControlName="kyc_photo_no" id="kyc_photo_no"
             placeholder="Photo ID Number">
         </div>
         <div class="form-group col-2">
-          <label for="PhotoId">Upload Photo ID</label>
+          <small for="PhotoId">Upload Photo ID</small>
           <input type="file" class="form-control-file form-control-sm" id="PhotoId">
         </div>
         <div class="form-group col-2">
-          <label for="kyc_address_type">Address ID Type</label>
+          <small for="kyc_address_type">Address ID Type</small>
           <select id="kyc_address_type" class="form-control form-control-sm" formControlName="kyc_address_type">
             <option *ngIf="KYCTypes" disabled>Choose</option>
             <option *ngFor="let KYCType of KYCTypes" value="KYCType.kyc_type">{{KYCType.kyc_desc}}</option>
           </select>
         </div>
         <div class="form-group col-2">
-          <label for="kyc_address_no">Address ID Number</label>
+          <small for="kyc_address_no">Address ID Number</small>
           <input type="text" class="form-control form-control-sm" formControlName="kyc_address_no" id="kyc_address_no"
             placeholder="Address Id Number ">
         </div>
         <div class="form-group col-2">
-          <label for="addressID">Upload Address ID</label>
+          <small for="addressID">Upload Address ID</small>
           <input type="file" class="form-control-file form-control-sm" id="addressID">
         </div>
       </div> <!-- form group row end -->
       <div class="form-row">
-        <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">New</button>
-        <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Retrieve</button>
-        <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Modify</button>
-        <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Clear</button>
-        <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Save</button>
-        <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
-        <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
       </div> <!-- form group row end -->
     </form>
+  </div>
+</div>
+<div class="row d-flex justify-content-center align-items-center"
+style="background-color: #78c2ad21; text-align: center;">
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">New</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Retrieve</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Modify</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Clear</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
   </div>
 </div>
