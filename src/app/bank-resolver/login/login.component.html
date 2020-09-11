@@ -3,6 +3,12 @@
   <div class="col-xs-9 col-sm-6 col-md-3 col-lg-3 shadow-lg mb-5 bg-white p-3">
     <h4>Login</h4>
     <hr>
+    <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Error!</strong> {{alertMsg}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <div class="alert alert-danger" role="alert" *ngIf="isError">
       Invalid email or password, try again or register
     </div>
@@ -18,30 +24,17 @@
           placeholder="Password" autocomplete="nope">
       </div>
       <div class="form-group">
-        <label for="exampleInputPassword1">Branch</label>
-        <!-- <select name="voucherTyp" class="rounded-inputs20 select-select col-md-6"
-        (change)="onChange($event.target.value)">
-        <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
-      </select> -->
-      <label *ngFor="let option of brnDtls">{{ option.brn_name }}</label>
-      <select placeholder="Choose your option" label="Example label">
-        <option *ngFor="let option of brnDtls;let i = index" [value]="option[i].brn_cd" formControlName="branch">{{ option[i].brn_name }}</option>
+        <label for="branch">Branch</label>        
+      <select id="branch" class="form-control form-control-sm" formControlName="branch">
+        <option *ngFor="let option of brnDtls;let i = index" [value]="option.brn_cd" formControlName="branch">{{ option.brn_name }}</option>
       </select>
-      <!-- <mdb-select-2 [multiple]="true" placeholder="Choose your option" label="Example label">
-        <mdb-select-option *ngFor="let option of brnDtls" [value]="option.brn_cd" formControlName="branch">{{ option.brn_name }}</mdb-select-option>
-      </mdb-select-2> -->
       </div>
-      <!-- <div class="form-group form-check ">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Remember me</label>
-            </div> -->
-
       <button type="button" class="btn btn-light " (click)="cancel()">Cancel</button>
-      <button type="submit" class="btn btn-primary float-right">Login</button>
+      <button type="submit" class="btn btn-primary float-right" [disabled]=!loginForm.valid>Login</button>
     </form>
     <hr />
     <!-- <a routerLink="" class="text-info float-left">Forgot Password</a> -->
     <!-- <a routerLink="/register" class="text-info float-right">Register</a> -->
   </div>
-
 </div>
+<loading *ngIf="isLoading"></loading>

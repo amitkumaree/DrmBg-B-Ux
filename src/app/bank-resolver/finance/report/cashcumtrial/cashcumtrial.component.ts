@@ -21,6 +21,7 @@ export class CashcumtrialComponent implements OnInit {
   closeResult = '';
   showReport = false;
   showAlert = false;
+  isLoading = true;
   alertMsg = '';
   fd: any;
   td: any;

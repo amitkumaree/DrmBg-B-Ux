@@ -22,13 +22,13 @@
         <div>
           <label for="fromDate">From Date</label>
           <div class="input-group">
-            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" formControlName="fromDate" id="fd" type="date" >
+            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd"  [ngModel]="fromdate  | date:'yyyy-dd-MM' "   formControlName="fromDate" id="fd" type="date" >
           </div>
         </div>
         <div >
             <label for="toDate">To Date</label>
             <div class="input-group">
-              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td" formControlName="toDate" id="td" type="date">
+              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td"  [ngModel]="todate  | date:'yyyy-dd-MM'"  formControlName="toDate" id="td" type="date">
             </div>
           </div>
       </form>
@@ -43,14 +43,6 @@
 <div class="row d-flex justify-content-center align-items-center pt-4"
 style="background-color: #78c2ad21; min-height: 20vh;">
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
-    <!-- <button class="btn-customize" (click)="setCustomizeFunction()">Customize cells</button> -->
-    <!-- <button class="classic" (click)="setOption('type', 'classic')">Classic</button>
-    <button class="compact" (click)="setOption('type', 'compact')">Compact</button>
-    <button class="flat" (click)="setOption('type', 'flat')">Flat</button>
-    <button class="hdrs-off" (click)="setOption('showHeaders', false)">Hide headers</button>
-    <button class="hdrs-on" (click)="setOption('showHeaders', true)">Show headers</button>
-    <button class="hdrs-on" (click)="exportPDFTitle()">Down Load</button>
-     -->
      <div style="text-align: center;"><strong> Synergic Banking </strong>  </div>
      <div style="text-align: center;"><b> Branch: Main Branch</b></div>
      <div style="text-align: center;"><b> Branch Code: 101</b></div>
@@ -70,3 +62,4 @@ style="background-color: #78c2ad21; min-height: 20vh;">
   </div>
 </div>  
 </div>
+<loading *ngIf="isLoading"></loading>
