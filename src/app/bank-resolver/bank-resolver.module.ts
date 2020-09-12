@@ -20,6 +20,7 @@ import { GenLedgerComponent } from './finance/report/gen-ledger/gen-ledger.compo
 import { VoucherprintComponent } from './finance/voucherprint/voucherprint.component';
 import { LoadingComponent } from './loading';
 import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
+import { TransactionapprovalComponent } from './deposit/transactionapproval/transactionapproval.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.co
     UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,
     WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, GenLedgerComponent,
     VoucherprintComponent,
-    GenLedger2Component
+    GenLedger2Component,
+    TransactionapprovalComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule
