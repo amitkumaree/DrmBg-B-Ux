@@ -25,10 +25,12 @@ export class DailybookComponent implements OnInit {
   td: any;
   dt: any;
   fromdate: Date;
-  toDate:Date;
+  todate:Date;
   isLoading = false;
   constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
   ngOnInit(): void {
+    this.fromdate=new Date(localStorage.getItem('__currentDate'));
+    this.todate=new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
@@ -65,7 +67,7 @@ export class DailybookComponent implements OnInit {
     else {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
-      this.toDate=this.reportcriteria.value['toDate'];
+      this.todate=this.reportcriteria.value['toDate'];
       this.isLoading=true;
       this.onReportComplete();
       this.modalService.dismissAll(this.content);
@@ -80,42 +82,16 @@ export class DailybookComponent implements OnInit {
     console.log("[ready] WebDataRocksPivot", this.child);
   } 
   
-  // generatePdf(){
-  //   debugger;
-  //   const documentDefinition = { content: 'This is an sample PDF printed with pdfMake' };
-  //   this.pdfmake.createPdf(documentDefinition).open();
-  //  }
-  // onReportComplete(): void {
-  //   debugger;
-  //   this.prp.brn_cd='101';
-  //   this.prp.from_dt= new Date("2018-08-13");
-  //   this.prp.to_dt=new Date("2018-08-13");
-  //   this.prp.acc_cd=28101;
-  //   this.child.webDataRocks.off("reportcomplete");
-  //   this.svc.addUpdDel<any>('Report/PopulateDailyCashBook',this.prp).subscribe(
-  //     (data: tt_cash_account[]) => this.dailyCash = data,
-  //     error => { console.log(error); },
-  //     () => {
-  //         debugger;
-  //         this.child.webDataRocks.setReport({
-  //         dataSource: {
-  //           //filename: "https://cdn.webdatarocks.com/data/data.json"
-  //           data:this.dailyCash
-  //         }
-  //       });
-  //     }
-  //   );
-  // }
-
-
+  
   onReportComplete(): void {
     debugger;
-    this.prp.brn_cd='101';
+    if (!this.isLoading)return ;
+    this.prp.brn_cd=localStorage.getItem('__brnCd');
     this.prp.from_dt= this.fromdate;
-    this.prp.to_dt=this.toDate;
-    this.prp.acc_cd=28101;
+    this.prp.to_dt=this.todate;
+    this.prp.acc_cd=parseInt(localStorage.getItem('__cashaccountCD')); 
     let fdate = new Date(this.fromdate);
-    let tdate = new Date(this.toDate);
+    let tdate = new Date(this.todate);
     this.fd = (("0" + fdate.getDate()).slice(-2)) + "/" + (("0" + (fdate.getMonth() + 1)).slice(-2)) + "/" + (fdate.getFullYear());
     this.td = (("0" + tdate.getDate()).slice(-2)) + "/" + (("0" + (tdate.getMonth() + 1)).slice(-2)) + "/" + (tdate.getFullYear());
     this.dt = new Date();

@@ -62,7 +62,6 @@ export class GenLedger2Component implements OnInit {
 
 
   public SubmitReport() {
-    this.isLoading = true;
     if (this.reportcriteria.invalid) {
       this.showAlert = true;
       this.alertMsg = 'Invalid Input.';
@@ -74,6 +73,7 @@ export class GenLedger2Component implements OnInit {
       return false;
     }
     else {
+      this.isLoading = true;
       this.showAlert = false;
       this.fromdate = this.r.fromDate.value;
       this.toDate = this.r.toDate.value;

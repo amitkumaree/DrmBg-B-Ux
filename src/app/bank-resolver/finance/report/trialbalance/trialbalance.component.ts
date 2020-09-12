@@ -22,6 +22,7 @@ export class TrialbalanceComponent implements OnInit {
   closeResult = '';
   showReport = false;
   showAlert = false;
+  isLoading=false;
   alertMsg = '';
   fd: any;
   td: any;
@@ -64,6 +65,7 @@ export class TrialbalanceComponent implements OnInit {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
       //this.toDate=this.reportcriteria.value['toDate'];
+      this.isLoading=true;
       this.onReportComplete();
       this.modalService.dismissAll(this.content);
     }
@@ -80,10 +82,11 @@ export class TrialbalanceComponent implements OnInit {
   
   onReportComplete(): void {
     debugger;
-    this.prp.brn_cd='101';
+    if(!this.isLoading) return;
+    this.prp.brn_cd=localStorage.getItem('__brnCd');;
     this.prp.trial_dt= this.fromdate;
-    this.prp.pl_acc_cd=28101;
-    this.prp.gp_acc_cd=28101;
+    this.prp.pl_acc_cd=parseInt(localStorage.getItem('__cashaccountCD'));
+    this.prp.gp_acc_cd=parseInt(localStorage.getItem('__cashaccountCD'));
     let fdate = new Date(this.fromdate);
     let tdate = new Date(this.toDate);
     this.fd = (("0" + fdate.getDate()).slice(-2)) + "/" + (("0" + (fdate.getMonth() + 1)).slice(-2)) + "/" + (fdate.getFullYear());
@@ -100,6 +103,7 @@ export class TrialbalanceComponent implements OnInit {
          // this.generatePdf();
          let totalCr=0;
          let totalDr=0;
+         this.isLoading=false;
          this.child.webDataRocks.setReport({
           dataSource: {
              data:this.trailbalance
