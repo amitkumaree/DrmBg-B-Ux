@@ -21,3 +21,4 @@ export * from './mm_vill';
 export * from './mm_kyc';
 export * from './mm_service_area';
 export * from './mm_block';
+export * from './showMessage';

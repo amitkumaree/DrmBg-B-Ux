@@ -1,5 +1,5 @@
 export class mm_customer {
-  public brn_cd: number;
+  public brn_cd: string;
   public cust_cd: number;
   public cust_type: string;
   public title: string;
@@ -30,7 +30,7 @@ export class mm_customer {
   public present_address: string
   public farmer_type: string;
   public email: string;
-  public monthly_income: Number;
+  public monthly_income: number;
   public date_of_death: Date;
   public sms_flag: string;
   public status: string
