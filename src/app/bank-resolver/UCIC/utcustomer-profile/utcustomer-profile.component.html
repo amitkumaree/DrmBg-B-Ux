@@ -1,18 +1,28 @@
 <div class="row d-flex justify-content-center align-items-center"
 style="background-color: #78c2ad21; text-align: center;">
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button>
+    <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onRetrieveClick()" >Retrieve</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Modify</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel" (click)="onModifyClick()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel" (click)="onDelClick()">Delete</button>
   </div>
 </div>
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center"
   style="background-color: #78c2ad21; min-height: 90vh;">
+  <div *ngIf="showMsg && showMsg.Show" class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+    <div class="alert alert-dismissible fade show" role="alert"
+    [ngClass]="{'alert-success': showMsg.Type === 0,
+     'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2 }">
+      <strong>{{showMsg.Message}}</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
     <h6 class="bg-light">Customer Personal Detils:</h6>
     <form [formGroup]="custMstrFrm">
@@ -20,7 +30,7 @@ style="background-color: #78c2ad21; text-align: center;">
         <div class="form-group col-2">
           <small for="cust_type">Customer Type <span class="text-danger">*</span></small>
           <select id="cust_type" class="form-control form-control-sm" formControlName="cust_type">
-            <option selected>Choose...</option>
+            <option selected disabled>Choose...</option>
             <option value="M">Member</option>
             <option value="N">Nominal Member</option>
             <option value="C">Customer</option>
@@ -30,37 +40,37 @@ style="background-color: #78c2ad21; text-align: center;">
           <small for="title">Title</small>
           <select id="title" class="form-control form-control-sm" formControlName="title">
             <option *ngIf="titles" disabled>Choose</option>
-            <option *ngFor="let title of titles" value="title.title_code">{{title.title}}</option>
+            <option *ngFor="let title of titles" [value]="title.title_code">{{title.title}}</option>
           </select>
         </div>
         <div class="form-group col-2">
           <small for="first_name">First Name <span class="text-danger">*</span></small>
-          <input type="text" class="form-control form-control-sm" formControlName="first_name" id="first_name"
-            placeholder="First Name">
+          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="first_name" id="first_name"
+            placeholder="First Name" (input)="onNameChange()">
         </div>
         <div class="form-group col-2">
           <small for="middle_name">Middle Name</small>
-          <input type="text" class="form-control form-control-sm" formControlName="middle_name" id="middle_name"
-            placeholder="Middle Name">
+          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="middle_name" id="middle_name"
+            placeholder="Middle Name" (input)="onNameChange()">
         </div>
         <div class="form-group col-2">
           <small for="last_name">Last Name</small>
-          <input type="text" class="form-control form-control-sm" formControlName="last_name" id="last_name"
-            placeholder="Last Name" >
+          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="last_name" id="last_name"
+            placeholder="Last Name" (input)="onNameChange()">
         </div>
         <div class="form-group col-3">
           <small for="cust_name">Name</small>
           <input type="text" class="form-control form-control-sm" formControlName="cust_name" id="cust_name"
             placeholder="Name" disabled (input)="suggestCustomer()">
-            <div class="suggestions border p-2" *ngIf="suggestedCustomer.length">
-              <p style="margin-bottom:.3rem ;" *ngFor="let cust of suggestedCustomer">{{cust.cust_name}}</p>
+            <div class="suggestions border p-2" *ngIf="suggestedCustomer">
+              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer" (click)="SelectCustomer(cust)">{{cust.cust_name}}</p>
             </div>
         </div>
       </div> <!-- form group row end -->
       <div class="form-row">
         <div class="form-group col-3">
           <small for="guardian_name">Guardian Name</small>
-          <input type="text" class="form-control form-control-sm" formControlName="guardian_name" id="guardian_name"
+          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="guardian_name" id="guardian_name"
             placeholder="Guardian Name">
         </div>
         <div class="form-group col-2">
@@ -75,7 +85,7 @@ style="background-color: #78c2ad21; text-align: center;">
         <div class="form-group col-1">
           <small for="sex">Sex</small>
           <select id="sex" class="form-control form-control-sm" formControlName="sex">
-            <option selected>Choose...</option>
+            <option selected disabled>Choose...</option>
             <option value="M">Male</option>
             <option value="F">Female</option>
             <option value="O">Others</option>
@@ -84,7 +94,7 @@ style="background-color: #78c2ad21; text-align: center;">
         <div class="form-group col-1">
           <small for="marital_status">Marital Status</small>
           <select id="marital_status" class="form-control form-control-sm" formControlName="marital_status">
-            <option selected>Choose...</option>
+            <option selected disabled>Choose...</option>
             <option value="Married">Married</option>
             <option value="Single">Single</option>
             <option value="O">Others</option>
@@ -94,13 +104,13 @@ style="background-color: #78c2ad21; text-align: center;">
           <small for="catg_cd">Category</small>
           <select id="catg_cd" class="form-control form-control-sm" formControlName="catg_cd">
             <option *ngIf="categories" disabled>Choose</option>
-            <option *ngFor="let category of categories" value="category.catg_cd">{{category.catg_desc}}</option>
+            <option *ngFor="let category of categories" [value]="category.catg_cd">{{category.catg_desc}}</option>
           </select>
         </div>
         <div class="form-group col-1">
           <small for="community">Community</small>
           <select id="community" class="form-control form-control-sm" formControlName="community">
-            <option selected>Choose...</option>
+            <option selected disabled>Choose...</option>
             <option value="1">Hindu</option>
             <option value="2">Muslim</option>
             <option value="3">Others</option>
@@ -109,7 +119,7 @@ style="background-color: #78c2ad21; text-align: center;">
         <div class="form-group col-1">
           <small for="caste">Caste</small>
           <select id="caste" class="form-control form-control-sm" formControlName="caste">
-            <option selected>Choose...</option>
+            <option selected disabled>Choose...</option>
             <option value="1">General</option>
             <option value="2">SC</option>
             <option value="3">ST</option>
@@ -124,14 +134,14 @@ style="background-color: #78c2ad21; text-align: center;">
           <small for="state">State</small>
           <select id="state" class="form-control form-control-sm" formControlName="state">
             <option *ngIf="states" disabled>Choose</option>
-            <option *ngFor="let state of states" value="state.state_cd">{{state.state_name}}</option>
+            <option *ngFor="let state of states" [value]="state.state_cd">{{state.state_name}}</option>
           </select>
         </div>
         <div class="form-group col-2">
           <small for="dist">District</small>
           <select id="dist" class="form-control form-control-sm" formControlName="dist">
             <option *ngIf="districts" disabled>Choose</option>
-            <option *ngFor="let district of districts" value="district.dist_cd">{{district.dist_name}}</option>
+            <option *ngFor="let district of districts" [value]="district.dist_cd">{{district.dist_name}}</option>
           </select>
         </div>
         <div class="form-group col-1">
@@ -180,7 +190,7 @@ style="background-color: #78c2ad21; text-align: center;">
       <div class="form-row">
         <div class="form-group col-1">
           <small for="pan">PAN</small>
-          <input type="text" class="form-control form-control-sm" id="pan" formControlName="pan"
+          <input type="text" class="form-control form-control-sm text-uppercase" id="pan" formControlName="pan"
             placeholder="PAN Number">
         </div>
         <div class="form-group col-1">
@@ -202,7 +212,7 @@ style="background-color: #78c2ad21; text-align: center;">
         </div>
         <div class="form-group col-2">
           <small for="phone">Phone Number</small>
-          <input type="number" class="form-control form-control-sm" formControlName="phone" id="phone"
+          <input type="text" class="form-control form-control-sm" formControlName="phone" id="phone"
             placeholder="Phone Number">
         </div>
         <div class="form-group col-1 mt-4">
@@ -214,7 +224,7 @@ style="background-color: #78c2ad21; text-align: center;">
           </div>
         </div>
         <div class="form-group col-2">
-          <small for="date_of_death">Date Of Death <span class="text-danger">*</span></small>
+          <small for="date_of_death">Date Of Death</small>
           <input type="date" class="form-control form-control-sm" formControlName="date_of_death" id="date_of_death"
             placeholder="Date of Death">
         </div>
@@ -232,12 +242,12 @@ style="background-color: #78c2ad21; text-align: center;">
       <div class="form-row">
         <div class="form-group col-8">
           <small for="nominee">Nominee Name</small>
-          <input type="text" class="form-control form-control-sm" formControlName="nominee" id="nominee"
+          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="nominee" id="nominee"
             placeholder="Nominee Name">
         </div>
         <div class="form-group col-4">
           <small for="nom_relation">Nominee Relation</small>
-          <input type="text" class="form-control form-control-sm" formControlName="nom_relation" id="nom_relation"
+          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="nom_relation" id="nom_relation"
             placeholder="Nominee Relation">
         </div>
       </div><!-- form group row end -->
@@ -248,7 +258,7 @@ style="background-color: #78c2ad21; text-align: center;">
           <small for="kyc_photo_type">Photo ID Type</small>
           <select id="kyc_photo_type" class="form-control form-control-sm" formControlName="kyc_photo_type">
             <option *ngIf="KYCTypes" disabled>Choose</option>
-            <option *ngFor="let KYCType of KYCTypes" value="KYCType.kyc_type">{{KYCType.kyc_desc}}</option>
+            <option *ngFor="let KYCType of KYCTypes" [value]="KYCType.kyc_type">{{KYCType.kyc_desc}}</option>
           </select>
         </div>
         <div class="form-group col-2">
@@ -285,12 +295,12 @@ style="background-color: #78c2ad21; text-align: center;">
 <div class="row d-flex justify-content-center align-items-center"
 style="background-color: #78c2ad21; text-align: center;">
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button>
+    <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onRetrieveClick()" >Retrieve</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Modify</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel" (click)="onModifyClick()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel" (click)="onDelClick()">Delete</button>
   </div>
 </div>
