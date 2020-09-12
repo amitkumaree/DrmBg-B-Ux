@@ -18,7 +18,7 @@ style="background-color: #78c2ad21; text-align: center;">
     [ngClass]="{'alert-success': showMsg.Type === 0,
      'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2 }">
       <strong>{{showMsg.Message}}</strong>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>

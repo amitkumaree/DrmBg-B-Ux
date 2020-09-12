@@ -289,10 +289,10 @@ export class UTCustomerProfileComponent implements OnInit {
           cust_cd: res
         });
         cust.cust_cd = res;
-        if (this.retrieveClicked){
-        // add this cust details in the list of existing cutomer
-        // this will ensure, retrieve wont be needed every time
-        UTCustomerProfileComponent.existingCustomers.push(cust);
+        if (this.retrieveClicked) {
+          // add this cust details in the list of existing cutomer
+          // this will ensure, retrieve wont be needed every time
+          UTCustomerProfileComponent.existingCustomers.push(cust);
         }
         this.HandleMessage(true, MessageType.Sucess,
           cust.cust_cd + ', Customer created sucessfully');
@@ -315,12 +315,12 @@ export class UTCustomerProfileComponent implements OnInit {
     this.svc.addUpdDel<any>('UCIC/DeleteCustomerDtls', this.selectedCustomer).subscribe(
       res => {
         this.isLoading = false;
-        if (this.retrieveClicked){
+        if (this.retrieveClicked) {
           // delete this cust details from the list of existing cutomer
           // this will ensure, retrieve wont be needed every time
           UTCustomerProfileComponent.existingCustomers =
             UTCustomerProfileComponent.existingCustomers.filter(o => o.cust_cd !== this.selectedCustomer.cust_cd);
-          }
+        }
         this.HandleMessage(true, MessageType.Sucess,
           this.selectedCustomer.cust_cd + ', Customer Deleted sucessfully')
       },
@@ -351,7 +351,8 @@ export class UTCustomerProfileComponent implements OnInit {
       cust.last_name = this.f.last_name.value;
       cust.cust_name = this.f.cust_name.value;
       cust.guardian_name = this.f.guardian_name.value;
-      cust.cust_dt = '' === this.f.cust_dt.value ? null : this.f.cust_dt.value;
+      cust.cust_dt = ('' === this.f.cust_dt.value
+        || '0001-01-01T00:00:00' === this.f.cust_dt.value) ? null : this.f.cust_dt.value;
       cust.old_cust_cd = this.f.old_cust_cd.value;
       cust.dt_of_birth = this.f.dt_of_birth.value;
       cust.age = +this.f.age.value;
@@ -378,8 +379,9 @@ export class UTCustomerProfileComponent implements OnInit {
       cust.farmer_type = this.f.farmer_type.value;
       cust.email = this.f.email.value;
       cust.monthly_income = +this.f.monthly_income.value;
-      cust.date_of_death = ('' === this.f.date_of_death.value) ?
-        null : this.f.date_of_death.value;
+      cust.date_of_death = ('' === this.f.date_of_death.value
+        || '0001-01-01T00:00:00' === this.f.date_of_death.value)
+        ? null : this.f.date_of_death.value;
       cust.sms_flag = this.f.sms_flag.value;
       cust.status = this.f.status.value;
       cust.pan = this.f.pan.value;
@@ -391,7 +393,7 @@ export class UTCustomerProfileComponent implements OnInit {
       cust.kyc_address_no = this.f.kyc_address_no.value;
       cust.org_status = this.f.org_status.value;
       cust.org_reg_no = +this.f.org_reg_no.value;
-    }catch (error) {
+    } catch (error) {
       console.error(error);
       this.HandleMessage(true, MessageType.Warning, error);
       // expected output: ReferenceError: nonExistentFunction is not defined
@@ -407,8 +409,23 @@ export class UTCustomerProfileComponent implements OnInit {
     const cust = this.mapFormGrpToCustMaster();
     this.svc.addUpdDel<any>('UCIC/UpdateCustomerDtls', cust).subscribe(
       res => {
-        this.HandleMessage(true, MessageType.Sucess,
-          cust.cust_cd + ', Customer updated sucessfully');
+        if(null !== res && res > 0) {
+          if (this.retrieveClicked) {
+            // update this cust details in the list of existing cutomer
+            // this will ensure, retrieve wont be needed every time
+            UTCustomerProfileComponent.existingCustomers.push(cust);
+            UTCustomerProfileComponent.existingCustomers.forEach(element => {
+              if (element.cust_cd === cust.cust_cd) {
+                element = cust;
+              }
+            });
+          }
+          this.HandleMessage(true, MessageType.Sucess,
+            cust.cust_cd + ', Customer updated sucessfully');
+        } else {
+          this.HandleMessage(true, MessageType.Warning,
+            cust.cust_cd + ', Could not update Customer');
+        }
         this.isLoading = false;
       },
       err => { this.isLoading = false; }
