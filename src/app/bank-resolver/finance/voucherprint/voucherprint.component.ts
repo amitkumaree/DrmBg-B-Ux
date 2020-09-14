@@ -11,8 +11,7 @@ import { ExportAsService, ExportAsConfig } from 'ngx-export-as';
 @Component({
   selector: 'app-voucherprint',
   templateUrl: './voucherprint.component.html',
-  styleUrls: ['./voucherprint.component.css'],
-  providers:[ExportAsService]
+  styleUrls: ['./voucherprint.component.css']
 })
 export class VoucherprintComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
