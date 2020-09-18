@@ -43,3 +43,10 @@ npm i webdatarocks --save
 
 ## install ngx export
 npm i ngx-export-as
+
+
+## after cloning please run the below
+npm install
+
+2G2d5abS
+Synergic#AM@2906
