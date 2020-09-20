@@ -341,7 +341,7 @@ export class UTCustomerProfileComponent implements OnInit {
   mapFormGrpToCustMaster(): mm_customer {
     const cust = new mm_customer();
     try {
-      cust.brn_cd = '101'; // TODO need to get this from session
+      cust.brn_cd = localStorage.getItem('__brnCd'); // '101';
       cust.cust_cd = (null === this.f.cust_cd.value || '' === this.f.cust_cd.value)
         ? 0 : +this.f.cust_cd.value;
       cust.cust_type = this.f.cust_type.value;
