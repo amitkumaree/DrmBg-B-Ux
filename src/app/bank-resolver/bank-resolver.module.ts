@@ -21,6 +21,9 @@ import { VoucherprintComponent } from './finance/voucherprint/voucherprint.compo
 import { LoadingComponent } from './loading';
 import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
 import { TransactionapprovalComponent } from './deposit/transactionapproval/transactionapproval.component';
+import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
+import { CustomerInfoComponent } from './common/customer-info/customer-info.component';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +32,10 @@ import { TransactionapprovalComponent } from './deposit/transactionapproval/tran
     WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, GenLedgerComponent,
     VoucherprintComponent,
     GenLedger2Component,
-    TransactionapprovalComponent
+    TransactionapprovalComponent,
+    AccOpeningComponent,
+    CustomerInfoComponent,
+    TestComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule

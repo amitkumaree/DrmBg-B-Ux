@@ -21,10 +21,13 @@ import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalanc
 import { VoucherprintComponent } from './finance/voucherprint/voucherprint.component';
 import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
 import { TransactionapprovalComponent } from './deposit/transactionapproval/transactionapproval.component';
+import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
+import { TestComponent } from './test/test.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
+  { path: 'te-st', component: TestComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
@@ -46,6 +49,7 @@ const routes: Routes = [
       { path: 'FR_GeneralLadger', component: GenLedgerComponent },
       { path: 'FR_GLTD', component: GenLedger2Component },
       { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
+      { path: 'DT_OpenAcc', component: AccOpeningComponent },
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
