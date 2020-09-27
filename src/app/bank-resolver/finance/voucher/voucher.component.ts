@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { NgAutoCompleteModule } from "ng-auto-complete";
 import { RestService } from 'src/app/_service';
 import { T_VOUCHER_DTLS, m_acc_master } from '../../Models';
 
@@ -45,7 +44,7 @@ export class VoucherComponent implements OnInit {
   isSave = true;
   isApprove = true;
   isClear = false;
-  isLoading = true;
+  isLoading = false;
   constructor(private svc: RestService, private formBuilder: FormBuilder, private modalService: NgbModal) { }
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
@@ -302,6 +301,7 @@ export class VoucherComponent implements OnInit {
     this.svc.addUpdDel<any>('Voucher/GetTVoucherDtls', this.tvd).subscribe(
       res => {
         debugger;
+        this.isLoading = false;
         this.tvdRet = res;
         this.tvdGroupRes = this.groupBy(this.tvdRet, function (item) {
           return [item.transaction_type, item.voucher_id, item.voucher_dt, item.approval_status];
@@ -323,10 +323,9 @@ export class VoucherComponent implements OnInit {
         if (this.tvdRet[0].approval_status == 'U')
           this.isApprove = false;
         this._voucherNarration = this.tvdRet[0].narrationdtl;//this.tvdRet[0].narration+
-        this.isLoading = false;
         this.modalService.dismissAll(this.content);
       },
-      err => { }
+      err => { this.isLoading = false;}
     );
   }
   private getVoucherDtl(brncd: any, voudt: any, vouid: any, narr: any): void {
@@ -377,7 +376,7 @@ export class VoucherComponent implements OnInit {
             this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
           });
       },
-      err => { }
+      err => { this.isLoading=false;}
     );
   }
 

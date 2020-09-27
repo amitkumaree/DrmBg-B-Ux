@@ -1,11 +1,9 @@
 import { LoginComponent } from './login/login.component';
 import { BankResolverComponent } from './bank-resolver.component';
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BankResolverRouting } from './bank-resolver.routing';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { GlobalErrorHandler, ServerErrorInterceptor } from '../_utility';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HeaderComponent } from './header/header.component';
 import { LandingComponent } from './landing/landing.component';
 import { UTCustomerProfileComponent } from './UCIC/utcustomer-profile/utcustomer-profile.component';
@@ -24,6 +22,9 @@ import { TransactionapprovalComponent } from './deposit/transactionapproval/tran
 import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
 import { CustomerInfoComponent } from './common/customer-info/customer-info.component';
 import { TestComponent } from './test/test.component';
+import { VoucherComponent } from './finance/voucher/voucher.component';
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+
 
 @NgModule({
   declarations: [
@@ -34,12 +35,11 @@ import { TestComponent } from './test/test.component';
     GenLedger2Component,
     TransactionapprovalComponent,
     AccOpeningComponent,
-    CustomerInfoComponent,
+    CustomerInfoComponent, VoucherComponent,
     TestComponent
   ],
   imports: [
-    CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule
-  ],
+    CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule, AutocompleteLibModule  ],
   providers: [
     // { provide: ErrorHandler, useClass: GlobalErrorHandler },
     // { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true  }
