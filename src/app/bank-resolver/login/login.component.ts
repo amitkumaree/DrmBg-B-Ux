@@ -6,6 +6,7 @@ import { LOGIN_MASTER } from '../Models';
 import { InAppMessageService } from 'src/app/_service';
 import { m_branch } from '../Models/m_branch';
 import { sm_parameter } from '../Models/sm_parameter';
+import { p_gen_param } from '../Models/p_gen_param';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
   isError = false;
   brnDtls: m_branch[]=[];
   systemParam: sm_parameter[]=[];
+  //genparam=new p_gen_param();
   isLoading=false;
   showAlert=false;
   alertMsg='';
@@ -113,6 +115,19 @@ export class LoginComponent implements OnInit {
       res => {
         debugger;
         this.brnDtls=res;
+        // this.genparam.brn_cd="101";
+        // this.genparam.gs_acc_type_cd=11;
+        // this.genparam.ls_catg_cd=0;
+        // this.genparam.ls_cons_cd=0;
+        // debugger
+        // this.rstSvc.addUpdDel('Deposit/PopulateAccountNumber', this.genparam).subscribe(
+        //   res => {
+        //     debugger;
+        //     res;
+        //     debugger;
+        //   },
+        //   err => { debugger;}
+        // )
       },
       err => { debugger;}
     )

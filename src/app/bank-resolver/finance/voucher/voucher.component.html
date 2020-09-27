@@ -34,7 +34,6 @@
   </div>
 </ng-template>
 
-
 <ng-template #contentbatch let-modal bd-example-modal-lg>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Retrieve All Voucher</h4>
@@ -74,7 +73,6 @@
     <button class="btn btn-primary" (click)="modal.close('Close click')">Close</button>
   </div>
 </ng-template>
-
 
 <div class="row d-flex justify-content-center align-items-center pt-4"
   style="background-color: #78c2ad21; min-height: 20vh;">
@@ -140,8 +138,8 @@
             <tbody>
               <tr formArrayName="VoucherF" *ngFor="let item of voucherData.controls; let i = index;">
                 <div [formGroupName]="i">
-                  <td style="width: 10%"><input formControlName="dr_cr" type="text" class="form-control"></td>
-                  <td style="width: 10%"><input formControlName="acc_cd" type="text" class="form-control"></td>
+                  <td style="width: 10%"><input formControlName="dr_cr" type="text" disabled class="form-control"></td>
+                  <td style="width: 10%"><input formControlName="acc_cd" type="text" disabled class="form-control"></td>
                   <td style="width: 40%">
                     <!-- <div class="ng-autocomplete"> -->
                     <ng-autocomplete [data]="maccmaster" [searchKeyword]="keyword" placeHolder="Account Name"
@@ -226,3 +224,5 @@
     </div>
   </div>
 </div>
+<loading *ngIf="isLoading"></loading>
+

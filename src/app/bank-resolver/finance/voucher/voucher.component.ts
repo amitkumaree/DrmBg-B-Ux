@@ -45,6 +45,7 @@ export class VoucherComponent implements OnInit {
   isSave = true;
   isApprove = true;
   isClear = false;
+  isLoading = true;
   constructor(private svc: RestService, private formBuilder: FormBuilder, private modalService: NgbModal) { }
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
@@ -110,6 +111,7 @@ export class VoucherComponent implements OnInit {
   RetrieveBatch() {
     this.app_flg = 'U';
     this.Initialize();
+    this.isLoading=true;
     this.getVoucherNarration();
   }
   private getDismissReason(reason: any): string {
@@ -136,7 +138,7 @@ export class VoucherComponent implements OnInit {
     this.isApprove = true;
     this.isClear = false;
     this.Initialize();
-    this._voucherDt = new Date("2020-04-06");//TBD
+    this._voucherDt = new Date(localStorage.getItem('__currentDate'));//TBD
     this._voucherTyp = "C";
     this.insertMode = true;
   }
@@ -155,7 +157,10 @@ export class VoucherComponent implements OnInit {
       return false;
     }
     else
+    {
+      this.isLoading = true;
       this.getVoucher(this.reportcriteria.value['fromDate'], this.reportcriteria.value['voucherNo']);
+    }
   }
 
   Clear() {
@@ -210,7 +215,7 @@ export class VoucherComponent implements OnInit {
   OpenVoucher(item) {
     debugger;
     this.Initialize();
-    this.getVoucherDtl('101', item.voucher_dt, item.voucher_id, item.narrationdtl)
+    this.getVoucherDtl(localStorage.getItem('__brnCd'), item.voucher_dt, item.voucher_id, item.narrationdtl)
   }
   closeAlert() {
     this.showAlert = false;
@@ -289,7 +294,7 @@ export class VoucherComponent implements OnInit {
 
   private getVoucher(vDt: any, vID: any): void {
     this.tvd = new T_VOUCHER_DTLS();
-    this.tvd.brn_cd = '101';
+    this.tvd.brn_cd = localStorage.getItem('__brnCd');
     this.tvd.voucher_dt = vDt;
     this.tvd.voucher_id = Number(vID);
     this.tvdRet = [];
@@ -304,7 +309,7 @@ export class VoucherComponent implements OnInit {
 
         for (let x = 0; x < this.tvdRet.length; x++) {
           this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
-          this.VoucherF.push(this.editVoucherFromGroup(this.tvdRet[x].acc_cd, this.tvdRet[x].debit_credit_flag, this.tvdRet[x].cr_amount, this.tvdRet[x].dr_amount));
+          this.VoucherF.push(this.editVoucherFromGroup(this.tvdRet[x].acc_cd, this.tvdRet[x].debit_credit_flag=='D'?'Debit':'Credit', this.tvdRet[x].cr_amount, this.tvdRet[x].dr_amount));
         }
         if (this.VoucherF.value.length > 0)
           if (this.VoucherF.value[0].acc_cd == null)
@@ -318,6 +323,7 @@ export class VoucherComponent implements OnInit {
         if (this.tvdRet[0].approval_status == 'U')
           this.isApprove = false;
         this._voucherNarration = this.tvdRet[0].narrationdtl;//this.tvdRet[0].narration+
+        this.isLoading = false;
         this.modalService.dismissAll(this.content);
       },
       err => { }
@@ -356,14 +362,15 @@ export class VoucherComponent implements OnInit {
     );
   }
   private getVoucherNarration(): void {
-    this.tvn.brn_cd = '101';
-    this.tvn.voucher_dt = new Date("2020-04-06");
+    this.tvn.brn_cd =  localStorage.getItem('__brnCd');
+    this.tvn.voucher_dt = new Date(localStorage.getItem('__currentDate'));
     debugger;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherNarration', this.tvn).subscribe(
       res => {
         debugger;
         this.tvnRet = res;
         this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
+        this.isLoading=false;
         this.modalService.open(this.contentbatch, { ariaLabelledBy: 'modal-basic-title', size: 'lg', backdrop: 'static' }).result.then((result) => {
         },
           (reason) => {
@@ -380,10 +387,10 @@ export class VoucherComponent implements OnInit {
       for (let x = 0; x < this.VoucherF.length; x++) {
         let tvdSave = new T_VOUCHER_DTLS();
         tvdSave.approval_status = 'U';
-        tvdSave.brn_cd = '101';
+        tvdSave.brn_cd =  localStorage.getItem('__brnCd');
         tvdSave.cr_amount = Number(this.voucherData.value[x].cr_amt == null ? 0 : this.voucherData.value[x].cr_amt);
         tvdSave.dr_amount = Number(this.voucherData.value[x].dr_amt == null ? 0 : this.voucherData.value[x].dr_amt);
-        tvdSave.debit_credit_flag = this.voucherData.value[x].dr_cr;
+        tvdSave.debit_credit_flag = this.voucherData.value[x].dr_cr=='Debit'? 'D' : 'C';
         tvdSave.narrationdtl = this._voucherNarration;
         tvdSave.transaction_type = this._voucherTyp;
         tvdSave.voucher_dt = this._voucherDt;
@@ -420,7 +427,7 @@ export class VoucherComponent implements OnInit {
       for (let x = 0; x < this.VoucherF.length; x++) {
         let tvdSave = new T_VOUCHER_DTLS();
         tvdSave.approval_status = 'A';
-        tvdSave.brn_cd = '101';
+        tvdSave.brn_cd =  localStorage.getItem('__brnCd');
         tvdSave.approved_by = 'ADMIN'
         tvdSave.approved_dt = new Date();
         tvdSave.voucher_dt = this._voucherDt;
@@ -483,16 +490,24 @@ export class VoucherComponent implements OnInit {
   }
 
   public drAmountInput(row, event) {
-    try {
+    this.showAlert = false;
+    if (this.voucherData.value[row].acc_cd == null || this.voucherData.value[row].acc_cd == '') {
+      this.showAlert = true;
+      this.VoucherF.controls[row].get('dr_amt').setValue(null);
+      this.VoucherF.controls[row].get('cr_amt').setValue(null);
+      this.alertMsg = "Account Code Can not be Blank !"
+      return;
+    }
+   try {
       debugger;
       if (this.VoucherF.controls[row].get('dr_amt').value > 0) {
         this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
-        this.VoucherF.controls[row].get('dr_cr').setValue("D");
+        this.VoucherF.controls[row].get('dr_cr').setValue("Debit");
         this.VoucherF.controls[row].get('cr_amt').setValue(null);
         if(this._voucherTyp=='C')
         {
           this.VoucherF.controls[0].get('dr_amt').setValue(null);
-          this.VoucherF.controls[0].get('dr_cr').setValue("C");
+          this.VoucherF.controls[0].get('dr_cr').setValue("Credit");
           debugger;
           this.VoucherF.controls[0].get('cr_amt').setValue(this.getTotalDr());
 
@@ -502,16 +517,24 @@ export class VoucherComponent implements OnInit {
     catch (exception) { let x = 0; }
   }
   public crAmountInput(row, event) {
+    this.showAlert = false;
+    if (this.voucherData.value[row].acc_cd == null || this.voucherData.value[row].acc_cd == '') {
+      this.showAlert = true;
+      this.VoucherF.controls[row].get('dr_amt').setValue(null);
+      this.VoucherF.controls[row].get('cr_amt').setValue(null);
+      this.alertMsg = "Account Code Can not be Blank !"
+      return;
+    }
     try {
       debugger;
       if (this.VoucherF.controls[row].get('cr_amt').value > 0) {
         this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
-        this.VoucherF.controls[row].get('dr_cr').setValue("C");
+        this.VoucherF.controls[row].get('dr_cr').setValue("Credit");
         this.VoucherF.controls[row].get('dr_amt').setValue(null);
         if(this._voucherTyp=='C')
         {
           this.VoucherF.controls[0].get('cr_amt').setValue(null);
-          this.VoucherF.controls[0].get('dr_cr').setValue("D");
+          this.VoucherF.controls[0].get('dr_cr').setValue("Debit");
           debugger;
           this.VoucherF.controls[0].get('dr_amt').setValue(this.getTotalCr());
 
