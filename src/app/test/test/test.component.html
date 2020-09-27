@@ -1,0 +1,1367 @@
+<div class="row d-flex justify-content-center align-items-center"
+  style="background-color: #78c2ad21; text-align: center;">
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
+    <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button> -->
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Retrieve</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Modify</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Clear</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
+  </div>
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-6 col-md-8 border">
+      <h1></h1>
+      <h6 style="background-color:lightskyblue">Personal Information</h6>
+      <!-- <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3"> -->
+
+      <div class="form-row">
+        <div class="form-group col-3">
+          <small for="cust_code">Customer Code</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_code"
+            placeholder="Customer Code">
+        </div>
+        <div class="form-group col-7">
+          <small for="cust_name">Customer Name</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_name"
+            placeholder="Customer Name">
+        </div>
+        <div class="form-group col-2">
+          <small for="cust_type">Type</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_type"
+            placeholder="Type">
+        </div>
+      </div>
+
+
+
+      <div class="form-row">
+        <div class="form-group col-8">
+          <small for="cust_gurdain">Gurdain Name</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_gurdain"
+            placeholder="Gurdain Name">
+        </div>
+        <div class="form-group col-2">
+          <small for="cust_dob">Date Of Birth</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_dob"
+            placeholder="Cust DOB">
+        </div>
+        <div class="form-group col-2">
+          <small for="cust_sex">Sex</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_sex"
+            placeholder="Customer Sex">
+        </div>
+      </div>
+
+
+
+      <div class="form-row">
+        <div class="form-group col-3">
+          <small for="cust_phone">Phone</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
+            placeholder="Customer Phone">
+        </div>
+        <div class="form-group col-3">
+          <small for="cust_category">Category</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_category"
+            placeholder="Customer Category">
+        </div>
+
+        <div class="form-group col-3">
+          <small for="cust_occup">Occupation</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_occup"
+            placeholder="Occupation">
+        </div>
+        <div class="form-group col-3">
+          <small for="cust_ledger">Ledger Number</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
+            placeholder="Ledger Number">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-12">
+          <small for="cust_addr">Present Address</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_addr"
+            placeholder="Cust Present Address">
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="col-6 col-md-4 border">
+      <h1></h1>
+      <h6 style="background-color: lightskyblue">Authorised Signatories</h6>
+      <div class="form-row">
+        <div class="form-group col-12">
+          <small for="auth_sig">Name of Authorised Signatories</small>
+          <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="auth_sig"
+            placeholder="Name of Authorised Signatories">
+        </div>
+      </div>
+      <hr style="margin-top: 0ch;">
+
+      <h6 style="background-color: lightskyblue">Joint Holder</h6>
+      <div class="form-row">
+        <div class="form-group col-6">
+          <small for="joint_cust_code">Cust Code</small>
+          <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+            id="joint_cust_code" placeholder="Cust Code">
+        </div>
+
+        <div class="form-group col-6">
+          <small for="trans_type">Relation</small> <br>
+          <select style="height:25px; font-size: small; padding-top: 0px; background-color: whitesmoke;" id="trans_type"
+            class="form-control form-control-sm" (change)="setTransType($event.target.value)">
+            <option value="?" selected="selected"></option>
+            <option value="1">Father</option>
+            <option value="2">Mother</option>
+            <option value="3">Sister</option>
+            <option value="4">Brother</option>
+            <option value="5">Friend</option>
+            <option value="6">Son</option>
+            <option value="7">Daughter</option>
+            <option value="8">Others</option>
+          </select>
+
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-12">
+          <small for="joint_cust_name">Account Holder</small>
+          <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+            id="joint_cust_name" placeholder="Account Holder">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- <======================================================================================> -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-sm-6 col-md-8 border">
+
+      <!-- <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2  p-6 border"> -->
+      <h1></h1>
+      <h6 style="background-color: lightskyblue">Account Details</h6>
+
+      <div class="form-row">
+        <div class="form-group col-5">
+          <!-- <small for="acc_type">Account Type</small>
+                <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="acc_type"
+                  placeholder="Account Type"> -->
+          <small for="trans_type">Account Type</small> <br>
+          <select
+            style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+            id="trans_type" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
+            <option value="?" selected="selected"></option>
+            <option value="1">1-Savings Deposit</option>
+            <option value="2">2-Fixed Deposit</option>
+            <option value="3">3-DBS</option>
+            <option value="4">4-Term Deposit_Reinvestment</option>
+            <option value="5">5-Monthly Income Scheme</option>
+            <option value="6">6-Recurring Deposit</option>
+            <option value="7">7-Share</option>
+            <option value="8">8-Current Account</option>
+            <option value="9">9-Guaranty Fund</option>
+            <option value="11">11-Savings Deposit Special</option>
+          </select>
+        </div>
+
+        <div class="form-group col-7">
+          <small for="acc_no">Account Number</small>
+          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="acc_no"
+            placeholder="Account Number">
+        </div>
+      </div>
+
+
+      <!-- <-----------Deposit-------------->
+      <div *ngIf="accountType==1">
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="acc_open_dt">Opening Date</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="acc_open_dt"
+              placeholder="Opening Date">
+          </div>
+
+          <div class="form-group col-5">
+            <small for="trans_type">Constitution</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="trans_type" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">1-Individual Members</option>
+              <option value="2">2-Non Members</option>
+              <option value="3">3-Self-Help Group</option>
+              <option value="4">4-Other Deposit</option>
+            </select>
+          </div>
+
+          <div class="form-group col-4">
+            <small for="acc_oprn_instr">Operational Instr</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="acc_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Self</option>
+              <option value="2">All Joint</option>
+              <option value="3">Either Or Survivor</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <br>
+            <div class="container border">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input type="checkbox" value="false"><small> Cheque Facility</small>
+                </label>
+                <br>
+                <label class="form-check-label">
+                  <input type="checkbox" value="false"><small> Standing Instruction</small>
+                </label>
+                <br>
+                <label class="form-check-label">
+                  <input type="checkbox" value="false"><small> TDS Applicable</small>
+                </label>
+                <br>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-1"></div>
+
+          <div class="form-group col-4">
+            <small for="principal">Principal</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="constitution" placeholder="Principal">
+
+            <small for="amount">Amount</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="amount" placeholder="Amount">
+
+            <small for="constitution">Curr. Balance</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="cur_bal" placeholder="Curr. Balance">
+          </div>
+        </div>
+      </div>
+      <!-- <-----------Deposit-------------->
+
+
+      <!-- <-----------Start: Fixed Deposit-------------->
+      <div *ngIf="accountType==2">
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="acc_open_dt">Opening Date</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="acc_open_dt"
+              placeholder="Opening Date">
+          </div>
+
+          <div class="form-group col-5">
+            <small for="trans_type">Constitution</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="trans_type" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="6">6-Individual</option>
+              <option value="7">7-Non Members</option>
+              <option value="8">8-Self-Help Group</option>
+            </select>
+          </div>
+
+          <div class="form-group col-5">
+            <div class="container border">
+              <div class="form-row">
+
+                <div class="form-group col-3">
+                  <small for="acc_no">Deposit Period</small>
+                </div>
+
+                <div class="form-group col-3">
+                  <small for="dep_yr">Year</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="dep_yr">
+                </div>
+                <div class="form-group col-3">
+                  <small for="dep_mon">Month</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="dep_mon">
+                </div>
+                <div class="form-group col-3">
+                  <small for="dep_day">Day</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="dep_day" placeholder="DD">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="trans_type">Intt Transfer Type</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="intt_trans_type" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Monthly</option>
+              <option value="2">Quarterly</option>
+              <option value="3">Half-yearly</option>
+              <option value="4">Yearly</option>
+              <option value="5">On Maturity</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="dep_principal">Principal</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="constitution">
+          </div>
+
+          <div class="form-group col-2">
+            <small for="dep_intt_rate">Intt Rate</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="constitution">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="dep_oprn_instr">Operational Instr.</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Self</option>
+              <option value="2">All Joint</option>
+              <option value="3">Either Or Survivor</option>
+            </select>
+          </div>
+
+          <div class="form-group col-2">
+            <small for="dep_interest">Interest</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="dep_interest">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="dep_mat_dt">Maturity Date</small>
+            <input style="height:25px" type="text" value='00/00/0000'
+              class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Opening Date">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="dep_cert_no">Certificate No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="dep_cert_no">
+          </div>
+
+          <div class="form-group col-4">
+            <small for="stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="stand_ins_after_matu" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Auto Close</option>
+              <option value="2">Auto Renew</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="dep_cert_no">S/B Account No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="dep_cert_no">
+          </div>
+        </div>
+
+      </div>
+      <!-- <-----------End: Fixed Deposit-------------->
+
+
+      <!-- <-----------Start: DBS-------------->
+      <div *ngIf="accountType==3">
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="dbs_acc_open_dt">Opening Date</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="dbs_acc_open_dt">
+          </div>
+
+          <div class="form-group col-5">
+            <small for="dbs_const">Constitution</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="dbs_const" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="6">6-Individual</option>
+              <option value="7">7-Non Members</option>
+              <option value="8">8-Self-Help Group</option>
+            </select>
+          </div>
+
+          <div class="form-group col-5">
+            <div class="container border">
+              <div class="form-row">
+
+                <div class="form-group col-3">
+                  <small for="acc_no">Deposit Period</small>
+                </div>
+
+                <div class="form-group col-3">
+                  <small for="dbs_yr">Year</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="dbs_yr">
+                </div>
+                <div class="form-group col-3">
+                  <small for="dbs_mon">Month</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="dbs_mon">
+                </div>
+                <div class="form-group col-3">
+                  <small for="dbs_day">Day</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="dbs_day">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="dbs_int_trans_type">Intt Transfer Type</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="dbs_int_trans_type" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Monthly</option>
+              <option value="2">Quarterly</option>
+              <option value="3">Half-yearly</option>
+              <option value="4">Yearly</option>
+              <option value="5">On Maturity</option>
+            </select>
+          </div>
+
+          <div class="form-group col-2">
+            <small for="dep_principal">Principal</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="constitution">
+          </div>
+
+          <div class="form-group col-2">
+            <small for="dep_intt_rate">Intt Rate</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="constitution">
+          </div>
+
+          <div class="form-group col-2">
+            <small for="dep_oprn_instr">Operational Instr.</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Self</option>
+              <option value="2">All Joint</option>
+              <option value="3">Either Or Survivor</option>
+            </select>
+          </div>
+
+          <div class="form-group col-2">
+            <small for="dep_interest">Interest</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="dep_interest">
+          </div>
+
+          <div class="form-group col-2">
+            <small for="dep_interest">Matured Value</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="dep_interest">
+          </div>
+
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="dep_mat_dt">Maturity Date</small>
+            <input style="height:25px" type="text" value='00/00/0000'
+              class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Opening Date">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="dep_cert_no">Certificate No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="dep_cert_no">
+          </div>
+
+          <div class="form-group col-4">
+            <small for="stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="stand_ins_after_matu" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Auto Close</option>
+              <option value="2">Auto Renew</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="dep_cert_no">S/B Account No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="dep_cert_no">
+          </div>
+        </div>
+
+      </div>
+      <!-- <-----------End: DBS-------------->
+
+
+      <!-- <-----------Start: Term Deposit_Reinvestment-------------->
+      <div *ngIf="accountType==4">
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="term_dep_open_dt">Opening Date</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="term_dep_open_dt">
+          </div>
+
+          <div class="form-group col-5">
+            <small for="term_dep_const">Constitution</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="term_dep_const" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="6">6-Individual</option>
+              <option value="7">7-Non Members</option>
+              <option value="8">8-Self-Help Group</option>
+            </select>
+          </div>
+
+          <div class="form-group col-5">
+            <div class="container border">
+              <div class="form-row">
+
+                <div class="form-group col-3">
+                  <small for="term_dep_period">Deposit Period</small>
+                </div>
+
+                <div class="form-group col-3">
+                  <small for="term_dep_yr">Year</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="term_dep_yr">
+                </div>
+                <div class="form-group col-3">
+                  <small for="term_dep_mon">Month</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="term_dep_mon">
+                </div>
+                <div class="form-group col-3">
+                  <small for="term_dep_day">Day</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="term_dep_day">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="term_dep_int_trans_type">Intt Transfer Type</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="term_dep_int_trans_type" class="form-control form-control-sm"
+              (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Monthly</option>
+              <option value="2">Quarterly</option>
+              <option value="3">Half-yearly</option>
+              <option value="4">Yearly</option>
+              <option value="5">On Maturity</option>
+            </select>
+          </div>
+
+          <div class="form-group col-2">
+            <small for="term_dep_principal">Principal</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="term_dep_principal">
+          </div>
+
+          <div class="form-group col-2">
+            <small for="term_dep_intt_rate">Intt Rate</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="term_dep_intt_rate">
+          </div>
+
+          <div class="form-group col-2">
+            <small for="term_dep_oprn_instr">Operational Instr.</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="term_dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Self</option>
+              <option value="2">All Joint</option>
+              <option value="3">Either Or Survivor</option>
+            </select>
+          </div>
+
+          <div class="form-group col-2">
+            <small for="term_dep_interest">Interest</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="term_dep_interest">
+          </div>
+
+          <div class="form-group col-2">
+            <small for="term_dep_matu_val">Matured Value</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="term_dep_matu_val">
+          </div>
+
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="term_dep_mat_dt">Maturity Date</small>
+            <input style="height:25px" type="text" value='00/00/0000'
+              class="form-control form-control-sm text-capitalize" id="term_dep_mat_dt" placeholder="Opening Date">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="term_dep_cert_no">Certificate No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="term_dep_cert_no">
+          </div>
+
+          <div class="form-group col-4">
+            <small for="term_dep_stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="term_dep_stand_ins_after_matu" class="form-control form-control-sm"
+              (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Auto Close</option>
+              <option value="2">Auto Renew</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="term_dep_cert_no">S/B Account No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="term_dep_cert_no">
+          </div>
+        </div>
+
+      </div>
+      <!-- <-----------End: Term Deposit_Reinvestment-------------->
+
+      <!-- <-----------Start: Monthly Income Scheme -------------->
+      <div *ngIf="accountType==5">
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="mis_open_dt">Opening Date</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="mis_open_dt">
+          </div>
+
+          <div class="form-group col-5">
+            <small for="mis_const">Constitution</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="mis_const" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="6">6-Individual</option>
+              <option value="7">7-Non Members</option>
+              <option value="8">8-Self-Help Group</option>
+            </select>
+          </div>
+
+          <div class="form-group col-5">
+            <div class="container border">
+              <div class="form-row">
+
+                <div class="form-group col-3">
+                  <small for="mis_period">Deposit Period</small>
+                </div>
+
+                <div class="form-group col-3">
+                  <small for="mis_yr">Year</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="mis_yr">
+                </div>
+                <div class="form-group col-3">
+                  <small for="mis_mon">Month</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="mis_mon">
+                </div>
+                <div class="form-group col-3">
+                  <small for="mis_day">Day</small>
+                  <input style="height:25px" type="number" value='0' min="0"
+                    class="form-control form-control-sm text-capitalize" id="mis_day">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-3">
+            <small for="mis_int_trans_type">Intt Transfer Type</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="mis_int_trans_type" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Monthly</option>
+              <option value="2">Quarterly</option>
+              <option value="3">Half-yearly</option>
+              <option value="4">Yearly</option>
+              <option value="5">On Maturity</option>
+            </select>
+          </div>
+
+          <div class="form-group col-2">
+            <small for="mis_principal">Principal</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="mis_principal">
+          </div>
+
+          <div class="form-group col-2">
+            <small for="mis_intt_rate">Intt Rate</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="mis_intt_rate">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="mis_oprn_instr">Operational Instr.</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="mis_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Self</option>
+              <option value="2">All Joint</option>
+              <option value="3">Either Or Survivor</option>
+            </select>
+          </div>
+
+          <div class="form-group col-2">
+            <small for="mis_interest">Interest</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="mis_interest">
+          </div>
+
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="mis_mat_dt">Maturity Date</small>
+            <input style="height:25px" type="text" value='00/00/0000'
+              class="form-control form-control-sm text-capitalize" id="mis_mat_dt">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="mis_cert_no">Certificate No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="mis_cert_no">
+          </div>
+
+          <div class="form-group col-4">
+            <small for="mis_stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="mis_stand_ins_after_matu" class="form-control form-control-sm"
+              (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Auto Close</option>
+              <option value="2">Auto Renew</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="mis_cert_no">S/B Account No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="mis_cert_no">
+          </div>
+        </div>
+
+      </div>
+      <!-- <-----------End: Monthly Income Scheme-------------->
+
+
+      <!-- <-----------Start: Recurring Deposit-------------->
+      <div *ngIf="accountType==6">
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="rec_dep_open_dt">Opening Date</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="rec_dep_open_dt">
+          </div>
+
+          <div class="form-group col-4">
+            <small for="rec_dep_const">Constitution</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="rec_dep_const" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="6">6-Individual</option>
+              <option value="7">7-Non Members</option>
+              <option value="8">8-Self-Help Group</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="rec_dep_intt_rate">No Of Installment</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="rec_dep_intt_rate">Installment Amount</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
+          </div>
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group col-3">
+            <small for="rec_dep_intt_rate">Rate Of Interest</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="rec_dep_principal">Total Principal</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+              class="form-control form-control-sm text-capitalize" id="rec_dep_principal">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="rec_dep_interest">Interest</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="rec_dep_interest">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="rec_dep_matu_val">Matured Value</small>
+            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+              class="form-control form-control-sm text-capitalize" id="rec_dep_matu_val">
+          </div>
+
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="rec_dep_mat_dt">Maturity Date</small>
+            <input style="height:25px" type="text" value='00/00/0000'
+              class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="rec_dep_oprn_instr">Operational Instr</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="rec_dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Self</option>
+              <option value="2">All Joint</option>
+              <option value="3">Either Or Survivor</option>
+            </select>
+          </div>
+
+          <div class="form-group col-4">
+            <small for="rec_dep_stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="rec_dep_stand_ins_after_matu" class="form-control form-control-sm"
+              (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Auto Close</option>
+              <option value="2">Auto Renew</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="rec_dep_cert_no">S/B Account No</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="rec_dep_cert_no">
+          </div>
+        </div>
+
+      </div>
+      <!-- <-----------End: Recurring Deposit-------------->
+
+      <!-- <-----------Start:  Share-------------->
+      <div *ngIf="accountType==7">
+
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="share_open_dt">Opening Date</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+              id="share_open_dt" placeholder="Opening Date">
+          </div>
+
+          <div class="form-group col-5">
+            <small for="share_const">Constitution</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="share_const" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">1-Individual Members</option>
+              <option value="2">2-Non Members</option>
+              <option value="3">3-Self-Help Group</option>
+              <option value="4">4-Other Deposit</option>
+            </select>
+          </div>
+
+          <div class="form-group col-4">
+            <small for="share_oprn_instr">Operational Instr</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="share_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Self</option>
+              <option value="2">All Joint</option>
+              <option value="3">Either Or Survivor</option>
+            </select>
+          </div>
+        </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <br>
+              <div class="container border">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> Cheque Facility</small>
+                  </label>
+                  <br>
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> Standing Instruction</small>
+                  </label>
+                  <br>
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> TDS Applicable</small>
+                  </label>
+                  <br>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-1"></div>
+
+            <div class="form-group col-4">
+              <small for="share_principal">Principal</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="share_principal" placeholder="Principal">
+
+              <small for="share_amount">Amount</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="share_amount">
+
+              <small for="share_cur_bal">Curr. Balance</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="share_cur_bal">
+            </div>
+          </div>
+
+      </div>
+        <!-- <-----------End: Share-------------->
+
+
+        <!-- <-----------Start:  Current Account-------------->
+        <div *ngIf="accountType==8">
+
+          <div class="form-row">
+            <div class="form-group col-2">
+              <small for="curr_open_dt">Opening Date</small>
+              <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+                id="curr_open_dt">
+            </div>
+
+            <div class="form-group col-5">
+              <small for="curr_const">Constitution</small> <br>
+              <select
+                style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+                id="curr_const" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
+                <option value="?" selected="selected"></option>
+                <option value="1">1-Individual Members</option>
+                <option value="2">2-Non Members</option>
+                <option value="3">3-Self-Help Group</option>
+                <option value="4">4-Other Deposit</option>
+              </select>
+            </div>
+
+            <div class="form-group col-4">
+              <small for="curr_oprn_instr">Operational Instr</small> <br>
+              <select
+                style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+                id="curr_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+                <option value="?" selected="selected"></option>
+                <option value="1">Self</option>
+                <option value="2">All Joint</option>
+                <option value="3">Either Or Survivor</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <br>
+              <div class="container border">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> Cheque Facility</small>
+                  </label>
+                  <br>
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> Standing Instruction</small>
+                  </label>
+                  <br>
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> TDS Applicable</small>
+                  </label>
+                  <br>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-1"></div>
+
+            <div class="form-group col-4">
+              <small for="curr_principal">Principal</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="curr_principal" placeholder="Principal">
+
+              <small for="curr_amount">Amount</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="curr_amount">
+
+              <small for="curr_cur_bal">Curr. Balance</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="curr_cur_bal">
+            </div>
+          </div>
+        </div>
+        <!-- <-----------End: Current-------------->
+
+        <!-- <-----------Start:  Guaranty Fund-------------->
+        <div *ngIf="accountType==9">
+
+          <div class="form-row">
+            <div class="form-group col-2">
+              <small for="guar_open_dt">Opening Date</small>
+              <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+                id="curr_open_dt">
+            </div>
+
+            <div class="form-group col-5">
+              <small for="guar_const">Constitution</small> <br>
+              <select
+                style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+                id="guar_const" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
+                <option value="?" selected="selected"></option>
+                <option value="1">1-Individual Members</option>
+                <option value="2">2-Non Members</option>
+                <option value="3">3-Self-Help Group</option>
+                <option value="4">4-Other Deposit</option>
+              </select>
+            </div>
+
+            <div class="form-group col-4">
+              <small for="gua_oprn_instr">Operational Instr</small> <br>
+              <select
+                style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+                id="gua_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+                <option value="?" selected="selected"></option>
+                <option value="1">Self</option>
+                <option value="2">All Joint</option>
+                <option value="3">Either Or Survivor</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <br>
+              <div class="container border">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> Cheque Facility</small>
+                  </label>
+                  <br>
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> Standing Instruction</small>
+                  </label>
+                  <br>
+                  <label class="form-check-label">
+                    <input type="checkbox" value="false"><small> TDS Applicable</small>
+                  </label>
+                  <br>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-1"></div>
+
+            <div class="form-group col-4">
+              <small for="gua_principal">Principal</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="gua_principal">
+
+              <small for="gua_amount">Amount</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="gua_amount">
+
+              <small for="gua_cur_bal">Curr. Balance</small>
+              <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="gua_cur_bal">
+            </div>
+          </div>
+        </div>
+        <!-- <-----------End: Current-------------->
+
+
+      </div>
+
+
+
+      <!-- <==================================================================================> -->
+
+      <div class="col-6 col-md-4 border">
+        <h1></h1>
+        <h6 style="background-color: lightskyblue">Introducer Details</h6>
+        <div class="form-row">
+          <div class="form-group col-5">
+            <small for="intr_acc_type">Introducer Account Type</small>
+            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+              id="intr_acc_type" placeholder="Introducer Account Type">
+          </div>
+
+          <div class="form-group col-7">
+            <small for="intr_acc_no">Introducer Account Number</small>
+            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="intr_acc_no"
+              placeholder="Introducer Account Number">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-12">
+            <small for="intr_name">Introducer Name</small>
+            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="intr_name"
+              placeholder="Introducer Name">
+          </div>
+        </div>
+
+        <hr style="margin-top: 0ch; margin-bottom: 0ch;">
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <small for="trans_type">Trans Type</small> <br>
+            <select style="height:25px; font-size: small; padding-top: 0px; background-color: whitesmoke;"
+              id="trans_type" class="form-control form-control-sm" (change)="setTransType($event.target.value)">
+              <option value="?" selected="selected"></option>
+              <option value="1">Cash</option>
+              <option value="2">Transfer</option>
+            </select>
+          </div>
+
+          <div class="form-group col-6">
+            <small for="trans_code">Trans Code</small>
+            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="trans_code"
+              placeholder="Trans Code">
+          </div>
+        </div>
+
+
+        <div class="form-row">
+          <div class="form-group col-4">
+            <small>Suspisious Transaction</small>
+          </div>
+
+          <div class="form-group col-8">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="defaultUnchecked" name="defaultExampleRadios">
+              <label class="custom-control-label" for="defaultUnchecked">Yes</label>
+            </div>
+
+            <!-- Default checked -->
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios" checked>
+              <label class="custom-control-label" for="defaultChecked">No</label>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- <================================================================> -->
+
+
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-6 border">
+        <h1></h1>
+        <h6 style="background-color:lightskyblue">Nominee Details</h6>
+        <!-- <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3"> -->
+
+        <div class="form-row">
+          <div class="form-group col-5">
+            <small for="nom_name">Nominee Name</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="nom_name"
+              placeholder="Nominee Name">
+          </div>
+
+          <div class="form-group col-7">
+            <small for="nom_addr">Nominee Address</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="nom_addr"
+              placeholder="Nominee Address">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-3">
+            <small for="nom_percent">Percentage</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="nom_percent"
+              placeholder="Percentage">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="nom_rel">Relation</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="nom_rel"
+              placeholder="Nominee Name">
+          </div>
+
+          <div class="form-group col-3">
+            <small for="nom_phone">Phone</small>
+            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="nom_phone"
+              placeholder="Nominee Name">
+          </div>
+        </div>
+
+      </div>
+
+
+
+      <div class="col-12 col-sm-6 col-md-6 border">
+        <div *ngIf="transTypeFlg==1">
+          <h1></h1>
+          <h6 style="background-color: lightskyblue">Denomination Details</h6>
+
+          <div class="form-row">
+            <div class="form-group col-5">
+              <small for="trans_type">Rupees</small> <br>
+              <select
+                style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+                id="trans_type" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
+                <option value="?" selected="selected"></option>
+                <option value="2000">Two Thousand (2000)</option>
+                <option value="500">Five Hundred (500)</option>
+                <option value="100">Hundred (100)</option>
+                <option value="50">Fifty (50)</option>
+              </select>
+            </div>
+
+            <div class="form-group col-3">
+              <small for="deno_count">Count</small>
+              <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                id="deno_count" placeholder="Count">
+            </div>
+
+            <div class="form-group col-4">
+              <small for="deno_total">Total</small>
+              <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                id="deno_total" placeholder="Total">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-8" style="text-align: right;">
+              <label class="form-check-label"> <small> Total</small> </label>
+            </div>
+
+            <div class="form-group col-4">
+              <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="total"
+                placeholder="Total">
+            </div>
+          </div>
+        </div>
+
+
+        <div *ngIf="transTypeFlg==2">
+          <h1></h1>
+          <h6 style="background-color: lightskyblue">Transfer Debit Details</h6>
+
+          <div class="form-row">
+            <div class="form-group col-4">
+              <small for="debit_ac">A/C & Account No.</small>
+              <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="debit_ac">
+            </div>
+
+            <div class="form-group col-2">
+              <small for="debit_gl_head">GL Head</small>
+              <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                id="debit_gl_head">
+            </div>
+
+            <div class="form-group col-3">
+              <small for="debit_amount">Amount</small>
+              <input type="text" style="height:25px; text-align-last: right;" type="number" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="debit_amount">
+            </div>
+
+            <div class="form-group col-3">
+              <small for="Inst_num">Instrument Num</small>
+              <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="Inst_num">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-4">
+              <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="debit_ac">
+            </div>
+
+            <div class="form-group col-2">
+              <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                id="debit_gl_head">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-8" style="text-align: right;">
+              <label class="form-check-label"> <small> Total Debit</small> </label>
+            </div>
+
+            <div class="form-group col-4">
+              <input type="text" style="height:25px; text-align-last: right;" type="number" value='0.00' step='any'
+                class="form-control form-control-sm text-capitalize" id="total" placeholder="Total">
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+
+
+    </div>

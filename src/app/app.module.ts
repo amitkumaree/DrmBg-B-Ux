@@ -16,6 +16,7 @@ import {AutocompleteLibModule} from 'angular-ng-autocomplete';
 import { MasterConfigComponent } from './master-config/master-config.component';
 import { BankWiseConfigComponent } from './bank-wise-config/bank-wise-config.component';
 import { NewBankConfigComponent } from './new-bank-config/new-bank-config.component';
+import { TestComponent } from './test/test/test.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { NewBankConfigComponent } from './new-bank-config/new-bank-config.compon
     AdminPanelComponent,
     MasterConfigComponent,
     BankWiseConfigComponent,
-    NewBankConfigComponent
+    NewBankConfigComponent,
+    TestComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
