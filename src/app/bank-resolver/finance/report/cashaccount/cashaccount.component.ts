@@ -21,16 +21,18 @@ export class CashaccountComponent implements OnInit {
   closeResult = '';
   showReport = false;
   showAlert = false;
-  isLoading = true;
+  isLoading = false;
 
   alertMsg = '';
   fd: any;
   td: any;
   dt: any;
   fromdate: Date;
-  toDate:Date;
+  todate:Date; 
   constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
   ngOnInit(): void {
+    this.fromdate=new Date(localStorage.getItem('__currentDate'));
+    this.todate=new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
@@ -68,7 +70,8 @@ export class CashaccountComponent implements OnInit {
     else {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
-      this.toDate=this.reportcriteria.value['toDate'];
+      this.todate=this.reportcriteria.value['toDate'];
+      this.isLoading=true;
       this.onReportComplete();
       this.modalService.dismissAll(this.content);
     }
@@ -112,12 +115,13 @@ export class CashaccountComponent implements OnInit {
 
   onReportComplete(): void {
     debugger;
+    if (!this.isLoading)return ;
     this.prp.brn_cd='101';
     this.prp.from_dt= this.fromdate;
-    this.prp.to_dt=this.toDate;
+    this.prp.to_dt=this.todate;
     this.prp.acc_cd=28101;
     let fdate = new Date(this.fromdate);
-    let tdate = new Date(this.toDate);
+    let tdate = new Date(this.todate);
     this.fd = (("0" + fdate.getDate()).slice(-2)) + "/" + (("0" + (fdate.getMonth() + 1)).slice(-2)) + "/" + (fdate.getFullYear());
     this.td = (("0" + tdate.getDate()).slice(-2)) + "/" + (("0" + (tdate.getMonth() + 1)).slice(-2)) + "/" + (tdate.getFullYear());
     this.dt = new Date();
@@ -130,6 +134,7 @@ export class CashaccountComponent implements OnInit {
           debugger;
           //this.showReport = true;
          // this.generatePdf();
+         this.isLoading=false;
          let totalCr=0;
          let totalDr=0;
          let tmp_cash_account=new tt_cash_account();

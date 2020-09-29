@@ -28,9 +28,11 @@ export class TrialbalanceComponent implements OnInit {
   td: any;
   dt: any;
   fromdate: Date;
-  toDate:Date;
+  todate:Date;
   constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
   ngOnInit(): void {
+    this.fromdate=new Date(localStorage.getItem('__currentDate'));
+    this.todate=new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, null]
@@ -88,7 +90,7 @@ export class TrialbalanceComponent implements OnInit {
     this.prp.pl_acc_cd=parseInt(localStorage.getItem('__cashaccountCD'));
     this.prp.gp_acc_cd=parseInt(localStorage.getItem('__cashaccountCD'));
     let fdate = new Date(this.fromdate);
-    let tdate = new Date(this.toDate);
+    let tdate = new Date(this.todate);
     this.fd = (("0" + fdate.getDate()).slice(-2)) + "/" + (("0" + (fdate.getMonth() + 1)).slice(-2)) + "/" + (fdate.getFullYear());
     this.td = (("0" + tdate.getDate()).slice(-2)) + "/" + (("0" + (tdate.getMonth() + 1)).slice(-2)) + "/" + (tdate.getFullYear());
     this.dt = new Date();
