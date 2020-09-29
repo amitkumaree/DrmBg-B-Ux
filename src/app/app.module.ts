@@ -11,10 +11,6 @@ import { BankConfigComponent } from './bank-config/bank-config.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
-<<<<<<< HEAD
-import { AutocompleteLibModule } from 'angular-ng-autocomplete';
-=======
->>>>>>> 15a4defb32afe59472391d319baea2c07e83f502
 import { MasterConfigComponent } from './master-config/master-config.component';
 import { BankWiseConfigComponent } from './bank-wise-config/bank-wise-config.component';
 import { NewBankConfigComponent } from './new-bank-config/new-bank-config.component';
@@ -34,13 +30,7 @@ import { NewBankConfigComponent } from './new-bank-config/new-bank-config.compon
   imports: [
     BrowserModule, HttpClientModule,
     AppRoutingModule,
-<<<<<<< HEAD
-    NgbModule, NgxJsonViewerModule, FormsModule,
-    // AutocompleteLibModule,
-    ReactiveFormsModule
-=======
     NgbModule, NgxJsonViewerModule, FormsModule, ReactiveFormsModule
->>>>>>> 15a4defb32afe59472391d319baea2c07e83f502
   ],
   providers: [],
   bootstrap: [AppComponent]
