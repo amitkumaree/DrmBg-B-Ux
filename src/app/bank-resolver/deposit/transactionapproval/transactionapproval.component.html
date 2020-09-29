@@ -1,20 +1,40 @@
 <loading *ngIf="isLoading"></loading>
+<div class="row d-flex justify-content-center align-items-center"
+  style="background-color: #78c2ad21; min-height: 90vh;">
+  <div *ngIf="showMsg && showMsg.Show" class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+    <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
+     'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2 }">
+      <strong>{{showMsg.Message}}</strong>
+      <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+
+  </div>
+
+</div>
+
+
+
+<!-- <loading *ngIf="isLoading"></loading>
 
 <div class="row d-flex justify-content-center align-items-center pt-4"
-style="background-color: #78c2ad21; min-height: 20vh;">
-<div  class="col-xs-12 col-sm-12 col-md-10 col-lg-10 shadow-lg mb-4 bg-white p-3">
-    <div  style="display: inline-block;"  class="col-xs-12 col-sm-12 col-md-2 col-lg-2 shadow-sm mb-4 bg-white p-3">
-      <!-- <table>
+  style="background-color: #78c2ad21; min-height: 20vh;">
+  <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 shadow-lg mb-4 bg-white p-3">
+    <div style="display: inline-block;" class="col-xs-12 col-sm-12 col-md-2 col-lg-2 shadow-sm mb-4 bg-white p-3">
+      <table>
         <tr *ngFor="let item of tdDepTransGroup;let i=index">
           <td size=12 no-padding>
             <button class="btn btn-primary px-3" (click)="toggleSelection(i)" detail-none [ngClass]="{'section-active': item.open,'section':!item.open}">
               <i class="fab fa-android" aria-hidden="true" item-left name="arrow-forward" *ngIf="!item.open"></i>
               <i class="fab fa-android" aria-hidden="true" item-left name="arrow-down" *ngIf="item.open"></i>
               {{item.acc_type_cd}}
-            </button> 
+            </button>
           </td>
            <td size=12 no-padding *ngIf="item.open" >
-               <table> 
+               <table>
                   <tr *ngFor="let child of tdDepTransGroup[i].events; let j=index">
                    <td>
                      <label><h2>{{child.trans_cd}}-{{child.acc_num}}{{child.amount}}</h2></label>
@@ -23,50 +43,50 @@ style="background-color: #78c2ad21; min-height: 20vh;">
                 </table>
            </td>
             </tr>
-      </table> -->
+      </table>
       <div id="accordion">
         <div class="card">
-        <div *ngFor="let item of tdDepTransGroup;let i=index">
-          <div class="card-header" id="'header'+i" >
-            <h5 class="mb-0">
-              <button class="btn btn-link" data-toggle="collapse" data-target="'col'+i" aria-expanded="true" aria-controls="collapseOne">
-                {{item.acc_type_cd}}
-              </button>
-            </h5>
-          </div>
-      
-          <div id="'col'+i" class="collapse show" aria-labelledby="'header'+i" data-parent="#accordion">
-            <div class="card-body"> 
-              <table  class="table table-bordered table-striped">
-                <tr (click)="OnSelectTransaction(child)" *ngFor="let child of tdDepTransGroup[i].events; let j=index">
-                  <td>
-                   <label>{{child.trans_cd}}-{{child.acc_num}}{{child.amount}}</label>
-                  </td>
+          <div *ngFor="let item of tdDepTransGroup;let i=index">
+            <div class="card-header" id="'header'+i">
+              <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="'col'+i" aria-expanded="true"
+                  aria-controls="collapseOne">
+                  {{item.acc_type_cd}}
+                </button>
+              </h5>
+            </div>
+
+            <div id="'col'+i" class="collapse show" aria-labelledby="'header'+i" data-parent="#accordion">
+              <div class="card-body">
+                <table class="table table-bordered table-striped">
+                  <tr (click)="OnSelectTransaction(child)" *ngFor="let child of tdDepTransGroup[i].events; let j=index">
+                    <td>
+                      <label>{{child.trans_cd}}-{{child.acc_num}}{{child.amount}}</label>
+                    </td>
                   </tr>
-              </table>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
-        </div>
       </div>
-      </div> 
-
-     
 
 
 
-      </div>
-      <div  style="display: inline-block;" class="col-xs-12 col-sm-12 col-md-10 col-lg-10 shadow-sm mb-4 bg-white p-3">
-        
+
+
     </div>
-  <div  class="col-xs-12 col-sm-12 col-md-10 col-lg-10 shadow-sm mb-4 bg-white p-3">
-    <div>
-    <button type="button" class="btn btn-rounded btn-primary m-1">Download PDF</button>
-    <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
-    <button type="button" class="btn btn-rounded btn-primary m-1" style="position: absolute;right: 10px;">Close</button>
-  </div>
-  </div>
-</div>
+    <div style="display: inline-block;" class="col-xs-12 col-sm-12 col-md-10 col-lg-10 shadow-sm mb-4 bg-white p-3">
 
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 shadow-sm mb-4 bg-white p-3">
+      <div>
+        <button type="button" class="btn btn-rounded btn-primary m-1">Download PDF</button>
+        <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
+        <button type="button" class="btn btn-rounded btn-primary m-1"
+          style="position: absolute;right: 10px;">Close</button>
+      </div>
+    </div>
   </div>
-  
 
+</div> -->

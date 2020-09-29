@@ -24,6 +24,10 @@ import { TransactionapprovalComponent } from './deposit/transactionapproval/tran
 import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
 import { CustomerInfoComponent } from './common/customer-info/customer-info.component';
 import { TestComponent } from './test/test.component';
+import { AccountDetailsComponent } from './common/account-details/account-details.component';
+import { TransactionDetailsComponent } from './common/transaction-details/transaction-details.component';
+import { VoucherComponent } from './finance/voucher/voucher.component';
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
 @NgModule({
   declarations: [
@@ -35,10 +39,14 @@ import { TestComponent } from './test/test.component';
     TransactionapprovalComponent,
     AccOpeningComponent,
     CustomerInfoComponent,
-    TestComponent
+    TestComponent,
+    AccountDetailsComponent,
+    TransactionDetailsComponent,
+    VoucherComponent
   ],
   imports: [
-    CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule
+    CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule,
+    AutocompleteLibModule
   ],
   providers: [
     // { provide: ErrorHandler, useClass: GlobalErrorHandler },

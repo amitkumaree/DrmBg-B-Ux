@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { NgAutoCompleteModule } from "ng-auto-complete";
 import { RestService } from 'src/app/_service';
 import { T_VOUCHER_DTLS, m_acc_master } from '../../Models';
 
@@ -261,7 +260,7 @@ export class VoucherComponent implements OnInit {
   }
   onChange(event) {
     debugger;
-   
+
     this._voucherTyp = event;
     if (this._voucherTyp=='T'){
     this.InitializeListOnly();
