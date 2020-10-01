@@ -1,20 +1,20 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { RestService } from 'src/app/_service';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { p_report_param } from 'src/app/bank-resolver/Models';
+import { tt_scroll_book } from 'src/app/bank-resolver/Models/tt_scroll_book';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
-import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { STRING_TYPE } from '@angular/compiler';
+import { RestService } from 'src/app/_service';
 
 @Component({
-  selector: 'app-dailybook',
-  templateUrl: './dailybook.component.html',
-  styleUrls: ['./dailybook.component.css']
+  selector: 'app-scrollbook',
+  templateUrl: './scrollbook.component.html',
+  styleUrls: ['./scrollbook.component.css']
 })
-export class DailybookComponent implements OnInit {
+export class ScrollbookComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
-  @ViewChild('DailyCashBook') child: WebDataRocksPivot;
-  dailyCash: tt_cash_account[] = [];
+  @ViewChild('CashScroll') child: WebDataRocksPivot;
+  scrollbook: tt_scroll_book[] = [];
   prp =new p_report_param();
   reportcriteria: FormGroup;
   closeResult = '';
@@ -95,56 +95,51 @@ export class DailybookComponent implements OnInit {
     this.dt = new Date();
     this.dt = (("0" + this.dt.getDate()).slice(-2)) + "/" + (("0" + (this.dt.getMonth() + 1)).slice(-2)) + "/" + (this.dt.getFullYear()) + " " + this.dt.getHours() + ":" + this.dt.getMinutes();
     this.child.webDataRocks.off("reportcomplete");
-    this.svc.addUpdDel<any>('Report/PopulateDailyCashBook',this.prp).subscribe(
-      (data: tt_cash_account[]) => this.dailyCash = data,
+    this.svc.addUpdDel<any>('Report/PopulateDayScrollBook',this.prp).subscribe(
+      (data: tt_scroll_book[]) => this.scrollbook = data,
       error => { console.log(error); },
       () => {
           debugger;
          let totalCr=0;
          let totalDr=0;
-         let tmp_cash_account=new tt_cash_account();
-         this.dailyCash.forEach(x => totalCr += x.cr_amt);
-         this.dailyCash.forEach(x => totalDr += x.dr_amt);
-         this.dailyCash.forEach(x=>x.cr_acc_cd=(x.cr_acc_cd=='0'?'':''+x.cr_acc_cd.toString()));
-         this.dailyCash.forEach(x=>x.dr_acc_cd=(x.dr_acc_cd=='0'?'':''+x.dr_acc_cd.toString()));
-         this.dailyCash.forEach(x=>x.dr_amt=(x.dr_amt==0.00?null:x.dr_amt));
-         this.dailyCash.forEach(x=>x.cr_amt=(x.cr_amt==0.00?null:x.cr_amt));
-         this.dailyCash.forEach(x=>x.dr_particulars=(x.dr_particulars==null?' ':x.dr_particulars));
-         this.dailyCash.forEach(x=>x.cr_particulars=(x.cr_particulars==null?' ':x.cr_particulars));
-         tmp_cash_account.cr_amt=totalCr;
-         tmp_cash_account.dr_amt=totalDr;
-         tmp_cash_account.dr_particulars='Total Debit: ';
-         tmp_cash_account.cr_particulars='Total Credit: ';
-         this.dailyCash.push(tmp_cash_account);
+         let tmp_cash_account=new tt_scroll_book();
          this.isLoading=false;
          this.child.webDataRocks.setReport({
           dataSource: {
-             data:this.dailyCash
+             data:this.scrollbook
           },
           tableSizes: {
             columns: [
               {
                 idx: 0,
-                width: 75
+                width: 80
               },
               {
                 idx: 1,
-                width: 200
+                width: 80
               },
               {
                 idx: 2,
-                width: 100
+                width: 80
               },
               {
                 idx: 3,
-                width: 75
-              },
-              {
-                idx: 4,
                 width: 200
               },
               {
+                idx: 4,
+                width: 100
+              },
+              {
                 idx: 5,
+                width: 100
+              },
+              {
+                idx: 6,
+                width: 100
+              },
+              {
+                idx: 7,
                 width: 100
               }
             ]
@@ -159,53 +154,64 @@ export class DailybookComponent implements OnInit {
             "slice": {
               "rows": [
                   {
-                      "uniqueName": "dr_acc_cd",
-                      "caption": "Debit",
+                      "uniqueName": "trans_cd",
+                      "caption": "Trans CD",
                       "sort": "unsorted"
                       
                   },
                   {
-                      "uniqueName": "dr_particulars",
-                      "caption": "Dr Description",
+                      "uniqueName": "voucher_id",
+                      "caption": "Voucher ID",
                       "sort": "unsorted"
                   },
                   {
-                      "uniqueName": "dr_amt",
-                      "caption": "Dr Amount",
+                      "uniqueName": "acc_num",
+                      "caption": "Account Num",
                       "sort": "unsorted"
                   },
                   {
-                    "uniqueName": "cr_acc_cd",
-                    "caption": "Credit",
+                    "uniqueName": "cust_narration",
+                    "caption": "Head Of A/Cs",
                       "sort": "unsorted"
                 },
                 {
-                    "uniqueName": "cr_particulars",
-                    "caption": "Cr Description",
+                    "uniqueName": "cash_pay",
+                    "caption": "Pay Cash",
                       "sort": "unsorted"
                 },
                 {
-                    "uniqueName": "cr_amt",
-                    "caption": "Cr Amount",
+                    "uniqueName": "trf_pay",
+                    "caption": "Pay Trf",
                       "sort": "unsorted"
-                }
+                },
+                {
+                  "uniqueName": "cash_recp",
+                  "caption": "Rcpt Cash",
+                    "sort": "unsorted"
+              },
+              {
+                  "uniqueName": "trf_recp",
+                  "caption": "Rcpt Trf",
+                    "sort": "unsorted"
+              }
               ],
               "measures": [
                 {
-                  uniqueName: "dr_acc_cd",
+                  uniqueName: "acc_num",
                   format: "decimal0"
                 },
                 {
-                  uniqueName: "cr_acc_cd",
+                  uniqueName: "trans_cd",
+                  format: "decimal0"
+                },
+                {
+                  uniqueName: "voucher_id",
                   format: "decimal0"
                 }],
               "flatOrder": [
-                  "Debit",
-                  "Dr Description",
-                  "Dr Amount",
-                  "Credit",
-                  "Cr Description",
-                  "Cr Amount",
+                  "Trans CD",
+                  "Voucher ID",
+                  "Account Num"
               ]
           },
           
@@ -246,19 +252,16 @@ exportPDFTitle() {
   var options = this.child.webDataRocks.getOptions();
   this.child.webDataRocks.setOptions( {
     grid: {
-      title: 'Day Book For The Period' +this.fd +'-' +this.td
+      title: 'Cash Scroll For The Period ' +this.fd +'-' +this.td
     }
   } 
   );
   this.child.webDataRocks.refresh();
-  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##</div>",filename:"DayBook"});
+  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##</div>",filename:"ScrollBook"});
   this.child.webDataRocks.on('exportcomplete', function () {
     this.child.webDataRocks.off('exportcomplete')
     this.child.webDataRocks.setOptions(options);
     this.child.webDataRocks.refresh();
   });
 }
-
-
-
 }

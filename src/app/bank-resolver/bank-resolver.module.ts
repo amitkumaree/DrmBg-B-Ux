@@ -25,6 +25,7 @@ import { VoucherComponent } from './finance/voucher/voucher.component';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { AccountDetailsComponent } from './Common/account-details/account-details.component';
 import { TransactionDetailsComponent } from './Common/transaction-details/transaction-details.component';
+import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { TransactionDetailsComponent } from './Common/transaction-details/transa
     TransactionapprovalComponent,
     AccOpeningComponent,
     CustomerInfoComponent, VoucherComponent,
-    TestComponent
+    TestComponent,
+    ScrollbookComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule, AutocompleteLibModule  ],
