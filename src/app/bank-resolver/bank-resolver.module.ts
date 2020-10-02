@@ -14,7 +14,6 @@ import { WebDataRocksPivot } from '../webdatarocks/webdatarocks.angular4';
 import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
 import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
 import { GenLedgerComponent } from './finance/report/gen-ledger/gen-ledger.component';
-
 import { VoucherprintComponent } from './finance/voucherprint/voucherprint.component';
 import { LoadingComponent } from './loading';
 import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
@@ -24,6 +23,9 @@ import { CustomerInfoComponent } from './common/customer-info/customer-info.comp
 import { TestComponent } from './test/test.component';
 import { VoucherComponent } from './finance/voucher/voucher.component';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+import { AccountDetailsComponent } from './Common/account-details/account-details.component';
+import { TransactionDetailsComponent } from './Common/transaction-details/transaction-details.component';
+import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
 
 
 @NgModule({
@@ -31,12 +33,13 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
     BankResolverComponent, LoginComponent, HeaderComponent, LandingComponent, LoadingComponent,
     UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,
     WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, GenLedgerComponent,
-    VoucherprintComponent,
+    VoucherprintComponent, AccountDetailsComponent, TransactionDetailsComponent,
     GenLedger2Component,
     TransactionapprovalComponent,
     AccOpeningComponent,
     CustomerInfoComponent, VoucherComponent,
-    TestComponent
+    TestComponent,
+    ScrollbookComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule, AutocompleteLibModule  ],

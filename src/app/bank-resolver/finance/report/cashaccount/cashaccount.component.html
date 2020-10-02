@@ -21,13 +21,13 @@
         <div>
           <label for="fromDate">From Date</label>
           <div class="input-group">
-            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" formControlName="fromDate" id="fd" type="date" >
+            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-dd-MM' " formControlName="fromDate" id="fd" type="date" >
           </div>
         </div>
         <div >
             <label for="toDate">To Date</label>
             <div class="input-group">
-              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td" formControlName="toDate" id="td" type="date">
+              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td" [ngModel]="todate  | date:'yyyy-dd-MM' " formControlName="toDate" id="td" type="date">
             </div>
           </div>
       </form>

@@ -77,11 +77,9 @@ export class DailybookComponent implements OnInit {
   public closeAlert() {
     this.showAlert = false;
   }
-  //private pdfmake : pdfMake;
   onPivotReady(DailyCashBook: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
-  } 
-  
+  }  
   
   onReportComplete(): void {
     debugger;
@@ -102,8 +100,6 @@ export class DailybookComponent implements OnInit {
       error => { console.log(error); },
       () => {
           debugger;
-          //this.showReport = true;
-         // this.generatePdf();
          let totalCr=0;
          let totalDr=0;
          let tmp_cash_account=new tt_cash_account();
@@ -236,9 +232,6 @@ export class DailybookComponent implements OnInit {
       }
     );
   }
-//   setCustomizeFunction() {
-//     this.child.webDataRocks.customizeCell(this.customizeCellFunction);
-// }
 
  setOption(option, value) {
   this.child.webDataRocks.setOptions({
@@ -249,7 +242,6 @@ export class DailybookComponent implements OnInit {
     debugger;
     this.child.webDataRocks.refresh();
 }
-
 exportPDFTitle() {
   var options = this.child.webDataRocks.getOptions();
   this.child.webDataRocks.setOptions( {

@@ -45,11 +45,13 @@ export class VoucherComponent implements OnInit {
   isApprove = true;
   isClear = false;
   isLoading = false;
+  fromdate: Date;
   constructor(private svc: RestService, private formBuilder: FormBuilder, private modalService: NgbModal) { }
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
 
   ngOnInit(): void {
+    this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       voucherNo: [null, Validators.compose([Validators.required, Validators.pattern('^[0-9]+$')])]
@@ -265,7 +267,7 @@ export class VoucherComponent implements OnInit {
   }
   onChange(event) {
     debugger;
-   
+
     this._voucherTyp = event;
     if (this._voucherTyp=='T'){
     this.InitializeListOnly();

@@ -2,6 +2,7 @@
 <script src="https://cdn.webdatarocks.com/latest/webdatarocks.toolbar.min.js"></script>
 <script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
 <script src="https://cdn.flexmonster.com/flexmonster.js"></script>
+
 <ng-template #content let-modal data-keyboard="false" data-backdrop="false">
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">Report Criteria</h4>
@@ -21,13 +22,13 @@
         <div>
           <label for="fromDate">From Date</label>
           <div class="input-group">
-            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-dd-MM' " formControlName="fromDate" id="fd" type="date" >
+            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd"  [ngModel]="fromdate  | date:'yyyy-dd-MM' "   formControlName="fromDate" id="fd" type="date" >
           </div>
         </div>
         <div >
             <label for="toDate">To Date</label>
             <div class="input-group">
-              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td" [ngModel]="todate  | date:'yyyy-dd-MM' " formControlName="toDate" id="td" type="date">
+              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td"  [ngModel]="todate  | date:'yyyy-dd-MM'"  formControlName="toDate" id="td" type="date">
             </div>
           </div>
       </form>
@@ -38,7 +39,7 @@
       <!-- <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Submit</button> -->
     </div>
   </ng-template>
-  
+<loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center pt-4"
 style="background-color: #78c2ad21; min-height: 20vh;">
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
@@ -46,7 +47,7 @@ style="background-color: #78c2ad21; min-height: 20vh;">
      <div style="text-align: center;"><b> Branch: Main Branch</b></div>
      <div style="text-align: center;"><b> Branch Code: 101</b></div>
      <div style="text-align: center;"><b> Run Date: {{dt}}</b></div>
-<wbr-pivot #CashCumTrial [toolbar]="false"
+<wbr-pivot #CashScroll [toolbar]="false"
           [width]="'100%'"
           [height]="500"
           (ready)="onPivotReady($event)"

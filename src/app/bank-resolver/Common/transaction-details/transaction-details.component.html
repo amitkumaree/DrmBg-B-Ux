@@ -1,0 +1,72 @@
+<div *ngIf="show">
+  <loading *ngIf="isLoading"></loading>
+  <form [formGroup]="">
+    <h6>Transaction Details</h6>
+    <div class="form-row">
+      <div class="form-group col-6">
+        <small for="acc_type_cd">Account Type</small>
+        <input type="text" class="form-control form-control-sm" formControlName="acc_type_cd" id="acc_type_cd"
+          placeholder="Account Type" disabled>
+      </div>
+      <div class="form-group col-6">
+        <small for="acc_num">A/C</small>
+        <input type="text" class="form-control form-control-sm" formControlName="acc_num" id="acc_num"
+          placeholder="Account number" disabled>
+      </div>
+      <div class="form-group col-6">
+        <small for="trans_type">Transaction Type</small>
+        <input type="text" class="form-control form-control-sm" formControlName="trans_type" id="trans_type"
+          placeholder="Transaction Type" disabled>
+      </div>
+      <div class="form-group col-6">
+        <small for="trans_mode">Transaction Mode</small>
+        <input type="text" class="form-control form-control-sm" formControlName="trans_mode" id="trans_mode"
+          placeholder="Transaction Mode" disabled>
+      </div>
+      <div class="form-group col-6">
+        <small for="amount">Amount </small>
+        <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
+          placeholder="Amount" disabled>
+      </div>
+      <div class="form-group col-6">
+        <small for="">Interest , need to check mapping of this</small>
+        <input type="text" class="form-control form-control-sm" formControlName="" id=""
+          placeholder="Interest" disabled>
+      </div>
+      <div class="form-group col-6">
+        <small for="amount">Total Amount</small>
+        <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
+          placeholder="amount" disabled>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-6">
+        <small for="instrument_dt">Instrument Date</small>
+        <input type="text" class="form-control form-control-sm" formControlName="instrument_dt" id="instrument_dt"
+          placeholder="Instrument Date" disabled>
+      </div>
+      <div class="form-group col-6">
+        <small for="instrument_num">Instrument Number</small>
+        <input type="text" class="form-control form-control-sm" formControlName="instrument_num" id="instrument_num"
+          placeholder="Instrument Number" disabled>
+      </div>
+      <div class="form-group col-12">
+        <small for="paid_to">Paid To</small>
+        <input type="text" class="form-control form-control-sm" formControlName="paid_to" id="paid_to"
+          placeholder="Paid To" disabled>
+      </div>
+      <div class="form-group col-6">
+        <small for="trf_type">Transfer Type</small>
+        <input type="text" class="form-control form-control-sm" formControlName="trf_type" id="trf_type"
+          placeholder="Transfer Type" disabled>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-6">
+        <small for="approval_status">Approval Status</small>
+        <input type="text" class="form-control form-control-sm" formControlName="approval_status" id="approval_status"
+          placeholder="Approval Status" disabled>
+      </div>
+    </div>
+  </form>
+</div>
