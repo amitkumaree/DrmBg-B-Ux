@@ -1,19 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { td_accholder } from 'src/app/bank-resolver/Models/deposit/td_accholder';
+import { td_introducer } from 'src/app/bank-resolver/Models/deposit/td_introducer';
+import { td_nominee } from 'src/app/bank-resolver/Models/deposit/td_nominee';
+import { td_signatory } from 'src/app/bank-resolver/Models/deposit/td_signatory';
 import { RestService } from 'src/app/_service';
-import { td_accholder } from '../../Models/deposit/td_accholder';
-import { td_introducer } from '../../Models/deposit/td_introducer';
-import { td_nominee } from '../../Models/deposit/td_nominee';
-import { td_signatory } from '../../Models/deposit/td_signatory';
+
 
 @Component({
-  selector: 'app-acc-opening',
-  templateUrl: './acc-opening.component.html',
-  styleUrls: ['./acc-opening.component.css']
+  selector: 'app-test',
+  templateUrl: './test.component.html',
+  styleUrls: ['./test.component.css']
 })
-
-
-export class AccOpeningComponent implements OnInit {
+export class TestComponent implements OnInit {
 
   constructor(
     private frmBldr: FormBuilder,
