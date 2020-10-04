@@ -38,24 +38,20 @@ export class RestService {
   }
 
   public getBankJsonConfig<T>(url: string): Observable<T> {
-    debugger;
     return this.http.get<T>(url);
   }
 
   public postBankJsonConfig<T>(url: string, data: T): Observable<T> {
-    debugger;
     return this.http.post<T>(url, data);
   }
 
 // This to get Ux configuration data from Master folder
   public getBankJsonConfigUx<T>(url: string): Observable<T> {
-    debugger;
     return this.http.get<T>(url);
   }
 
 // This to put Ux configuration data to Master and UX folder
   public postBankJsonConfigUx<T>(url: string, data: T): Observable<T> {
-    debugger;
     return this.http.post<T>(url, data);
   }
 
