@@ -11,7 +11,7 @@
   </div>
 </div>
 
-
+<!-- <loading *ngIf="isLoading"></loading> -->
 <div class="container">
   <div class="row">
     <div class="col-12 col-sm-6 col-md-7 border">
@@ -22,37 +22,42 @@
       <div class="form-row">
         <div class="form-group col-3">
           <small for="cust_code">Customer Code</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_code"
-            placeholder="Customer Code">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize"
+          [(ngModel)]="selectedCustomer.cust_cd" id="cust_code" placeholder="Customer Code">
         </div>
         <div class="form-group col-7">
           <small for="cust_name">Customer Name</small>
           <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_name"
-            placeholder="Customer Name">
+            placeholder="Customer Name" [(ngModel)]="selectedCustomer.cust_name" (input)="suggestCustomer()">
+            <div class="suggestions border p-2" *ngIf="suggestedCustomer">
+              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer" (click)="SelectCustomer(cust)">[ {{cust.cust_cd}} ] {{cust.cust_name}}</p>
+            </div>
         </div>
+
+
         <div class="form-group col-2">
           <small for="cust_type">Type</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_type"
-            placeholder="Type">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_type"
+          [(ngModel)]="selectedCustomer.cust_type" placeholder="Type">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group col-7">
           <small for="cust_gurdain">Gurdain Name</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_gurdain"
-            placeholder="Gurdain Name">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_gurdain"
+          [(ngModel)]="selectedCustomer.guardian_name" placeholder="Gurdain Name">
         </div>
         <div class="form-group col-3">
           <small for="cust_dob">Date Of Birth</small>
-          <input style="height:25px" type="Date" class="form-control form-control-sm" id="cust_dob"
-            placeholder="Cust DOB">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm" id="cust_dob"
+          [(ngModel)]="selectedCustomer.dt_of_birth" placeholder="Cust DOB">
 
         </div>
         <div class="form-group col-2">
           <small for="cust_sex">Sex</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_sex"
-            placeholder="Customer Sex">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_sex"
+          [(ngModel)]="selectedCustomer.sex" placeholder="Customer Sex">
         </div>
       </div>
 
@@ -61,32 +66,32 @@
       <div class="form-row">
         <div class="form-group col-3">
           <small for="cust_phone">Phone</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
-            placeholder="Customer Phone">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
+          [(ngModel)]="selectedCustomer.phone" placeholder="Customer Phone">
         </div>
         <div class="form-group col-3">
           <small for="cust_category">Category</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_category"
-            placeholder="Customer Category">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_category"
+          [(ngModel)]="selectedCustomer.catg_cd" placeholder="Customer Category">
         </div>
 
         <div class="form-group col-3">
           <small for="cust_occup">Occupation</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_occup"
-            placeholder="Occupation">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_occup"
+          [(ngModel)]="selectedCustomer.occupation" placeholder="Occupation">
         </div>
         <div class="form-group col-3">
           <small for="cust_ledger">Ledger Number</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
-            placeholder="Ledger Number">
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
+          [(ngModel)]="selectedCustomer.catg_cd" placeholder="Ledger Number">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group col-12">
           <small for="cust_addr">Present Address</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_addr"
-            placeholder="Cust Present Address">
+          <input style="height:25px; " disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_addr"
+          [(ngModel)]="selectedCustomer.present_address" placeholder="Cust Present Address">
         </div>
       </div>
 
@@ -196,10 +201,10 @@
                 <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="acc_type"
                   placeholder="Account Type"> -->
           <small for="trans_type">Account Type</small> <br>
-          <select
-            style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-            id="trans_type" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
-            <option value="?" selected="selected"></option>
+
+          <select  style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+            id="account_type" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
+            <!-- <option value="?" selected="selected"></option>
             <option value="1">1-Savings Deposit</option>
             <option value="2">2-Fixed Deposit</option>
             <option value="3">3-DBS</option>
@@ -209,7 +214,10 @@
             <option value="7">7-Share</option>
             <option value="8">8-Current Account</option>
             <option value="9">9-Guaranty Fund</option>
-            <option value="11">11-Savings Deposit Special</option>
+            <option value="11">11-Savings Deposit Special</option> -->
+            <option value="" disabled selected></option>
+            <option *ngFor="let l of accountTypeList" [value]="l.acc_type_cd">{{l.acc_type_cd}}-{{l.acc_type_desc}}</option>
+
           </select>
         </div>
 
@@ -228,7 +236,7 @@
 
 
       <!-- <-----------Deposit-------------->
-      <div *ngIf="accountType==1">
+      <div *ngIf="accountTypeDiv==1">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -241,12 +249,9 @@
             <small for="trans_type">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">1-Individual Members</option>
-              <option value="2">2-Non Members</option>
-              <option value="3">3-Self-Help Group</option>
-              <option value="4">4-Other Deposit</option>
+              id="trans_type" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
           </div>
 
@@ -254,11 +259,10 @@
             <small for="acc_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="acc_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
+              id="acc_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
+
             </select>
           </div>
         </div>
@@ -305,7 +309,7 @@
 
 
       <!-- <-----------Start: Fixed Deposit-------------->
-      <div *ngIf="accountType==2">
+      <div *ngIf="accountTypeDiv==2">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -314,27 +318,24 @@
               placeholder="Opening Date">
           </div> -->
 
-          <div class="form-group col-3">
-            <small for="dep_oprn_instr">Operational Instr.</small> <br>
-            <select
-              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
-            </select>
-          </div>
 
           <div class="form-group col-4">
             <small for="trans_type">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="6">6-Individual</option>
-              <option value="7">7-Non Members</option>
-              <option value="8">8-Self-Help Group</option>
+              id="trans_type" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="dep_oprn_instr">Operational Instr.</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="dep_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
             </select>
           </div>
 
@@ -448,7 +449,7 @@
 
 
       <!-- <-----------Start: DBS-------------->
-      <div *ngIf="accountType==3">
+      <div *ngIf="accountTypeDiv==3">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -457,27 +458,23 @@
               id="dbs_acc_open_dt">
           </div> -->
 
-          <div class="form-group col-3">
-            <small for="dep_oprn_instr">Operational Instr.</small> <br>
-            <select
-              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
-            </select>
-          </div>
-
           <div class="form-group col-4">
             <small for="dbs_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="dbs_const" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="6">6-Individual</option>
-              <option value="7">7-Non Members</option>
-              <option value="8">8-Self-Help Group</option>
+              id="dbs_const" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="dep_oprn_instr">Operational Instr.</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="dep_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
             </select>
           </div>
 
@@ -598,7 +595,7 @@
 
 
       <!-- <-----------Start: Term Deposit_Reinvestment-------------->
-      <div *ngIf="accountType==4">
+      <div *ngIf="accountTypeDiv==4">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -607,27 +604,23 @@
               id="term_dep_open_dt">
           </div> -->
 
-          <div class="form-group col-3">
-            <small for="term_dep_oprn_instr">Operational Instr.</small> <br>
-            <select
-              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="term_dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
-            </select>
-          </div>
-
           <div class="form-group col-4">
             <small for="term_dep_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="term_dep_const" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="6">6-Individual</option>
-              <option value="7">7-Non Members</option>
-              <option value="8">8-Self-Help Group</option>
+              id="term_dep_const" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="term_dep_oprn_instr">Operational Instr.</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="term_dep_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
             </select>
           </div>
 
@@ -687,17 +680,6 @@
               class="form-control form-control-sm text-capitalize" id="term_dep_intt_rate">
           </div>
 
-          <!-- <div class="form-group col-2">
-            <small for="term_dep_oprn_instr">Operational Instr.</small> <br>
-            <select
-              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="term_dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
-            </select>
-          </div> -->
 
           <div class="form-group col-2">
             <small for="term_dep_interest">Interest</small>
@@ -748,7 +730,7 @@
       <!-- <-----------End: Term Deposit_Reinvestment-------------->
 
       <!-- <-----------Start: Monthly Income Scheme -------------->
-      <div *ngIf="accountType==5">
+      <div *ngIf="accountTypeDiv==5">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -757,27 +739,23 @@
               id="mis_open_dt">
           </div> -->
 
-          <div class="form-group col-3">
-            <small for="mis_oprn_instr">Operational Instr.</small> <br>
-            <select
-              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="mis_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
-            </select>
-          </div>
-
           <div class="form-group col-4">
             <small for="mis_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="mis_const" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="6">6-Individual</option>
-              <option value="7">7-Non Members</option>
-              <option value="8">8-Self-Help Group</option>
+              id="mis_const" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
+            </select>
+          </div>
+
+          <div class="form-group col-3">
+            <small for="mis_oprn_instr">Operational Instr.</small> <br>
+            <select
+              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              id="mis_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
             </select>
           </div>
 
@@ -836,18 +814,6 @@
               class="form-control form-control-sm text-capitalize" id="mis_intt_rate">
           </div>
 
-          <!-- <div class="form-group col-3">
-            <small for="mis_oprn_instr">Operational Instr.</small> <br>
-            <select
-              style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="mis_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
-            </select>
-          </div> -->
-
           <div class="form-group col-3">
             <small for="mis_interest">Interest</small>
             <input style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
@@ -892,7 +858,7 @@
 
 
       <!-- <-----------Start: Recurring Deposit-------------->
-      <div *ngIf="accountType==6">
+      <div *ngIf="accountTypeDiv==6">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -905,11 +871,9 @@
             <small for="rec_dep_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="rec_dep_const" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="6">6-Individual</option>
-              <option value="7">7-Non Members</option>
-              <option value="8">8-Self-Help Group</option>
+              id="rec_dep_const" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
           </div>
 
@@ -965,11 +929,9 @@
             <small for="rec_dep_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="rec_dep_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
+              id="rec_dep_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
             </select>
           </div>
 
@@ -996,7 +958,7 @@
       <!-- <-----------End: Recurring Deposit-------------->
 
       <!-- <-----------Start:  Share-------------->
-      <div *ngIf="accountType==7">
+      <div *ngIf="accountTypeDiv==7">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -1009,12 +971,9 @@
             <small for="share_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="share_const" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">1-Individual Members</option>
-              <option value="2">2-Non Members</option>
-              <option value="3">3-Self-Help Group</option>
-              <option value="4">4-Other Deposit</option>
+              id="share_const" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
           </div>
 
@@ -1022,11 +981,9 @@
             <small for="share_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="share_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
+              id="share_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
             </select>
           </div>
         </div>
@@ -1074,7 +1031,7 @@
 
 
       <!-- <-----------Start:  Current Account-------------->
-      <div *ngIf="accountType==8">
+      <div *ngIf="accountTypeDiv==8">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -1087,12 +1044,9 @@
             <small for="curr_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="curr_const" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">1-Individual Members</option>
-              <option value="2">2-Non Members</option>
-              <option value="3">3-Self-Help Group</option>
-              <option value="4">4-Other Deposit</option>
+              id="curr_const" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
           </div>
 
@@ -1100,11 +1054,9 @@
             <small for="curr_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="curr_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
+              id="curr_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
             </select>
           </div>
         </div>
@@ -1150,7 +1102,7 @@
       <!-- <-----------End: Current-------------->
 
       <!-- <-----------Start:  Guaranty Fund-------------->
-      <div *ngIf="accountType==9">
+      <div *ngIf="accountTypeDiv==9">
 
         <div class="form-row">
           <!-- <div class="form-group col-2">
@@ -1163,12 +1115,9 @@
             <small for="guar_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="guar_const" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">1-Individual Members</option>
-              <option value="2">2-Non Members</option>
-              <option value="3">3-Self-Help Group</option>
-              <option value="4">4-Other Deposit</option>
+              id="guar_const" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
           </div>
 
@@ -1176,11 +1125,9 @@
             <small for="gua_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="gua_oprn_instr" class="form-control form-control-sm" (change)="xxxxxxxx($event.target.value)">
-              <option value="?" selected="selected"></option>
-              <option value="1">Self</option>
-              <option value="2">All Joint</option>
-              <option value="3">Either Or Survivor</option>
+              id="gua_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
+              <option value="" disabled selected></option>
+              <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
             </select>
           </div>
         </div>
@@ -1516,5 +1463,23 @@
 
       </div>
     </div>
+  </div>
+
+</div>
+
+
+
+
+
+<div class="row d-flex justify-content-center align-items-center"
+  style="background-color: #78c2ad21; text-align: center;">
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">New</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Retrieve</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Modify</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Clear</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
   </div>
 </div>
