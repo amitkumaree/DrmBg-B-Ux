@@ -6,7 +6,6 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import html2pdf from 'html2pdf.js';
 import jsPDF from 'jspdf';
-import { ExportAsService, ExportAsConfig } from 'ngx-export-as';
 
 @Component({
   selector: 'app-voucherprint',
@@ -24,17 +23,16 @@ export class VoucherprintComponent implements OnInit {
   showAlert = false;
   alertMsg = '';
   fromdate: Date;
-  toDate:Date; 
+  todate:Date; 
   isLoading = false;
-  exportAsConfig: ExportAsConfig = {
-    type: 'png', 
-    elementIdOrContent: 'reportcontent' 
-  }
   
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-     private modalService: NgbModal,private exportAsService: ExportAsService) { }
+     private modalService: NgbModal) { }
 
   ngOnInit(): void {
+    debugger;
+    this.fromdate=new Date(localStorage.getItem('__currentDate'));
+    this.todate=new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
@@ -42,6 +40,7 @@ export class VoucherprintComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
+    debugger;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
     },
       (reason) => {
@@ -74,16 +73,16 @@ export class VoucherprintComponent implements OnInit {
     else {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
-      this.toDate=this.reportcriteria.value['toDate'];
+      this.todate=this.reportcriteria.value['toDate'];
       this.getmVoucherDetails();
       this.modalService.dismissAll(this.content);
     }
   }
 
   private getmVoucherDetails(): void {
-    this.prp.brn_cd='101';
+    this.prp.brn_cd=localStorage.getItem('__brnCd');
     this.prp.from_dt= this.fromdate;
-    this.prp.to_dt=this.toDate;
+    this.prp.to_dt=this.todate;
     this.isLoading=true;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherDtlsForPrint', this.prp).subscribe(
       res => {
@@ -145,7 +144,7 @@ export class VoucherprintComponent implements OnInit {
   var element = document.getElementById('reportcontent');
   var option = {
 margin:       0,
-filename:     'myfile.pdf',
+filename:     'Voucher_'+this.fromdate.toString()+'.pdf',
 image:        { type: 'jpeg', quality: 0.98 },
 html2canvas:  { scale:1},
 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'p' }
