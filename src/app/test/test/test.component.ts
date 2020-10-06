@@ -63,6 +63,8 @@ export class TestComponent implements OnInit {
     this.isLoading = true;
     this.branchCode = localStorage.getItem('__brnCd');
 
+    this.suggestedCustomer = null;
+
     this.getCustomerList();
     this.getConstitutionList();
     this.getAccountTypeList();
