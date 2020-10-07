@@ -23,22 +23,21 @@
         <div class="form-group col-3">
           <small for="cust_code">Customer Code</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize"
-          [(ngModel)]="selectedCustomer.cust_cd" id="cust_code" placeholder="Customer Code">
+          [(ngModel)]="tm_deposit.cust_cd" id="cust_code" placeholder="Customer Code">
         </div>
         <div class="form-group col-7">
           <small for="cust_name">Customer Name</small>
-          <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="cust_name"
-            placeholder="Customer Name" [(ngModel)]="selectedCustomer.cust_name" (input)="suggestCustomer()">
+          <input style="height:25px" type="text" [disabled]='disableAll' class="form-control form-control-sm text-capitalize" id="cust_name"
+            placeholder="Customer Name" [(ngModel)]="tm_deposit.cust_name" (input)="suggestCustomer()">
             <div class="suggestions border p-2" *ngIf="suggestedCustomer">
-              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer" (click)="SelectCustomer(cust)">[ {{cust.cust_cd}} ] {{cust.cust_name}}</p>
+              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer" (click)="selectCustomer(cust.cust_cd)">[ {{cust.cust_cd}} ] {{cust.cust_name}}</p>
             </div>
         </div>
-
 
         <div class="form-group col-2">
           <small for="cust_type">Type</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_type"
-          [(ngModel)]="selectedCustomer.cust_type" placeholder="Type">
+          [(ngModel)]="tm_deposit.cust_type" placeholder="Type">
         </div>
       </div>
 
@@ -46,44 +45,42 @@
         <div class="form-group col-7">
           <small for="cust_gurdain">Gurdain Name</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_gurdain"
-          [(ngModel)]="selectedCustomer.guardian_name" placeholder="Gurdain Name">
+          [(ngModel)]="tm_deposit.gurdain_name" placeholder="Gurdain Name">
         </div>
         <div class="form-group col-3">
           <small for="cust_dob">Date Of Birth</small>
           <input style="height:25px" disabled type="date" class="form-control form-control-sm" id="cust_dob"
-          [(ngModel)]="selectedCustomer.dt_of_birth" placeholder="Cust DOB">
+          [(ngModel)]="tm_deposit.date_of_birth" placeholder="Cust DOB">
 
         </div>
         <div class="form-group col-2">
           <small for="cust_sex">Sex</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_sex"
-          [(ngModel)]="selectedCustomer.sex" placeholder="Customer Sex">
+          [(ngModel)]="tm_deposit.sex" placeholder="Customer Sex">
         </div>
       </div>
-
-
 
       <div class="form-row">
         <div class="form-group col-3">
           <small for="cust_phone">Phone</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
-          [(ngModel)]="selectedCustomer.phone" placeholder="Customer Phone">
+          [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone">
         </div>
         <div class="form-group col-3">
           <small for="cust_category">Category</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_category"
-          [(ngModel)]="selectedCustomer.catg_cd" placeholder="Customer Category">
+          [(ngModel)]="tm_deposit.category" placeholder="Customer Category">
         </div>
 
         <div class="form-group col-3">
           <small for="cust_occup">Occupation</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_occup"
-          [(ngModel)]="selectedCustomer.occupation" placeholder="Occupation">
+          [(ngModel)]="tm_deposit.occupation" placeholder="Occupation">
         </div>
         <div class="form-group col-3">
           <small for="cust_ledger">Ledger Number</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
-          [(ngModel)]="selectedCustomer.catg_cd" placeholder="Ledger Number">
+          [(ngModel)]="tm_deposit.email" placeholder="Ledger Number">
         </div>
       </div>
 
@@ -91,7 +88,7 @@
         <div class="form-group col-12">
           <small for="cust_addr">Present Address</small>
           <input style="height:25px; " disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_addr"
-          [(ngModel)]="selectedCustomer.present_address" placeholder="Cust Present Address">
+          [(ngModel)]="tm_deposit.present_addr" placeholder="Cust Present Address">
         </div>
       </div>
 
@@ -102,61 +99,50 @@
       <h1></h1>
       <h6 style="background-color: lightskyblue">Authorised Signatories</h6>
 
-      <section *ngFor="let t1 of td_signatorylist;">
-      <div class="form-row">
-        <div class="form-group col-12">
-          <small for="auth_sig">Name of Authorised Signatories</small>
-          <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="auth_sig"
-          [(ngModel)]="t1.signatory_name" placeholder="Name of Authorised Signatories">
-        </div>
-      </div>
-    </section>
-
-
-
-        <div class="text-right mb-3">
-         <button type="button" style="height:22px; padding-top: 0px;"  class="btn btn-primary btn-sm" (click)="addSignatory()">
-          <i class="fa fa-plus-circle" aria-hidden="true"></i>
-         </button>
-
-         <button type="button" style="height:22px; padding-top: 0px;"  class="btn btn-primary btn-sm" (click)="removeSignatory()">
-          <i class="fa fa-minus-circle" aria-hidden="true"></i>
-         </button>
-
-            <!-- <button type="button" style="height:22px; padding-top: 0px;"  class="btn btn-primary btn-sm "><strong>-</strong></button>
-            <button type="button" style="height:22px; padding-top: 0px;"  class="btn btn-primary btn-sm "><strong>+</strong></button> -->
+      <section *ngFor="let t1 of td_signatoryList;">
+        <div class="form-row">
+          <div class="form-group col-12">
+            <small for="auth_sig">Name of Authorised Signatories</small>
+            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="auth_sig"
+              [(ngModel)]="t1.signatory_name" placeholder="Name of Authorised Signatories">
           </div>
+        </div>
+      </section>
+      <div class="text-right mb-3">
+        <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm" (click)="addSignatory()">
+          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        </button>
+
+        <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm"
+          (click)="removeSignatory()">
+          <i class="fa fa-minus-circle" aria-hidden="true"></i>
+        </button>
+      </div>
+       <!-- -------------------------------------- -->
+
 
       <hr style="margin-top: 0ch;">
-
       <h6 style="background-color: lightskyblue">Joint Holder</h6>
-      <section *ngFor="let t1 of td_accholderlist;">
+      <section *ngFor="let t1 of td_accholderList; let i = index">
       <div class="form-row">
         <div class="form-group col-3">
           <small for="joint_cust_code">Cust Code</small>
-          <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+          <input type="text" [(ngModel)]="t1.cust_cd" style="height:25px" class="form-control form-control-sm text-capitalize"
             id="joint_cust_code" placeholder="Cust Code">
         </div>
 
         <div class="form-group col-3">
           <small for="trans_type">Relation</small> <br>
           <select style="height:25px; font-size: small; padding-top: 0px; background-color: whitesmoke;" id="trans_type"
-            class="form-control form-control-sm" (change)="setTransType($event.target.value)">
-            <option value="?" selected="selected"></option>
-            <option value="1">Father</option>
-            <option value="2">Mother</option>
-            <option value="3">Sister</option>
-            <option value="4">Brother</option>
-            <option value="5">Friend</option>
-            <option value="6">Son</option>
-            <option value="7">Daughter</option>
-            <option value="8">Others</option>
+            class="form-control form-control-sm" (change)="setRelationship($event.target.value, i)">
+            <option value="t1.relation" disabled selected>{{t1.relation}}-{{t1.relationDscr}}</option>
+            <option *ngFor="let l of relationship" [value]="l.id">{{l.id}}-{{l.val}}</option>
           </select>
         </div>
 
         <div class="form-group col-6">
           <small for="joint_cust_name">Account Holder</small>
-          <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+          <input type="text" [(ngModel)]="t1.acc_holder" style="height:25px" class="form-control form-control-sm text-capitalize"
             id="joint_cust_name" placeholder="Account Holder">
         </div>
       </div>
@@ -171,15 +157,6 @@
           <i class="fa fa-minus-circle" aria-hidden="true"></i>
          </button>
         </div>
-
-      <!-- <div class="form-row">
-        <div class="form-group col-12">
-          <small for="joint_cust_name">Account Holder</small>
-          <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-            id="joint_cust_name" placeholder="Account Holder">
-        </div>
-      </div> -->
-
     </div>
   </div>
 </div>
@@ -203,21 +180,9 @@
           <small for="trans_type">Account Type</small> <br>
 
           <select  style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-            id="account_type" class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
-            <!-- <option value="?" selected="selected"></option>
-            <option value="1">1-Savings Deposit</option>
-            <option value="2">2-Fixed Deposit</option>
-            <option value="3">3-DBS</option>
-            <option value="4">4-Term Deposit_Reinvestment</option>
-            <option value="5">5-Monthly Income Scheme</option>
-            <option value="6">6-Recurring Deposit</option>
-            <option value="7">7-Share</option>
-            <option value="8">8-Current Account</option>
-            <option value="9">9-Guaranty Fund</option>
-            <option value="11">11-Savings Deposit Special</option> -->
-            <option value="" disabled selected></option>
+            id="account_type" [disabled]='disableAll'  class="form-control form-control-sm" (change)="setAccountType($event.target.value)">
+            <option value="tm_deposit.acc_type_cd" disabled selected>{{tm_deposit.acc_type_cd}}-{{tm_deposit.acc_type_desc}}</option>
             <option *ngFor="let l of accountTypeList" [value]="l.acc_type_cd">{{l.acc_type_cd}}-{{l.acc_type_desc}}</option>
-
           </select>
         </div>
 
@@ -239,18 +204,12 @@
       <div *ngIf="accountTypeDiv==1">
 
         <div class="form-row">
-          <!-- <div class="form-group col-2">
-            <small for="acc_open_dt">Opening Date</small>
-            <input style="height:25px" type="text" class="form-control form-control-sm text-capitalize" id="acc_open_dt"
-              placeholder="Opening Date">
-          </div> -->
-
           <div class="form-group col-6">
             <small for="trans_type">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
               id="trans_type" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
-              <option value="" disabled selected></option>
+              <option value="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
           </div>
@@ -260,7 +219,7 @@
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
               id="acc_oprn_instr" class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
-              <option value="" disabled selected></option>
+              <option value="tm_deposit.oprn_instr_cd" disabled selected>{{tm_deposit.oprn_instr_cd}}-{{tm_deposit.oprn_instr_desc}}</option>
               <option *ngFor="let l of operationalInstrList" [value]="l.oprn_cd">{{l.oprn_cd}}-{{l.oprn_desc}}</option>
 
             </select>
@@ -273,15 +232,20 @@
             <div class="container border">
               <div class="form-check">
                 <label class="form-check-label">
-                  <input type="checkbox" value="false"><small> Cheque Facility</small>
+                  <input type="checkbox" value="false" [checked]="tm_deposit.cheque_facility_flag == 'Y'"
+                  (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Cheque Facility</small>
                 </label>
                 <br>
+
                 <label class="form-check-label">
-                  <input type="checkbox" value="false"><small> Standing Instruction</small>
+                  <input type="checkbox" value="false" [checked]="tm_deposit.standing_instr_flag == 'Y'"
+                  (change)="tm_deposit.standing_instr_flag = $event.target.checked ? 'Y' : 'N' "><small> Standing Instruction</small>
                 </label>
                 <br>
+
                 <label class="form-check-label">
-                  <input type="checkbox" value="false"><small> TDS Applicable</small>
+                  <input type="checkbox" value="false" [checked]="tm_deposit.tds_applicable == 'Y'"
+                  (change)="tm_deposit.tds_applicable = $event.target.checked ? 'Y' : 'N' "><small> TDS Applicable</small>
                 </label>
                 <br>
               </div>
@@ -292,11 +256,11 @@
 
           <div class="form-group col-4">
             <small for="principal">Principal</small>
-            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+            <input [(ngModel)]="tm_deposit.prn_amt" style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
               class="form-control form-control-sm text-capitalize" id="constitution" placeholder="Principal">
 
             <small for="amount">Amount</small>
-            <input style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
+            <input [(ngModel)]="tm_deposit" style="height:25px; text-align-last: right;" type="number" min="0" value='0.00' step='any'
               class="form-control form-control-sm text-capitalize" id="amount" placeholder="Amount">
 
             <small for="constitution">Curr. Balance</small>
@@ -1270,31 +1234,8 @@
     <div class="col-12 col-sm-6 col-md-12 border">
       <h1></h1>
       <h6 style="background-color:lightskyblue">Nominee Details</h6>
-      <!-- <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3"> -->
 
-        <!-- <div class="form-row">
-          <div class="form-group col-2">
-            <small for="nom_name">Nominee Name</small>
-          </div>
-
-          <div class="form-group col-4">
-            <small for="nom_addr">Nominee Address</small>
-          </div>
-
-          <div class="form-group col-2">
-            <small for="nom_percent">Percentage</small>
-          </div>
-
-          <div class="form-group col-2">
-            <small for="nom_rel">Relation</small>
-          </div>
-
-          <div class="form-group col-2">
-            <small for="nom_rel">Phone</small>
-          </div>
-        </div> -->
-
-    <section *ngFor="let t1 of td_nomineelist;">
+    <section *ngFor="let t1 of td_nomineeList;">
       <div class="form-row">
         <div class="form-group col-2">
           <small for="nom_name">Nominee Name</small>
