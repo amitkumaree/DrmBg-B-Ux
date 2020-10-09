@@ -41,18 +41,26 @@ export class tm_deposit {
   public transfer_flag: string;
   public transfer_dt: Date;
   public agent_cd: string;
-  public cust_name: string;  // this is added extra for UX operation only
+  public cust_name: string;  // Startc: this below portion is added extra for UX operation only
   public cust_type: string;
   public gurdain_name: string;
   public date_of_birth: Date;
   public sex: string;
   public phone: string;
-  public category: string;
+  public category_cd: number;
+  public category_desc: string;
   public occupation: string;
   public email: string;
   public present_addr: string;
-  public acc_type_desc: string; // this is added extra for UX operation only
+  public acc_type_desc: string;
   public constitution_desc : string;
   public oprn_instr_desc : string;
+  public intt_tfr_type_dscr: string; //  End: this below portion is added extra for UX operation only
+
+
+  tm_deposit()
+  {
+    this.acc_num = null;
+  }
 
 }

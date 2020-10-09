@@ -6,4 +6,5 @@ export class td_introducer {
   public introducer_name : string;
   public introducer_acc_type : number;
   public introducer_acc_num : string;
+  public acc_type_desc: string;
 }
