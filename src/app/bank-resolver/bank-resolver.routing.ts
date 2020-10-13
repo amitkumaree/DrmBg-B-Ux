@@ -22,7 +22,10 @@ import { VoucherprintComponent } from './finance/voucherprint/voucherprint.compo
 import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
 import { TransactionapprovalComponent } from './deposit/transactionapproval/transactionapproval.component';
 import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
-import { TestComponent } from './test/test.component';
+import { TestComponent } from '../test/test/test.component';
+// import { TestComponent } from './test/test.component';
+// import { TestComponent } from './test/test.component';
+import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -32,6 +35,7 @@ const routes: Routes = [
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
   {path: 'NewBankConfig', component: NewBankConfigComponent},
+  {path: 'test', component: TestComponent},
   {
     path: ':bankName', component: BankResolverComponent,
     children: [
@@ -47,6 +51,7 @@ const routes: Routes = [
       { path: 'FR_CashCumTrial', component: CashcumtrialComponent },
       { path: 'FR_TrialBalance', component: TrialbalanceComponent },
       { path: 'FR_GeneralLadger', component: GenLedgerComponent },
+      { path: 'FR_DayScrollBook', component: ScrollbookComponent },
       { path: 'FR_GLTD', component: GenLedger2Component },
       { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
       { path: 'DT_OpenAcc', component: AccOpeningComponent },

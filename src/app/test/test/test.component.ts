@@ -1,25 +1,25 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { mm_customer } from 'src/app/bank-resolver/Models';
+import { AccOpenDM } from 'src/app/bank-resolver/Models/deposit/AccOpenDM';
+import { mm_acc_type } from 'src/app/bank-resolver/Models/deposit/mm_acc_type';
+import { mm_constitution } from 'src/app/bank-resolver/Models/deposit/mm_constitution';
+import { mm_oprational_intr } from 'src/app/bank-resolver/Models/deposit/mm_oprational_intr';
+import { td_accholder } from 'src/app/bank-resolver/Models/deposit/td_accholder';
+import { td_introducer } from 'src/app/bank-resolver/Models/deposit/td_introducer';
+import { td_nominee } from 'src/app/bank-resolver/Models/deposit/td_nominee';
+import { td_signatory } from 'src/app/bank-resolver/Models/deposit/td_signatory';
+import { tm_deposit } from 'src/app/bank-resolver/Models/tm_deposit';
 import { RestService } from 'src/app/_service';
-import { mm_customer } from '../../Models';
-import { AccOpenDM } from '../../Models/deposit/AccOpenDM';
-import { mm_acc_type } from '../../Models/deposit/mm_acc_type';
-import { mm_constitution } from '../../Models/deposit/mm_constitution';
-import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
-import { td_accholder } from '../../Models/deposit/td_accholder';
-import { td_introducer } from '../../Models/deposit/td_introducer';
-import { td_nominee } from '../../Models/deposit/td_nominee';
-import { td_signatory } from '../../Models/deposit/td_signatory';
-import { tm_deposit } from '../../Models/tm_deposit';
+
 
 @Component({
-  selector: 'app-acc-opening',
-  templateUrl: './acc-opening.component.html',
-  styleUrls: ['./acc-opening.component.css']
+  selector: 'app-test',
+  templateUrl: './test.component.html',
+  styleUrls: ['./test.component.css']
 })
+export class TestComponent implements OnInit {
 
-
-export class AccOpeningComponent implements OnInit {
 
   // savingDepositForm: FormGroup;
   // nomineeForm: FormGroup;

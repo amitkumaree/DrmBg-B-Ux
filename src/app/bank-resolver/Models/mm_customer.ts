@@ -43,4 +43,5 @@ export class mm_customer {
   public kyc_address_no: string;
   public org_status: string;
   public org_reg_no: number;
+  public extra_data: number;
 }
