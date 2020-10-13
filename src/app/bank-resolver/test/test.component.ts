@@ -15,19 +15,6 @@ export class TestComponent implements OnInit {
   showCust = false;
 
   ngOnInit(): void {
-    this.getAccInfo();
-  }
-  private getAccInfo(): void {
-    this.showCust = false;
-    const cust = new mm_customer(); cust.cust_cd = 1011686;
-    this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
-      res => {
-        this.custTitle = 'Personal Information';
-        this.cust = res[0];
-        this.showCust = true;
-      },
-      err => {  }
-    );
-
+    // this.getAccInfo();
   }
 }

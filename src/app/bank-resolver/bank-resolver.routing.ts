@@ -27,7 +27,7 @@ import { TestComponent } from './test/test.component';
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
-  { path: 'te-st', component: TestComponent },
+  { path: 'te-st', component: TransactionapprovalComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},

@@ -11,33 +11,28 @@ import { mm_category, mm_customer } from '../../Models';
   templateUrl: './customer-info.component.html',
   styleUrls: ['./customer-info.component.css']
 })
-export class CustomerInfoComponent implements OnInit {
-
-  @Input() inpDtl: mm_customer;
-  @Input() title: string;
-  @Input() mode1: boolean;
-  @Input() mode2: boolean;
+export class CustomerInfoComponent implements OnInit, OnDestroy {
   constructor(private frmBldr: FormBuilder, private svc: RestService,
     private msg: InAppMessageService) {
-    // this.isLoading = true;
-    // this.subscription = this.msg.getCommonCustInfoCustCd().subscribe(
-    //   res => {
-    //     this.cust_cd = res;
-    //     this.isLoading = false;
-    //   },
-    //   err => {this.isLoading = false; }
-    // );
+    this.subscription = this.msg.getCommonCustInfo().subscribe(
+      res => {
+        this.cust = res;
+        this.getCategoryMaster();
+      },
+      err => { }
+    );
+
   }
   get f() { return this.custMstrFrm.controls; }
   static categories: mm_category[] = [];
+  @Input() title: string;
+  @Input() mode1: boolean; // to show hide items
+  @Input() mode2: boolean;
   subscription: Subscription;
-  cust_cd: number;
+  cust: mm_customer;
   custMstrFrm: FormGroup;
-  customer: mm_customer;
-  // show = false;
 
   ngOnInit(): void {
-    // console.log(JSON.stringify(this.inpDtl));
     this.custMstrFrm = this.frmBldr.group({
       brn_cd: [''],
       cust_cd: [''],
@@ -85,7 +80,6 @@ export class CustomerInfoComponent implements OnInit {
       org_reg_no: [''],
       catg_desc: ['']
     });
-    this.getCategoryMaster();
   }
 
   private getCategoryMaster(): void {
@@ -105,8 +99,8 @@ export class CustomerInfoComponent implements OnInit {
   }
 
   private getCustomer(): void {
-    const cust = this.inpDtl;
-    if (undefined !== cust || null !== cust) {
+    const cust = this.cust;
+    if (undefined !== cust && null !== cust) {
       const category = CustomerInfoComponent.categories.
         filter(e => e.catg_cd === cust.catg_cd)[0];
       this.custMstrFrm.patchValue({
@@ -159,7 +153,7 @@ export class CustomerInfoComponent implements OnInit {
     }
   }
 
-  // ngOnDestroy(): void {
-  //   this.subscription.unsubscribe();
-  // }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 }

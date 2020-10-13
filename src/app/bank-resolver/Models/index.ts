@@ -23,3 +23,6 @@ export * from './mm_service_area';
 export * from './mm_block';
 export * from './showMessage';
 export * from './td_def_trans_trf';
+export * from './mm_acc_type';
+export * from './TranApprovalVM';
+export * from './tm_deposit';
