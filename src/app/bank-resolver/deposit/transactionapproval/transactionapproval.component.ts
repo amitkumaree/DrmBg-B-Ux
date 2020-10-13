@@ -5,8 +5,9 @@ import { ExportAsService } from 'ngx-export-as';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import {
   MessageType, mm_customer, ShowMessage, td_def_trans_trf,
-  mm_acc_type, TranApprovalVM, tm_deposit
+  mm_acc_type, tm_deposit
 } from '../../Models';
+import { TranApprovalVM } from '../../Models/TranApprovalVM';
 
 @Component({
   selector: 'app-transactionapproval',
