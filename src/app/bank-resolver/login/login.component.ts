@@ -76,6 +76,7 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('__brnCd',this.f.branch.value);//"101"
             localStorage.setItem('__currentDate',this.systemParam.find(x=>x.param_cd==="206").param_value);//Day initilaze
             localStorage.setItem('__cashaccountCD',this.systemParam.find(x=>x.param_cd==="213").param_value);//28101
+            localStorage.setItem('__ddsPeriod',this.systemParam.find(x=>x.param_cd==="220").param_value); // 12
             this.isLoading=false;
             this.msg.sendisLoggedInShowHeader(true);
             this.router.navigate([__bName + '/la']);
@@ -104,7 +105,10 @@ export class LoginComponent implements OnInit {
     localStorage.removeItem('__brnCd');
     localStorage.removeItem('__currentDate');
     localStorage.removeItem('__cashaccountCD');
-    
+    localStorage.removeItem('__ddsPeriod');
+
+
+
     this.router.navigate(['/']);
   }
 

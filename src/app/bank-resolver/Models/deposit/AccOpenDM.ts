@@ -17,7 +17,9 @@ export class AccOpenDM
   public  tmdenominationtrans: tm_denomination_trans[] = [];
   public  tmtransfer: tm_transfer[] = [];
   public  tddeftranstrf: td_def_trans_trf[] = [];
-  public  tddeftrans: td_def_trans_trf[] = [];
+  public  tddeftrans: td_def_trans_trf;
+
+
 
 }
 
