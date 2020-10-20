@@ -5,6 +5,7 @@ import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dailybook',
@@ -27,7 +28,7 @@ export class DailybookComponent implements OnInit {
   fromdate: Date;
   todate:Date;
   isLoading = false;
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -242,6 +243,10 @@ export class DailybookComponent implements OnInit {
     debugger;
     this.child.webDataRocks.refresh();
 }
+closeScreen()
+{
+  this.router.navigate(['vccb' + '/la']);
+}
 exportPDFTitle() {
   var options = this.child.webDataRocks.getOptions();
   this.child.webDataRocks.setOptions( {
@@ -250,8 +255,9 @@ exportPDFTitle() {
     }
   } 
   );
+  let brnName="Main Branch";
   this.child.webDataRocks.refresh();
-  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##</div>",filename:"DayBook"});
+  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSynergic Banking&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspBranch : "+localStorage.getItem('__brnName')+"<br>&nbsp</div>",filename:"DayBook"});
   this.child.webDataRocks.on('exportcomplete', function () {
     this.child.webDataRocks.off('exportcomplete')
     this.child.webDataRocks.setOptions(options);

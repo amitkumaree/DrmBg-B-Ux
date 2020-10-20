@@ -98,7 +98,7 @@ export class GenLedgerComponent implements OnInit {
   onReportComplete(): void {
     debugger;
     if (!this.isLoading)return ;
-    this.prp.brn_cd = '101';
+    this.prp.brn_cd = localStorage.getItem('__brnCd');;
     this.prp.from_dt = this.fromdate;
     this.prp.to_dt = this.todate;
     this.prp.ad_from_acc_cd = +this.r.fromAcc.value;
@@ -261,12 +261,12 @@ export class GenLedgerComponent implements OnInit {
     const options = this.child.webDataRocks.getOptions();
     this.child.webDataRocks.setOptions({
       grid: {
-        title: 'Cash Cum Trial Balance For The Period' + this.fd + '-' + this.td
+        title: 'GL Transaction Details For The Period' + this.fd + '-' + this.td
       }
     }
     );
     this.child.webDataRocks.refresh();
-    this.child.webDataRocks.exportTo('pdf', { pageOrientation: 'potrait', header: '<div>##CURRENT-DATE##</div>', filename: 'GeneralLedgerTransactions' });
+    this.child.webDataRocks.exportTo('pdf', { pageOrientation: 'potrait', header: '<div>##CURRENT-DATE## Synergic Banking</div>', filename: 'GeneralLedgerTransactions' });
     this.child.webDataRocks.on('exportcomplete', function() {
       this.child.webDataRocks.off('exportcomplete');
       this.child.webDataRocks.setOptions(options);
