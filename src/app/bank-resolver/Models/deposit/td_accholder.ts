@@ -5,4 +5,5 @@ export class td_accholder {
   public acc_holder : string;
   public relation: string;
   public cust_cd: number;
+  public relationDscr: string;
 }

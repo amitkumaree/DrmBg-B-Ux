@@ -30,6 +30,7 @@ export class RestService {
       }
     url += 'api/';
     // console.log(url);
+     url = 'https://localhost:5001/api/';
     return url;
   }
 
@@ -65,6 +66,7 @@ export class RestService {
   }
 
   public addUpdDel<T>(ofwhat: string, data: T): Observable<T> {
+    // debugger;
     return this.http.post<T>((this.getUrl() + ofwhat), data);
   }
 

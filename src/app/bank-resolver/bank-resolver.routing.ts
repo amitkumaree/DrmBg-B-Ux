@@ -22,15 +22,13 @@ import { VoucherprintComponent } from './finance/voucherprint/voucherprint.compo
 import { GenLedger2Component } from './finance/report/gen-ledger2/gen-ledger2.component';
 import { TransactionapprovalComponent } from './deposit/transactionapproval/transactionapproval.component';
 import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
-import { TestComponent } from '../test/test/test.component';
-// import { TestComponent } from './test/test.component';
-// import { TestComponent } from './test/test.component';
+import { TestComponent } from './test/test.component';
 import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
-  // { path: 'te-st', component: TestComponent },
+  { path: 'te-st', component: TransactionapprovalComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},

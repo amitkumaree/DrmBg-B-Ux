@@ -9,4 +9,9 @@ export class td_nominee {
   public phone_no: string;
   public percentage: number;  // decimal
   public relation: string;
+
+  td_nominee()
+  {
+    this.percentage = 0;
+  }
 }
