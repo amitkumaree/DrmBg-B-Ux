@@ -1,5 +1,5 @@
 export class td_def_trans_trf {
-  public trans_dt: Date;
+  public trans_dt?: Date;
   public trans_cd: number;
   public acc_type_cd: number;
   public acc_num: string;
@@ -10,10 +10,6 @@ export class td_def_trans_trf {
   public instrument_num: number;
   public paid_to: string;
   public token_num: string;
-  public created_by: string;
-  public created_dt: Date;
-  public modified_by: string;
-  public modified_dt: Date;
   public approval_status: string;
   public approved_by: string;
   public approved_dt: Date;
@@ -30,13 +26,13 @@ export class td_def_trans_trf {
   public paid_amt: number;
   public curr_prn_recov: number;
   public ovd_prn_recov: number;
-  public curr_numbert_recov: number;
-  public ovd_numbert_recov: number;
+  public curr_intt_recov: number;
+  public ovd_intt_recov: number;
   public remarks: string;
   public crop_cd: string;
   public activity_cd: string;
-  public curr_numbert_rate: number;
-  public ovd_numbert_rate: number;
+  public curr_intt_rate: number;
+  public ovd_intt_rate: number;
   public instl_no: number;
   public instl_start_dt: Date;
   public periodicity: number;
@@ -48,7 +44,7 @@ export class td_def_trans_trf {
   public sector_cd: string;
   public spl_prog_cd: string;
   public borrower_cr_cd: string;
-  public numbert_till_dt: Date;
+  public intt_till_dt: Date;
   public acc_name: string;
   public brn_cd: string;
 }

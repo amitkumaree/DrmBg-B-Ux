@@ -1,4 +1,6 @@
-export class tm_deposit {
+import { baseModel } from './baseModel';
+
+export class tm_deposit extends baseModel{
   public brn_cd: string;
   public acc_type_cd: number;
   public acc_num: string;
