@@ -58,7 +58,7 @@
         <div class="form-group col-3">
           <small for="cust_dob">Date Of Birth</small>
           <input style="height:25px" disabled type="date" class="form-control form-control-sm" id="cust_dob"
-          [ngModel]="tm_deposit.date_of_birth | date:'yyyy-dd-MM'" placeholder="Cust DOB">
+          [ngModel]="tm_deposit.date_of_birth | date:'yyyy-MM-dd'" placeholder="Cust DOB">
 
         </div>
         <div class="form-group col-2">
@@ -201,7 +201,7 @@
 
         <div class="form-group col-3">
           <small for="dbs_acc_open_dt">Opening Date</small>
-          <input style="height:25px;" [disabled]='disableAll' [ngModel]="tm_deposit.opening_dt | date:'yyyy-dd-MM'" type="Date" class="form-control form-control-sm" id="dbs_acc_open_dt">
+          <input style="height:25px;" [disabled]='disableAll' [ngModel]="tm_deposit.opening_dt | date:'yyyy-MM-dd'" type="Date" class="form-control form-control-sm" id="dbs_acc_open_dt">
         </div>
 
       </div>
@@ -1150,15 +1150,14 @@
           <small for="trans_type">Trans Type</small> <br>
           <select [disabled]='disableAll' style="height:25px; font-size: small; padding-top: 0px; background-color: whitesmoke;" id="trans_type"
             class="form-control form-control-sm" (change)="setTransType($event.target.value)">
-            <option value="?" selected="selected"></option>
-            <option value="1">Cash</option>
-            <option value="2">Transfer</option>
+            <option [value]="td_deftrans.trf_type" selected>{{td_deftrans.trf_type_desc}}</option>
+            <option [value]="l.trf_type" *ngFor="let l of transferTypeListTemp">{{l.trf_type_desc}}</option>
           </select>
         </div>
 
         <div class="form-group col-6">
           <small for="trans_code">Trans Code</small>
-          <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="trans_code"
+          <input type="text" disabled [(ngModel)]="td_deftrans.trans_cd"   style="height:25px" class="form-control form-control-sm text-capitalize" id="trans_code"
             placeholder="Trans Code">
         </div>
       </div>
@@ -1244,7 +1243,7 @@
 
   <div class="row">
     <div class="col-12 col-sm-6 col-md-12 border">
-      <div *ngIf="transTypeFlg==1">
+      <div *ngIf="td_deftrans.trf_type=='C'">
         <h1></h1>
         <h6 style="background-color: lightskyblue">Denomination Details</h6>
 
@@ -1301,7 +1300,7 @@
       </div>
 
 
-      <div *ngIf="transTypeFlg==2">
+      <div *ngIf="td_deftrans.trf_type=='T'">
         <h1></h1>
         <h6 style="background-color: lightskyblue">Transfer Debit Details</h6>
 
