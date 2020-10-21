@@ -353,7 +353,7 @@ saveData()
 
     this.td_deftrans.acc_num = this.masterModel.tmdeposit.acc_num;
     this.td_deftrans.brn_cd = this.branchCode;
-    this.td_deftrans.trans_dt = this.openDate;
+    this.td_deftrans.trans_dt = new Date(Date.UTC(this.openDate.getFullYear(), this.openDate.getMonth(), this.openDate.getDate(), this.openDate.getHours(), this.openDate.getMinutes()));
     this.td_deftrans.approval_status = 'U';
 
     debugger;
