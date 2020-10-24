@@ -29,7 +29,7 @@ export class AccOpeningComponent implements OnInit {
     private svc: RestService
   ) { }
 
-  transTypeFlg = 0;
+  transTypeFlg = '';
   accountTypeDiv = 1;
   branchCode = '0';
   openDate: Date;
@@ -100,6 +100,7 @@ export class AccOpeningComponent implements OnInit {
     { acc_type_cd: 8, acc_type_desc: 'Current A/C' }
   ];
 
+  introducerAccTypeListTemp = [];
 
   denominations = [
     { rupees: '2000', desc: 'Two Thousand (Rs.2000)' },
@@ -107,6 +108,11 @@ export class AccOpeningComponent implements OnInit {
     { rupees: '100' , desc: 'Hundred (Rs.100)' },
     { rupees: '50'  , desc: 'Fifty (Rs.50)' }];
 
+    transferTypeList = [
+      { trf_type: 'C', trf_type_desc: 'Cash' },
+      { trf_type: 'T', trf_type_desc: 'Transfer' }];
+
+      transferTypeListTemp = this.transferTypeList;
 
   ngOnInit(): void {
 
@@ -134,6 +140,10 @@ export class AccOpeningComponent implements OnInit {
     this.selectedConstitutionList = [];
     this.getOperationalInstr();
 
+    debugger;
+    this.transferTypeListTemp = [];
+    this.transferTypeListTemp = this.transferTypeList;
+
     this.isLoading = false;
     this.disableCustNameFlg = true;
     this.disableAll = true;
@@ -148,7 +158,8 @@ export class AccOpeningComponent implements OnInit {
     this.tm_deposit = new tm_deposit();
     this.tm_deposit.acc_num = null;
 
-    this.tm_deposit.opening_dt = this.openDate;
+    debugger;
+    this.tm_deposit.opening_dt = this.DateFormatting(this.openDate);
 
     const sig: td_signatory[] = [];
     this.td_signatoryList = sig;
@@ -189,8 +200,6 @@ export class AccOpeningComponent implements OnInit {
     this.masterModel.tddeftrans = this.td_deftrans;
 
     this.p_gen_param = new p_gen_param();
-
-
   }
 
   getCustomerList() {
@@ -233,7 +242,7 @@ export class AccOpeningComponent implements OnInit {
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
       },
       err => {
-        // debugger;
+        debugger;
       }
     );
   }
@@ -320,7 +329,9 @@ saveData()
         debugger;
         this.InsertOrUpdateAccountData();
       },
-      err => { this.isLoading = false; }
+      err => { this.isLoading = false;
+        debugger;}
+
     );
 
   }
@@ -353,15 +364,18 @@ saveData()
 
     this.td_deftrans.acc_num = this.masterModel.tmdeposit.acc_num;
     this.td_deftrans.brn_cd = this.branchCode;
-    this.td_deftrans.trans_dt = this.openDate;
+    debugger;
+    this.td_deftrans.trans_dt = this.DateFormatting(this.openDate);
     this.td_deftrans.approval_status = 'U';
+    this.td_deftrans.acc_type_cd = this.tm_deposit.acc_type_cd;
 
     debugger;
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/InsertAccountOpeningData', this.masterModel).subscribe(
       res => {
-        this.isLoading = false;
         debugger;
+        this.td_deftrans.trans_cd = Number(res);
+        this.isLoading = false;
       },
       err => {
         this.isLoading = false;
@@ -370,6 +384,12 @@ saveData()
     );
   }
 
+
+  public DateFormatting(dateVal: Date): any {
+    let dt: Date;
+    dt = new Date(Date.UTC(dateVal.getFullYear(), dateVal.getMonth(), dateVal.getDate(), dateVal.getHours(), dateVal.getMinutes()));
+    return dt;
+  }
 
   public showAlertMsg(msg: string) {
     this.alertMsg = msg;
@@ -382,8 +402,12 @@ saveData()
     this.disableAll = false;
   }
 
-  setTransType(val: any) {
-    this.transTypeFlg = val;
+  setTransType(tt: any) {
+    // this.transTypeFlg = val;
+    debugger;
+    this.td_deftrans.trf_type = tt;
+    this.td_deftrans.trf_type_desc = this.transferTypeList.filter( x => x.trf_type.toString() === tt)[0].trf_type_desc;
+
   }
 
 

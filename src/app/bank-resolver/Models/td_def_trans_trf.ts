@@ -47,4 +47,5 @@ export class td_def_trans_trf {
   public intt_till_dt: Date;
   public acc_name: string;
   public brn_cd: string;
+  public trf_type_desc: string;
 }
