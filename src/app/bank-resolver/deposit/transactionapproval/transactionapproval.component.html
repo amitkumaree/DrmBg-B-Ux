@@ -1,11 +1,11 @@
 <div class="row d-flex justify-content-center align-items-center"
-style="background-color: #78c2ad21; text-align: center;">
+  style="background-color: #78c2ad21; text-align: center;">
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button> -->
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Approve</button>
+    <button type="button" [disabled]="undefined === selectedVm" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onApproveClick()">Approve</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Set Filter</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Remove Filter</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Refresh List</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClickRefreshList()">Refresh List</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
   </div>
 </div>
@@ -37,27 +37,38 @@ style="background-color: #78c2ad21; text-align: center;">
         </div>
       </div>
       <div class="col-4">
-        <h6>Unapproved Trasanction List</h6>
-        <div class="table-responsive">
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th scope="col">Tran Cd</th>
-                <th scope="col">Account</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Acc Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let unApprovedTran of vm" title="Click to Select" style="cursor: pointer;" (click)="selectTransaction(unApprovedTran)"
-              [class.table-active]="unApprovedTran.td_def_trans_trf.trans_cd === selectedTransactionCd">
-                <td>{{unApprovedTran.td_def_trans_trf.trans_cd}}</td>
-                <td>{{unApprovedTran.td_def_trans_trf.acc_num}}</td>
-                <td>{{unApprovedTran.td_def_trans_trf.amount | number: '.2-2'}}</td>
-                <td>{{unApprovedTran.mm_acc_type.acc_type_desc}}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="row">
+          <div class="col-12 scroll-when-long">
+            <h6>Unapproved Trasanction List</h6>
+            <div class="table-responsive">
+              <table class="table table-sm table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">Tran Cd</th>
+                    <th scope="col">Account</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Acc Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let unApprovedTran of vm" title="Click to Select" style="cursor: pointer;"
+                    (click)="selectTransaction(unApprovedTran)"
+                    [class.table-active]="unApprovedTran.td_def_trans_trf.trans_cd === selectedTransactionCd">
+                    <td>{{unApprovedTran.td_def_trans_trf.trans_cd}}</td>
+                    <td>{{unApprovedTran.td_def_trans_trf.acc_num}}</td>
+                    <td>{{unApprovedTran.td_def_trans_trf.amount | number: '.2-2'}}</td>
+                    <td>{{unApprovedTran.mm_acc_type.acc_type_desc}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-12">
+            <app-dw-rd-instl-view *ngIf="selectedAccountType === 6"></app-dw-rd-instl-view>
+            <app-dw-td-intt-dtls-view *ngIf="selectedAccountType === 2 || selectedAccountType === 5"
+            ></app-dw-td-intt-dtls-view>
+            <app-dw-renewal-view *ngIf="selectedTransactionMode === 'R'"></app-dw-renewal-view>
+          </div>
         </div>
       </div>
       <div class="col-4">
@@ -68,13 +79,13 @@ style="background-color: #78c2ad21; text-align: center;">
 
 </div>
 <div class="row d-flex justify-content-center align-items-center"
-style="background-color: #78c2ad21; text-align: center;">
+  style="background-color: #78c2ad21; text-align: center;">
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button> -->
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Approve</button>
+    <button type="button" [disabled]="undefined === selectedVm" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onApproveClick()">Approve</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Set Filter</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Remove Filter</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Refresh List</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClickRefreshList()">Refresh List</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
   </div>
 </div>
