@@ -27,20 +27,32 @@
         <div class="row">
           <div class="12">
             <app-customer-info [mode1]="true" [mode2]="true" [title]="custTitle"></app-customer-info>
+            <hr>
           </div>
           <div class="12">
             <app-account-details></app-account-details>
+            <hr>
           </div>
           <div class="12">
             <app-transaction-details></app-transaction-details>
+            <hr>
           </div>
         </div>
       </div>
       <div class="col-4">
         <div class="row">
-          <div class="col-12 scroll-when-long">
-            <h6>Unapproved Trasanction List</h6>
-            <div class="table-responsive">
+          <div class="col-12 ">
+            <h6 class="bg-light">Unapproved Trasanction List</h6>
+              <div class=" row">
+                <label for="colFormLabelSm" class="col-5 col-form-label col-form-label-sm">Filter Account Type</label>
+                <div class="col-6">
+                  <select id="title" class="form-control form-control-sm" (change)="onChangeAcctType($event.target.value)">
+                    <option *ngIf="uniqueAccTypes" selected value="-99">All</option>
+                    <option *ngFor="let accType of uniqueAccTypes " [value]="accType.acc_type_cd">{{accType.acc_type_desc}}</option>
+                  </select>
+                </div>
+              </div>
+            <div class="table-responsive" class="scroll-when-long">
               <table class="table table-sm table-hover">
                 <thead>
                   <tr>
@@ -51,7 +63,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let unApprovedTran of vm" title="Click to Select" style="cursor: pointer;"
+                  <tr *ngFor="let unApprovedTran of filteredVm" title="Click to Select" style="cursor: pointer;"
                     (click)="selectTransaction(unApprovedTran)"
                     [class.table-active]="unApprovedTran.td_def_trans_trf.trans_cd === selectedTransactionCd">
                     <td>{{unApprovedTran.td_def_trans_trf.trans_cd}}</td>
@@ -61,6 +73,7 @@
                   </tr>
                 </tbody>
               </table>
+              <hr>
             </div>
           </div>
           <div class="col-12">

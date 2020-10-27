@@ -24,6 +24,7 @@ export class TransactionapprovalComponent implements OnInit {
   selectedAccountType: number;
   selectedTransactionMode: string;
   vm: TranApprovalVM[] = [];
+  filteredVm: TranApprovalVM[] = [];
   selectedVm: TranApprovalVM;
   selectedTransactionCd: number;
   isLoading = false;
@@ -31,6 +32,7 @@ export class TransactionapprovalComponent implements OnInit {
   tdDepTrans = new td_def_trans_trf();
   tdDepTransGroup: any;
   custTitle: string;
+  uniqueAccTypes: mm_acc_type[] = [];
   // cust: mm_customer;
   // tdDepTransRet: td_def_trans_trf[] = [];
 
@@ -55,12 +57,14 @@ export class TransactionapprovalComponent implements OnInit {
       null !== TransactionapprovalComponent.accType &&
       TransactionapprovalComponent.accType.length > 0) {
       this.isLoading = false;
+      this.uniqueAccTypes = TransactionapprovalComponent.accType;
       this.GetUnapprovedDepTrans();
     } else {
       this.svc.addUpdDel<mm_acc_type[]>('Mst/GetAccountTypeMaster', null).subscribe(
         res => {
           TransactionapprovalComponent.accType = res;
           this.isLoading = false;
+          // this.uniqueAccTypes = TransactionapprovalComponent.accType;
           this.GetUnapprovedDepTrans();
         },
         err => { this.isLoading = false; }
@@ -137,14 +141,22 @@ export class TransactionapprovalComponent implements OnInit {
     this.tdDepTrans.brn_cd = localStorage.getItem('__brnCd');
     this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', this.tdDepTrans).subscribe(
       res => {
-        debugger;
         const tdDepTransRet = res as td_def_trans_trf[];
+        this.vm = [];
         tdDepTransRet.forEach(element => {
           const vm = new TranApprovalVM();
-          vm.mm_acc_type = TransactionapprovalComponent.accType.filter(e => e.acc_type_cd === element.acc_type_cd)[0];
+          vm.mm_acc_type = TransactionapprovalComponent.accType.
+          filter(e => e.acc_type_cd === element.acc_type_cd)[0];
           vm.td_def_trans_trf = element;
           this.vm.push(vm);
+          // add and check account type in unique account type list
+          const isAcctTypePresent = this.uniqueAccTypes.filter(e => e.acc_type_cd === vm.mm_acc_type.acc_type_cd)[0];
+          if (undefined === isAcctTypePresent) {
+            this.uniqueAccTypes.push(vm.mm_acc_type);
+          }
+
         });
+        this.filteredVm = this.vm;
         // this.tdDepTransGroup = this.groupBy(this.tdDepTransRet, (c) => c.acc_type_cd);
         this.isLoading = false;
       },
@@ -201,6 +213,14 @@ export class TransactionapprovalComponent implements OnInit {
     }
   }
 
+  public onChangeAcctType(acctTypeCd: number): void {
+    acctTypeCd = +acctTypeCd;
+    if (acctTypeCd === -99) {
+      this.filteredVm = this.vm;
+    } else {
+    this.filteredVm = this.vm.filter(e => e.mm_acc_type.acc_type_cd === acctTypeCd);
+    }
+  }
   // groupBy(xs, f) {
   //   const gc = xs.reduce((r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r), {})
   //   return Object.keys(gc).map(acc_type_cd => ({ acc_type_cd: acc_type_cd, events: gc[acc_type_cd] }));;
