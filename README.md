@@ -40,6 +40,7 @@ npm i webdatarocks --save
 
 ## important commands
 1. ng g c bank-resolver\finance\report\dailybook   to create diailybook inside Finance/report
+2. ng build --base-href "/SynergicBanking/" --prod --build-optimizer 
 
 ## install ngx export
 npm i ngx-export-as
