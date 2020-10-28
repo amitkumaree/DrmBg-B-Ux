@@ -26,6 +26,9 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { AccountDetailsComponent } from './Common/account-details/account-details.component';
 import { TransactionDetailsComponent } from './Common/transaction-details/transaction-details.component';
 import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
+import { DwRdInstlViewComponent } from './Common/dw-rd-instl-view/dw-rd-instl-view.component';
+import { DwTdInttDtlsViewComponent } from './Common/dw-td-intt-dtls-view/dw-td-intt-dtls-view.component';
+import { DwRenewalViewComponent } from './Common/dw-renewal-view/dw-renewal-view.component';
 
 
 @NgModule({
@@ -39,7 +42,10 @@ import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.comp
     AccOpeningComponent,
     CustomerInfoComponent, VoucherComponent,
     TestComponent,
-    ScrollbookComponent
+    ScrollbookComponent,
+    DwRdInstlViewComponent,
+    DwTdInttDtlsViewComponent,
+    DwRenewalViewComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule, AutocompleteLibModule  ],

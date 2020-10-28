@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { mm_customer, td_def_trans_trf, tm_deposit } from '../bank-resolver/Models';
+import { mm_customer, td_def_trans_trf, td_rd_installment, tm_deposit } from '../bank-resolver/Models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,7 @@ export class InAppMessageService {
   private commonCustInfo = new BehaviorSubject<mm_customer>(null);
   private commonAcctInfo = new BehaviorSubject<tm_deposit>(null);
   private commonTranInfo = new BehaviorSubject<td_def_trans_trf>(null);
+  private commonAccountNumDtl = new BehaviorSubject<string>(null);
 
   constructor() { }
   /* Below code is example code */
@@ -28,4 +29,7 @@ export class InAppMessageService {
 
   sendCommonTransactionInfo(TranDtl: td_def_trans_trf) { this.commonTranInfo.next(TranDtl); }
   getCommonTransactionInfo() { return this.commonTranInfo.asObservable(); }
+
+  sendCommonAccountNum(AccountNum: string) { this.commonAccountNumDtl.next(AccountNum); }
+  getCommonAccountNum() { return this.commonAccountNumDtl.asObservable(); }
 }

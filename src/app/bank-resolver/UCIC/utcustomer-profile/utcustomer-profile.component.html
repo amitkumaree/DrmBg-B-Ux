@@ -46,24 +46,25 @@ style="background-color: #78c2ad21; text-align: center;">
         <div class="form-group col-2">
           <small for="first_name">First Name <span class="text-danger">*</span></small>
           <input type="text" class="form-control form-control-sm text-capitalize" formControlName="first_name" id="first_name"
-            placeholder="First Name" (input)="onNameChange()">
+            placeholder="First Name" (input)="onNameChange()" autocomplete="chrome-off">
         </div>
         <div class="form-group col-2">
           <small for="middle_name">Middle Name</small>
           <input type="text" class="form-control form-control-sm text-capitalize" formControlName="middle_name" id="middle_name"
-            placeholder="Middle Name" (input)="onNameChange()">
+            placeholder="Middle Name" (input)="onNameChange()" autocomplete="chrome-off">
         </div>
         <div class="form-group col-2">
           <small for="last_name">Last Name</small>
           <input type="text" class="form-control form-control-sm text-capitalize" formControlName="last_name" id="last_name"
-            placeholder="Last Name" (input)="onNameChange()">
+            placeholder="Last Name" (input)="onNameChange()"  autocomplete="chrome-off">
         </div>
         <div class="form-group col-3">
           <small for="cust_name">Name</small>
-          <input type="text" class="form-control form-control-sm" formControlName="cust_name" id="cust_name"
-            placeholder="Name" disabled (input)="suggestCustomer()">
+          <input type="text" class="form-control form-control-sm" autocomplete="chrome-off"
+          formControlName="cust_name" id="cust_name" placeholder="Name" disabled (input)="suggestCustomer()">
             <div class="suggestions border p-2" *ngIf="suggestedCustomer">
-              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer" (click)="SelectCustomer(cust)">{{cust.cust_name}}</p>
+              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer"
+              (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + '] ' + cust.cust_name}}</p>
             </div>
         </div>
       </div> <!-- form group row end -->
@@ -75,12 +76,12 @@ style="background-color: #78c2ad21; text-align: center;">
         </div>
         <div class="form-group col-2">
           <small for="dt_of_birth">Date Of Birth <span class="text-danger">*</span></small>
-          <input type="date" class="form-control form-control-sm" formControlName="dt_of_birth" id="dt_of_birth"
+          <input type="date" class="form-control form-control-sm" (change)="onDobChange()" formControlName="dt_of_birth" id="dt_of_birth"
             placeholder="Date of Birth">
         </div>
         <div class="form-group col-1">
           <small for="age">Age</small>
-          <input type="number" class="form-control form-control-sm" formControlName="age" id="age" placeholder="Age">
+          <input type="number" class="form-control form-control-sm" formControlName="age" id="age" disabled placeholder="Age">
         </div>
         <div class="form-group col-1">
           <small for="sex">Sex</small>
@@ -263,7 +264,7 @@ style="background-color: #78c2ad21; text-align: center;">
         </div>
         <div class="form-group col-2">
           <small for="kyc_photo_no">Photo ID Number</small>
-          <input type="text" class="form-control form-control-sm" formControlName="kyc_photo_no" id="kyc_photo_no"
+          <input type="text" class="form-control form-control-sm text-uppercase" formControlName="kyc_photo_no" id="kyc_photo_no"
             placeholder="Photo ID Number">
         </div>
         <div class="form-group col-2">
