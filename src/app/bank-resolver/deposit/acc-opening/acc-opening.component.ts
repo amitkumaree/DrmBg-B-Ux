@@ -364,12 +364,8 @@ saveData()
 
     this.td_deftrans.acc_num = this.masterModel.tmdeposit.acc_num;
     this.td_deftrans.brn_cd = this.branchCode;
-<<<<<<< HEAD
-    this.td_deftrans.trans_dt = new Date(Date.UTC(this.openDate.getFullYear(), this.openDate.getMonth(), this.openDate.getDate(), this.openDate.getHours(), this.openDate.getMinutes()));
-=======
     debugger;
     this.td_deftrans.trans_dt = this.DateFormatting(this.openDate);
->>>>>>> 972604d6a8cfd35605f18a0147ca6e45e3e31415
     this.td_deftrans.approval_status = 'U';
     this.td_deftrans.acc_type_cd = this.tm_deposit.acc_type_cd;
 

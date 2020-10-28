@@ -251,13 +251,13 @@ exportPDFTitle() {
   var options = this.child.webDataRocks.getOptions();
   this.child.webDataRocks.setOptions( {
     grid: {
-      title: 'Day Book For The Period' +this.fd +'-' +this.td
+      title: 'Day Book For The Period ' +this.fd +'-' +this.td
     }
   } 
   );
   let brnName="Main Branch";
   this.child.webDataRocks.refresh();
-  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSynergic Banking&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspBranch : "+localStorage.getItem('__brnName')+"<br>&nbsp</div>",filename:"DayBook"});
+  this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Synergic Banking&emsp;&emsp;&emsp;Branch : "+localStorage.getItem('__brnName')+"<br>&nbsp</div>",filename:"DayBook"});
   this.child.webDataRocks.on('exportcomplete', function () {
     this.child.webDataRocks.off('exportcomplete')
     this.child.webDataRocks.setOptions(options);

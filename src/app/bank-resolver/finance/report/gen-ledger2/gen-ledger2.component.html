@@ -1,76 +1,86 @@
+<link href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" rel="stylesheet"/>
+<script src="https://cdn.webdatarocks.com/latest/webdatarocks.toolbar.min.js"></script>
+<script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
+<script src="https://cdn.flexmonster.com/flexmonster.js"></script>
+
 <ng-template #content let-modal data-keyboard="false" data-backdrop="false">
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Report Criteria</h4>
-    <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Report Criteria</h4>
+      <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
-      <strong>Error! </strong> {{alertMsg}}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
-        <span aria-hidden="true">&times;</span>
       </button>
     </div>
-
-    <form [formGroup]="reportcriteria">
-      <div class="form-row">
-        <div class="form-group col-md-6">
+    <div class="modal-body">
+        <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error! </strong> {{alertMsg}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+  
+      <form [formGroup]="reportcriteria">
+        <div>
           <label for="fromDate">From Date</label>
           <div class="input-group">
-            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-dd-MM' " formControlName="fromDate"
-              id="fd" type="date">
+            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd"  [ngModel]="fromdate  | date:'yyyy-dd-MM' "   formControlName="fromDate" id="fd" type="date" >
           </div>
         </div>
-        <div class="form-group col-md-6">
-          <label for="toDate">To Date</label>
-          <div class="input-group">
-            <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td" [ngModel]="todate  | date:'yyyy-dd-MM' " formControlName="toDate" id="td"
-              type="date">
+        <div >
+            <label for="toDate">To Date</label>
+            <div class="input-group">
+              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td"  [ngModel]="todate  | date:'yyyy-dd-MM'"  formControlName="toDate" id="td" type="date">
+            </div>
           </div>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="FromAcc">From Account</label>
-          <div class="input-group">
-            <input id="FromAcc" class="form-control" placeholder="From Account" name="fromAcc" formControlName="fromAcc"
-              type="text">
+          <div >
+            <label for="FromAcc">From Account</label>
+            <div class="input-group">
+              <input id="FromAcc" class="form-control" placeholder="From Account" name="fromAcc" formControlName="fromAcc"
+                type="text">
+            </div>
           </div>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="toDate">To Account</label>
-          <div class="input-group">
-            <input id="toDate" class="form-control" placeholder="To Account" name="toAcc" formControlName="toAcc"
-              type="text">
+          <div >
+            <label for="toDate">To Account</label>
+            <div class="input-group">
+              <input id="toDate" class="form-control" placeholder="To Account" name="toAcc" formControlName="toAcc"
+                type="text">
+            </div>
           </div>
-        </div>
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-primary" (click)="SubmitReport()">Submit</button>
-    <button class="btn btn-primary" (click)="modal.close('Close click')">Close</button>
-    <!-- <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Submit</button> -->
-  </div>
-</ng-template>
+      </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" (click)="SubmitReport()">Submit</button>
+      <button class="btn btn-primary" (click)="modal.close('Close click')">Close</button>
+      <!-- <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Submit</button> -->
+    </div>
+  </ng-template>
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center pt-4"
-  style="background-color: #78c2ad21; min-height: 20vh;" *ngIf="!isLoading">
-  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
-    <div style="text-align: center;"><strong> Synergic Banking </strong> </div>
-    <div style="text-align: center;"><b> Branch: Main Branch</b></div>
-    <div style="text-align: center;"><b> Branch Code: 101</b></div>
-    <div style="text-align: center;"><b> Run Date: {{dt}}</b></div>
-    <wbr-pivot #CashCumTrial [toolbar]="false" [width]="'100%'" [height]="500" (ready)="onPivotReady($event)"
-      (reportcomplete)="onReportComplete()">
-    </wbr-pivot>
-  </div>
-  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
+style="background-color: #78c2ad21; min-height: 20vh;">
+<div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
+  <div>
+  <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button>
+  <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
+  <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()"style="position: absolute;right: 10px;">Close</button>
+</div>
+</div>
+<div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
+     <div style="text-align: center;"><strong> Synergic Banking </strong>  </div>
+     <div style="text-align: center;"><b> Branch: Main Branch</b></div>
+     <div style="text-align: center;"><b> Branch Code: 101</b></div>
+     <div style="text-align: center;"><b> Run Date: {{dt}}</b></div>
+<wbr-pivot #GenLedgerDtl [toolbar]="false"
+          [width]="'100%'"
+          [height]="500"
+          (ready)="onPivotReady($event)"
+          (reportcomplete)="onReportComplete()">
+</wbr-pivot> 
+</div>
+<div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
     <div>
-      <button type="button" class="btn btn-rounded btn-primary m-1" (click)="exportPDFTitle()">Download PDF</button>
-      <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
-      <button type="button" class="btn btn-rounded btn-primary m-1"
-        style="position: absolute;right: 10px;">Close</button>
-    </div>
+    <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button>
+    <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
+    <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()"style="position: absolute;right: 10px;">Close</button>
   </div>
+</div>  
 </div>
 <loading *ngIf="isLoading"></loading>
