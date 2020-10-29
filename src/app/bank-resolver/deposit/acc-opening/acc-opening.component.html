@@ -36,7 +36,7 @@
         <div class="form-group col-7">
           <small for="cust_name">Customer Name</small>
           <input style="height:25px" type="text" [disabled]='disableAll' class="form-control form-control-sm text-capitalize" id="cust_name"
-            placeholder="Customer Name" [(ngModel)]="tm_deposit.cust_name" (input)="suggestCustomer()">
+            placeholder="Customer Name" [(ngModel)]="tm_deposit.cust_name" (input)="suggestCustomer()" autocomplete="chrome-off">
             <div class="suggestions border p-2" *ngIf="suggestedCustomer">
               <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer" (click)="setCustDtls(cust.cust_cd)">[ {{cust.cust_cd}} ] {{cust.cust_name}}</p>
             </div>

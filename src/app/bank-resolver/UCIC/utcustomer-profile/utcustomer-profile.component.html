@@ -2,7 +2,7 @@
 style="background-color: #78c2ad21; text-align: center;">
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button> -->
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onRetrieveClick()" >Retrieve</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onRetrieveClick(true)" >Retrieve</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel" (click)="onModifyClick()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
@@ -62,7 +62,7 @@ style="background-color: #78c2ad21; text-align: center;">
           <small for="cust_name">Name</small>
           <input type="text" class="form-control form-control-sm" autocomplete="chrome-off"
           formControlName="cust_name" id="cust_name" placeholder="Name" disabled (input)="suggestCustomer()">
-            <div class="suggestions border p-2" *ngIf="suggestedCustomer">
+            <div class="suggestions border p-2" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
               <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer"
               (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + '] ' + cust.cust_name}}</p>
             </div>
