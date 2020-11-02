@@ -17,13 +17,13 @@
         <div>
           <label for="fromDate">From Date</label>
           <div class="input-group">
-            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" formControlName="fromDate" id="fd" type="date" >
+            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-dd-MM' " formControlName="fromDate" id="fd" type="date" >
           </div>
         </div>
         <div >
             <label for="toDate">To Date</label>
             <div class="input-group">
-              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td" formControlName="toDate" id="td" type="date">
+              <input id="toDate" class="form-control" placeholder="yyyy-mm-dd" name="td" [ngModel]="todate  | date:'yyyy-dd-MM' " formControlName="toDate" id="td" type="date">
             </div>
           </div>
       </form>
@@ -39,6 +39,14 @@
 
 <div class="row d-flex justify-content-center align-items-center pt-4"
 style="background-color: #78c2ad21; min-height: 20vh;">
+<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
+  <div>
+    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="downloadPDF()">Download PDF</button>
+    <!-- <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm"> Print</button> -->
+     <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm"
+      style="position: absolute;right: 10px;">Close</button>
+  </div>
+</div>
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
   <div id="reportcontent" #reportcontent>
 <table style="width: 100%" >     
@@ -73,14 +81,16 @@ style="background-color: #78c2ad21; min-height: 20vh;">
 </tr>
    </table>
   </div>
-  <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
-    <div>
-    <button type="button" class="btn btn-rounded btn-primary m-1" (click)="downloadPDF()">Download PDF</button>
-    <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
-    <button type="button" class="btn btn-rounded btn-primary m-1" style="position: absolute;right: 10px;">Close</button>
-  </div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
+  <div>
+    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="downloadPDF()">Download PDF</button>
+    <!-- <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm"> Print</button> -->
+     <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm"
+      style="position: absolute;right: 10px;">Close</button>
   </div>
 </div>
 
   </div>
   
+ 

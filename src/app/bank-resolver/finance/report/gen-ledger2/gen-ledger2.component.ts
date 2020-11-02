@@ -4,6 +4,7 @@ import { p_report_param, tt_cash_cum_trial, tt_gl_trans } from 'src/app/bank-res
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gen-ledger2',
@@ -12,7 +13,7 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 })
 export class GenLedger2Component implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
-  @ViewChild('CashCumTrial') child: WebDataRocksPivot;
+  @ViewChild('GenLedgerDtl') child: WebDataRocksPivot;
   genLdgerTrans: tt_gl_trans[] = [];
   prp = new p_report_param();
   reportcriteria: FormGroup;
@@ -28,7 +29,7 @@ export class GenLedger2Component implements OnInit {
   todate: Date;
   constructor(private svc: RestService,
     private formBuilder: FormBuilder,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,private router: Router) { }
 
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
@@ -88,7 +89,7 @@ export class GenLedger2Component implements OnInit {
     this.showAlert = false;
   }
   // private pdfmake : pdfMake;
-  onPivotReady(CashCumTrial: WebDataRocksPivot): void {
+  onPivotReady(GenLedgerDtl: WebDataRocksPivot): void {
     console.log('[ready] WebDataRocksPivot', this.child);
   }
 
@@ -99,8 +100,8 @@ export class GenLedger2Component implements OnInit {
     this.prp.brn_cd = '101';
     this.prp.from_dt = this.fromdate;
     this.prp.to_dt = this.todate;
-    this.prp.ad_from_acc_cd = +this.r.fromAcc.value;
-    this.prp.ad_to_acc_Cd = +this.r.toAcc.value;
+    this.prp.ad_from_acc_cd = parseInt(this.r.fromAcc.value);
+    this.prp.ad_to_acc_Cd = parseInt(this.r.toAcc.value);
     const fdate = new Date(this.fromdate);
     const tdate = new Date(this.todate);
     this.fd = (('0' + fdate.getDate()).slice(-2)) + '/' + (('0' + (fdate.getMonth() + 1)).slice(-2)) + '/' + (fdate.getFullYear());
@@ -118,11 +119,6 @@ export class GenLedger2Component implements OnInit {
       () => {
         this.isLoading = false;
         debugger;
-        // this.showReport = true;
-        // this.generatePdf();
-        // let totalCr = 0;
-        // let totalDr = 0;
-        // let tmp_cash_account = new tt_cash_cum_trial();
         this.child.webDataRocks.setReport({
           dataSource: {
             data: this.genLdgerTrans
@@ -258,17 +254,21 @@ export class GenLedger2Component implements OnInit {
     const options = this.child.webDataRocks.getOptions();
     this.child.webDataRocks.setOptions({
       grid: {
-        title: 'Cash Cum Trial Balance For The Period' + this.fd + '-' + this.td
+        title: 'Cash Cum Trial Balance For The Period ' + this.fd + '-' + this.td
       }
     }
     );
     this.child.webDataRocks.refresh();
-    this.child.webDataRocks.exportTo('pdf', { pageOrientation: 'potrait', header: '<div>##CURRENT-DATE##</div>', filename: 'GeneralLedgerTransactions' });
+    this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Synergic Banking&emsp;&emsp;&emsp;Branch : "+localStorage.getItem('__brnName')+"<br>&nbsp</div>",filename:"GeneralLedgerTransactions"});
     this.child.webDataRocks.on('exportcomplete', function () {
       this.child.webDataRocks.off('exportcomplete');
       this.child.webDataRocks.setOptions(options);
       this.child.webDataRocks.refresh();
     });
+  }
+  closeScreen()
+  {
+    this.router.navigate(['vccb' + '/la']);
   }
 
 }

@@ -4,6 +4,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InAppMessageService } from '../_service';
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -16,8 +17,9 @@ export class BankResolverComponent implements OnInit, OnDestroy {
   passedValue: BankConfiguration;
   subscription: Subscription;
   showHeader = false;
+  showTitle = true;
   constructor(private route: ActivatedRoute, private confSvc: ConfigurationService,
-    private msg: InAppMessageService, private router: Router) {
+    private msg: InAppMessageService, private router: Router, private titleService: Title) {
     this.subscription = this.msg.getisLoggedInShowHeader().subscribe(
       res => {
         debugger;
@@ -30,6 +32,8 @@ export class BankResolverComponent implements OnInit, OnDestroy {
           // this.router.navigate(['/']);
         } else {
           this.showHeader = res;
+          this.showTitle = false;
+          this.titleService.setTitle('Welcome to ' + this.passedValue.description);
         }
       },
       err => { }
@@ -52,6 +56,7 @@ export class BankResolverComponent implements OnInit, OnDestroy {
 
             }
             this.passedValue = res;
+            this.titleService.setTitle('Welcome to ' + this.passedValue.description);
           },
           err => { }
         );

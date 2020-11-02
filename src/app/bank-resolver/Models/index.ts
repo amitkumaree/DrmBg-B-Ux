@@ -25,3 +25,5 @@ export * from './showMessage';
 export * from './td_def_trans_trf';
 export * from './mm_acc_type';
 export * from './tm_deposit';
+export * from './td_rd_installment';
+export * from './deposit/td_intt_dtls'

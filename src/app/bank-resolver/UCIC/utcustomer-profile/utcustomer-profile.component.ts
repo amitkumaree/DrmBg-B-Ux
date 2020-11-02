@@ -5,6 +5,7 @@ import {
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-utcustomer-profile',
@@ -98,6 +99,7 @@ export class UTCustomerProfileComponent implements OnInit {
     this.getKYCTypMaster();
     this.getBlockMster();
     this.getServiceAreaMaster();
+    this.onRetrieveClick();
   }
 
   private getTitleMaster(): void {
@@ -193,22 +195,24 @@ export class UTCustomerProfileComponent implements OnInit {
     });
   }
 
-  public onRetrieveClick(): void {
-    this.retrieveClicked = true;
-    this.onClearClick();
-    this.custMstrFrm.disable();
-    this.f.cust_name.enable();
+  public onRetrieveClick(loadingReq: boolean = false): void {
+    if (loadingReq) {
+      this.retrieveClicked = true;
+      this.onClearClick();
+      this.custMstrFrm.disable();
+      this.f.cust_name.enable();
+    }
     if (undefined !== UTCustomerProfileComponent.existingCustomers &&
       null !== UTCustomerProfileComponent.existingCustomers &&
       UTCustomerProfileComponent.existingCustomers.length > 0) {
     } else {
       // this.cust_name.nativeElement.focus();
-      this.isLoading = true;
+      if (loadingReq) { this.isLoading = true; }
       const cust = new mm_customer(); cust.cust_cd = 0;
       this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
         res => {
           UTCustomerProfileComponent.existingCustomers = res;
-          this.isLoading = false;
+          if (loadingReq) { this.isLoading = false; }
         },
         err => { this.isLoading = false; }
       );
@@ -218,8 +222,16 @@ export class UTCustomerProfileComponent implements OnInit {
   public suggestCustomer(): void {
     debugger;
     this.suggestedCustomer = UTCustomerProfileComponent.existingCustomers
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase()))
+      .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase())
+        || c.cust_cd.toString().startsWith(this.f.cust_name.value))
       .slice(0, 20);
+  }
+
+  public onDobChange(): void {
+    const dob = new Date(this.f.dt_of_birth.value);
+    const timeDiff = Math.abs(Date.now() - dob.getTime());
+
+    this.f.age.setValue(Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25));
   }
 
   public SelectCustomer(cust: mm_customer): void {
@@ -239,7 +251,7 @@ export class UTCustomerProfileComponent implements OnInit {
       guardian_name: cust.guardian_name,
       cust_dt: cust.cust_dt,
       old_cust_cd: cust.old_cust_cd,
-      dt_of_birth: new Date(cust.dt_of_birth),
+      dt_of_birth: formatDate(new Date(cust.dt_of_birth), 'yyyy-MM-dd', 'en'),
       age: cust.age,
       sex: cust.sex,
       marital_status: cust.marital_status,
@@ -409,7 +421,7 @@ export class UTCustomerProfileComponent implements OnInit {
     const cust = this.mapFormGrpToCustMaster();
     this.svc.addUpdDel<any>('UCIC/UpdateCustomerDtls', cust).subscribe(
       res => {
-        if(null !== res && res > 0) {
+        if (null !== res && res > 0) {
           if (this.retrieveClicked) {
             // update this cust details in the list of existing cutomer
             // this will ensure, retrieve wont be needed every time

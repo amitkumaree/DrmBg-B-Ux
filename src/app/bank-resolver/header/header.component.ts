@@ -1,15 +1,31 @@
 import { BankConfiguration } from './../Models/bankConfiguration';
-import { Component, OnInit } from '@angular/core';
-import { RestService } from 'src/app/_service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { InAppMessageService, RestService } from 'src/app/_service';
 import { BankConfigMst, mainmenu, submenu, screenlist } from '../Models';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+
+  constructor(private rstSvc: RestService, private router: Router,
+    private msg: InAppMessageService) {
+      this.subscription = this.msg.gethideTitleOnHeader().subscribe(
+        res => {
+          debugger;
+          if (res){
+            this.hideScreenTitle();
+          }
+        },
+        err => { }
+      );
+  }
+
+  subscription: Subscription;
   collapsed = true;
   bankConfig: BankConfigMst;
   bankName: string;
@@ -18,7 +34,8 @@ export class HeaderComponent implements OnInit {
   showMenu = false;
   showChildMenu = false;
   showSubMenu = false;
-  constructor(private rstSvc: RestService, private router: Router) { }
+  showScreenTitle = false;
+  selectedScreenToShow: string;
 
   ngOnInit(): void {
     this.bankName = localStorage.getItem('__bName');
@@ -42,10 +59,12 @@ export class HeaderComponent implements OnInit {
       err => { }
     )
   }
+
   logout() {
     localStorage.removeItem('__bName');
     this.router.navigate(['/']);
   }
+
   showChildMenuFor(menu: mainmenu): void {
     debugger;
     this.childMenu = menu;
@@ -66,6 +85,9 @@ export class HeaderComponent implements OnInit {
   }
 
   gotoScreen(screen: screenlist): void {
+    this.showScreenTitle = true;
+    this.selectedScreenToShow = ''; // reset values;
+    this.selectedScreenToShow = screen.screen;
     this.router.navigate([this.bankName + '/' + screen.value]);
   }
 
@@ -79,6 +101,16 @@ export class HeaderComponent implements OnInit {
       this.showChildMenu = false;
       this.showSubMenu = false;
     }
+    this.hideScreenTitle();
     this.router.navigate([this.bankName + '/la']);
+  }
+
+  private hideScreenTitle(): void {
+    this.showScreenTitle = false;
+    // this.selectedScreenToShow = '';
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }
