@@ -9,7 +9,7 @@ export class td_signatory {
     this.brn_cd = '';
     this.acc_type_cd = 0;
     this.acc_num = '';
-    this.signatory_name = '';
+    // this.signatory_name = '';
     this.cust_cd = 0;
   }
 

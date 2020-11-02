@@ -1,5 +1,5 @@
 <div class="container-fluid" style="background-color: #78c2ad21;">
-  <h4 class="text-center" *ngIf="passedValue">Welcome to {{passedValue.description}}</h4>
+  <h4 class="text-center" *ngIf="passedValue && showTitle">Welcome to {{passedValue.description}}</h4>
   <app-header *ngIf="showHeader"></app-header>
   <router-outlet></router-outlet>
 </div>

@@ -1,3 +1,4 @@
+import { InAppMessageService } from './../../_service/in-app-message.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LandingComponent implements OnInit {
 
-  constructor() { }
+  constructor(private msg: InAppMessageService) { }
 
   ngOnInit(): void {
+    // when ever landing is loaded screen title should be hidden
+    this.msg.sendhideTitleOnHeader(true);
   }
 
 }

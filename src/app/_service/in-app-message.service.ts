@@ -12,6 +12,7 @@ export class InAppMessageService {
   private commonAcctInfo = new BehaviorSubject<tm_deposit>(null);
   private commonTranInfo = new BehaviorSubject<td_def_trans_trf>(null);
   private commonAccountNumDtl = new BehaviorSubject<string>(null);
+  private hideTitleOnHeader = new BehaviorSubject<boolean>(null);
 
   constructor() { }
   /* Below code is example code */
@@ -32,4 +33,7 @@ export class InAppMessageService {
 
   sendCommonAccountNum(AccountNum: string) { this.commonAccountNumDtl.next(AccountNum); }
   getCommonAccountNum() { return this.commonAccountNumDtl.asObservable(); }
+
+  sendhideTitleOnHeader(hide: boolean) { this.hideTitleOnHeader.next(hide); }
+  gethideTitleOnHeader() { return this.hideTitleOnHeader.asObservable(); }
 }
