@@ -147,7 +147,6 @@ export class AccOpeningComponent implements OnInit {
     this.selectedConstitutionList = [];
     this.getOperationalInstr();
 
-    debugger;
     this.transferTypeListTemp = [];
     this.transferTypeListTemp = this.transferTypeList;
 
@@ -161,6 +160,8 @@ export class AccOpeningComponent implements OnInit {
 
     this.denominationGrandTotal = 0;
     this.masterModel = new AccOpenDM();
+
+    debugger;
 
   }
 
@@ -419,7 +420,7 @@ saveData()
 
   validateData()
   {
-    debugger;
+   // debugger;
     let nomPercent = 0;
 
     if (this.tm_deposit.year === null || this.tm_deposit.year === undefined )
@@ -445,7 +446,7 @@ saveData()
       this.td_signatoryList[l].acc_type_cd = Number(this.tm_deposit.acc_type_cd);
     }
 
-    debugger;
+    // debugger;
     // tslint:disable-next-line: forin
     for (let l in this.td_accholderList) {
       if (this.td_accholderList[l].acc_holder === null || this.td_accholderList[l].acc_holder === undefined) {
@@ -491,7 +492,7 @@ saveData()
           exit(0); }
         this.td_nomineeList[l].acc_num = this.masterModel.tmdeposit.acc_num;
         this.td_nomineeList[l].brn_cd = this.branchCode;
-        nomPercent = nomPercent + this.td_nomineeList[l].percentage;
+        nomPercent = nomPercent + Number(this.td_nomineeList[l].percentage);
       }
     }
 
@@ -500,6 +501,8 @@ saveData()
       this.showAlertMsg('Nominee Total Percentage < 100');
       exit(0);
     }
+
+    debugger;
 
   }
 
@@ -538,7 +541,7 @@ saveData()
 
     this.td_deftrans.acc_num = this.masterModel.tmdeposit.acc_num;
     this.td_deftrans.brn_cd = this.branchCode;
-    debugger;
+    // debugger;
     this.td_deftrans.trans_dt = this.DateFormatting(this.openDate);
     this.td_deftrans.approval_status = 'U';
     this.td_deftrans.acc_type_cd = this.tm_deposit.acc_type_cd;
@@ -885,6 +888,7 @@ removeSignatory()
     }
 
     this.td_nomineeList[idx].nom_id = Number(idx) + 1;
+    this.td_nomineeList[idx].percentage = Number(this.td_nomineeList[idx].percentage);
 
   }
 
