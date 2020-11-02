@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { p_report_param } from 'src/app/bank-resolver/Models';
 import { tt_scroll_book } from 'src/app/bank-resolver/Models/tt_scroll_book';
@@ -27,7 +28,7 @@ export class ScrollbookComponent implements OnInit {
   fromdate: Date;
   todate:Date;
   isLoading = false;
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -263,5 +264,9 @@ exportPDFTitle() {
     this.child.webDataRocks.setOptions(options);
     this.child.webDataRocks.refresh();
   });
+}
+closeScreen()
+{
+  this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
 } 

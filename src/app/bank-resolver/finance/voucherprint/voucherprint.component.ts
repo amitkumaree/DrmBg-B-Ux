@@ -6,6 +6,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import html2pdf from 'html2pdf.js';
 import jsPDF from 'jspdf';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-voucherprint',
@@ -27,7 +28,7 @@ export class VoucherprintComponent implements OnInit {
   isLoading = false;
   
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-     private modalService: NgbModal) { }
+     private modalService: NgbModal,private router: Router) { }
 
   ngOnInit(): void {
     debugger;
@@ -161,6 +162,9 @@ html2pdf()
       return 0;
   }
 }
-
+closeScreen()
+{
+  this.router.navigate([localStorage.getItem('__bName') + '/la']);
+}
 
 }

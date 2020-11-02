@@ -245,7 +245,7 @@ export class DailybookComponent implements OnInit {
 }
 closeScreen()
 {
-  this.router.navigate(['vccb' + '/la']);
+  this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
 exportPDFTitle() {
   var options = this.child.webDataRocks.getOptions();

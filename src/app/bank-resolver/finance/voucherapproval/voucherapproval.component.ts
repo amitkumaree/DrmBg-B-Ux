@@ -6,11 +6,11 @@ import { RestService } from 'src/app/_service';
 import { T_VOUCHER_DTLS, m_acc_master } from '../../Models';
 
 @Component({
-  selector: 'app-voucher',
-  templateUrl: './voucher.component.html',
-  styleUrls: ['./voucher.component.css']
+  selector: 'app-voucherapproval',
+  templateUrl: './voucherapproval.component.html',
+  styleUrls: ['./voucherapproval.component.css']
 })
-export class VoucherComponent implements OnInit {
+export class VoucherapprovalComponent implements OnInit {
 
   tvd = new T_VOUCHER_DTLS();
   tvdRet: T_VOUCHER_DTLS[] = [];
@@ -114,6 +114,7 @@ export class VoucherComponent implements OnInit {
     this.app_flg = 'U';
     this.Initialize();
     this.isLoading=true;
+    this.isApprove=true;
     this.getVoucherNarration();
   }
   private getDismissReason(reason: any): string {
@@ -149,7 +150,6 @@ export class VoucherComponent implements OnInit {
   }
   Approve() {
     this.UpdateVoucher();
-
   }
   Submit() {
     debugger;
@@ -298,7 +298,6 @@ export class VoucherComponent implements OnInit {
     this.tvd = new T_VOUCHER_DTLS();
     this.tvd.brn_cd = localStorage.getItem('__brnCd');
     this.tvd.voucher_dt = vDt;
-    //this.tvd.voucher_dt = new Date(Date.UTC(vDt.getFullYear(), vDt.getMonth(),vDt.getDate(),vDt.getHours(), vDt.getMinutes()));
     this.tvd.voucher_id = Number(vID);
     this.tvdRet = [];
     debugger;
@@ -326,6 +325,8 @@ export class VoucherComponent implements OnInit {
         this._totalDr = 0;
         if (this.tvdRet[0].approval_status == 'U')
           this.isApprove = false;
+        else
+          this.isApprove = true;
         this._voucherNarration = this.tvdRet[0].narrationdtl;//this.tvdRet[0].narration+
         this.modalService.dismissAll(this.content);
       },
@@ -359,15 +360,17 @@ export class VoucherComponent implements OnInit {
         this._voucherNarration = narr;
         if (this.tvdRet[0].approval_status == 'U')
           this.isApprove = false;
+        else
+        this.isApprove = true;
+          this.isLoading=false;
         this.modalService.dismissAll(this.content);
       },
-      err => { }
+      err => {this.isLoading=false; }
     );
   }
   private getVoucherNarration(): void {
     this.tvn.brn_cd =  localStorage.getItem('__brnCd');
-    //this.tvn.voucher_dt = new Date(localStorage.getItem('__currentDate'));
-    this.tvn.voucher_dt = new Date(Date.UTC(new Date(localStorage.getItem('__currentDate')).getFullYear(), new Date(localStorage.getItem('__currentDate')).getMonth(),new Date(localStorage.getItem('__currentDate')).getDate(),new Date(localStorage.getItem('__currentDate')).getHours(), new Date(localStorage.getItem('__currentDate')).getMinutes()));
+    this.tvn.voucher_dt = new Date(localStorage.getItem('__currentDate'));
     debugger;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherNarration', this.tvn).subscribe(
       res => {
@@ -387,7 +390,6 @@ export class VoucherComponent implements OnInit {
 
   private InsertVoucher(): void {
     try {
-      this.isLoading=true;
       let tvdSaveAll: T_VOUCHER_DTLS[] = [];
       for (let x = 0; x < this.VoucherF.length; x++) {
         let tvdSave = new T_VOUCHER_DTLS();
@@ -398,8 +400,7 @@ export class VoucherComponent implements OnInit {
         tvdSave.debit_credit_flag = this.voucherData.value[x].dr_cr=='Debit'? 'D' : 'C';
         tvdSave.narrationdtl = this._voucherNarration;
         tvdSave.transaction_type = this._voucherTyp;
-        tvdSave.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
-        //tvdSave.voucher_dt = this._voucherDt;
+        tvdSave.voucher_dt = this._voucherDt;
         tvdSave.acc_cd = this.voucherData.value[x].acc_cd;
         tvdSave.amount = Number(tvdSave.cr_amount == 0 ? tvdSave.dr_amount : tvdSave.cr_amount);
         tvdSaveAll.push(tvdSave);
@@ -420,9 +421,8 @@ export class VoucherComponent implements OnInit {
           this.isSave = true;
           this.isApprove = true;
           this.isClear = false;
-          this.isLoading=false;
         },
-        err => {this.isLoading=false; }
+        err => { }
       );
     }
     catch (exception) { let x = 0; }
@@ -438,8 +438,7 @@ export class VoucherComponent implements OnInit {
         tvdSave.brn_cd =  localStorage.getItem('__brnCd');
         tvdSave.approved_by = 'ADMIN'
         tvdSave.approved_dt = new Date();
-        //tvdSave.voucher_dt = this._voucherDt;
-        tvdSave.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
+        tvdSave.voucher_dt = this._voucherDt;
         tvdSave.voucher_id = this._voucherId;//Merge
         tvdSave.acc_cd = this.voucherData.value[x].acc_cd;
         tvdSave.narrationdtl = this._voucherNarration;
@@ -451,21 +450,21 @@ export class VoucherComponent implements OnInit {
           debugger;
           let x = res;
           //this._voucherDt = this._voucherDt
-          this._voucherTyp = "C";
+          //this._voucherTyp = "C";
           this._approvalSts = "Approved";
           this.insertMode = true;
           this.isDel = true;
           this.isAddNew = true;
           this.isRetrieve = false;
           this.isRetrieveBatch = false;
-          this.isNew = false;
-          this.isRemove = true;
-          this.isSave = true;
-          this.isApprove = true;
-          this.isClear = false;
-          this.isLoading=false;
+          //this.isNew = false;
+          //this.isRemove = true;
+          //this.isSave = true;
+          //this.isApprove = true;
+          //this.isClear = false;
+          this.getVoucher(this._voucherDt, this._voucherId);
         },
-        err => {this.isLoading=false; }
+        err => { this.isLoading=false;}
       );
     }
     catch (exception) { let x = 0; }
@@ -577,6 +576,7 @@ export class VoucherComponent implements OnInit {
       err => { }
     );
   }
+
   closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);

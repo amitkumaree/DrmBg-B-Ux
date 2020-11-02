@@ -24,6 +24,7 @@ import { TransactionapprovalComponent } from './deposit/transactionapproval/tran
 import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
 import { TestComponent } from '../test/test/test.component';
 import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
+import { VoucherapprovalComponent } from './finance/voucherapproval/voucherapproval.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -43,6 +44,7 @@ const routes: Routes = [
       { path: 'UT_CustomerProfile', component: UTCustomerProfileComponent },
       { path: 'UT_SelfHelp', component: UTSelfHelpComponent },
       { path: 'FT_Voucher', component: VoucherComponent },
+      { path: 'FT_ApproveTrns', component: VoucherapprovalComponent },
       { path: 'FT_PrintVoucher', component: VoucherprintComponent },
       { path: 'FR_DayBook', component: DailybookComponent },
       { path: 'FR_CashAccount', component: CashaccountComponent },
@@ -53,7 +55,7 @@ const routes: Routes = [
       { path: 'FR_GLTD', component: GenLedger2Component },
       { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
       { path: 'DT_OpenAcc', component: AccOpeningComponent },
-
+      
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,

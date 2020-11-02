@@ -6,6 +6,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 import { tt_cash_cum_trial } from 'src/app/bank-resolver/Models/tt_cash_cum_trial';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cashcumtrial',
@@ -28,7 +29,7 @@ export class CashcumtrialComponent implements OnInit {
   dt: any;
   fromdate: Date;
   todate:Date;
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -271,6 +272,9 @@ exportPDFTitle() {
   });
 }
 
-
+closeScreen()
+{
+  this.router.navigate([localStorage.getItem('__bName') + '/la']);
+}
 
 }
