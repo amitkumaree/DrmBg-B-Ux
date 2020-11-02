@@ -57,12 +57,22 @@ export class tm_deposit extends baseModel{
   public acc_type_desc: string;
   public constitution_desc : string;
   public oprn_instr_desc : string;
-  public intt_tfr_type_dscr: string; //  End: this below portion is added extra for UX operation only
+  public intt_tfr_type_dscr: string;
+  public standing_instr_dscr: string;
+  public year: number;
+  public month: number;
+  public day: number;
+  public mat_val: number;
+
+  //  End: this below portion is added extra for UX operation only
 
 
   tm_deposit()
   {
     this.acc_num = null;
+    this.year = 0;
+    this.month = 0;
+    this.day = 0;
   }
 
 }
