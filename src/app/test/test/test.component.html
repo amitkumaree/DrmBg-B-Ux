@@ -1211,7 +1211,8 @@
         <div class="form-group col-6">
           <small for="trans_type">Trans Type</small> <br>
           <select [disabled]='disableAll' style="height:25px; font-size: small; padding-top: 0px; background-color: whitesmoke;" id="trans_type"
-            class="form-control form-control-sm" (change)="setTransType($event.target.value)">
+            class="form-control form-control-sm" [(ngModel)]="selectedTransType"
+            (change)="setTransType($event.target.value)">
             <option [value]="td_deftrans.trf_type" selected>{{td_deftrans.trf_type_desc}}</option>
             <option [value]="l.trf_type" *ngFor="let l of transferTypeListTemp">{{l.trf_type_desc}}</option>
           </select>
