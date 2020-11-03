@@ -30,6 +30,8 @@ export class TestComponent implements OnInit {
     private svc: RestService
   ) { }
 
+  static accTypes: mm_acc_type[] = [];
+  selectedTransType = '';
   transTypeFlg = '';
   accountTypeDiv = 1;
   branchCode = '0';
@@ -137,7 +139,7 @@ export class TestComponent implements OnInit {
 
     this.initializeMasterDataAndFlags();
     this.initializeModels();
-
+    console.log(this.constitutionDtParser('YEAR=1;Month=10;Days=25;'));
   }
 
   initializeMasterDataAndFlags()
@@ -196,9 +198,10 @@ export class TestComponent implements OnInit {
 
     const tm_trns: tm_transfer[] = [];
     this.tm_transferList = tm_trns;
-
+    debugger;
     const td_deftrans: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftrans;
+    this.selectedTransType = '';
 
     this.td_deftrans = new td_def_trans_trf();
 
@@ -316,17 +319,27 @@ export class TestComponent implements OnInit {
   getAccountTypeList() {
     this.accountTypeList =  [];
 
-    this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
-      res => {
-        debugger;
-        this.accountTypeList = res;
+
+    if (undefined !== TestComponent.accTypes &&
+      null !== TestComponent.accTypes &&
+      TestComponent.accTypes.length > 0) {
+        this.accountTypeList = TestComponent.accTypes;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
-        this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
-      },
-      err => {
-        debugger;
-      }
-    );
+        this.accountTypeList = this.accountTypeList.sort((a, b) =>
+        (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
+    } else {
+      this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
+        res => {
+          debugger;
+          this.accountTypeList = res;
+          this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
+          this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
+        },
+        err => {
+          debugger;
+        }
+      );
+    }
   }
 
   getOperationalInstr() {
@@ -904,5 +917,15 @@ removeSignatory()
      this.tm_deposit.standing_instr_dscr = this.standingInstrAfterMaturity.filter( x => x.instr_code === val.toString())[0].instr_dscr;
   }
 
+  private constitutionDtParser(constitutionText: string) {
+    /// YEAR=1;Month=10;Days=25;
+    let arr = constitutionText.split(';');
+    let arrToReturn = [];
+    arr.forEach(element => {
+      arrToReturn.push(element.split('=').pop());
+    });
+
+    return arrToReturn;
+  }
 
 }
