@@ -791,6 +791,7 @@ removeSignatory()
 
     temp_deposit.brn_cd = this.branchCode;
     temp_deposit.acc_num = this.td_introducerlist[idx].introducer_acc_num;
+    temp_deposit.acc_type_cd = this.td_introducerlist[idx].acc_type_cd;
 
     this.isLoading = true;
 
