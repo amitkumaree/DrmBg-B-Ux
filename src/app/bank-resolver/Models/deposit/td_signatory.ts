@@ -1,11 +1,13 @@
-export class td_signatory {
+import { baseModel } from '../baseModel';
+
+export class td_signatory extends baseModel{
   public brn_cd: string;
   public acc_type_cd: number;
   public acc_num: string;
   public signatory_name: string;
   public cust_cd: number;
 
-  constructor() {
+  td_signatory() {
     this.brn_cd = '';
     this.acc_type_cd = 0;
     this.acc_num = '';

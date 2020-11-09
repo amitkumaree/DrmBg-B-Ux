@@ -1,4 +1,6 @@
-export class tm_denomination_trans {
+import { baseModel } from '../baseModel';
+
+export class tm_denomination_trans extends baseModel {
 
   public brn_cd: string;
   public trans_cd: number;

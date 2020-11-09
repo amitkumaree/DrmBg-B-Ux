@@ -1,4 +1,6 @@
-export class tm_transfer {
+import { baseModel } from '../baseModel';
+
+export class tm_transfer extends baseModel{
   public trf_dt: Date;
   public trf_cd: number;
   public trans_cd: number;

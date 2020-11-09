@@ -1,4 +1,6 @@
-export class td_introducer {
+import { baseModel } from '../baseModel';
+
+export class td_introducer extends baseModel{
   public brn_cd: string;
   public acc_type_cd: number;
   public acc_num: string;
