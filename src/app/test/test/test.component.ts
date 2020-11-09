@@ -31,7 +31,7 @@ export class TestComponent implements OnInit {
   ) { }
 
   static accTypes: mm_acc_type[] = [];
-  selectedTransType = '';
+  // selectedTransType = '';
   transTypeFlg = '';
   accountTypeDiv = 1;
   branchCode = '0';
@@ -41,8 +41,11 @@ export class TestComponent implements OnInit {
 
   isLoading = false;
   // disableCustNameFlg = true;
+  disableCustomerName = true;
   disableAll = true;
   disableAccountTypeAndNo = true;
+
+  operationType = '';
 
   showAlert = false;
   alertMsg: string;
@@ -139,23 +142,32 @@ export class TestComponent implements OnInit {
 
     this.initializeMasterDataAndFlags();
     this.initializeModels();
-    console.log(this.constitutionDtParser('YEAR=1;Month=10;Days=25;'));
+
+    debugger;
+    this.getAccountTypeList();
+    this.getConstitutionList();
+    this.getOperationalInstr();
+
+    // console.log(this.constitutionDtParser('YEAR=1;Month=10;Days=25;'));
   }
 
   initializeMasterDataAndFlags()
   {
     this.getAccountTypeList();
     this.getConstitutionList();
-    this.selectedConstitutionList = [];
     this.getOperationalInstr();
 
+    this.selectedConstitutionList = [];
     this.transferTypeListTemp = [];
     this.transferTypeListTemp = this.transferTypeList;
 
     this.isLoading = false;
     // this.disableCustNameFlg = true;
     this.disableAll = true;
+    this.disableCustomerName = true;
     this.disableAccountTypeAndNo = true;
+
+    this.operationType = '';
 
     this.showAlert = false;
     this.alertMsg = '';
@@ -201,7 +213,7 @@ export class TestComponent implements OnInit {
     debugger;
     const td_deftrans: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftrans;
-    this.selectedTransType = '';
+    // this.selectedTransType = '';
 
     this.td_deftrans = new td_def_trans_trf();
 
@@ -221,7 +233,8 @@ export class TestComponent implements OnInit {
 
   assignModelsFromMasterData()
   {
-    debugger;
+
+    var retDepositPeriodArr = [];
 
     this.tm_deposit = new tm_deposit();
 
@@ -253,6 +266,7 @@ export class TestComponent implements OnInit {
 
     this.td_deftrans = new td_def_trans_trf();
 
+
     this.tm_deposit = this.masterModel.tmdeposit ;
     this.setCustDtls(this.tm_deposit.cust_cd);
     this.setAccountType(this.tm_deposit.acc_type_cd);
@@ -262,15 +276,24 @@ export class TestComponent implements OnInit {
 
     this.td_introducerlist = this.masterModel.tdintroducer;
 
+    debugger;
+    retDepositPeriodArr =  this.depositPeriodParser(this.tm_deposit.dep_period);
+    this.tm_deposit.year = Number(retDepositPeriodArr[0]);
+    this.tm_deposit.month = Number(retDepositPeriodArr[1]);
+    this.tm_deposit.day = Number(retDepositPeriodArr[2]);
+
+
+
+
     // tslint:disable-next-line: forin
     for (var idx in this.td_introducerlist) {
       this.setIntroducerAccountType( this.td_introducerlist[idx].acc_type_cd, Number(idx));
       }
 
+      debugger;
     this.td_nomineeList = this.masterModel.tdnominee;
     this.td_signatoryList = this.masterModel.tdsignatory;
 
-    debugger;
     this.td_accholderList = this.masterModel.tdaccholder;
     // tslint:disable-next-line: forin
     for (var idx in this.td_accholderList) {
@@ -287,8 +310,8 @@ export class TestComponent implements OnInit {
   }
 
 
-  getCustomerList() {
-    debugger;
+  getCustomerList()
+  {
     const cust = new mm_customer();
     cust.cust_cd = 0;
     cust.brn_cd = this.branchCode;
@@ -299,13 +322,19 @@ export class TestComponent implements OnInit {
         this.isLoading = false;
         this.customerList = res;
       },
-      err => { this.isLoading = false; }
+      err => { this.isLoading = false;
+        debugger;}
     );
   }
 
   getConstitutionList() {
-    this.constitutionList = [];
 
+    if(this.constitutionList.length > 0)
+    {
+      return;
+    }
+
+    this.constitutionList = [];
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
         // debugger;
@@ -317,34 +346,34 @@ export class TestComponent implements OnInit {
   }
 
   getAccountTypeList() {
-    this.accountTypeList =  [];
 
-
-    if (undefined !== TestComponent.accTypes &&
-      null !== TestComponent.accTypes &&
-      TestComponent.accTypes.length > 0) {
-        this.accountTypeList = TestComponent.accTypes;
-        this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
-        this.accountTypeList = this.accountTypeList.sort((a, b) =>
-        (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
-    } else {
-      this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
-        res => {
-          debugger;
-          this.accountTypeList = res;
-          this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
-          this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
-        },
-        err => {
-          debugger;
-        }
-      );
+    debugger;
+    if (this.accountTypeList.length > 0) {
+      return;
     }
+    this.accountTypeList = [];
+
+    this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
+      res => {
+        debugger;
+        this.accountTypeList = res;
+        this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
+        this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
+      },
+      err => {
+        debugger;
+      }
+    );
   }
 
   getOperationalInstr() {
-    this.operationalInstrList = [];
 
+    if (this.operationalInstrList.length > 0)
+    {
+      return;
+    }
+
+    this.operationalInstrList = [];
     this.svc.addUpdDel<any>('Mst/GetOprationalInstr', null).subscribe(
       res => {
         // debugger;
@@ -369,16 +398,25 @@ export class TestComponent implements OnInit {
     debugger;
     this.clearData();
 
+    this.operationType = 'Q';
+
     this.isLoading = true;
     this.getCustomerList();
 
     this.disableAll = true;
+    this.disableCustomerName = true;
     this.disableAccountTypeAndNo = false;
     this.tm_deposit.brn_cd = this.branchCode;
   }
 
   getAccountOpeningTempData()
   {
+    if (this.tm_deposit.acc_type_cd === null || this.tm_deposit.acc_type_cd === undefined) {
+      this.showAlertMsg('Please select Account Type');
+      this.tm_deposit.acc_num = null;
+      exit(0);
+    }
+
     debugger;
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetAccountOpeningTempData', this.tm_deposit).subscribe(
@@ -397,20 +435,30 @@ export class TestComponent implements OnInit {
   }
 
 
-  modifyData()
-  {
-
+  modifyData() {
+    if ( this.operationType !== 'Q' )
+    {
+      this.showAlertMsg('Record not retrived to modify');
+      return;
+    }
+    this.operationType = 'U';
+    this.disableAll = false;
   }
 
   newAccount() {    // document.getElementById('account_type').id = '';
 
     this.clearData();
+
+    this.operationType = 'I';
     this.disableAll = true;
     this.isLoading = true;
     this.getCustomerList();
     // this.disableCustNameFlg = false;
+    this.disableCustomerName = false;
     this.disableAll = false;
     this.disableAccountTypeAndNo = false;
+
+
   }
 
 saveData()
@@ -419,7 +467,7 @@ saveData()
 
     this.validateData();
 
-    if (this.tm_deposit.acc_num === null) {
+    if (this.tm_deposit.acc_num === null || this.operationType === 'I') {
       this.getNewAccountNoAndSaveData();
     }
     else
@@ -447,6 +495,12 @@ saveData()
 
     this.tm_deposit.dep_period = 'Year=' + this.tm_deposit.year + ';Month=' + this.tm_deposit.month + ';Day=' + this.tm_deposit.day;
 
+    if (this.tm_deposit.cust_cd === null || this.tm_deposit.cust_cd === undefined)
+    {
+      this.showAlertMsg('Customer Information is Blank');
+        exit(0);
+    }
+
     // tslint:disable-next-line: forin
     for (let l in this.td_signatoryList) {
       if (this.td_signatoryList[l].signatory_name === null || this.td_signatoryList[l].signatory_name === undefined) {
@@ -457,6 +511,7 @@ saveData()
       this.td_signatoryList[l].acc_num = this.tm_deposit.acc_num;
       this.td_signatoryList[l].brn_cd = this.branchCode;
       this.td_signatoryList[l].acc_type_cd = Number(this.tm_deposit.acc_type_cd);
+      this.td_signatoryList[l].upd_ins_flag = this.operationType;
     }
 
     // debugger;
@@ -473,6 +528,7 @@ saveData()
         this.td_accholderList[l].acc_type_cd = this.tm_deposit.acc_type_cd;
         this.td_accholderList[l].acc_num = this.tm_deposit.acc_num;
         this.td_accholderList[l].brn_cd = this.branchCode;
+        this.td_accholderList[l].upd_ins_flag = this.operationType;
       }
     }
 
@@ -483,15 +539,32 @@ saveData()
       }
       else {
         this.td_introducerlist[l].acc_num = this.tm_deposit.acc_num;
+        this.td_introducerlist[l].acc_type_cd = this.tm_deposit.acc_type_cd;
         this.td_introducerlist[l].brn_cd = this.branchCode;
+        this.td_introducerlist[l].upd_ins_flag = this.operationType;
       }
 
     }
 
-    if ( this.td_deftrans.trf_type === null || this.td_deftrans.trf_type === undefined)
+    for (let l in this.tm_denominationList) {
+      if (this.tm_denominationList[l].rupees === null || this.tm_denominationList[l].rupees === undefined) {
+        this.tm_denominationList = this.tm_denominationList.splice(Number(l), 1);
+      }
+      else {
+        null;
+      }
+    }
+
+
+    if ( ( this.td_deftrans.trf_type === null || this.td_deftrans.trf_type === undefined) &&  this.operationType === 'NEW')
     {
       this.showAlertMsg('Please supply required value in transaction details');
           exit(0);
+    }
+    else
+    {
+      this.td_deftrans.acc_type_cd = this.tm_deposit.acc_type_cd;
+      this.td_deftrans.upd_ins_flag = this.operationType;
     }
 
     debugger;
@@ -504,7 +577,10 @@ saveData()
         { this.showAlertMsg('Nominee Percentage is blank');
           exit(0); }
         this.td_nomineeList[l].acc_num = this.masterModel.tmdeposit.acc_num;
+        this.td_nomineeList[l].acc_type_cd = this.tm_deposit.acc_type_cd;
         this.td_nomineeList[l].brn_cd = this.branchCode;
+        this.td_nomineeList[l].upd_ins_flag = this.operationType;
+
         nomPercent = nomPercent + Number(this.td_nomineeList[l].percentage);
       }
     }
@@ -549,6 +625,7 @@ saveData()
 
 
   InsertAccountOpenData() {
+    let ret = -1;
 
     this.validateData();
 
@@ -561,6 +638,8 @@ saveData()
 
     debugger;
     this.isLoading = true;
+    if ( this.operationType === 'I') // For New Account
+    {
     this.svc.addUpdDel<any>('Deposit/InsertAccountOpeningData', this.masterModel).subscribe(
       res => {
         debugger;
@@ -572,6 +651,21 @@ saveData()
         debugger;
       }
     );
+    }
+    else // Modify the Account opening Data
+    {
+      this.svc.addUpdDel<any>('Deposit/UpdateAccountOpeningData', this.masterModel).subscribe(
+        res => {
+          debugger;
+          ret = Number(res);
+          this.isLoading = false;
+        },
+        err => {
+          this.isLoading = false;
+          debugger;
+        }
+      );
+    }
   }
 
 
@@ -918,7 +1012,7 @@ removeSignatory()
      this.tm_deposit.standing_instr_dscr = this.standingInstrAfterMaturity.filter( x => x.instr_code === val.toString())[0].instr_dscr;
   }
 
-  private constitutionDtParser(constitutionText: string) {
+  private depositPeriodParser(constitutionText: string) {
     /// YEAR=1;Month=10;Days=25;
     let arr = constitutionText.split(';');
     let arrToReturn = [];

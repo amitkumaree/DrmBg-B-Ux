@@ -1,4 +1,6 @@
-export class td_accholder {
+import { baseModel } from '../baseModel';
+
+export class td_accholder extends baseModel{
   public brn_cd: string;
   public acc_type_cd: number;
   public acc_num: string;
