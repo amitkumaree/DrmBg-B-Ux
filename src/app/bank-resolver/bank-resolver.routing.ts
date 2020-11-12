@@ -24,11 +24,12 @@ import { TransactionapprovalComponent } from './deposit/transactionapproval/tran
 import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
 import { TestComponent } from '../test/test/test.component';
 import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
+import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
-  { path: 'te-st', component: UTCustomerProfileComponent },
+  { path: 'te-st', component: AccounTransactionsComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
@@ -53,6 +54,7 @@ const routes: Routes = [
       { path: 'FR_GLTD', component: GenLedger2Component },
       { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
       { path: 'DT_OpenAcc', component: AccOpeningComponent },
+      { path: 'DT_AccTrans', component: AccounTransactionsComponent },
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
