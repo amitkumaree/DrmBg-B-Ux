@@ -11,7 +11,6 @@ import { T_VOUCHER_DTLS, m_acc_master } from '../../Models';
   styleUrls: ['./voucherapproval.component.css']
 })
 export class VoucherapprovalComponent implements OnInit {
-
   tvd = new T_VOUCHER_DTLS();
   tvdRet: T_VOUCHER_DTLS[] = [];
   tvn = new T_VOUCHER_DTLS();
@@ -47,12 +46,13 @@ export class VoucherapprovalComponent implements OnInit {
   isClear = false;
   isLoading = false;
   fromdate: Date;
-  constructor(private svc: RestService, private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router) { }
+  constructor(private svc: RestService, private formBuilder: FormBuilder, 
+              private modalService: NgbModal,private router: Router) { }
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
 
   ngOnInit(): void {
-    this.fromdate=new Date(localStorage.getItem('__currentDate'));
+    this.fromdate=this.convertDate(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       voucherNo: [null, Validators.compose([Validators.required, Validators.pattern('^[0-9]+$')])]
@@ -114,7 +114,6 @@ export class VoucherapprovalComponent implements OnInit {
     this.app_flg = 'U';
     this.Initialize();
     this.isLoading=true;
-    this.isApprove=true;
     this.getVoucherNarration();
   }
   private getDismissReason(reason: any): string {
@@ -141,7 +140,8 @@ export class VoucherapprovalComponent implements OnInit {
     this.isApprove = true;
     this.isClear = false;
     this.Initialize();
-    this._voucherDt = new Date(localStorage.getItem('__currentDate'));//TBD
+    this._voucherDt = this.convertDate(localStorage.getItem('__currentDate'));//TBD
+    //Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate());
     this._voucherTyp = "C";
     this.insertMode = true;
   }
@@ -150,6 +150,7 @@ export class VoucherapprovalComponent implements OnInit {
   }
   Approve() {
     this.UpdateVoucher();
+
   }
   Submit() {
     debugger;
@@ -298,6 +299,8 @@ export class VoucherapprovalComponent implements OnInit {
     this.tvd = new T_VOUCHER_DTLS();
     this.tvd.brn_cd = localStorage.getItem('__brnCd');
     this.tvd.voucher_dt = vDt;
+    //this.tvd.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
+    //this.tvd.voucher_dt = new Date(Date.UTC(vDt.getFullYear(), vDt.getMonth(),vDt.getDate(),vDt.getHours(), vDt.getMinutes()));
     this.tvd.voucher_id = Number(vID);
     this.tvdRet = [];
     debugger;
@@ -325,8 +328,6 @@ export class VoucherapprovalComponent implements OnInit {
         this._totalDr = 0;
         if (this.tvdRet[0].approval_status == 'U')
           this.isApprove = false;
-        else
-          this.isApprove = true;
         this._voucherNarration = this.tvdRet[0].narrationdtl;//this.tvdRet[0].narration+
         this.modalService.dismissAll(this.content);
       },
@@ -337,6 +338,7 @@ export class VoucherapprovalComponent implements OnInit {
     this.tvd = new T_VOUCHER_DTLS();
     this.tvd.brn_cd = brncd;
     this.tvd.voucher_dt = voudt;
+    //this.tvd.voucher_dt = new Date(Date.UTC(voudt.getFullYear(), voudt.getMonth(), voudt.getDate()));
     this.tvd.voucher_id = vouid;
     this.tvdRet = [];
     debugger;
@@ -360,17 +362,17 @@ export class VoucherapprovalComponent implements OnInit {
         this._voucherNarration = narr;
         if (this.tvdRet[0].approval_status == 'U')
           this.isApprove = false;
-        else
-        this.isApprove = true;
-          this.isLoading=false;
         this.modalService.dismissAll(this.content);
       },
-      err => {this.isLoading=false; }
+      err => { }
     );
   }
   private getVoucherNarration(): void {
     this.tvn.brn_cd =  localStorage.getItem('__brnCd');
-    this.tvn.voucher_dt = new Date(localStorage.getItem('__currentDate'));
+    //this.tvn.voucher_dt = new Date(localStorage.getItem('__currentDate'));
+    this.tvn.voucher_dt = this.convertDate(localStorage.getItem('__currentDate'));
+    //tvdSave.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
+    this.tvn.voucher_dt = new Date(Date.UTC(this.tvn.voucher_dt.getFullYear(), this.tvn.voucher_dt.getMonth(), this.tvn.voucher_dt.getDate()));
     debugger;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherNarration', this.tvn).subscribe(
       res => {
@@ -390,6 +392,7 @@ export class VoucherapprovalComponent implements OnInit {
 
   private InsertVoucher(): void {
     try {
+      this.isLoading=true;
       let tvdSaveAll: T_VOUCHER_DTLS[] = [];
       for (let x = 0; x < this.VoucherF.length; x++) {
         let tvdSave = new T_VOUCHER_DTLS();
@@ -400,7 +403,8 @@ export class VoucherapprovalComponent implements OnInit {
         tvdSave.debit_credit_flag = this.voucherData.value[x].dr_cr=='Debit'? 'D' : 'C';
         tvdSave.narrationdtl = this._voucherNarration;
         tvdSave.transaction_type = this._voucherTyp;
-        tvdSave.voucher_dt = this._voucherDt;
+        tvdSave.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
+        //tvdSave.voucher_dt = this._voucherDt;
         tvdSave.acc_cd = this.voucherData.value[x].acc_cd;
         tvdSave.amount = Number(tvdSave.cr_amount == 0 ? tvdSave.dr_amount : tvdSave.cr_amount);
         tvdSaveAll.push(tvdSave);
@@ -421,8 +425,9 @@ export class VoucherapprovalComponent implements OnInit {
           this.isSave = true;
           this.isApprove = true;
           this.isClear = false;
+          this.isLoading=false;
         },
-        err => { }
+        err => {this.isLoading=false; }
       );
     }
     catch (exception) { let x = 0; }
@@ -438,7 +443,8 @@ export class VoucherapprovalComponent implements OnInit {
         tvdSave.brn_cd =  localStorage.getItem('__brnCd');
         tvdSave.approved_by = 'ADMIN'
         tvdSave.approved_dt = new Date();
-        tvdSave.voucher_dt = this._voucherDt;
+        //tvdSave.voucher_dt = this._voucherDt;
+        tvdSave.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
         tvdSave.voucher_id = this._voucherId;//Merge
         tvdSave.acc_cd = this.voucherData.value[x].acc_cd;
         tvdSave.narrationdtl = this._voucherNarration;
@@ -450,21 +456,21 @@ export class VoucherapprovalComponent implements OnInit {
           debugger;
           let x = res;
           //this._voucherDt = this._voucherDt
-          //this._voucherTyp = "C";
+          this._voucherTyp = "C";
           this._approvalSts = "Approved";
           this.insertMode = true;
           this.isDel = true;
           this.isAddNew = true;
           this.isRetrieve = false;
           this.isRetrieveBatch = false;
-          //this.isNew = false;
-          //this.isRemove = true;
-          //this.isSave = true;
-          //this.isApprove = true;
-          //this.isClear = false;
-          this.getVoucher(this._voucherDt, this._voucherId);
+          this.isNew = false;
+          this.isRemove = true;
+          this.isSave = true;
+          this.isApprove = true;
+          this.isClear = false;
+          this.isLoading=false;
         },
-        err => { this.isLoading=false;}
+        err => {this.isLoading=false; }
       );
     }
     catch (exception) { let x = 0; }
@@ -576,10 +582,16 @@ export class VoucherapprovalComponent implements OnInit {
       err => { }
     );
   }
-
   closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
+}
+private  convertDate(datestring:string):Date
+{  
+var parts = datestring.match(/(\d+)/g);
+// new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+//return new Date(year, month, day);   
 }
 
 }

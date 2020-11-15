@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -47,12 +48,13 @@ export class VoucherComponent implements OnInit {
   isClear = false;
   isLoading = false;
   fromdate: Date;
-  constructor(private svc: RestService, private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router) { }
+  constructor(private svc: RestService, private formBuilder: FormBuilder, 
+              private modalService: NgbModal,private router: Router) { }
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
 
   ngOnInit(): void {
-    this.fromdate=new Date(localStorage.getItem('__currentDate'));
+    this.fromdate=this.convertDate(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       voucherNo: [null, Validators.compose([Validators.required, Validators.pattern('^[0-9]+$')])]
@@ -140,7 +142,8 @@ export class VoucherComponent implements OnInit {
     this.isApprove = true;
     this.isClear = false;
     this.Initialize();
-    this._voucherDt = new Date(localStorage.getItem('__currentDate'));//TBD
+    this._voucherDt = this.convertDate(localStorage.getItem('__currentDate'));//TBD
+    //Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate());
     this._voucherTyp = "C";
     this.insertMode = true;
   }
@@ -298,6 +301,7 @@ export class VoucherComponent implements OnInit {
     this.tvd = new T_VOUCHER_DTLS();
     this.tvd.brn_cd = localStorage.getItem('__brnCd');
     this.tvd.voucher_dt = vDt;
+    //this.tvd.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
     //this.tvd.voucher_dt = new Date(Date.UTC(vDt.getFullYear(), vDt.getMonth(),vDt.getDate(),vDt.getHours(), vDt.getMinutes()));
     this.tvd.voucher_id = Number(vID);
     this.tvdRet = [];
@@ -336,6 +340,7 @@ export class VoucherComponent implements OnInit {
     this.tvd = new T_VOUCHER_DTLS();
     this.tvd.brn_cd = brncd;
     this.tvd.voucher_dt = voudt;
+    //this.tvd.voucher_dt = new Date(Date.UTC(voudt.getFullYear(), voudt.getMonth(), voudt.getDate()));
     this.tvd.voucher_id = vouid;
     this.tvdRet = [];
     debugger;
@@ -367,7 +372,9 @@ export class VoucherComponent implements OnInit {
   private getVoucherNarration(): void {
     this.tvn.brn_cd =  localStorage.getItem('__brnCd');
     //this.tvn.voucher_dt = new Date(localStorage.getItem('__currentDate'));
-    this.tvn.voucher_dt = new Date(Date.UTC(new Date(localStorage.getItem('__currentDate')).getFullYear(), new Date(localStorage.getItem('__currentDate')).getMonth(),new Date(localStorage.getItem('__currentDate')).getDate(),new Date(localStorage.getItem('__currentDate')).getHours(), new Date(localStorage.getItem('__currentDate')).getMinutes()));
+    this.tvn.voucher_dt = this.convertDate(localStorage.getItem('__currentDate'));
+    //tvdSave.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
+    this.tvn.voucher_dt = new Date(Date.UTC(this.tvn.voucher_dt.getFullYear(), this.tvn.voucher_dt.getMonth(), this.tvn.voucher_dt.getDate()));
     debugger;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherNarration', this.tvn).subscribe(
       res => {
@@ -580,6 +587,13 @@ export class VoucherComponent implements OnInit {
   closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
+}
+private  convertDate(datestring:string):Date
+{  
+var parts = datestring.match(/(\d+)/g);
+// new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+//return new Date(year, month, day);   
 }
 
 }
