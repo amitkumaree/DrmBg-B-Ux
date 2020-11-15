@@ -24,12 +24,16 @@ import { TransactionapprovalComponent } from './deposit/transactionapproval/tran
 import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
 import { TestComponent } from '../test/test/test.component';
 import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
+<<<<<<< HEAD
 import { VoucherapprovalComponent } from './finance/voucherapproval/voucherapproval.component';
+=======
+import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
+>>>>>>> d8b2fa95894621b849c9cbe5076528a4976bf09d
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
-  { path: 'te-st', component: UTCustomerProfileComponent },
+  // { path: 'te-st', component: AccounTransactionsComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
@@ -55,7 +59,12 @@ const routes: Routes = [
       { path: 'FR_GLTD', component: GenLedger2Component },
       { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
       { path: 'DT_OpenAcc', component: AccOpeningComponent },
+<<<<<<< HEAD
       
+=======
+      { path: 'DT_AccTrans', component: AccounTransactionsComponent },
+
+>>>>>>> d8b2fa95894621b849c9cbe5076528a4976bf09d
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,
