@@ -29,11 +29,7 @@ import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.comp
 import { DwRdInstlViewComponent } from './Common/dw-rd-instl-view/dw-rd-instl-view.component';
 import { DwTdInttDtlsViewComponent } from './Common/dw-td-intt-dtls-view/dw-td-intt-dtls-view.component';
 import { DwRenewalViewComponent } from './Common/dw-renewal-view/dw-renewal-view.component';
-<<<<<<< HEAD
 import { VoucherapprovalComponent } from './finance/voucherapproval/voucherapproval.component';
-=======
-import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
->>>>>>> d8b2fa95894621b849c9cbe5076528a4976bf09d
 
 
 @NgModule({
@@ -51,11 +47,7 @@ import { AccounTransactionsComponent } from './deposit/accoun-transactions/accou
     DwRdInstlViewComponent,
     DwTdInttDtlsViewComponent,
     DwRenewalViewComponent,
-<<<<<<< HEAD
     VoucherapprovalComponent
-=======
-    AccounTransactionsComponent
->>>>>>> d8b2fa95894621b849c9cbe5076528a4976bf09d
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule, AutocompleteLibModule  ],
