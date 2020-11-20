@@ -13,4 +13,9 @@ export class LOGIN_MASTER {
   brn_cd: string;
   user_id: string;
   password: string;
+  login_status:string;
+  user_type:string;
+  user_first_name:string;
+  user_middle_name:string;
+  user_last_name:string;
 }

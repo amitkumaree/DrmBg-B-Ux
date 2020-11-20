@@ -24,4 +24,7 @@ export class p_gen_param {
   adt_trans_dt: Date;
   ad_trans_cd: number;
   flag: string;
+  gs_user_type:string;
+  gs_user_id:string;
+  output:string;
 }

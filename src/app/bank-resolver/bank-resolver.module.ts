@@ -30,6 +30,9 @@ import { DwRdInstlViewComponent } from './Common/dw-rd-instl-view/dw-rd-instl-vi
 import { DwTdInttDtlsViewComponent } from './Common/dw-td-intt-dtls-view/dw-td-intt-dtls-view.component';
 import { DwRenewalViewComponent } from './Common/dw-renewal-view/dw-renewal-view.component';
 import { VoucherapprovalComponent } from './finance/voucherapproval/voucherapproval.component';
+import { DayinitializationComponent } from './system/dayinitialization/dayinitialization.component';
+import { DaycomplitionComponent } from './system/daycomplition/daycomplition.component';
+import { AdduserComponent } from './system/adduser/adduser.component';
 
 
 @NgModule({
@@ -47,7 +50,10 @@ import { VoucherapprovalComponent } from './finance/voucherapproval/voucherappro
     DwRdInstlViewComponent,
     DwTdInttDtlsViewComponent,
     DwRenewalViewComponent,
-    VoucherapprovalComponent
+    VoucherapprovalComponent,
+    DayinitializationComponent,
+    DaycomplitionComponent,
+    AdduserComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule, AutocompleteLibModule  ],
