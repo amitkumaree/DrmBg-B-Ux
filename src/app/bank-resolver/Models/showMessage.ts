@@ -8,5 +8,6 @@ export class ShowMessage {
 export enum MessageType {
   Sucess,
   Warning,
-  Info
+  Info,
+  Error
 }

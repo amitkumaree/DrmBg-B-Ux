@@ -24,11 +24,15 @@ import { TransactionapprovalComponent } from './deposit/transactionapproval/tran
 import { AccOpeningComponent } from './deposit/acc-opening/acc-opening.component';
 import { TestComponent } from '../test/test/test.component';
 import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.component';
+import { VoucherapprovalComponent } from './finance/voucherapproval/voucherapproval.component';
+import { DayinitializationComponent } from './system/dayinitialization/dayinitialization.component';
+import { DaycomplitionComponent } from './system/daycomplition/daycomplition.component';
+import { AdduserComponent } from './system/adduser/adduser.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
-  { path: 'te-st', component: UTCustomerProfileComponent },
+  // { path: 'te-st', component: AccounTransactionsComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
@@ -43,6 +47,7 @@ const routes: Routes = [
       { path: 'UT_CustomerProfile', component: UTCustomerProfileComponent },
       { path: 'UT_SelfHelp', component: UTSelfHelpComponent },
       { path: 'FT_Voucher', component: VoucherComponent },
+      { path: 'FT_ApproveTrns', component: VoucherapprovalComponent },
       { path: 'FT_PrintVoucher', component: VoucherprintComponent },
       { path: 'FR_DayBook', component: DailybookComponent },
       { path: 'FR_CashAccount', component: CashaccountComponent },
@@ -53,7 +58,11 @@ const routes: Routes = [
       { path: 'FR_GLTD', component: GenLedger2Component },
       { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
       { path: 'DT_OpenAcc', component: AccOpeningComponent },
-
+      { path: 'DA_DayInit', component: DayinitializationComponent },
+      { path: 'DA_DayCmpl', component: DaycomplitionComponent },
+      { path: 'UM_AddUsr', component: AdduserComponent },
+      
+      
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,

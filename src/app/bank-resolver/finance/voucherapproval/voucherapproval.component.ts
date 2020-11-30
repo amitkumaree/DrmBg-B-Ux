@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,12 +6,11 @@ import { RestService } from 'src/app/_service';
 import { T_VOUCHER_DTLS, m_acc_master } from '../../Models';
 
 @Component({
-  selector: 'app-voucher',
-  templateUrl: './voucher.component.html',
-  styleUrls: ['./voucher.component.css']
+  selector: 'app-voucherapproval',
+  templateUrl: './voucherapproval.component.html',
+  styleUrls: ['./voucherapproval.component.css']
 })
-export class VoucherComponent implements OnInit {
-
+export class VoucherapprovalComponent implements OnInit {
   tvd = new T_VOUCHER_DTLS();
   tvdRet: T_VOUCHER_DTLS[] = [];
   tvn = new T_VOUCHER_DTLS();

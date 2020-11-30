@@ -6,6 +6,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 import { tt_trial_balance } from 'src/app/bank-resolver/Models/tt_trial_balance';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trialbalance',
@@ -29,7 +30,7 @@ export class TrialbalanceComponent implements OnInit {
   dt: any;
   fromdate: Date;
   todate:Date;
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -229,7 +230,9 @@ exportPDFTitle() {
     this.child.webDataRocks.refresh();
   });
 }
-
-
+closeScreen()
+{
+  this.router.navigate([localStorage.getItem('__bName') + '/la']);
+}
 
 }

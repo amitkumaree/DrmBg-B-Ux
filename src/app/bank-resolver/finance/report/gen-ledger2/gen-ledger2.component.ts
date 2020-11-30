@@ -267,8 +267,8 @@ export class GenLedger2Component implements OnInit {
     });
   }
   closeScreen()
-  {
-    this.router.navigate(['vccb' + '/la']);
-  }
+{
+  this.router.navigate([localStorage.getItem('__bName') + '/la']);
+}
 
 }

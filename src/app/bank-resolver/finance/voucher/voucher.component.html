@@ -16,7 +16,7 @@
       <div>
         <label for="fromDate">From Date</label>
         <div class="input-group">
-          <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-dd-MM' " formControlName="fromDate"
+          <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-MM-dd' " formControlName="fromDate"
             id="fd" type="date">
         </div>
       </div>
@@ -60,8 +60,8 @@
 
 
 
-    <table class="table table-bordered table-striped">
-      <tr *ngFor="let item of tvnRetFilter; let i = index;" (click)="OpenVoucher(item)">
+    <table class="table table-sm table-hover">
+      <tr *ngFor="let item of tvnRetFilter; let i = index;"title="Click to Select"  (click)="OpenVoucher(item)" style="cursor: pointer;">
         <td>{{item.voucher_id}}</td>
         <td>{{item.narrationdtl}}</td>
         <td>{{item.transaction_type}}</td>
@@ -89,11 +89,11 @@
         (click)="Remove()">Delete</button>
       <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm"
         [disabled]="(!onVoucherCreation.valid || isSave) ? true : false" (click)="Save()">Save</button>
-      <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="isApprove"
-        (click)="Approve()">Approve</button>
+      <!-- <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="isApprove"
+        (click)="Approve()">Approve</button> -->
       <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="isClear"
         (click)="Clear()">Clear</button>
-      <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm"
+      <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="closeScreen()"
         style="position: absolute;right: 10px;">Close</button>
       <!-- <input type="text" value="{{ getTotalCr() }}" />
   <input type="text" value="{{ getTotalCr() }}" /> -->
@@ -236,11 +236,11 @@
         (click)="Remove()">Delete</button>
       <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm"
         [disabled]="(!onVoucherCreation.valid || isSave) ? true : false" (click)="Save()">Save</button>
-      <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="isApprove"
-        (click)="Approve()">Approve</button>
+      <!-- <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="isApprove"
+        (click)="Approve()">Approve</button> -->
       <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="isClear"
         (click)="Clear()">Clear</button>
-      <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm"
+      <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="closeScreen()"
         style="position: absolute;right: 10px;">Close</button>
       <!-- <input type="text" value="{{ getTotalCr() }}" />
   <input type="text" value="{{ getTotalCr() }}" /> -->
