@@ -66,13 +66,21 @@ export class tm_deposit extends baseModel{
 
   //  End: this below portion is added extra for UX operation only
 
-
   tm_deposit()
   {
     this.acc_num = null;
     this.year = 0;
     this.month = 0;
     this.day = 0;
+    this.instl_amt = 0;
+    this.instl_no  = 0;
+    this.prn_amt   = 0;
+    this.intt_rt   = 0;
+    this.intt_amt  = 0;
+    this.year = 0;
+    this.month = 0;
+    this.day = 0;
+
   }
 
 }

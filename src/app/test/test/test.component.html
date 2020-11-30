@@ -15,7 +15,8 @@
 <div class="container">
 
   <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>Error! </strong> {{alertMsg}}
+    <strong>{{alertMsgType}}: </strong>
+    {{alertMsg}}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlertMsg()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -370,7 +371,7 @@
           </div>
 
 
-          <div class="form-group col-3">
+          <div class="form-group col-2">
             <small for="dep_cert_no">Certificate No</small>
             <input [disabled]='disableAll' [(ngModel)]="tm_deposit.cert_no"  style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
               id="dep_cert_no">
@@ -386,7 +387,7 @@
           </select>
           </div>
 
-          <div class="form-group col-2">
+          <div class="form-group col-3">
             <small for="dep_cert_no">S/B Account No</small>
             <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
               id="dep_cert_no">
@@ -786,14 +787,14 @@
 
           <div class="form-group col-3">
             <small for="rec_dep_intt_rate">No Of Installment</small>
-            <input [ngModel]="tm_deposit.instl_no" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
-              class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
+            <input [(ngModel)]="tm_deposit.instl_no" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+            (focusout)="calculateInstallmentDtls()" class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
           </div>
 
           <div class="form-group col-4">
             <small for="rec_dep_intt_rate">Installment Amount</small>
-            <input [ngModel]="tm_deposit.instl_amt"  [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
-              class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
+            <input [(ngModel)]="tm_deposit.instl_amt"  [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+            (focusout)="calculateInstallmentDtls()" class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
           </div>
         </div>
 
@@ -801,13 +802,13 @@
 
           <div class="form-group col-2">
             <small for="rec_dep_intt_rate">Rate Of Interest</small>
-            <input [ngModel]="tm_deposit.intt_rt" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
-              class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
+            <input [(ngModel)]="tm_deposit.intt_rt" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+            (focusout)="calculateInstallmentDtls()" class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
           </div>
 
           <div class="form-group col-2">
             <small for="rec_dep_principal">Total Principal</small>
-            <input [ngModel]="tm_deposit.prn_amt" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
+            <input [(ngModel)]="tm_deposit.prn_amt" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" value='.00' step='any'
               class="form-control form-control-sm text-capitalize" id="rec_dep_principal">
           </div>
 
@@ -820,7 +821,7 @@
 
           <div class="form-group col-3">
             <small for="rec_dep_matu_val">Matured Value</small>
-            <input [ngModel]="tm_deposit.mat_val" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+            <input [(ngModel)]="tm_deposit.mat_val" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
               class="form-control form-control-sm text-capitalize" id="rec_dep_matu_val">
           </div>
 
@@ -1106,7 +1107,7 @@
 
                 <div class="form-group col-3">
                   <small for="rec_dep_intt_rate">Period (Month)</small>
-                  <input [ngModel]="tm_deposit.dep_period" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0"
+                  <input [ngModel]="this.tm_deposit.month" disabled style="height:25px; text-align-last: right;" type="number" min="0"
                     step='any' class="form-control form-control-sm text-capitalize" id="rec_dep_intt_rate">
                 </div>
 
