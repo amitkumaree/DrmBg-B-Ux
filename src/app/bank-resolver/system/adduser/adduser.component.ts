@@ -16,6 +16,12 @@ export class AdduserComponent implements OnInit {
   isLoading=false;
   addUser: FormGroup;
   showMsg: ShowMessage;
+  isDel = false;
+  isRetrieve = false;
+  isNew = false;
+  isModify = false;
+  isSave = false;
+  isClear = false;
   constructor(private router: Router,private formBuilder: FormBuilder,private svc: RestService) { }
 
   ngOnInit(): void {
@@ -29,6 +35,12 @@ export class AdduserComponent implements OnInit {
       utype: ['', Validators.required],
       branch: ['', Validators.required]
     });
+    this.isDel = false;
+    this.isRetrieve = true;
+    this.isNew = true;
+    this.isModify = false;
+    this.isSave = false;
+    this.isClear = true;
   }
   get f() { return this.addUser.controls; }
   closeScreen()
@@ -37,8 +49,15 @@ export class AdduserComponent implements OnInit {
   }
   new()
   {
+    this.isDel = false;
+    this.isRetrieve = false;
+    this.isNew = false;
+    this.isModify = false;
+    this.isSave = true;
+    this.isClear = true;
     this.GetBranchMaster();
   }
+
   GetBranchMaster()
   {
     this.isLoading=true;
@@ -55,6 +74,12 @@ export class AdduserComponent implements OnInit {
   }
   retrieve ()
   {
+    if (this.f.userid.value == null ||  this.f.branch.value==null)
+    {
+      this.HandleMessage(true, MessageType.Warning,'Please enter User ID and Branch!!' );
+    }
+    else
+    {
     debugger;
     let login = new LOGIN_MASTER();
     login.user_id = this.f.userid.value;
@@ -72,11 +97,26 @@ export class AdduserComponent implements OnInit {
         this.f.mname.setValue(res[0].user_middle_name);
         this.f.lname.setValue(res[0].user_last_name);
         this.f.utype.setValue(res[0].user_type);
+        this.isDel = true;
+        this.isRetrieve = false;
+        this.isNew = false;
+        this.isModify = true;
+        this.isSave = false;
+        this.isClear = true;
         }
         
       },
-      err => { debugger;  this.HandleMessage(true, MessageType.Error,'User Not found !!!' );}
+      err => { debugger;  this.HandleMessage(true, MessageType.Error,'User Not found !!!' );
+      this.initialize();
+      this.isDel = false;
+      this.isRetrieve = true;
+      this.isNew = false;
+      this.isModify = false;
+      this.isSave = false;
+      this.isClear = true;
+    }
     )
+  }
 
   }
   saveuser()
@@ -98,9 +138,22 @@ export class AdduserComponent implements OnInit {
         debugger;
         this.isLoading=false;
         this.HandleMessage(true, MessageType.Sucess,'Sucessfully Saved the User Details' );
-        
+        this.initialize();
+        this.isDel = false;
+        this.isRetrieve = true;
+        this.isNew = true;
+        this.isModify = false;
+        this.isSave = false;
+        this.isClear = true;        
       },
-      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Insertion Failed!!' );}
+      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Insertion Failed!!' );
+              this.isDel = false;
+              this.isRetrieve = false;
+              this.isNew = false;
+              this.isModify = false;
+              this.isSave = true;
+              this.isClear = true;
+    }
     )
 
   }
@@ -123,32 +176,77 @@ export class AdduserComponent implements OnInit {
         debugger;
         this.isLoading=false;
         this.HandleMessage(true, MessageType.Sucess,'Sucessfully Updated the User Details' );
-        
+        this.initialize();
+        this.isDel = false;
+        this.isRetrieve = true;
+        this.isNew = true;
+        this.isModify = false;
+        this.isSave = false;
+        this.isClear = true;        
       },
-      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Updation Failed!!' );}
+      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Updation Failed!!' );
+      this.isDel = false;
+      this.isRetrieve = true;
+      this.isNew = true;
+      this.isModify = true;
+      this.isSave = false;
+      this.isClear = true;
+    }
     )
 
   }
-  deleteeuser()
+  deleteuser()
   {
     this.isLoading=true;
     this.showMsg =null;
     let login = new LOGIN_MASTER();
     login.user_id = this.f.userid.value;
     login.brn_cd = this.f.branch.value;
-
-    //login.login_status='N';
     debugger;
     this.svc.addUpdDel('Sys/DeleteUserMaster', login).subscribe(
       res => {
         debugger;
         this.isLoading=false;
         this.HandleMessage(true, MessageType.Sucess,'User Details Deleted' );
-        
+        this.initialize();
+        this.isDel = false;
+        this.isRetrieve = true;
+        this.isNew = true;
+        this.isModify = false;
+        this.isSave = false;
+        this.isClear = true;
       },
-      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Deletion Failed!!' );}
+      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Deletion Failed!!' );
+      this.initialize();
+      this.isDel = false;
+      this.isRetrieve = true;
+      this.isNew = true;
+      this.isModify = false;
+      this.isSave = false;
+      this.isClear = true;
+    }
     )
 
+  }
+  clearuser()
+  {
+    this.initialize();
+    this.isDel = false;
+    this.isRetrieve = true;
+    this.isNew = true;
+    this.isModify = false;
+    this.isSave = false;
+    this.isClear = true;
+  }
+  initialize()
+  {
+    this.f.fname.setValue(null);
+    this.f.mname.setValue(null);
+    this.f.lname.setValue(null);
+    this.f.utype.setValue(null);
+    this.f.branch.setValue(null);
+    this.f.userid.setValue(null);
+    this.f.password.setValue(null);
   }
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
     this.showMsg = new ShowMessage();
