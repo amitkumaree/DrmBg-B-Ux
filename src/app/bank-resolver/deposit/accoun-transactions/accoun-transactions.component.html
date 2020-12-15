@@ -32,14 +32,6 @@
                   </option>
                 </select>
               </div>
-              <div class="form-group col-3">
-                <small for="oprn_cd">Operation Type</small>
-                <select id="oprn_cd" [attr.disabled]="null == operations ? '' : null"
-                  class="form-control form-control-sm" formControlName="oprn_cd" (change)="onOperationTypeChange()">
-                  <option *ngIf="operations" disabled>Choose</option>
-                  <option *ngFor="let oper of operations" [value]="oper.oprn_cd">{{oper.oprn_desc}}</option>
-                </select>
-              </div>
               <div class="form-group col-4">
                 <small for="acct_num">Account Number
                   <small style="display: inline;" class="form-text text-muted">
@@ -50,7 +42,14 @@
                   class="form-control form-control-sm " formControlName="acct_num" id="acct_num"
                   placeholder="Account Number" (keydown.Tab)="onAccountNumTabOff()" autocomplete="nope">
               </div>
-
+              <div class="form-group col-3">
+                <small for="oprn_cd">Operation Type</small>
+                <select id="oprn_cd" [attr.disabled]="null == operations ? '' : null"
+                  class="form-control form-control-sm" formControlName="oprn_cd" (change)="onOperationTypeChange()">
+                  <option *ngIf="operations" disabled>Choose</option>
+                  <option *ngFor="let oper of operations" [value]="oper.oprn_cd">{{oper.oprn_desc}}</option>
+                </select>
+              </div>
             </div>
           </form>
           <div class="col-12 mt-2">
