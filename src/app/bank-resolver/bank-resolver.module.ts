@@ -30,6 +30,7 @@ import { DwRdInstlViewComponent } from './Common/dw-rd-instl-view/dw-rd-instl-vi
 import { DwTdInttDtlsViewComponent } from './Common/dw-td-intt-dtls-view/dw-td-intt-dtls-view.component';
 import { DwRenewalViewComponent } from './Common/dw-renewal-view/dw-renewal-view.component';
 import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
+import { AccountDetailsForAcctTransComponent } from './Common/account-details-for-acct-trans/account-details-for-acct-trans.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { AccounTransactionsComponent } from './deposit/accoun-transactions/accou
     DwRdInstlViewComponent,
     DwTdInttDtlsViewComponent,
     DwRenewalViewComponent,
-    AccounTransactionsComponent
+    AccounTransactionsComponent,
+    AccountDetailsForAcctTransComponent
   ],
   imports: [
     CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule, AutocompleteLibModule  ],

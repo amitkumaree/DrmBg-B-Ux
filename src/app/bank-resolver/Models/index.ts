@@ -26,4 +26,6 @@ export * from './td_def_trans_trf';
 export * from './mm_acc_type';
 export * from './tm_deposit';
 export * from './td_rd_installment';
-export * from './deposit/td_intt_dtls'
+export * from './deposit/td_intt_dtls';
+export * from './mm_operation';
+export * from './tm_depositall';

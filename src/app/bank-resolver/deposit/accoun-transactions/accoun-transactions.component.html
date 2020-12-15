@@ -1,1 +1,268 @@
-<p>accoun-transactions works!</p>
+<loading *ngIf="isLoading"></loading>
+<div class="row d-flex justify-content-center align-items-center"
+  style="background-color: #78c2ad21; min-height: 90vh;">
+  <div *ngIf="showMsg && showMsg.Show" class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+    <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
+     'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
+      <strong>{{showMsg.Message}}</strong>
+      <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <div
+    class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
+        <div class="row">
+          <form [formGroup]="accTransFrm" class="col-12">
+            <div class="form-row">
+              <div class="form-group col-3">
+                <small for="acc_type_cd">Account Type</small>
+                <select id="acc_type_cd" class="form-control form-control-sm" formControlName="acc_type_cd"
+                  (change)="onAcctChange()">
+                  <option *ngIf="AcctTypes" disabled>Choose</option>
+                  <option *ngFor="let acctType of AcctTypes" [value]="acctType.acc_type_cd">{{acctType.acc_type_desc}}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group col-3">
+                <small for="oprn_cd">Operation Type</small>
+                <select id="oprn_cd" [attr.disabled]="null == operations ? '' : null"
+                  class="form-control form-control-sm" formControlName="oprn_cd" (change)="onOperationTypeChange()">
+                  <option *ngIf="operations" disabled>Choose</option>
+                  <option *ngFor="let oper of operations" [value]="oper.oprn_cd">{{oper.oprn_desc}}</option>
+                </select>
+              </div>
+              <div class="form-group col-4">
+                <small for="acct_num">Account Number
+                  <small style="display: inline;" class="form-text text-muted">
+                    Press tab.
+                  </small>
+                </small>
+                <input type="number" [attr.disabled]="null == operations ? '' : null"
+                  class="form-control form-control-sm " formControlName="acct_num" id="acct_num"
+                  placeholder="Account Number" (keydown.Tab)="onAccountNumTabOff()" autocomplete="nope">
+              </div>
+
+            </div>
+          </form>
+          <div class="col-12 mt-2">
+            <app-account-details-for-acct-trans></app-account-details-for-acct-trans>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
+        <form [formGroup]="tdDefTransFrm">
+          <h6 class="mt-2" style="background-color:lightskyblue">Transaction Details</h6>
+          <div class="form-row">
+            <div class="form-group col-2">
+              <small for="acc_type_cd">Account Type</small>
+              <input type="text" hidden class="form-control form-control-sm" disabled formControlName="acc_type_cd"
+                id="acc_type_cd">
+              <input type="text" class="form-control form-control-sm" disabled formControlName="acc_type_desc"
+                id="acc_type_desc">
+            </div>
+            <div class="form-group col-2">
+              <small for="acc_num">A/C</small>
+              <input type="text" disabled class="form-control form-control-sm" formControlName="acc_num" id="acc_num">
+            </div>
+            <div class="form-group col-3">
+              <small for="trans_type">Transaction Type</small>
+              <input type="text" class="form-control form-control-sm" formControlName="trans_type" disabled
+                id="trans_type">
+            </div>
+            <div class="form-group col-3">
+              <small for="trans_mode">Transaction Mode</small>
+              <!-- <input type="text" class="form-control form-control-sm" formControlName="trans_mode"
+              id="trans_mode"> -->
+              <select id="trans_mode" class="form-control form-control-sm" formControlName="trans_mode"
+                (change)="onTransModeChange()">
+                <option disabled>Choose</option>
+                <option value="W">Withdrawl Slip</option>
+                <option value="V">Voucher</option>
+                <option value="Q">Cheque/Draft</option>
+              </select>
+            </div>
+            <div class="form-group col-2">
+              <small for="trans_type">Transfer Type</small>
+              <select id="trans_type" class="form-control form-control-sm" formControlName="trans_type">
+                <option *ngIf="operations" disabled>Choose</option>
+                <option *ngIf="operations" value="C">Cash</option>
+                <option *ngIf="operations" value="T">Transfer</option>
+              </select>
+            </div>
+            <div class="form-group col-2">
+              <small for="paid_to">Paid To</small>
+              <input type="text" class="form-control form-control-sm" formControlName="paid_to" id="paid_to">
+            </div>
+            <div class="form-group col-3">
+              <small for="token_num">Token Number</small>
+              <input type="text" class="form-control form-control-sm" formControlName="token_num" id="token_num">
+            </div>
+            <div class="form-group col-2">
+              <small for="amount">Amount </small>
+              <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount">
+            </div>
+            <div class="form-group col-2" *ngIf="showInstrumentDtl">
+              <small for="instrument_num">Instrument Num</small>
+              <input type="text" class="form-control form-control-sm" formControlName="instrument_num"
+                id="instrument_num">
+            </div>
+            <div class="form-group col-3" *ngIf="showInstrumentDtl">
+              <small for="instrument_dt">Instrument Dt</small>
+              <input type="date" class="form-control form-control-sm" formControlName="instrument_dt"
+                id="instrument_dt">
+            </div>
+            <div class="form-group col-12">
+              <small for="particulars">Particulars</small>
+              <textarea type="text" class="form-control form-control-sm" cols="2" formControlName="particulars"
+                id="particulars">
+              </textarea>
+            </div>
+          </div>
+        </form>
+        <div class="row" *ngIf="td.trans_type.value !== ''">
+          <div class="col-12 col-sm-6 col-md-12 mt-2">
+            <div *ngIf="td.trans_type.value === 'C'">
+              <h6 style="background-color: lightskyblue">Denomination Details</h6>
+
+              <section *ngFor="let t1 of tm_denominationList; let i=index">
+                <div class="form-row">
+                  <div class="form-group col-5">
+                    <small for="trans_type">Rupees</small> <br>
+                    <select
+                      style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+                      id="trans_type" class="form-control form-control-sm">
+                      <option value="t1.rupees" disabled selected>{{t1.rupees_desc}}</option>
+                      <option [value]="l.rupees" *ngFor="let l of denominations">{{l.desc}}</option>
+                    </select>
+                  </div>
+
+
+                  <div class="form-group col-3">
+                    <small for="deno_count">Count</small>
+                    <input [(ngModel)]="t1.count" type="text" style="height:25px"
+                      class="form-control form-control-sm text-capitalize" id="deno_count" placeholder="Count">
+                  </div>
+
+                  <div class="form-group col-4">
+                    <small for="deno_total">Total</small>
+                    <input [(ngModel)]="t1.total" type="text" style="height:25px"
+                      class="form-control form-control-sm text-capitalize" id="deno_total" placeholder="Total">
+                  </div>
+                </div>
+              </section>
+
+
+              <div class="form-row">
+                <div class="form-group col-8" style="text-align: right;">
+                  <label class="form-check-label"> <small> Total</small> </label>
+                </div>
+
+                <div class="form-group col-4">
+                  <input [(ngModel)]='denominationGrandTotal' disabled type="text" style="height:25px"
+                    class="form-control form-control-sm text-capitalize" id="total" placeholder="Total">
+                </div>
+              </div>
+
+              <div class="text-right mb-3">
+                <button type="button" style="height:22px; padding-top: 0px;"
+                  class="btn btn-primary btn-sm ">
+                  <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+
+                <button type="button" style="height:22px; padding-top: 0px;"
+                  class="btn btn-primary btn-sm ">
+                  <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                </button>
+              </div>
+
+            </div>
+
+            <div *ngIf="td.trans_type.value === 'T'">
+              <h1></h1>
+              <h6 style="background-color: lightskyblue">Transfer Debit Details</h6>
+
+              <div class="form-row">
+                <div class="form-group col-4">
+                  <small for="debit_ac">A/C & Account No.</small>
+                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                    id="debit_ac">
+                </div>
+
+                <div class="form-group col-2">
+                  <small for="debit_gl_head">GL Head</small>
+                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                    id="debit_gl_head">
+                </div>
+
+                <div class="form-group col-3">
+                  <small for="debit_amount">Amount</small>
+                  <input type="text" style="height:25px; text-align-last: right;" type="number" step='any'
+                    class="form-control form-control-sm text-capitalize" id="debit_amount">
+                </div>
+
+                <div class="form-group col-3">
+                  <small for="Inst_num">Instrument Num</small>
+                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                    id="Inst_num">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-4">
+                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                    id="debit_ac">
+                </div>
+
+                <div class="form-group col-2">
+                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                    id="debit_gl_head">
+                </div>
+              </div>
+
+              <div class="form-row">
+
+                <div class="form-group col-1" style="text-align: left;">
+                  <label class="form-check-label"> <small> Total Debit</small> </label>
+                </div>
+
+                <div class="form-group col-4">
+                  <input type="text" style="height:25px; text-align-last: right;" type="number" step='any'
+                    class="form-control form-control-sm text-capitalize" id="total" placeholder="Total">
+                </div>
+
+                <div class="form-group col-7" style="text-align: right;">
+                  <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm ">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                  </button>
+
+                  <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm ">
+                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
+  </div>
+</div>
