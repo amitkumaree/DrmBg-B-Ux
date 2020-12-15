@@ -37,8 +37,8 @@
 style="background-color: #78c2ad21; min-height: 20vh;">
 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
   <div>
-    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="dayRetrieve()">Retrieve</button>
-    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="dayInitialize()">Day Initialize</button>
+    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="!isRetrieve" (click)="dayRetrieve()">Retrieve</button>
+    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="!isOk" (click)="dayInitialize()">Day Initialize</button>
     <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="closeScreen()" style="position: absolute;right: 10px;">Close</button>
   </div>
 </div>
@@ -67,8 +67,8 @@ style="background-color: #78c2ad21; min-height: 20vh;">
 </div>
 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
   <div>
-    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="dayRetrieve()">Retrieve</button>
-    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="dayInitialize()">Day Initialize</button>
+    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="!isRetrieve" (click)="dayRetrieve()">Retrieve</button>
+    <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" [disabled]="!isOk" (click)="dayInitialize()">Day Initialize</button>
     <button type="button" class="btn btn-rounded btn-primary btn-primary-spacing btn-sm" (click)="closeScreen()" style="position: absolute;right: 10px;">Close</button>
   </div>
 </div>
