@@ -5,6 +5,7 @@ import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class CashaccountComponent implements OnInit {
   dt: any;
   fromdate: Date;
   todate:Date; 
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal ) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -436,7 +437,10 @@ exportPDFTitle() {
 // }
 ///////////////////
 
-
+closeScreen()
+{
+  this.router.navigate([localStorage.getItem('__bName') + '/la']);
+}
 
 
 }

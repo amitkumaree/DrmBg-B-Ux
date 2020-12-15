@@ -59,8 +59,7 @@ style="background-color: #78c2ad21; min-height: 20vh;">
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
   <div>
   <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button>
-  <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
-  <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()"style="position: absolute;right: 10px;">Close</button>
+   <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()" style="position: absolute;right: 10px;">Close</button>
 </div>
 </div>
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
@@ -76,11 +75,10 @@ style="background-color: #78c2ad21; min-height: 20vh;">
 </wbr-pivot> 
 </div>
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
-    <div>
-    <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button>
-    <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
-    <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()"style="position: absolute;right: 10px;">Close</button>
-  </div>
+  <div>
+  <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button>
+   <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()" style="position: absolute;right: 10px;">Close</button>
+</div>
 </div>  
 </div>
 <loading *ngIf="isLoading"></loading>

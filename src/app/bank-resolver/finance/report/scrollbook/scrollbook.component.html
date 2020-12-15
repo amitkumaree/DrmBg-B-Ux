@@ -42,6 +42,12 @@
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center pt-4"
 style="background-color: #78c2ad21; min-height: 20vh;">
+<div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
+  <div>
+  <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button>
+   <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()" style="position: absolute;right: 10px;">Close</button>
+</div>
+</div>
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
      <div style="text-align: center;"><strong> Synergic Banking </strong>  </div>
      <div style="text-align: center;"><b> Branch: Main Branch</b></div>
@@ -55,11 +61,10 @@ style="background-color: #78c2ad21; min-height: 20vh;">
 </wbr-pivot> 
 </div>
 <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
-    <div>
-    <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button>
-    <button type="button" class="btn btn-rounded btn-primary m-1">Print</button>
-    <button type="button" class="btn btn-rounded btn-primary m-1" style="position: absolute;right: 10px;">Close</button>
-  </div>
-</div>  
+  <div>
+  <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button>
+   <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()" style="position: absolute;right: 10px;">Close</button>
+</div>
+</div>
 </div>
 <loading *ngIf="isLoading"></loading>
