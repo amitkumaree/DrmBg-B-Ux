@@ -28,11 +28,12 @@ import { VoucherapprovalComponent } from './finance/voucherapproval/voucherappro
 import { DayinitializationComponent } from './system/dayinitialization/dayinitialization.component';
 import { DaycomplitionComponent } from './system/daycomplition/daycomplition.component';
 import { AdduserComponent } from './system/adduser/adduser.component';
+import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
-  // { path: 'te-st', component: AccounTransactionsComponent },
+  { path: 'te-st', component: AccounTransactionsComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
@@ -57,12 +58,13 @@ const routes: Routes = [
       { path: 'FR_DayScrollBook', component: ScrollbookComponent },
       { path: 'FR_GLTD', component: GenLedger2Component },
       { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
+      { path: 'DT_AccTrans', component: AccounTransactionsComponent },
       { path: 'DT_OpenAcc', component: AccOpeningComponent },
       { path: 'DA_DayInit', component: DayinitializationComponent },
       { path: 'DA_DayCmpl', component: DaycomplitionComponent },
       { path: 'UM_AddUsr', component: AdduserComponent },
-      
-      
+
+
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,

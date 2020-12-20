@@ -4,15 +4,18 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { RestService, InAppMessageService } from 'src/app/_service';
 import { MessageType, mm_acc_type, mm_operation, ShowMessage, td_def_trans_trf, tm_depositall } from '../../Models';
 import { tm_denomination_trans } from '../../Models/deposit/tm_denomination_trans';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-accoun-transactions',
   templateUrl: './accoun-transactions.component.html',
-  styleUrls: ['./accoun-transactions.component.css']
+  styleUrls: ['./accoun-transactions.component.css'],
+  providers: [DatePipe]
 })
 export class AccounTransactionsComponent implements OnInit {
 
-  constructor(private svc: RestService, private msg: InAppMessageService, private frmBldr: FormBuilder) { }
+  constructor(private svc: RestService, private msg: InAppMessageService,
+    private frmBldr: FormBuilder, public datepipe: DatePipe) { }
   private static operations: mm_operation[] = [];
   operations: mm_operation[];
   AcctTypes: mm_operation[];
@@ -214,7 +217,8 @@ export class AccounTransactionsComponent implements OnInit {
 
   mappTddefTransFromFrm(): td_def_trans_trf {
     const toReturn = new td_def_trans_trf();
-    toReturn.trans_dt = new Date(this.convertDate(localStorage.getItem('__currentDate')) + ' UTC');
+    // toReturn.trans_dt = new Date(this.convertDate(localStorage.getItem('__currentDate')) + ' UTC');
+    toReturn.trans_dt = this.datepipe.transform(new Date(localStorage.getItem('__currentDate')), 'dd/MM/yyyy');
     toReturn.acc_type_cd = this.td.acc_type_cd.value;
     toReturn.acc_num = this.td.acc_num.value;
     toReturn.trans_type = this.td.trans_type.value;

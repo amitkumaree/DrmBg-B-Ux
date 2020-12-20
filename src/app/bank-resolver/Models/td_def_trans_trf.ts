@@ -1,7 +1,7 @@
 import { baseModel } from './baseModel';
 
 export class td_def_trans_trf extends baseModel{
-  public trans_dt?: Date;
+  public trans_dt?: string;
   public trans_cd: number;
   public acc_type_cd: number;
   public acc_num: string;
