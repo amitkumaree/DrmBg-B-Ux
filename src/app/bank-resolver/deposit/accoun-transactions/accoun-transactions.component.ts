@@ -27,12 +27,12 @@ export class AccounTransactionsComponent implements OnInit {
   get td() { return this.tdDefTransFrm.controls; }
   showMsg: ShowMessage;
   showInstrumentDtl = false;
-  tm_denominationList : tm_denomination_trans[] = [];
+  tm_denominationList: tm_denomination_trans[] = [];
   denominations = [
     { rupees: '2000', desc: 'Two Thousand (Rs.2000)' },
-    { rupees: '500' , desc: 'Five Hundred (Rs.500)' },
-    { rupees: '100' , desc: 'Hundred (Rs.100)' },
-    { rupees: '50'  , desc: 'Fifty (Rs.50)' }];
+    { rupees: '500', desc: 'Five Hundred (Rs.500)' },
+    { rupees: '100', desc: 'Hundred (Rs.100)' },
+    { rupees: '50', desc: 'Fifty (Rs.50)' }];
   denominationGrandTotal = 0;
   ngOnInit(): void {
     this.isLoading = false;
@@ -132,13 +132,15 @@ export class AccounTransactionsComponent implements OnInit {
   public onAcctChange(): void {
     const acctTypCdTofilter = +this.f.acc_type_cd.value;
     const acctTypeDesription = AccounTransactionsComponent.operations
-    .filter(e => e.acc_type_cd === acctTypCdTofilter)[0].acc_type_desc;
+      .filter(e => e.acc_type_cd === acctTypCdTofilter)[0].acc_type_desc;
     this.tdDefTransFrm.patchValue({
       acc_type_desc: acctTypeDesription,
       acc_type_cd: acctTypCdTofilter
-      });
+    });
     this.operations = AccounTransactionsComponent.operations
       .filter(e => e.acc_type_cd === acctTypCdTofilter);
+    this.f.oprn_cd.enable();
+    this.f.acct_num.enable();
   }
 
   /* method fires on operation type change */
@@ -193,7 +195,7 @@ export class AccounTransactionsComponent implements OnInit {
           this.msg.sendCommonTmDepositAll(acc);
           this.tdDefTransFrm.patchValue({
             acc_num: acc.acc_num,
-            });
+          });
           this.isLoading = false;
         }
       },
@@ -206,12 +208,17 @@ export class AccounTransactionsComponent implements OnInit {
     this.isLoading = true;
     const saveTransaction = new AccOpenDM();
     saveTransaction.tddeftrans = this.mappTddefTransFromFrm();
+    if (this.td.trans_type.value === 'C') {
+      saveTransaction.tmdenominationtrans = this.tm_denominationList;
+    } else if (this.td.trans_type.value === 'T') {
+
+    }
     this.svc.addUpdDel<AccOpenDM>('Deposit/InsertAccountOpeningData', saveTransaction).subscribe(
       res => {
         debugger;
         this.isLoading = false;
       },
-      err => { this.isLoading = false; console.log('Error on onSaveClick' + err);  }
+      err => { this.isLoading = false; console.log('Error on onSaveClick' + err); }
     );
   }
 
@@ -235,16 +242,70 @@ export class AccounTransactionsComponent implements OnInit {
 
     return toReturn;
   }
+
+  mapDenominationToTmdenominationtrans(): void {
+
+  }
+
   onResetClick(): void {
     this.accTransFrm.reset();
     this.tdDefTransFrm.reset();
     // this.getOperationMaster();
+    this.f.oprn_cd.disable();
+    this.f.acct_num.disable();
     this.msg.sendCommonTmDepositAll(new tm_depositall());
+
   }
-  private  convertDate(datestring: string): Date {
+
+  addDenomination() {
+    const temp_denomination = new tm_denomination_trans();
+    temp_denomination.brn_cd = localStorage.getItem('__brnCd');
+    temp_denomination.trans_dt = this.datepipe.transform(new Date(localStorage.getItem('__currentDate')), 'dd/MM/yyyy');
+    this.tm_denominationList.push(temp_denomination);
+  }
+
+  removeDenomination() {
+    if (this.tm_denominationList.length >= 1) {
+      this.tm_denominationList.pop();
+      this.denominationGrandTotal = 0;
+      for (let l of this.tm_denominationList) {
+        this.denominationGrandTotal = this.denominationGrandTotal + l.total;
+      }
+    }
+  }
+
+  setDenomination(val: number, idx: number) {
+    debugger;
+    this.tm_denominationList[idx].rupees = Number(val);
+    this.tm_denominationList[idx].rupees_desc = this.denominations.filter(x => x.rupees === val.toString())[0].desc;
+    this.calculateTotalDenomination(idx);
+  }
+
+  calculateTotalDenomination(idx: number) {
+    debugger;
+    let r = 0;
+    let c = 0;
+
+    if (this.tm_denominationList[idx].rupees != null) {
+      r = this.tm_denominationList[idx].rupees;
+    }
+
+    if (this.tm_denominationList[idx].count != null) {
+      this.tm_denominationList[idx].count = Number(this.tm_denominationList[idx].count);
+      c = this.tm_denominationList[idx].count;
+    }
+
+    this.tm_denominationList[idx].total = r * c;
+
+    this.denominationGrandTotal = 0;
+    for (let l of this.tm_denominationList) {
+      this.denominationGrandTotal = this.denominationGrandTotal + l.total;
+    }
+  }
+  private convertDate(datestring: string): Date {
     const parts = datestring.match(/(\d+)/g);
-    return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
-  }​​​​​
+    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+  }
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
     this.showMsg = new ShowMessage();
     this.showMsg.Show = show;

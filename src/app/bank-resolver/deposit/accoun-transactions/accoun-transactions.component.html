@@ -139,7 +139,8 @@
                     <small for="trans_type">Rupees</small> <br>
                     <select
                       style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-                      id="trans_type" class="form-control form-control-sm">
+                      id="trans_type" class="form-control form-control-sm"
+                      (change)="setDenomination($event.target.value, i)">
                       <option value="t1.rupees" disabled selected>{{t1.rupees_desc}}</option>
                       <option [value]="l.rupees" *ngFor="let l of denominations">{{l.desc}}</option>
                     </select>
@@ -149,7 +150,9 @@
                   <div class="form-group col-3">
                     <small for="deno_count">Count</small>
                     <input [(ngModel)]="t1.count" type="text" style="height:25px"
-                      class="form-control form-control-sm text-capitalize" id="deno_count" placeholder="Count">
+                      class="form-control form-control-sm text-capitalize"
+                      (change)="calculateTotalDenomination(i)"
+                      id="deno_count" placeholder="Count">
                   </div>
 
                   <div class="form-group col-4">
@@ -174,12 +177,12 @@
 
               <div class="text-right mb-3">
                 <button type="button" style="height:22px; padding-top: 0px;"
-                  class="btn btn-primary btn-sm ">
+                  class="btn btn-primary btn-sm" (click)="addDenomination()">
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
 
                 <button type="button" style="height:22px; padding-top: 0px;"
-                  class="btn btn-primary btn-sm ">
+                  class="btn btn-primary btn-sm" (click)="removeDenomination()">
                   <i class="fa fa-minus-circle" aria-hidden="true"></i>
                 </button>
               </div>

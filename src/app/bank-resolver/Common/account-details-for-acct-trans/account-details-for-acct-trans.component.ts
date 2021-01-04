@@ -1,3 +1,4 @@
+import { tm_deposit } from './../../Models/tm_deposit';
 import { tm_depositall } from './../../Models';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -19,7 +20,11 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         if (null !== res) {
           this.acctDtls = res;
           this.setAcctDetails();
-        } else {this.accDtlsFrm.reset(); }
+        } else {
+          if (undefined !== this.accDtlsFrm) {
+            this.accDtlsFrm.reset();
+          }
+        }
       },
       err => { }
     );
@@ -104,12 +109,14 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
       occupation: [''],
       phone: [''],
       present_address: [''],
-      constitution_desc: ['']
+      constitution_desc: [''],
+      shadow_bal: ['']
     });
   }
 
   setAcctDetails(): void {
     if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
+      this.getShadowBalance();
       this.accDtlsFrm.patchValue({
         brn_cd: this.acctDtls.brn_cd,
         acc_type_cd: this.acctDtls.acc_type_cd,
@@ -120,7 +127,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         intt_trf_type: this.acctDtls.intt_trf_type,
         constitution_cd: this.acctDtls.constitution_cd,
         oprn_instr_cd: this.acctDtls.oprn_instr_cd,
-        opening_dt: formatDate(this.acctDtls.opening_dt, 'dd/MMM/yyyy', 'en-US'),
+        opening_dt: this.acctDtls.opening_dt,
         prn_amt: this.acctDtls.prn_amt,
         intt_amt: this.acctDtls.intt_amt,
         dep_period: this.acctDtls.dep_period,
@@ -156,6 +163,23 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         agent_cd: this.acctDtls.agent_cd,
       });
     } else { this.accDtlsFrm.reset(); }
+  }
+
+  getShadowBalance(): void {
+    const tmDep = new tm_deposit();
+    tmDep.acc_type_cd = this.acctDtls.acc_type_cd;
+    tmDep.brn_cd = this.acctDtls.brn_cd;
+    tmDep.acc_num = this.acctDtls.acc_num;
+    this.svc.addUpdDel<any>('Deposit/GetShadowBalance', tmDep).subscribe(
+      res => {
+        if (undefined !== res && null !== res && !isNaN(+res)) {
+          this.accDtlsFrm.patchValue({
+            shadow_bal: res
+          });
+        }
+      },
+      err => { this.isLoading = false; console.log(err); }
+    );
   }
 
   ngOnDestroy(): void {
