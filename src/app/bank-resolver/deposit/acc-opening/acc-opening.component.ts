@@ -1,3 +1,5 @@
+import { SystemValues } from './../../Models/SystemValues';
+
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
@@ -37,7 +39,7 @@ export class AccOpeningComponent implements OnInit {
   branchCode = '0';
   savingsDepoSpclPeriod = 0;
   openDate: Date;
-
+  sys = new SystemValues();
   denominationGrandTotal = 0;
 
   isLoading = false;
@@ -130,12 +132,12 @@ export class AccOpeningComponent implements OnInit {
   ngOnInit(): void {
 
     debugger;
-    this.branchCode = localStorage.getItem('__brnCd');
+    this.branchCode = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     // this.openDate = this.convertDate( localStorage.getItem('__currentDate'));
-    this.openDate = new Date(localStorage.getItem('__currentDate'));
-    this.savingsDepoSpclPeriod = Number(localStorage.getItem('__ddsPeriod'));
+    // this.openDate = new Date(localStorage.getItem('__currentDate'));
+    this.openDate = this.sys.CurrentDate;
+    this.savingsDepoSpclPeriod = this.sys.DdsPeriod; // Number(localStorage.getItem('__ddsPeriod'));
     this.suggestedCustomer = null;
-
     debugger;
 
     this.getCustomerList();
