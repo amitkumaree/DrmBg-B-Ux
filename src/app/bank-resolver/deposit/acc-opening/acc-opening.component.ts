@@ -37,6 +37,10 @@ export class AccOpeningComponent implements OnInit {
   branchCode = '0';
   savingsDepoSpclPeriod = 0;
   openDate: Date;
+  createUser = '';
+  updateUser = '';
+  createDate: Date;
+  updateDate: Date;
 
   denominationGrandTotal = 0;
 
@@ -134,6 +138,13 @@ export class AccOpeningComponent implements OnInit {
     // this.openDate = this.convertDate( localStorage.getItem('__currentDate'));
     this.openDate = new Date(localStorage.getItem('__currentDate'));
     this.savingsDepoSpclPeriod = Number(localStorage.getItem('__ddsPeriod'));
+
+    this.createUser = localStorage.getItem('__userId');
+    this.updateUser = localStorage.getItem('__userId');
+
+    this.createDate = this.convertDate(Date.UTC( new Date().getDate() , new Date().getMonth(),  new Date().getFullYear()).toString());
+    this.updateDate = this.convertDate(Date.UTC( new Date().getDate() , new Date().getMonth(),  new Date().getFullYear()).toString());
+
     this.suggestedCustomer = null;
 
     debugger;
@@ -197,6 +208,9 @@ export class AccOpeningComponent implements OnInit {
     this.tm_deposit = new tm_deposit();
     this.tm_deposit.opening_dt = this.DateFormatting(this.openDate);
     this.tm_deposit.acc_num = null;
+    this.tm_deposit.cheque_facility_flag = 'N';
+    this.tm_deposit.tds_applicable = 'N';
+    this.tm_deposit.standing_instr_flag = 'N';
 
     const sig: td_signatory[] = [];
     this.td_signatoryList = sig;
@@ -278,6 +292,7 @@ export class AccOpeningComponent implements OnInit {
 
 
     this.tm_deposit = this.masterModel.tmdeposit ;
+    this.td_signatoryList = this.masterModel.tdsignatory;
     this.setCustDtls(this.tm_deposit.cust_cd);
     this.setAccountType(this.tm_deposit.acc_type_cd);
     this.setIntTfrType(this.tm_deposit.intt_trf_type);
@@ -286,14 +301,17 @@ export class AccOpeningComponent implements OnInit {
 
     this.td_introducerlist = this.masterModel.tdintroducer;
 
+    if ( this.tm_deposit.dep_period != undefined && this.tm_deposit.dep_period != null)
+    {
     retDepositPeriodArr =  this.depositPeriodParser(this.tm_deposit.dep_period);
     this.tm_deposit.year = Number(retDepositPeriodArr[0]);
     this.tm_deposit.month = Number(retDepositPeriodArr[1]);
     this.tm_deposit.day = Number(retDepositPeriodArr[2]);
+    }
 
     // tslint:disable-next-line: forin
     for (var idx in this.td_introducerlist) {
-      this.setIntroducerAccountType(this.td_introducerlist[idx].acc_type_cd, Number(idx));
+      this.setIntroducerAccountType(this.td_introducerlist[idx].introducer_acc_type, Number(idx));
     }
 
     debugger;
@@ -303,7 +321,7 @@ export class AccOpeningComponent implements OnInit {
     this.td_accholderList = this.masterModel.tdaccholder;
     // tslint:disable-next-line: forin
     for (var idx in this.td_accholderList) {
-      this.setRelationship( Number(this.td_accholderList[idx].relation), Number(idx));
+      this.setRelationship( this.td_accholderList[idx].relation, Number(idx));
       }
 
     this.tm_denominationList = this.masterModel.tmdenominationtrans;
@@ -489,10 +507,18 @@ saveData()
     this.validateData();
 
     if (this.tm_deposit.acc_num === null || this.operationType === 'I') {
+      this.tm_deposit.acc_status = 'O';
+      this.tm_deposit.created_by = this.createUser;
+      this.tm_deposit.created_dt = this.createDate;
+      this.tm_deposit.modified_by = this.updateUser;
+      this.tm_deposit.modified_dt = this.updateDate;
+
       this.getNewAccountNoAndSaveData();
     }
     else
     {
+      this.tm_deposit.modified_by = this.updateUser;
+      this.tm_deposit.modified_dt = this.updateDate;
       this.InsertAccountOpenData();
     }
 
@@ -514,7 +540,11 @@ saveData()
     if (this.tm_deposit.day === null || this.tm_deposit.day === undefined )
     { this.tm_deposit.day = 0; }
 
-    this.tm_deposit.dep_period = 'Year=' + this.tm_deposit.year + ';Month=' + this.tm_deposit.month + ';Day=' + this.tm_deposit.day;
+    if (this.tm_deposit.year === 0 && this.tm_deposit.month === 0 && this.tm_deposit.day === 0)
+    { this.tm_deposit.dep_period = null; }
+    else {
+      this.tm_deposit.dep_period = 'Year=' + this.tm_deposit.year + ';Month=' + this.tm_deposit.month + ';Day=' + this.tm_deposit.day;
+    }
 
     if (this.tm_deposit.cust_cd === null || this.tm_deposit.cust_cd === undefined)
     {
@@ -643,6 +673,29 @@ saveData()
       exit(0);
     }
 
+    if ((this.operationType === 'I') && ( this.tm_deposit.acc_type_cd === 1 || this.tm_deposit.acc_type_cd === 7 ||
+      this.tm_deposit.acc_type_cd === 8 || this.tm_deposit.acc_type_cd === 9 ) )
+      {
+        this.tm_deposit.user_acc_num = null;
+      }
+
+      if (this.operationType === 'I')
+      {
+        for (let l in this.tm_denominationList)
+        {
+        this.tm_denominationList[l].brn_cd = this.branchCode;
+        }
+
+        var v= 0;
+        for (let l in this.td_introducerlist) {
+          v = v + 1;
+          this.td_introducerlist[l].srl_no = v;
+          this.td_introducerlist[l].acc_type_cd = this.tm_deposit.acc_type_cd;
+          this.td_introducerlist[l].acc_num = this.tm_deposit.acc_num;
+        }
+
+      }
+
   }
 
   getNewAccountNoAndSaveData() {
@@ -755,10 +808,7 @@ saveData()
 
     if (this.operationType === 'I')
     {
-      this.tm_deposit.constitution_cd = null;
-      this.tm_deposit.constitution_desc = null;
-      this.tm_deposit.oprn_instr_cd = null;
-      this.tm_deposit.oprn_instr_desc = null;
+       this.setTmDepositModel();
     }
 
     this.accountTypeDiv = Number(accType);
@@ -766,6 +816,7 @@ saveData()
     this.tm_deposit.acc_type_cd = Number(accType);
     this.tm_deposit.acc_type_desc = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
 
+    // this.selectedConstitutionList = null;
     this.selectedConstitutionList = this.constitutionList.filter(x => x.acc_type_cd.toString() === accType.toString());
     debugger;
 
@@ -795,6 +846,71 @@ saveData()
 
   }
 
+
+  setTmDepositModel()
+  {
+
+    this.tm_deposit.acc_type_cd = null;
+    this.tm_deposit.acc_num = null;
+    this.tm_deposit.renew_id = null;
+    this.tm_deposit.intt_trf_type = null;
+    this.tm_deposit.constitution_cd = null;
+    this.tm_deposit.oprn_instr_cd = null;
+    this.tm_deposit.prn_amt = null;
+    this.tm_deposit.intt_amt = null;
+    this.tm_deposit.dep_period = null;
+    this.tm_deposit.instl_amt = null;
+    this.tm_deposit.instl_no = null;
+    this.tm_deposit.mat_dt = null;
+    this.tm_deposit.intt_rt = null;
+    this.tm_deposit.tds_applicable = null;
+    this.tm_deposit.last_intt_calc_dt = null;
+    this.tm_deposit.acc_close_dt = null;
+    this.tm_deposit.closing_prn_amt = null;
+    this.tm_deposit.closing_intt_amt = null;
+    this.tm_deposit.penal_amt = null;
+    this.tm_deposit.ext_instl_tot = null;
+    this.tm_deposit.mat_status = null;
+    this.tm_deposit.acc_status = null;
+    this.tm_deposit.curr_bal = null;
+    this.tm_deposit.clr_bal = null;
+    this.tm_deposit.standing_instr_flag = null;
+    this.tm_deposit.cheque_facility_flag = null;
+    this.tm_deposit.approval_status = null;
+    this.tm_deposit.approved_by = null;
+    this.tm_deposit.approved_dt = null;
+    this.tm_deposit.user_acc_num = null;
+    this.tm_deposit.lock_mode = null;
+    this.tm_deposit.loan_id = null;
+    this.tm_deposit.cert_no = null;
+    this.tm_deposit.bonus_amt = null;
+    this.tm_deposit.penal_intt_rt = null;
+    this.tm_deposit.bonus_intt_rt = null;
+    this.tm_deposit.transfer_flag = null;
+    this.tm_deposit.transfer_dt = null;
+    this.tm_deposit.agent_cd = null;
+    this.tm_deposit.created_by = null;
+    this.tm_deposit.created_dt = null;
+    this.tm_deposit.modified_by = null;
+    this.tm_deposit.modified_dt = null;
+    this.tm_deposit.acc_type_desc = null;
+    this.tm_deposit.constitution_desc  = null;
+    this.tm_deposit.oprn_instr_desc  = null;
+    this.tm_deposit.intt_tfr_type_dscr = null;
+    this.tm_deposit.standing_instr_dscr = null;
+    this.tm_deposit.year = null;
+    this.tm_deposit.month = null;
+    this.tm_deposit.day = null;
+    this.tm_deposit.mat_val = null;
+
+    // this.tm_deposit.constitution_cd = null;
+    // this.tm_deposit.constitution_desc = null;
+    // this.tm_deposit.oprn_instr_cd = null;
+    // this.tm_deposit.oprn_instr_desc = null;
+
+
+  }
+
   setTransType(tt: any) {
     // this.transTypeFlg = val;
     debugger;
@@ -804,11 +920,11 @@ saveData()
   }
 
 
-  setRelationship(id: number, idx: number) {
+  setRelationship(relation: string, idx: number) {
     debugger;
     this.td_accholderList[idx].cust_cd = Number(this.td_accholderList[idx].cust_cd);
-    this.td_accholderList[idx].relation = id.toString();
-    this.td_accholderList[idx].relationDscr = this.relationship.filter(x => x.id.toString() === id.toString())[0].val;
+    this.td_accholderList[idx].relation = relation;
+    this.td_accholderList[idx].relationId = this.relationship.filter(x => x.val.toString() === relation)[0].id;
     debugger;
   }
 
@@ -987,11 +1103,11 @@ removeSignatory()
       this.td_introducerlist.pop();}
   }
 
-  setIntroducerAccountType(acc_typ_cd: number, idx: number) {
+  setIntroducerAccountType(intro_acc_typ_cd: number, idx: number) {
     debugger;
-    if (acc_typ_cd != null && acc_typ_cd > 0) {
-      this.td_introducerlist[idx].acc_type_cd = Number(acc_typ_cd);
-      this.td_introducerlist[idx].acc_type_desc = this.introducerAccTypeList.filter(x => x.acc_type_cd.toString() === acc_typ_cd.toString())[0].acc_type_desc;
+    if (intro_acc_typ_cd != null && intro_acc_typ_cd > 0) {
+      this.td_introducerlist[idx].introducer_acc_type = Number(intro_acc_typ_cd);
+      this.td_introducerlist[idx].acc_type_desc = this.introducerAccTypeList.filter(x => x.acc_type_cd.toString() === intro_acc_typ_cd.toString())[0].acc_type_desc;
     }
   }
 
@@ -1127,6 +1243,10 @@ removeSignatory()
 
   private depositPeriodParser(constitutionText: string) {
     /// YEAR=1;Month=10;Days=25;
+    if (constitutionText == null)
+    {
+      return null;
+    }
     let arr = constitutionText.split(';');
     let arrToReturn = [];
     arr.forEach(element => {

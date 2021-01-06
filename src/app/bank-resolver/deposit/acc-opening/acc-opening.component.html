@@ -113,7 +113,7 @@
           <div class="form-group col-6">
             <small for="auth_sig">Name of Authorised Signatories</small>
             <input [disabled]='i==0' [(ngModel)]="l.signatory_name" type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="auth_sig"
-            (change)='checkSignatory(l.signatory_name , i)' placeholder="Name of Authorised Signatories">
+            (ngModelChange)="l.signatory_name = $event.toUpperCase()" (change)="checkSignatory(l.signatory_name , i)" placeholder="Name of Authorised Signatories">
           </div>
         </div>
       </section>
@@ -151,8 +151,8 @@
           <small for="trans_type">Relation</small> <br>
           <select [disabled]='disableAll' style="height:25px; font-size: small; padding-top: 0px; background-color: whitesmoke;" id="trans_type"
             class="form-control form-control-sm" (change)="setRelationship($event.target.value, i)">
-            <option [value]="t1.relation" disabled selected>{{t1.relation}}-{{t1.relationDscr}}</option>
-            <option *ngFor="let l of relationship" [value]="l.id">{{l.id}}-{{l.val}}</option>
+            <option [value]="t1.relation" disabled selected>{{t1.relationId}}-{{t1.relation}}</option>
+            <option *ngFor="let l of relationship" [value]="l.val">{{l.id}}-{{l.val}}</option>
           </select>
         </div>
 
@@ -216,7 +216,7 @@
             <small for="trans_type">Constitution</small> <br>
             <select
               [disabled]='disableAll' style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -267,11 +267,15 @@
               class="form-control form-control-sm text-capitalize" id="dep_principal" placeholder="Principal">
 
             <small for="dep_amount">Amount</small>
-            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.instl_amt" style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+            <!-- <input [disabled]='disableAll' [(ngModel)]="tm_deposit.instl_amt" style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+              class="form-control form-control-sm text-capitalize" id="dep_amount" placeholder="Amount"> -->
+              <input disabled  style="height:25px; text-align-last: right;" type="number" min="0" step='any'
               class="form-control form-control-sm text-capitalize" id="dep_amount" placeholder="Amount">
 
             <small for="dep_cur_bal">Curr. Balance</small>
-            <input [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+            <!-- <input [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+              class="form-control form-control-sm text-capitalize" id="dep_cur_bal" placeholder="Curr. Balance"> -->
+              <input disabled style="height:25px; text-align-last: right;" type="number" min="0" step='any'
               class="form-control form-control-sm text-capitalize" id="dep_cur_bal" placeholder="Curr. Balance">
           </div>
         </div>
@@ -288,7 +292,7 @@
             <small for="trans_type">Constitution</small> <br>
             <select
               [disabled]='disableAll' style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -406,7 +410,7 @@
             <small for="dbs_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -531,7 +535,7 @@
             <small for="term_dep_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -656,7 +660,7 @@
             <small for="mis_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -777,7 +781,7 @@
             <small for="rec_dep_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -879,7 +883,7 @@
             <small for="share_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -952,7 +956,7 @@
             <small for="curr_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -1027,7 +1031,7 @@
             <small for="guar_const">Constitution</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+              id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
               <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
               <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
             </select>
@@ -1097,7 +1101,7 @@
                 <div class="form-group col-5">
                   <small for="rec_dep_const">Constitution</small> <br>
                   <select [disabled]='disableAll' style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-                    id="trans_type" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
+                    id="trans_type" [(ngModel)]="tm_deposit.constitution_cd" class="form-control form-control-sm" (change)="setConstitutionType($event.target.value)">
                     <option [value]="tm_deposit.constitution_cd" disabled selected>{{tm_deposit.constitution_cd}}-{{tm_deposit.constitution_desc}}</option>
                     <option *ngFor="let l of selectedConstitutionList" [value]="l.constitution_cd">{{l.constitution_cd}}-{{l.constitution_desc}}</option>
                   </select>
@@ -1165,7 +1169,7 @@
         <div class="form-group col-3">
           <small for="intr_acc_type">Account Type</small>
            <select [disabled]='disableAll' style="height:25px; font-size: small; padding-top: 0px; background-color: whitesmoke;" id="intr_acc_type"
-            class="form-control form-control-sm" (change)="setIntroducerAccountType($event.target.value, i)">
+            class="form-control form-control-sm" [(ngModel)]="t1.acc_type_cd" (focusout)="setIntroducerAccountType($event.target.value, i)">
             <option [value]="t1.acc_type_cd" disabled selected>{{t1.acc_type_cd}}-{{t1.acc_type_desc}}</option>
             <option *ngFor="let l of introducerAccTypeList" [value]="l.acc_type_cd">{{l.acc_type_cd}}-{{l.acc_type_desc}}</option>
           </select>
@@ -1252,13 +1256,13 @@
         <div class="form-group col-2">
           <small for="nom_name">Nominee Name</small>
           <input [(ngModel)]="t1.nom_name" style="height:25px" [disabled]='disableAll' type="text" class="form-control form-control-sm text-capitalize" id="nom_name"
-            placeholder="Nominee Name">
+          (ngModelChange)="t1.nom_name = $event.toUpperCase()" placeholder="Nominee Name">
         </div>
 
         <div class="form-group col-4">
           <small for="nom_addr">Nominee Address</small>
           <input [(ngModel)]="t1.nom_addr1" style="height:25px" [disabled]='disableAll' type="text" class="form-control form-control-sm text-capitalize" id="nom_addr"
-            placeholder="Nominee Address">
+          (ngModelChange)="t1.nom_addr1 = $event.toUpperCase()" t1.relationplaceholder="Nominee Address">
         </div>
 
         <div class="form-group col-2">
@@ -1270,7 +1274,7 @@
         <div class="form-group col-2">
           <small for="nom_rel">Relation</small>
           <input [(ngModel)]="t1.relation" style="height:25px" [disabled]='disableAll' type="text" class="form-control form-control-sm text-capitalize" id="nom_rel"
-            placeholder="Relation">
+          (ngModelChange)="t1.relation = $event.toUpperCase()" placeholder="Relation">
         </div>
 
         <div class="form-group col-2">

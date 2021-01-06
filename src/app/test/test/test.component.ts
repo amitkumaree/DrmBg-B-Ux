@@ -37,6 +37,10 @@ export class TestComponent implements OnInit {
   branchCode = '0';
   savingsDepoSpclPeriod = 0;
   openDate: Date;
+  createUser = '';
+  updateUser = '';
+  createDate: Date;
+  updateDate: Date;
 
   denominationGrandTotal = 0;
 
@@ -129,15 +133,26 @@ export class TestComponent implements OnInit {
 
   ngOnInit(): void {
 
+    debugger;
+    this.branchCode = localStorage.getItem('__brnCd');
+    // this.openDate = this.convertDate( localStorage.getItem('__currentDate'));
+    this.openDate = new Date(localStorage.getItem('__currentDate'));
+    this.savingsDepoSpclPeriod = Number(localStorage.getItem('__ddsPeriod'));
+
+    this.createUser = localStorage.getItem('__userId');
+    this.updateUser = localStorage.getItem('__userId');
+
+    this.createDate = this.convertDate(Date.UTC( new Date().getDate() , new Date().getMonth(),  new Date().getFullYear()).toString());
+    this.updateDate = this.convertDate(Date.UTC( new Date().getDate() , new Date().getMonth(),  new Date().getFullYear()).toString());
+
+    this.suggestedCustomer = null;
+
+    debugger;
+
     this.getCustomerList();
     this.getCategoryList();
 
     this.isLoading = true;
-
-    this.branchCode = localStorage.getItem('__brnCd');
-    this.openDate = new Date(localStorage.getItem('__currentDate'));
-    this.savingsDepoSpclPeriod = Number(localStorage.getItem('__ddsPeriod'));
-    this.suggestedCustomer = null;
 
     this.initializeMasterDataAndFlags();
     this.initializeModels();
@@ -150,6 +165,12 @@ export class TestComponent implements OnInit {
     // console.log(this.constitutionDtParser('YEAR=1;Month=10;Days=25;'));
   }
 
+  private convertDate(datestring: string): Date {
+    var parts = datestring.match(/(\d+)/g);
+    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+  }
+
+
   initializeMasterDataAndFlags()
   {
     this.getAccountTypeList();
@@ -160,7 +181,7 @@ export class TestComponent implements OnInit {
     this.transferTypeListTemp = [];
     this.transferTypeListTemp = this.transferTypeList;
 
-    this.isLoading = false;
+    // this.isLoading = false;
     // this.disableCustNameFlg = true;
     this.disableAll = true;
     this.disableCustomerName = true;
@@ -187,6 +208,9 @@ export class TestComponent implements OnInit {
     this.tm_deposit = new tm_deposit();
     this.tm_deposit.opening_dt = this.DateFormatting(this.openDate);
     this.tm_deposit.acc_num = null;
+    this.tm_deposit.cheque_facility_flag = 'N';
+    this.tm_deposit.tds_applicable = 'N';
+    this.tm_deposit.standing_instr_flag = 'N';
 
     const sig: td_signatory[] = [];
     this.td_signatoryList = sig;
@@ -268,6 +292,7 @@ export class TestComponent implements OnInit {
 
 
     this.tm_deposit = this.masterModel.tmdeposit ;
+    this.td_signatoryList = this.masterModel.tdsignatory;
     this.setCustDtls(this.tm_deposit.cust_cd);
     this.setAccountType(this.tm_deposit.acc_type_cd);
     this.setIntTfrType(this.tm_deposit.intt_trf_type);
@@ -276,14 +301,17 @@ export class TestComponent implements OnInit {
 
     this.td_introducerlist = this.masterModel.tdintroducer;
 
+    if ( this.tm_deposit.dep_period != undefined && this.tm_deposit.dep_period != null)
+    {
     retDepositPeriodArr =  this.depositPeriodParser(this.tm_deposit.dep_period);
     this.tm_deposit.year = Number(retDepositPeriodArr[0]);
     this.tm_deposit.month = Number(retDepositPeriodArr[1]);
     this.tm_deposit.day = Number(retDepositPeriodArr[2]);
+    }
 
     // tslint:disable-next-line: forin
     for (var idx in this.td_introducerlist) {
-      this.setIntroducerAccountType(this.td_introducerlist[idx].acc_type_cd, Number(idx));
+      this.setIntroducerAccountType(this.td_introducerlist[idx].introducer_acc_type, Number(idx));
     }
 
     debugger;
@@ -293,7 +321,7 @@ export class TestComponent implements OnInit {
     this.td_accholderList = this.masterModel.tdaccholder;
     // tslint:disable-next-line: forin
     for (var idx in this.td_accholderList) {
-      this.setRelationship( Number(this.td_accholderList[idx].relation), Number(idx));
+      this.setRelationship( this.td_accholderList[idx].relation, Number(idx));
       }
 
     this.tm_denominationList = this.masterModel.tmdenominationtrans;
@@ -305,21 +333,27 @@ export class TestComponent implements OnInit {
   }
 
 
-  getCustomerList()
-  {
+  getCustomerList() {
+    debugger;
     const cust = new mm_customer();
     cust.cust_cd = 0;
     cust.brn_cd = this.branchCode;
 
-    this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
-      res => {
-        debugger;
-        this.isLoading = false;
-        this.customerList = res;
-      },
-      err => { this.isLoading = false;
-        debugger;}
-    );
+    if (this.customerList === undefined || this.customerList === null || this.customerList.length === 0) {
+      this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
+        res => {
+          debugger;
+          this.isLoading = false;
+          this.customerList = res;
+        },
+        err => {
+          this.isLoading = false;
+          debugger;
+        }
+      );
+    }
+    else
+    {this.isLoading = false;}
   }
 
   getConstitutionList() {
@@ -418,11 +452,21 @@ export class TestComponent implements OnInit {
         debugger;
         this.isLoading = false;
         this.masterModel = res;
+
+        if (this.masterModel.tmdeposit.acc_num !== null)
+        {
         this.disableAccountTypeAndNo = true;
         this.assignModelsFromMasterData();
         debugger;
+        }
+        else
+        {
+          this.showAlertMsg('WARNING' , 'No record found!!');
+        }
+
       },
       err => { this.isLoading = false;
+        this.showAlertMsg('ERROR' , 'Unable to find record!!' );
         debugger;}
 
     );
@@ -446,6 +490,7 @@ export class TestComponent implements OnInit {
     this.operationType = 'I';
     this.disableAll = true;
     this.isLoading = true;
+    debugger;
     this.getCustomerList();
     // this.disableCustNameFlg = false;
     this.disableCustomerName = false;
@@ -462,10 +507,18 @@ saveData()
     this.validateData();
 
     if (this.tm_deposit.acc_num === null || this.operationType === 'I') {
+      this.tm_deposit.acc_status = 'O';
+      this.tm_deposit.created_by = this.createUser;
+      this.tm_deposit.created_dt = this.createDate;
+      this.tm_deposit.modified_by = this.updateUser;
+      this.tm_deposit.modified_dt = this.updateDate;
+
       this.getNewAccountNoAndSaveData();
     }
     else
     {
+      this.tm_deposit.modified_by = this.updateUser;
+      this.tm_deposit.modified_dt = this.updateDate;
       this.InsertAccountOpenData();
     }
 
@@ -487,13 +540,36 @@ saveData()
     if (this.tm_deposit.day === null || this.tm_deposit.day === undefined )
     { this.tm_deposit.day = 0; }
 
-    this.tm_deposit.dep_period = 'Year=' + this.tm_deposit.year + ';Month=' + this.tm_deposit.month + ';Day=' + this.tm_deposit.day;
+    if (this.tm_deposit.year === 0 && this.tm_deposit.month === 0 && this.tm_deposit.day === 0)
+    { this.tm_deposit.dep_period = null; }
+    else {
+      this.tm_deposit.dep_period = 'Year=' + this.tm_deposit.year + ';Month=' + this.tm_deposit.month + ';Day=' + this.tm_deposit.day;
+    }
 
     if (this.tm_deposit.cust_cd === null || this.tm_deposit.cust_cd === undefined)
     {
       this.showAlertMsg('WARNING' , 'Customer Information is Blank');
         exit(0);
     }
+
+    if (this.tm_deposit.acc_type_cd === null || this.tm_deposit.acc_type_cd === undefined)
+    {
+      this.showAlertMsg('WARNING' , 'Account Type can not be blank');
+        exit(0);
+    }
+
+    if (this.tm_deposit.constitution_cd === null || this.tm_deposit.constitution_cd === undefined)
+    {
+      this.showAlertMsg('WARNING' , 'Constitution can not be blank');
+        exit(0);
+    }
+
+    if (this.tm_deposit.oprn_instr_cd === null || this.tm_deposit.oprn_instr_cd === undefined)
+    {
+      this.showAlertMsg('WARNING' , 'Operational Instruction can not be blank');
+        exit(0);
+    }
+
 
     // tslint:disable-next-line: forin
     for (let l in this.td_signatoryList) {
@@ -596,6 +672,29 @@ saveData()
       this.showAlertMsg('WARNING' , 'S/B Account Number not present to create the Account Type- '+ this.tm_deposit.acc_type_desc);
       exit(0);
     }
+
+    if ((this.operationType === 'I') && ( this.tm_deposit.acc_type_cd === 1 || this.tm_deposit.acc_type_cd === 7 ||
+      this.tm_deposit.acc_type_cd === 8 || this.tm_deposit.acc_type_cd === 9 ) )
+      {
+        this.tm_deposit.user_acc_num = null;
+      }
+
+      if (this.operationType === 'I')
+      {
+        for (let l in this.tm_denominationList)
+        {
+        this.tm_denominationList[l].brn_cd = this.branchCode;
+        }
+
+        var v= 0;
+        for (let l in this.td_introducerlist) {
+          v = v + 1;
+          this.td_introducerlist[l].srl_no = v;
+          this.td_introducerlist[l].acc_type_cd = this.tm_deposit.acc_type_cd;
+          this.td_introducerlist[l].acc_num = this.tm_deposit.acc_num;
+        }
+
+      }
 
   }
 
@@ -720,16 +819,34 @@ saveData()
     this.tm_deposit.acc_type_cd = Number(accType);
     this.tm_deposit.acc_type_desc = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
 
+    // this.selectedConstitutionList = null;
     this.selectedConstitutionList = this.constitutionList.filter(x => x.acc_type_cd.toString() === accType.toString());
     debugger;
 
     if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 11 )
     {
       this.tm_deposit.month = this.savingsDepoSpclPeriod;
-      this.tm_deposit.mat_dt = this.tm_deposit.opening_dt;
+      this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
 
       this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
     }
+
+    if (this.operationType === 'I' &&
+        (this.tm_deposit.acc_type_cd === 2  ||
+          this.tm_deposit.acc_type_cd === 3 ||
+          this.tm_deposit.acc_type_cd === 4 ||
+          this.tm_deposit.acc_type_cd === 5 ||
+          this.tm_deposit.acc_type_cd === 6))
+          {
+            this.tm_deposit.standing_instr_flag = this.standingInstrAfterMaturity[0].instr_code;
+            this.tm_deposit.standing_instr_dscr = this.standingInstrAfterMaturity[0].instr_dscr;
+          }
+
+    if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 5) {
+      this.tm_deposit.intt_trf_type = this.intTransferType[0].tfr_type;
+      this.tm_deposit.intt_tfr_type_dscr = this.intTransferType[0].tfr_desc;
+    }
+
   }
 
   setTransType(tt: any) {
@@ -741,11 +858,11 @@ saveData()
   }
 
 
-  setRelationship(id: number, idx: number) {
+  setRelationship(relation: string, idx: number) {
     debugger;
     this.td_accholderList[idx].cust_cd = Number(this.td_accholderList[idx].cust_cd);
-    this.td_accholderList[idx].relation = id.toString();
-    this.td_accholderList[idx].relationDscr = this.relationship.filter(x => x.id.toString() === id.toString())[0].val;
+    this.td_accholderList[idx].relation = relation;
+    this.td_accholderList[idx].relationId = this.relationship.filter(x => x.val.toString() === relation)[0].id;
     debugger;
   }
 
@@ -924,11 +1041,11 @@ removeSignatory()
       this.td_introducerlist.pop();}
   }
 
-  setIntroducerAccountType(acc_typ_cd: number, idx: number) {
+  setIntroducerAccountType(intro_acc_typ_cd: number, idx: number) {
     debugger;
-    if (acc_typ_cd != null && acc_typ_cd > 0) {
-      this.td_introducerlist[idx].acc_type_cd = Number(acc_typ_cd);
-      this.td_introducerlist[idx].acc_type_desc = this.introducerAccTypeList.filter(x => x.acc_type_cd.toString() === acc_typ_cd.toString())[0].acc_type_desc;
+    if (intro_acc_typ_cd != null && intro_acc_typ_cd > 0) {
+      this.td_introducerlist[idx].introducer_acc_type = Number(intro_acc_typ_cd);
+      this.td_introducerlist[idx].acc_type_desc = this.introducerAccTypeList.filter(x => x.acc_type_cd.toString() === intro_acc_typ_cd.toString())[0].acc_type_desc;
     }
   }
 
@@ -1064,6 +1181,10 @@ removeSignatory()
 
   private depositPeriodParser(constitutionText: string) {
     /// YEAR=1;Month=10;Days=25;
+    if (constitutionText == null)
+    {
+      return null;
+    }
     let arr = constitutionText.split(';');
     let arrToReturn = [];
     arr.forEach(element => {
@@ -1074,46 +1195,291 @@ removeSignatory()
   }
 
 
-  calculateInstallmentDtls()
-  {
+processInstallmentNo() {
     debugger;
-    var temp_gen_param = new p_gen_param();
+    var temp_gen_param1 = new p_gen_param();
+    var temp_gen_param2 = new p_gen_param();
 
-    if ( this.tm_deposit.category_cd === undefined ||  this.tm_deposit.category_cd === null )
-    {
-      this.showAlertMsg('ERROR' , 'Interest Rate Cannot Be Fixed!!!...Category Not Yet Mentioned.');
+
+    if (this.tm_deposit.category_cd === undefined || this.tm_deposit.category_cd === null) {
+      this.showAlertMsg('ERROR', 'Interest Rate Cannot Be Fixed!!!...Category Not Yet Mentioned.');
       return;
     }
 
+    // const dt = this.tm_deposit.opening_dt;
+    // this.tm_deposit.mat_dt = null;
 
-    this.tm_deposit.mat_dt = null;
-    this.tm_deposit.mat_dt = this.tm_deposit.opening_dt;
+    this.td_deftrans.amount = Number(this.tm_deposit.instl_amt);
+    this.tm_deposit.mat_dt = this.DateFormatting(this.openDate);
     this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + Number(this.tm_deposit.instl_no));
 
     this.tm_deposit.prn_amt = Number(this.tm_deposit.instl_no) * Number(this.tm_deposit.instl_amt);
 
-    if ( Number(this.tm_deposit.instl_no) > 0 &&
-         Number(this.tm_deposit.instl_amt) > 0 &&
-         Number(this.tm_deposit.intt_rt > 0))
-         {
-          temp_gen_param.ad_instl_amt = Number(this.tm_deposit.instl_amt);
-          temp_gen_param.an_instl_no = Number(this.tm_deposit.instl_no);
-          temp_gen_param.an_intt_rate = Number(this.tm_deposit.intt_rt);
+    temp_gen_param1.ad_instl_amt = Number(this.tm_deposit.instl_amt);
+    temp_gen_param1.an_instl_no = Number(this.tm_deposit.instl_no);
+    temp_gen_param1.an_intt_rate = Number(this.tm_deposit.intt_rt);
 
-          this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', temp_gen_param).subscribe(
-            res => {
-              debugger;
-              this.tm_deposit.intt_amt = res;
-              this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
-            },
-            err => {
-              debugger;
-            }
-          );
-
-         }
+    temp_gen_param2.acc_cd = this.tm_deposit.acc_type_cd;
+    temp_gen_param2.from_dt = this.DateFormatting(this.openDate);
+    temp_gen_param2.ls_catg_cd = this.tm_deposit.category_cd;
+    debugger;
+    // tslint:disable-next-line: max-line-length
+    //temp_gen_param2.ai_period = Math.floor(Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()) ) / (1000 * 60 * 60 * 24));
+    temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
 
 
+    if (temp_gen_param1.an_intt_rate > 0) {
+      this.calCrdIntReg(temp_gen_param1);
+    }
+    else {
+      //                               uf_GetInttRate
+      this.svc.addUpdDel<any>('Deposit/GET_INT_RATE', temp_gen_param2).subscribe(
+        res => {
+          debugger;
+          this.tm_deposit.intt_rt = Number(res);
+          temp_gen_param1.an_intt_rate = this.tm_deposit.intt_rt;
+          this.calCrdIntReg(temp_gen_param1);
+        },
+        err => {
+          debugger;
+        }
+      );
+    }
   }
+
+
+  processInstallmentAmount( )
+  {
+    debugger;
+    var temp_gen_param = new p_gen_param();
+
+    this.tm_deposit.prn_amt = Number(this.tm_deposit.instl_no) * Number(this.tm_deposit.instl_amt);
+
+    temp_gen_param.ad_instl_amt = Number(this.tm_deposit.instl_amt);
+    temp_gen_param.an_instl_no = Number(this.tm_deposit.instl_no);
+    temp_gen_param.an_intt_rate = Number(this.tm_deposit.intt_rt);
+    this.calCrdIntReg(temp_gen_param);
+  }
+
+
+  calCrdIntReg(tempGenParam: p_gen_param )
+  {
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', tempGenParam).subscribe(
+      res => {
+        debugger;
+        this.tm_deposit.intt_amt = res;
+        this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
+        this.isLoading = false;
+      },
+      err => {
+        this.tm_deposit.intt_amt = 0;
+        this.isLoading = false;
+        debugger;
+      }
+    );
+  }
+
+
+  reProcessPrincipal()
+  {
+    if ( (this.tm_deposit.acc_type_cd !== 1) &&
+    (this.tm_deposit.acc_type_cd !== 7) &&
+    (this.tm_deposit.acc_type_cd !== 13) &&
+    (this.tm_deposit.prn_amt > 0) )
+    {
+      this.processPrincipal();
+    }
+  }
+
+  processPrincipal( )
+  {
+    debugger;
+    if ((this.tm_deposit.acc_type_cd !== 1) && (this.tm_deposit.acc_type_cd !== 7) && (this.tm_deposit.acc_type_cd !== 13)) {
+
+      if (this.tm_deposit.year === undefined || this.tm_deposit.year === null) {
+        this.tm_deposit.year = 0;
+      }
+
+      if (this.tm_deposit.month === undefined || this.tm_deposit.month === null) {
+        this.tm_deposit.month = 0;
+      }
+
+      if (this.tm_deposit.day === undefined || this.tm_deposit.day === null) {
+        this.tm_deposit.day = 0;
+      }
+
+      if (this.tm_deposit.year === 0 && this.tm_deposit.month === 0 && this.tm_deposit.day === 0) {
+        this.tm_deposit.prn_amt = 0;
+        this.showAlertMsg('Warning', 'Please enter Deposit period');
+        return;
+      }
+
+      if (this.tm_deposit.acc_type_cd === undefined ||
+        this.tm_deposit.acc_type_cd === null ||
+        this.tm_deposit.acc_type_cd < 0) {
+        this.tm_deposit.prn_amt = 0;
+        this.showAlertMsg('Warning', 'Account Type can not be blank');
+        return;
+      }
+
+      if (this.tm_deposit.intt_trf_type === undefined ||
+        this.tm_deposit.intt_trf_type === null) {
+        this.tm_deposit.prn_amt = 0;
+        this.showAlertMsg('Warning', 'Interest Transfer Type can not be blank');
+        return;
+      }
+
+      if (this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null || this.tm_deposit.intt_rt <= 0 )
+      {
+        this.tm_deposit.prn_amt = 0;
+        this.showAlertMsg('Warning', 'Please set the Interest Rate..');
+        return;
+      }
+
+      if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null || this.tm_deposit.prn_amt <= 0 )
+      {
+        this.tm_deposit.prn_amt = 0;
+        this.showAlertMsg('Warning', 'Please set the Interest Principal..');
+        return;
+      }
+
+
+      debugger;
+      this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
+      this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
+      this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
+      this.tm_deposit.mat_dt.setDate(this.tm_deposit.mat_dt.getDate() + this.tm_deposit.day);
+
+
+      var temp_gen_param = new p_gen_param();
+      temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
+      temp_gen_param.ad_prn_amt = this.tm_deposit.prn_amt;
+      temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
+      temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
+      // tslint:disable-next-line: max-line-length
+      temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
+      temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
+
+
+      this.f_calctdintt_reg(temp_gen_param);
+
+      // this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
+      //   res => {
+      //     debugger;
+      //     this.tm_deposit.intt_amt = res;
+      //     this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
+      //     debugger;
+      //     this.isLoading = false;
+      //   },
+      //   err => {
+      //     this.isLoading = false;
+      //     debugger;
+      //   }
+      // );
+    }
+}
+
+f_calctdintt_reg(temp_gen_param : p_gen_param )
+{
+  this.isLoading = true;
+  this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
+    res => {
+      debugger;
+      this.tm_deposit.intt_amt = res;
+      this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
+      debugger;
+      this.isLoading = false;
+    },
+    err => {
+      this.isLoading = false;
+      debugger;
+    }
+  );
+}
+
+  processInterest() {
+    var temp_gen_param = new p_gen_param();
+
+    temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
+
+    if (this.tm_deposit.acc_type_cd === 6)
+    {
+      if ( this.tm_deposit.instl_amt === undefined || this.tm_deposit.instl_amt === null ||
+        this.tm_deposit.instl_no === undefined || this.tm_deposit.instl_no ===  null ||
+        temp_gen_param.an_intt_rate === undefined || temp_gen_param.an_intt_rate === null )
+      {
+        return;
+      }
+
+      temp_gen_param.ad_instl_amt = Number(this.tm_deposit.instl_amt);
+      temp_gen_param.an_instl_no = Number(this.tm_deposit.instl_no);
+      temp_gen_param.an_intt_rate = Number(this.tm_deposit.intt_rt);
+      this.calCrdIntReg(temp_gen_param);
+    }
+    else
+    {
+
+      if (  ( (this.tm_deposit.year === undefined || this.tm_deposit.year === null ) &&
+              (this.tm_deposit.month === undefined || this.tm_deposit.month === null) &&
+              (this.tm_deposit.day === undefined || this.tm_deposit.day === null) ) ||
+        this.tm_deposit.prn_amt === undefined ||  this.tm_deposit.prn_amt === null || this.tm_deposit.prn_amt === 0 ||
+        this.tm_deposit.intt_trf_type === undefined || this.tm_deposit.intt_trf_type === null )
+      {
+        return;
+      }
+
+      debugger;
+      this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
+      this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
+      this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
+      this.tm_deposit.mat_dt.setDate(this.tm_deposit.mat_dt.getDate() + this.tm_deposit.day);
+
+
+      // var temp_gen_param = new p_gen_param();
+      temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
+      temp_gen_param.ad_prn_amt = this.tm_deposit.prn_amt;
+      temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
+      temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
+      // tslint:disable-next-line: max-line-length
+      temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
+      temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
+
+      this.f_calctdintt_reg(temp_gen_param);
+    }
+  }
+
+  processYearMonthDay() {
+    var temp_gen_param = new p_gen_param();
+
+    if (  ( (this.tm_deposit.year === undefined || this.tm_deposit.year === null ) &&
+              (this.tm_deposit.month === undefined || this.tm_deposit.month === null) &&
+              (this.tm_deposit.day === undefined || this.tm_deposit.day === null) ) ||
+        this.tm_deposit.prn_amt === undefined ||  this.tm_deposit.prn_amt === null ||
+        this.tm_deposit.intt_trf_type === undefined || this.tm_deposit.intt_trf_type === null ||
+        this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null)
+      {
+        return;
+      }
+
+    debugger;
+    this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
+    this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
+    this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
+    this.tm_deposit.mat_dt.setDate(this.tm_deposit.mat_dt.getDate() + this.tm_deposit.day);
+
+
+    // var temp_gen_param = new p_gen_param();
+    temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
+    temp_gen_param.ad_prn_amt = this.tm_deposit.prn_amt;
+    temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
+    temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
+    // tslint:disable-next-line: max-line-length
+    temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
+    temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
+
+    this.f_calctdintt_reg(temp_gen_param);
+    }
+
 
 }
