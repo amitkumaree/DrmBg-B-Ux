@@ -29,6 +29,8 @@ import { ScrollbookComponent } from './finance/report/scrollbook/scrollbook.comp
 import { DwRdInstlViewComponent } from './Common/dw-rd-instl-view/dw-rd-instl-view.component';
 import { DwTdInttDtlsViewComponent } from './Common/dw-td-intt-dtls-view/dw-td-intt-dtls-view.component';
 import { DwRenewalViewComponent } from './Common/dw-renewal-view/dw-renewal-view.component';
+import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
+import { AccountDetailsForAcctTransComponent } from './Common/account-details-for-acct-trans/account-details-for-acct-trans.component';
 import { VoucherapprovalComponent } from './finance/voucherapproval/voucherapproval.component';
 import { DayinitializationComponent } from './system/dayinitialization/dayinitialization.component';
 import { DaycomplitionComponent } from './system/daycomplition/daycomplition.component';
@@ -50,6 +52,8 @@ import { AdduserComponent } from './system/adduser/adduser.component';
     DwRdInstlViewComponent,
     DwTdInttDtlsViewComponent,
     DwRenewalViewComponent,
+    AccounTransactionsComponent,
+    AccountDetailsForAcctTransComponent,
     VoucherapprovalComponent,
     DayinitializationComponent,
     DaycomplitionComponent,

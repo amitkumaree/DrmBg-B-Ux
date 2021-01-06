@@ -23,29 +23,42 @@ export class DayinitializationComponent implements OnInit {
   alertMsg = '';
   closeResult='';
   showAlert = false;
+  isRetrieve=false;
+  isOk=false;
   ngOnInit(): void {
     //this.fromdate=this.convertDate(localStorage.getItem('__currentDate'));
     this.initcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required]
-    });    
+    });  
+    this.isRetrieve=true;
+    this.isOk=false;  
   }
 private getDayOpertion ()
 {
+  debugger;
   this.showMsg =null;
   var sdo = new sd_day_operation();
-  sdo.operation_dt =this.convertDate(localStorage.getItem('__currentDate'));// new Date();
+  //sdo.operation_dt =this.convertDate(localStorage.getItem('__currentDate'));// new Date();
+  sdo.operation_dt =new Date(this.convertDate(localStorage.getItem('__currentDate'))+" UTC")
   debugger;
   this.svc.addUpdDel<any>('Sys/GetDayOperation', sdo).subscribe(
     res => {
       debugger;
       this.isLoading = false;
       //var a=res.find(x=>x.cls_flg==="N").cls_flg ;
-      if (res.findIndex(x=>x.cls_flg==='N')==-1)
+      if (res.findIndex(x=>x.cls_flg==='N')==0)
       {
         this.HandleMessage(true, MessageType.Info,'Branches Are Opened' );
+        this.sdoRet = res;
+        this.isRetrieve=true;
+        this.isOk=false;
       }
       else
+      {
       this.sdoRet = res;
+      this.isRetrieve=false;
+      this.isOk=true;
+      }
     },
     err => { debugger;  this.isLoading = false;}
   );
@@ -96,8 +109,13 @@ private dayInitiationCall (opnDt :any)
       this.isLoading = false;
       this.alertMsg = res.output;
       this.HandleMessage(true, MessageType.Sucess,this.alertMsg );
+      this.isRetrieve=true;
+      this.isOk=false;
     },
-    err => { debugger;  this.isLoading = false;}
+    err => { debugger;  this.isLoading = false;
+      this.isRetrieve=true;
+      this.isOk=false;
+    }
   );
 }
 closeScreen()

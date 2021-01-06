@@ -1,3 +1,5 @@
+import { SystemValues } from './../../Models/SystemValues';
+
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
@@ -37,11 +39,15 @@ export class AccOpeningComponent implements OnInit {
   branchCode = '0';
   savingsDepoSpclPeriod = 0;
   openDate: Date;
+<<<<<<< HEAD
   createUser = '';
   updateUser = '';
   createDate: Date;
   updateDate: Date;
 
+=======
+  sys = new SystemValues();
+>>>>>>> a4a696dc8f144b2d0c83b9f9a91068b0193c0aa3
   denominationGrandTotal = 0;
 
   isLoading = false;
@@ -134,8 +140,9 @@ export class AccOpeningComponent implements OnInit {
   ngOnInit(): void {
 
     debugger;
-    this.branchCode = localStorage.getItem('__brnCd');
+    this.branchCode = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     // this.openDate = this.convertDate( localStorage.getItem('__currentDate'));
+<<<<<<< HEAD
     this.openDate = new Date(localStorage.getItem('__currentDate'));
     this.savingsDepoSpclPeriod = Number(localStorage.getItem('__ddsPeriod'));
 
@@ -145,8 +152,12 @@ export class AccOpeningComponent implements OnInit {
     this.createDate = this.convertDate(Date.UTC( new Date().getDate() , new Date().getMonth(),  new Date().getFullYear()).toString());
     this.updateDate = this.convertDate(Date.UTC( new Date().getDate() , new Date().getMonth(),  new Date().getFullYear()).toString());
 
+=======
+    // this.openDate = new Date(localStorage.getItem('__currentDate'));
+    this.openDate = this.sys.CurrentDate;
+    this.savingsDepoSpclPeriod = this.sys.DdsPeriod; // Number(localStorage.getItem('__ddsPeriod'));
+>>>>>>> a4a696dc8f144b2d0c83b9f9a91068b0193c0aa3
     this.suggestedCustomer = null;
-
     debugger;
 
     this.getCustomerList();
