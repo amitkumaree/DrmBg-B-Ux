@@ -71,8 +71,8 @@
 
       <div class="form-row">
         <div class="form-group col-3">
-          <small for="cust_phone">Phone</small>
-          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
+          <small>Phone</small>
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize"
           [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone">
         </div>
         <div class="form-group col-3">
@@ -88,7 +88,7 @@
         </div>
         <div class="form-group col-3">
           <small for="cust_ledger">Ledger Number</small>
-          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_phone"
+          <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_ledger"
           [(ngModel)]="tm_deposit.email" placeholder="Ledger Number">
         </div>
       </div>
@@ -202,7 +202,7 @@
 
         <div class="form-group col-3">
           <small for="dbs_acc_open_dt">Opening Date</small>
-          <input style="height:25px;" [disabled]='disableAll' [ngModel]="tm_deposit.opening_dt | date:'yyyy-MM-dd'" type="Date" class="form-control form-control-sm" id="dbs_acc_open_dt">
+          <input style="height:25px;" [disabled]='disableAll' [ngModel]="tm_deposit.opening_dt | date:'dd/mm/yyyy'" placeholder="dd/mm/yyyy" type="Date" class="form-control form-control-sm" id="dbs_acc_open_dt">
         </div>
 
       </div>

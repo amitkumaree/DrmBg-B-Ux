@@ -44,10 +44,11 @@ npm i webdatarocks --save
 
 ## install ngx export
 npm i ngx-export-as
+npm i ng2-date-picker [https://www.npmjs.com/package/ng2-date-picker]
 
 
 ## after cloning please run the below
 npm install
-
+npm prune ## removes all unused pacakages
 2G2d5abS
 Synergic#AM@2906

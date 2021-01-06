@@ -1,3 +1,4 @@
+import { SystemValues } from './../../../Models/SystemValues';
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { RestService } from 'src/app/_service';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
@@ -17,6 +18,7 @@ export class DailybookComponent implements OnInit {
   @ViewChild('DailyCashBook') child: WebDataRocksPivot;
   dailyCash: tt_cash_account[] = [];
   prp =new p_report_param();
+  sys = new SystemValues();
   reportcriteria: FormGroup;
   closeResult = '';
   showReport = false;
@@ -30,8 +32,8 @@ export class DailybookComponent implements OnInit {
   isLoading = false;
   constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
   ngOnInit(): void {
-    this.fromdate=new Date(localStorage.getItem('__currentDate'));
-    this.todate=new Date(localStorage.getItem('__currentDate'));
+    this.fromdate = this.sys.CurrentDate; // new Date(localStorage.getItem('__currentDate'));
+    this.todate= this.sys.CurrentDate; // new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
@@ -80,22 +82,22 @@ export class DailybookComponent implements OnInit {
   }
   onPivotReady(DailyCashBook: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
-  }  
-  
+  }
+
   onReportComplete(): void {
     debugger;
     if (!this.isLoading)return ;
-    this.prp.brn_cd=localStorage.getItem('__brnCd');
+    this.prp.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     this.prp.from_dt= this.fromdate;
     this.prp.to_dt=this.todate;
-    this.prp.acc_cd=parseInt(localStorage.getItem('__cashaccountCD')); 
+    this.prp.acc_cd=parseInt(localStorage.getItem('__cashaccountCD'));
     let fdate = new Date(this.fromdate);
     let tdate = new Date(this.todate);
     this.fd = (("0" + fdate.getDate()).slice(-2)) + "/" + (("0" + (fdate.getMonth() + 1)).slice(-2)) + "/" + (fdate.getFullYear());
-    this.td = (("0" + tdate.getDate()).slice(-2)) + "/" + (("0" + (tdate.getMonth() + 1)).slice(-2)) + "/" + (tdate.getFullYear());
+    this.td = (('0' + tdate.getDate()).slice(-2)) + '/' + (("0" + (tdate.getMonth() + 1)).slice(-2)) + "/" + (tdate.getFullYear());
     this.dt = new Date();
-    this.dt = (("0" + this.dt.getDate()).slice(-2)) + "/" + (("0" + (this.dt.getMonth() + 1)).slice(-2)) + "/" + (this.dt.getFullYear()) + " " + this.dt.getHours() + ":" + this.dt.getMinutes();
-    this.child.webDataRocks.off("reportcomplete");
+    this.dt = (('0' + this.dt.getDate()).slice(-2)) + '/' + (('0' + (this.dt.getMonth() + 1)).slice(-2)) + "/" + (this.dt.getFullYear()) + " " + this.dt.getHours() + ":" + this.dt.getMinutes();
+    this.child.webDataRocks.off('reportcomplete');
     this.svc.addUpdDel<any>('Report/PopulateDailyCashBook',this.prp).subscribe(
       (data: tt_cash_account[]) => this.dailyCash = data,
       error => { console.log(error); },
@@ -155,7 +157,7 @@ export class DailybookComponent implements OnInit {
                 "type": "flat",
                 "showTotals": "off",
                 "showGrandTotals": "off"
-            }            
+            }
             },
             "slice": {
               "rows": [
@@ -163,7 +165,7 @@ export class DailybookComponent implements OnInit {
                       "uniqueName": "dr_acc_cd",
                       "caption": "Debit",
                       "sort": "unsorted"
-                      
+
                   },
                   {
                       "uniqueName": "dr_particulars",
@@ -209,7 +211,7 @@ export class DailybookComponent implements OnInit {
                   "Cr Amount",
               ]
           },
-          
+
             "formats": [{
               "name": "",
               "thousandsSeparator": ",",
@@ -253,7 +255,7 @@ exportPDFTitle() {
     grid: {
       title: 'Day Book For The Period ' +this.fd +'-' +this.td
     }
-  } 
+  }
   );
   let brnName="Main Branch";
   this.child.webDataRocks.refresh();

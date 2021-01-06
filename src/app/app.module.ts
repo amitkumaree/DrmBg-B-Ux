@@ -16,7 +16,6 @@ import { BankWiseConfigComponent } from './bank-wise-config/bank-wise-config.com
 import { NewBankConfigComponent } from './new-bank-config/new-bank-config.component';
 import { TestComponent } from './test/test/test.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
