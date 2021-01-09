@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+// import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from 'src/app/_service';
 import { MessageType, ShowMessage } from '../../Models';
 import { p_gen_param } from '../../Models/p_gen_param';
@@ -14,7 +14,9 @@ import { sd_day_operation } from '../../Models/sd_day_operation';
 })
 export class DayinitializationComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
-  constructor(private router: Router,private formBuilder: FormBuilder,private svc: RestService,private modalService: NgbModal,) { }
+  constructor(private router: Router,private formBuilder: FormBuilder,private svc: RestService,
+    // private modalService: NgbModal,
+    ) { }
   isLoading = false;
   sdoRet: sd_day_operation[] = [];
   showMsg: ShowMessage;
@@ -29,9 +31,9 @@ export class DayinitializationComponent implements OnInit {
     //this.fromdate=this.convertDate(localStorage.getItem('__currentDate'));
     this.initcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required]
-    });  
+    });
     this.isRetrieve=true;
-    this.isOk=false;  
+    this.isOk=false;
   }
 private getDayOpertion ()
 {
@@ -69,21 +71,21 @@ dayInitialize()
 }
 
 private onLoadScreen(content) {
-  this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-  },
-    (reason) => {
-      this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-    });
+  // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+  // },
+  //   (reason) => {
+  //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+  //   });
 }
-private getDismissReason(reason: any): string {
-  if (reason === ModalDismissReasons.ESC) {
-    return 'by pressing ESC';
-  } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-    return 'by clicking on a backdrop';
-  } else {
-    return `with: ${reason}`;
-  }
-}
+// private getDismissReason(reason: any): string {
+//   if (reason === ModalDismissReasons.ESC) {
+//     return 'by pressing ESC';
+//   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+//     return 'by clicking on a backdrop';
+//   } else {
+//     return `with: ${reason}`;
+//   }
+// }
 public SubmitInit() {
   if (this.initcriteria.invalid) {
     this.HandleMessage(true, MessageType.Error,'Invalid Input.' );
@@ -133,7 +135,7 @@ private HandleMessage(show: boolean, type: MessageType = null, message: string =
   this.showMsg.Message = message;
 }
 private  convertDate(datestring:string):Date
-{  
+{
 var parts = datestring.match(/(\d+)/g);
 return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
 }

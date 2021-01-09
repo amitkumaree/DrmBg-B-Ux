@@ -3,7 +3,7 @@ import { RestService } from 'src/app/_service';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
 import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 import { tt_cash_cum_trial } from 'src/app/bank-resolver/Models/tt_cash_cum_trial';
 import { Router } from '@angular/router';
@@ -29,7 +29,9 @@ export class CashcumtrialComponent implements OnInit {
   dt: any;
   fromdate: Date;
   todate:Date;
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder,
+    // private modalService: NgbModal,
+    private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -40,21 +42,21 @@ export class CashcumtrialComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    },
-      (reason) => {
-        this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-      });
+    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    // },
+    //   (reason) => {
+    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+    //   });
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return `with: ${reason}`;
+  //   }
+  // }
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -73,7 +75,7 @@ export class CashcumtrialComponent implements OnInit {
       this.todate=this.reportcriteria.value['toDate'];
       this.isLoading=true;
       this.onReportComplete();
-      this.modalService.dismissAll(this.content);
+      // this.modalService.dismissAll(this.content);
     }
   }
 
@@ -83,9 +85,9 @@ export class CashcumtrialComponent implements OnInit {
   //private pdfmake : pdfMake;
   onPivotReady(CashCumTrial: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
-  } 
-  
-  
+  }
+
+
   onReportComplete(): void {
     debugger;
     if (!this.isLoading)return ;
@@ -155,7 +157,7 @@ export class CashcumtrialComponent implements OnInit {
                 "type": "flat",
                 "showTotals": "off",
                 "showGrandTotals": "off"
-            }            
+            }
             },
             "slice": {
               "rows": [
@@ -163,7 +165,7 @@ export class CashcumtrialComponent implements OnInit {
                       "uniqueName": "acc_cd",
                       "caption": "Account Code",
                       "sort": "unsorted"
-                      
+
                   },
                   {
                       "uniqueName": "acc_name",
@@ -217,7 +219,7 @@ export class CashcumtrialComponent implements OnInit {
                   "Closing Credit"
               ]
           },
-          
+
             "formats": [{
               "name": "",
               "thousandsSeparator": ",",
@@ -261,7 +263,7 @@ exportPDFTitle() {
     grid: {
       title: 'Cash Cum Trial Balance For The Period ' +this.fd +'-' +this.td
     }
-  } 
+  }
   );
   this.child.webDataRocks.refresh();
   this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Synergic Banking&emsp;&emsp;&emsp;Branch : "+localStorage.getItem('__brnName')+"<br>&nbsp</div>",filename:"CashCumTrial"});

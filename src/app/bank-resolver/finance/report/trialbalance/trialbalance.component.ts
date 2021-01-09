@@ -3,7 +3,7 @@ import { RestService } from 'src/app/_service';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
 import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 import { tt_trial_balance } from 'src/app/bank-resolver/Models/tt_trial_balance';
 import { Router } from '@angular/router';
@@ -30,7 +30,9 @@ export class TrialbalanceComponent implements OnInit {
   dt: any;
   fromdate: Date;
   todate:Date;
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder,
+    // private modalService: NgbModal,
+    private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -41,21 +43,21 @@ export class TrialbalanceComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    },
-      (reason) => {
-        this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-      });
+    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    // },
+    //   (reason) => {
+    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+    //   });
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return `with: ${reason}`;
+  //   }
+  // }
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -63,14 +65,14 @@ export class TrialbalanceComponent implements OnInit {
       this.alertMsg = "Invalid Input.";
       return false;
     }
-   
+
     else {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
       //this.toDate=this.reportcriteria.value['toDate'];
       this.isLoading=true;
       this.onReportComplete();
-      this.modalService.dismissAll(this.content);
+      // this.modalService.dismissAll(this.content);
     }
   }
 
@@ -80,9 +82,9 @@ export class TrialbalanceComponent implements OnInit {
   //private pdfmake : pdfMake;
   onPivotReady(TrialBalance: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
-  } 
-  
-  
+  }
+
+
   onReportComplete(): void {
     debugger;
     if(!this.isLoading) return;
@@ -136,7 +138,7 @@ export class TrialbalanceComponent implements OnInit {
                 "type": "flat",
                 "showTotals": "off",
                 "showGrandTotals": "off"
-            }            
+            }
             },
             "slice": {
               "rows": [
@@ -144,7 +146,7 @@ export class TrialbalanceComponent implements OnInit {
                       "uniqueName": "acc_cd",
                       "caption": "Account Code",
                       "sort": "unsorted"
-                      
+
                   },
                   {
                       "uniqueName": "acc_name",
@@ -176,7 +178,7 @@ export class TrialbalanceComponent implements OnInit {
                   "Cr Amount",
               ]
           },
-          
+
             "formats": [{
               "name": "",
               "thousandsSeparator": ",",
@@ -218,9 +220,9 @@ exportPDFTitle() {
   var options = this.child.webDataRocks.getOptions();
   this.child.webDataRocks.setOptions( {
     grid: {
-      title: 'Trial Balance as on ' +this.fd 
+      title: 'Trial Balance as on ' +this.fd
     }
-  } 
+  }
   );
   this.child.webDataRocks.refresh();
   this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Synergic Banking&emsp;&emsp;&emsp;Branch : "+localStorage.getItem('__brnName')+"<br>&nbsp</div>",filename:"TrialBalance"});

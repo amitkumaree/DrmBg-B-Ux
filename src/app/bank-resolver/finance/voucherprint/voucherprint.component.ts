@@ -3,9 +3,9 @@ import { p_report_param } from '../../Models';
 import { T_VOUCHER_NARRATION } from '../../Models/T_VOUCHER_NARRATION';
 import { RestService } from 'src/app/_service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import html2pdf from 'html2pdf.js';
-import jsPDF from 'jspdf';
+// import jsPDF from 'jspdf';
 import { Router } from '@angular/router';
 
 @Component({
@@ -24,11 +24,12 @@ export class VoucherprintComponent implements OnInit {
   showAlert = false;
   alertMsg = '';
   fromdate: Date;
-  todate:Date; 
+  todate:Date;
   isLoading = false;
-  
+
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-     private modalService: NgbModal,private router: Router) { }
+     // private modalService: NgbModal,
+     private router: Router) { }
 
   ngOnInit(): void {
     debugger;
@@ -42,21 +43,21 @@ export class VoucherprintComponent implements OnInit {
   }
   private onLoadScreen(content) {
     debugger;
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    },
-      (reason) => {
-        this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-      });
+    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    // },
+    //   (reason) => {
+    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+    //   });
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return `with: ${reason}`;
+  //   }
+  // }
   public closeAlert() {
     this.showAlert = false;
   }
@@ -76,7 +77,7 @@ export class VoucherprintComponent implements OnInit {
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.todate=this.reportcriteria.value['toDate'];
       this.getmVoucherDetails();
-      this.modalService.dismissAll(this.content);
+      // this.modalService.dismissAll(this.content);
     }
   }
 

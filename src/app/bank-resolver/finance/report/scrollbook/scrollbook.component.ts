@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+// import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { p_report_param } from 'src/app/bank-resolver/Models';
 import { tt_scroll_book } from 'src/app/bank-resolver/Models/tt_scroll_book';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
@@ -28,7 +28,9 @@ export class ScrollbookComponent implements OnInit {
   fromdate: Date;
   todate:Date;
   isLoading = false;
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
+  constructor(private svc: RestService,private formBuilder: FormBuilder,
+    // private modalService: NgbModal,
+    private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -39,21 +41,21 @@ export class ScrollbookComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    },
-      (reason) => {
-        this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-      });
+    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    // },
+    //   (reason) => {
+    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+    //   });
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return `with: ${reason}`;
+  //   }
+  // }
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -71,7 +73,7 @@ export class ScrollbookComponent implements OnInit {
       this.todate=this.reportcriteria.value['toDate'];
       this.isLoading=true;
       this.onReportComplete();
-      this.modalService.dismissAll(this.content);
+      // this.modalService.dismissAll(this.content);
     }
   }
 
@@ -80,15 +82,15 @@ export class ScrollbookComponent implements OnInit {
   }
   onPivotReady(DailyCashBook: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
-  }  
-  
+  }
+
   onReportComplete(): void {
     debugger;
     if (!this.isLoading)return ;
     this.prp.brn_cd=localStorage.getItem('__brnCd');
     this.prp.from_dt= this.fromdate;
     this.prp.to_dt=this.todate;
-    this.prp.acc_cd=parseInt(localStorage.getItem('__cashaccountCD')); 
+    this.prp.acc_cd=parseInt(localStorage.getItem('__cashaccountCD'));
     let fdate = new Date(this.fromdate);
     let tdate = new Date(this.todate);
     this.fd = (("0" + fdate.getDate()).slice(-2)) + "/" + (("0" + (fdate.getMonth() + 1)).slice(-2)) + "/" + (fdate.getFullYear());
@@ -150,7 +152,7 @@ export class ScrollbookComponent implements OnInit {
                 "type": "flat",
                 "showTotals": "off",
                 "showGrandTotals": "off"
-            }            
+            }
             },
             "slice": {
               "rows": [
@@ -158,7 +160,7 @@ export class ScrollbookComponent implements OnInit {
                       "uniqueName": "trans_cd",
                       "caption": "Trans CD",
                       "sort": "unsorted"
-                      
+
                   },
                   {
                       "uniqueName": "voucher_id",
@@ -215,7 +217,7 @@ export class ScrollbookComponent implements OnInit {
                   "Account Num"
               ]
           },
-          
+
             "formats": [{
               "name": "",
               "thousandsSeparator": ",",
@@ -255,7 +257,7 @@ exportPDFTitle() {
     grid: {
       title: 'Cash Scroll For The Period ' +this.fd +'-' +this.td
     }
-  } 
+  }
   );
   this.child.webDataRocks.refresh();
   this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Synergic Banking&emsp;&emsp;&emsp;Branch : "+localStorage.getItem('__brnName')+"<br>&nbsp</div>",filename:"ScrollBook"});
@@ -269,4 +271,4 @@ closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
-} 
+}

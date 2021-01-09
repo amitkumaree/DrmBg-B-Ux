@@ -3,7 +3,7 @@ import { RestService } from 'src/app/_service';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
 import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 import { Router } from '@angular/router';
 
@@ -29,8 +29,10 @@ export class CashaccountComponent implements OnInit {
   td: any;
   dt: any;
   fromdate: Date;
-  todate:Date; 
-  constructor(private svc: RestService,private formBuilder: FormBuilder, private modalService: NgbModal,private router: Router ) { }
+  todate:Date;
+  constructor(private svc: RestService,private formBuilder: FormBuilder,
+    // private modalService: NgbModal,
+    private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
     this.todate=new Date(localStorage.getItem('__currentDate'));
@@ -41,21 +43,21 @@ export class CashaccountComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    },
-      (reason) => {
-        this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-      });
+    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    // },
+    //   (reason) => {
+    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+    //   });
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+  // private getDismissReason(reason: any): string {
+    // if (reason === ModalDismissReasons.ESC) {
+    //   return 'by pressing ESC';
+    // } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+    //   return 'by clicking on a backdrop';
+    // } else {
+    //   return `with: ${reason}`;
+    // }
+  // }
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -74,7 +76,7 @@ export class CashaccountComponent implements OnInit {
       this.todate=this.reportcriteria.value['toDate'];
       this.isLoading=true;
       this.onReportComplete();
-      this.modalService.dismissAll(this.content);
+      // this.modalService.dismissAll(this.content);
     }
   }
 
@@ -84,8 +86,8 @@ export class CashaccountComponent implements OnInit {
   //private pdfmake : pdfMake;
   onPivotReady(CashAccount: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
-  } 
-  
+  }
+
   // generatePdf(){
   //   debugger;
   //   const documentDefinition = { content: 'This is an sample PDF printed with pdfMake' };
@@ -189,7 +191,7 @@ export class CashaccountComponent implements OnInit {
                 "type": "flat",
                 "showTotals": "off",
                 "showGrandTotals": "off"
-            }            
+            }
             },
             "slice": {
               "rows": [
@@ -197,7 +199,7 @@ export class CashaccountComponent implements OnInit {
                       "uniqueName": "dr_acc_cd",
                       "caption": "Debit",
                       "sort": "unsorted"
-                      
+
                   },
                   {
                       "uniqueName": "dr_particulars",
@@ -243,7 +245,7 @@ export class CashaccountComponent implements OnInit {
                   "Cr Amount",
               ]
           },
-          
+
             "formats": [{
               "name": "",
               "thousandsSeparator": ",",
@@ -287,11 +289,11 @@ exportPDFTitle() {
     grid: {
       title: 'Cash Account For The Period ' +this.fd +'-' +this.td
     }
-  } 
+  }
   );
   this.child.webDataRocks.refresh();
   this.child.webDataRocks.exportTo('pdf', { pageOrientation:'potrait',header:"<div>##CURRENT-DATE##&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Synergic Banking&emsp;&emsp;&emsp;Branch : "+localStorage.getItem('__brnName')+"<br>&nbsp</div>",filename:"CashAccount"});
- 
+
   this.child.webDataRocks.on('exportcomplete', function () {
     this.child.webDataRocks.off('exportcomplete')
     this.child.webDataRocks.setOptions(options);
@@ -356,7 +358,7 @@ exportPDFTitle() {
 //               "showTotals": "off",
 //               "showGrandTotals": "off",
 //               "title": "Synergic Banking Cash Report"
-//           }            
+//           }
 //           },
 //           "slice": {
 //             "rows": [
@@ -391,7 +393,7 @@ exportPDFTitle() {
 //                     "sort": "unsorted"
 //               }
 //             ],
-           
+
 //             "flatOrder": [
 //                 "Debit",
 //                 "Dr Description",

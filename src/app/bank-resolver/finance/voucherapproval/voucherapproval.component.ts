@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from 'src/app/_service';
 import { T_VOUCHER_DTLS, m_acc_master } from '../../Models';
 
@@ -46,8 +46,9 @@ export class VoucherapprovalComponent implements OnInit {
   isClear = false;
   isLoading = false;
   fromdate: Date;
-  constructor(private svc: RestService, private formBuilder: FormBuilder, 
-              private modalService: NgbModal,private router: Router) { }
+  constructor(private svc: RestService, private formBuilder: FormBuilder,
+              // private modalService: NgbModal,
+              private router: Router) { }
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
 
@@ -104,11 +105,11 @@ export class VoucherapprovalComponent implements OnInit {
 
   Retrieve() {
     this.Initialize();
-    this.modalService.open(this.content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    },
-      (reason) => {
-        this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-      });
+    // this.modalService.open(this.content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    // },
+    //   (reason) => {
+    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+    //   });
   }
   RetrieveBatch() {
     this.app_flg = 'U';
@@ -116,15 +117,15 @@ export class VoucherapprovalComponent implements OnInit {
     this.isLoading=true;
     this.getVoucherNarration();
   }
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return `with: ${reason}`;
+  //   }
+  // }
 
   AddNew() {
     this.Add();
@@ -329,7 +330,7 @@ export class VoucherapprovalComponent implements OnInit {
         if (this.tvdRet[0].approval_status == 'U')
           this.isApprove = false;
         this._voucherNarration = this.tvdRet[0].narrationdtl;//this.tvdRet[0].narration+
-        this.modalService.dismissAll(this.content);
+        // this.modalService.dismissAll(this.content);
       },
       err => { this.isLoading = false;}
     );
@@ -362,7 +363,7 @@ export class VoucherapprovalComponent implements OnInit {
         this._voucherNarration = narr;
         if (this.tvdRet[0].approval_status == 'U')
           this.isApprove = false;
-        this.modalService.dismissAll(this.content);
+        // this.modalService.dismissAll(this.content);
       },
       err => { }
     );
@@ -380,11 +381,11 @@ export class VoucherapprovalComponent implements OnInit {
         this.tvnRet = res;
         this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
         this.isLoading=false;
-        this.modalService.open(this.contentbatch, { ariaLabelledBy: 'modal-basic-title', size: 'lg', backdrop: 'static' }).result.then((result) => {
-        },
-          (reason) => {
-            this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-          });
+        // this.modalService.open(this.contentbatch, { ariaLabelledBy: 'modal-basic-title', size: 'lg', backdrop: 'static' }).result.then((result) => {
+        // },
+        //   (reason) => {
+        //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+        //   });
       },
       err => { this.isLoading=false;}
     );
@@ -587,11 +588,11 @@ export class VoucherapprovalComponent implements OnInit {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
 private  convertDate(datestring:string):Date
-{  
+{
 var parts = datestring.match(/(\d+)/g);
 // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
 return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
-//return new Date(year, month, day);   
+//return new Date(year, month, day);
 }
 
 }

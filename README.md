@@ -45,6 +45,7 @@ npm i webdatarocks --save
 ## install ngx export
 npm i ngx-export-as
 npm i ng2-date-picker [https://www.npmjs.com/package/ng2-date-picker]
+npm install ngx-bootstrap --save [https://valor-software.com/ngx-bootstrap/#/documentation]
 
 
 ## after cloning please run the below

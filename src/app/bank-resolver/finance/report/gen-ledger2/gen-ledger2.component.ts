@@ -3,7 +3,7 @@ import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
 import { p_report_param, tt_cash_cum_trial, tt_gl_trans } from 'src/app/bank-resolver/Models';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 
 @Component({
@@ -29,7 +29,8 @@ export class GenLedger2Component implements OnInit {
   todate: Date;
   constructor(private svc: RestService,
     private formBuilder: FormBuilder,
-    private modalService: NgbModal,private router: Router) { }
+    // private modalService: NgbModal,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.fromdate=new Date(localStorage.getItem('__currentDate'));
@@ -46,22 +47,22 @@ export class GenLedger2Component implements OnInit {
   get r() { return this.reportcriteria.controls; }
 
   private onLoadScreen(content) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    },
-      (reason) => {
-        this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-      });
+    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+    // },
+    //   (reason) => {
+    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
+    //   });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return `with: ${reason}`;
+  //   }
+  // }
 
 
   public SubmitReport() {
@@ -81,7 +82,7 @@ export class GenLedger2Component implements OnInit {
       this.todate=this.reportcriteria.value['toDate'];
       this.isLoading=true;
       this.onReportComplete();
-      this.modalService.dismissAll(this.content);
+      // this.modalService.dismissAll(this.content);
     }
   }
 

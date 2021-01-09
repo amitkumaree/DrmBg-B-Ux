@@ -35,6 +35,7 @@ import { VoucherapprovalComponent } from './finance/voucherapproval/voucherappro
 import { DayinitializationComponent } from './system/dayinitialization/dayinitialization.component';
 import { DaycomplitionComponent } from './system/daycomplition/daycomplition.component';
 import { AdduserComponent } from './system/adduser/adduser.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 
 @NgModule({
@@ -60,7 +61,11 @@ import { AdduserComponent } from './system/adduser/adduser.component';
     AdduserComponent
   ],
   imports: [
-    CommonModule, BankResolverRouting, ReactiveFormsModule, FormsModule, AutocompleteLibModule  ],
+    CommonModule,
+    BankResolverRouting,
+    ReactiveFormsModule, FormsModule, AutocompleteLibModule,
+    BsDatepickerModule.forRoot()
+  ],
   providers: [
     // { provide: ErrorHandler, useClass: GlobalErrorHandler },
     // { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true  }
