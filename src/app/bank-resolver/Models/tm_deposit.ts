@@ -1,11 +1,11 @@
 import { baseModel } from './baseModel';
 
 export class tm_deposit extends baseModel{
-  public brn_cd: string;
+  public brn_cd: string; //--------------------
   public acc_type_cd: number;
   public acc_num: string;
   public renew_id: number;
-  public cust_cd: number;
+  public cust_cd: number; //--------------------
   public intt_trf_type: string;
   public constitution_cd: number;
   public oprn_instr_cd: number;
@@ -43,17 +43,21 @@ export class tm_deposit extends baseModel{
   public transfer_flag: string;
   public transfer_dt: Date;
   public agent_cd: string;
-  public cust_name: string;  // Startc: this below portion is added extra for UX operation only
-  public cust_type: string;
-  public gurdain_name: string;
-  public date_of_birth: Date;
-  public sex: string;
-  public phone: string;
-  public category_cd: number;
-  public category_desc: string;
-  public occupation: string;
-  public email: string;
-  public present_addr: string;
+  public cust_name: string;  // Startc: this below portion is added extra for UX operation only //--------------------
+  public cust_type: string;  //--------------------
+  public gurdain_name: string; //--------------------
+  public date_of_birth: Date; //--------------------
+  public sex: string; //--------------------
+  public phone: string; //--------------------
+  public category_cd: number; //--------------------
+  public category_desc: string; //--------------------
+  public occupation: string; //--------------------
+  public email: string; //--------------------
+  public created_by: string;
+  public created_dt: Date;
+  public modified_by: string;
+  public modified_dt: Date;
+  public present_addr: string;  //--------------------
   public acc_type_desc: string;
   public constitution_desc : string;
   public oprn_instr_desc : string;

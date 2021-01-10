@@ -7,5 +7,5 @@ export class td_accholder extends baseModel{
   public acc_holder : string;
   public relation: string;
   public cust_cd: number;
-  public relationDscr: string;
+  public relationId: number;
 }
