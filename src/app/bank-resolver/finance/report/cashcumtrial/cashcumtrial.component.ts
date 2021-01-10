@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { RestService } from 'src/app/_service';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
-import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
+import { tt_cash_account, p_report_param, SystemValues } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 // import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 import { tt_cash_cum_trial } from 'src/app/bank-resolver/Models/tt_cash_cum_trial';
 import { Router } from '@angular/router';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-cashcumtrial',
@@ -16,6 +17,15 @@ import { Router } from '@angular/router';
 export class CashcumtrialComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('CashCumTrial') child: WebDataRocksPivot;
+  modalRef: BsModalRef;
+  isOpenFromDp = false;
+  isOpenToDp = false;
+  sys = new SystemValues();
+  config = {
+    keyboard: false, // ensure esc press doesnt close the modal
+    backdrop: true, // enable backdrop shaded color
+    ignoreBackdropClick: true // disable backdrop click to close the modal
+  };
   cashcumtrial: tt_cash_cum_trial[] = [];
   prp =new p_report_param();
   reportcriteria: FormGroup;
@@ -30,11 +40,11 @@ export class CashcumtrialComponent implements OnInit {
   fromdate: Date;
   todate:Date;
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-    // private modalService: NgbModal,
+    private modalService: BsModalService,
     private router: Router ) { }
   ngOnInit(): void {
-    this.fromdate=new Date(localStorage.getItem('__currentDate'));
-    this.todate=new Date(localStorage.getItem('__currentDate'));
+    this.fromdate=this.sys.CurrentDate;
+    this.todate=this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
@@ -42,21 +52,9 @@ export class CashcumtrialComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
-    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    // },
-    //   (reason) => {
-    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-    //   });
+    this.modalRef = this.modalService.show(content, this.config);
   }
-  // private getDismissReason(reason: any): string {
-  //   if (reason === ModalDismissReasons.ESC) {
-  //     return 'by pressing ESC';
-  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-  //     return 'by clicking on a backdrop';
-  //   } else {
-  //     return `with: ${reason}`;
-  //   }
-  // }
+  
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -91,7 +89,7 @@ export class CashcumtrialComponent implements OnInit {
   onReportComplete(): void {
     debugger;
     if (!this.isLoading)return ;
-    this.prp.brn_cd='101';
+    this.prp.brn_cd=this.sys.BranchCode;
     this.prp.from_dt= this.fromdate;
     this.prp.to_dt=this.todate;
     let fdate = new Date(this.fromdate);
@@ -240,12 +238,11 @@ export class CashcumtrialComponent implements OnInit {
           }
         ]
         });
+        this.modalRef.hide();
       }
     );
   }
-//   setCustomizeFunction() {
-//     this.child.webDataRocks.customizeCell(this.customizeCellFunction);
-// }
+
 
  setOption(option, value) {
   this.child.webDataRocks.setOptions({

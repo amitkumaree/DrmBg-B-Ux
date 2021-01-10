@@ -2,10 +2,11 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 // import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { p_report_param } from 'src/app/bank-resolver/Models';
+import { p_report_param, SystemValues } from 'src/app/bank-resolver/Models';
 import { tt_scroll_book } from 'src/app/bank-resolver/Models/tt_scroll_book';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
 import { RestService } from 'src/app/_service';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-scrollbook',
@@ -15,6 +16,15 @@ import { RestService } from 'src/app/_service';
 export class ScrollbookComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('CashScroll') child: WebDataRocksPivot;
+  modalRef: BsModalRef;
+  isOpenFromDp = false;
+  isOpenToDp = false;
+  sys = new SystemValues();
+  config = {
+    keyboard: false, // ensure esc press doesnt close the modal
+    backdrop: true, // enable backdrop shaded color
+    ignoreBackdropClick: true // disable backdrop click to close the modal
+  };
   scrollbook: tt_scroll_book[] = [];
   prp =new p_report_param();
   reportcriteria: FormGroup;
@@ -29,11 +39,11 @@ export class ScrollbookComponent implements OnInit {
   todate:Date;
   isLoading = false;
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-    // private modalService: NgbModal,
+    private modalService: BsModalService,
     private router: Router ) { }
   ngOnInit(): void {
-    this.fromdate=new Date(localStorage.getItem('__currentDate'));
-    this.todate=new Date(localStorage.getItem('__currentDate'));
+    this.fromdate=this.sys.CurrentDate;
+    this.todate=this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
@@ -41,21 +51,9 @@ export class ScrollbookComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
-    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    // },
-    //   (reason) => {
-    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-    //   });
+    this.modalRef = this.modalService.show(content, this.config);
   }
-  // private getDismissReason(reason: any): string {
-  //   if (reason === ModalDismissReasons.ESC) {
-  //     return 'by pressing ESC';
-  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-  //     return 'by clicking on a backdrop';
-  //   } else {
-  //     return `with: ${reason}`;
-  //   }
-  // }
+ 
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -87,7 +85,7 @@ export class ScrollbookComponent implements OnInit {
   onReportComplete(): void {
     debugger;
     if (!this.isLoading)return ;
-    this.prp.brn_cd=localStorage.getItem('__brnCd');
+    this.prp.brn_cd=this.sys.BranchCode;
     this.prp.from_dt= this.fromdate;
     this.prp.to_dt=this.todate;
     this.prp.acc_cd=parseInt(localStorage.getItem('__cashaccountCD'));
@@ -238,6 +236,7 @@ export class ScrollbookComponent implements OnInit {
           }
         ]
         });
+        this.modalRef.hide();
       }
     );
   }

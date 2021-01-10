@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { RestService } from 'src/app/_service';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
-import { tt_cash_account, p_report_param } from 'src/app/bank-resolver/Models';
+import { tt_cash_account, p_report_param, SystemValues } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 // import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 import { Router } from '@angular/router';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 
 @Component({
@@ -16,6 +17,16 @@ import { Router } from '@angular/router';
 export class CashaccountComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('CashAccount') child: WebDataRocksPivot;
+  modalRef: BsModalRef;
+  isOpenFromDp = false;
+  isOpenToDp = false;
+  sys = new SystemValues();
+  config = {
+    keyboard: false, // ensure esc press doesnt close the modal
+    backdrop: true, // enable backdrop shaded color
+    ignoreBackdropClick: true // disable backdrop click to close the modal
+  };
+  //bsInlineValue = new Date();
   dailyCash: tt_cash_account[] = [];
   prp =new p_report_param();
   reportcriteria: FormGroup;
@@ -23,7 +34,7 @@ export class CashaccountComponent implements OnInit {
   showReport = false;
   showAlert = false;
   isLoading = false;
-
+  
   alertMsg = '';
   fd: any;
   td: any;
@@ -31,33 +42,21 @@ export class CashaccountComponent implements OnInit {
   fromdate: Date;
   todate:Date;
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-    // private modalService: NgbModal,
+    private modalService: BsModalService,
     private router: Router ) { }
   ngOnInit(): void {
-    this.fromdate=new Date(localStorage.getItem('__currentDate'));
-    this.todate=new Date(localStorage.getItem('__currentDate'));
+    this.fromdate=this.sys.CurrentDate;//new Date(localStorage.getItem('__currentDate'));
+    this.todate=this.sys.CurrentDate;//new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
     });
     this.onLoadScreen(this.content);
   }
-  private onLoadScreen(content) {
-    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    // },
-    //   (reason) => {
-    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-    //   });
+  private onLoadScreen(content) { 
+    this.modalRef = this.modalService.show(content, this.config);
   }
-  // private getDismissReason(reason: any): string {
-    // if (reason === ModalDismissReasons.ESC) {
-    //   return 'by pressing ESC';
-    // } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-    //   return 'by clicking on a backdrop';
-    // } else {
-    //   return `with: ${reason}`;
-    // }
-  // }
+ 
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -88,38 +87,12 @@ export class CashaccountComponent implements OnInit {
     console.log("[ready] WebDataRocksPivot", this.child);
   }
 
-  // generatePdf(){
-  //   debugger;
-  //   const documentDefinition = { content: 'This is an sample PDF printed with pdfMake' };
-  //   this.pdfmake.createPdf(documentDefinition).open();
-  //  }
-  // onReportComplete(): void {
-  //   debugger;
-  //   this.prp.brn_cd='101';
-  //   this.prp.from_dt= new Date("2018-08-13");
-  //   this.prp.to_dt=new Date("2018-08-13");
-  //   this.prp.acc_cd=28101;
-  //   this.child.webDataRocks.off("reportcomplete");
-  //   this.svc.addUpdDel<any>('Report/PopulateDailyCashBook',this.prp).subscribe(
-  //     (data: tt_cash_account[]) => this.dailyCash = data,
-  //     error => { console.log(error); },
-  //     () => {
-  //         debugger;
-  //         this.child.webDataRocks.setReport({
-  //         dataSource: {
-  //           //filename: "https://cdn.webdatarocks.com/data/data.json"
-  //           data:this.dailyCash
-  //         }
-  //       });
-  //     }
-  //   );
-  // }
-
+  
 
   onReportComplete(): void {
     debugger;
     if (!this.isLoading)return ;
-    this.prp.brn_cd='101';
+    this.prp.brn_cd=this.sys.BranchCode;
     this.prp.from_dt= this.fromdate;
     this.prp.to_dt=this.todate;
     this.prp.acc_cd=28101;
@@ -135,9 +108,7 @@ export class CashaccountComponent implements OnInit {
       error => { console.log(error); },
       () => {
           debugger;
-          //this.showReport = true;
-         // this.generatePdf();
-         this.isLoading=false;
+          this.isLoading=false;
          let totalCr=0;
          let totalDr=0;
          let tmp_cash_account=new tt_cash_account();
@@ -266,12 +237,10 @@ export class CashaccountComponent implements OnInit {
           }
         ]
         });
+        this.modalRef.hide();
       }
     );
   }
-//   setCustomizeFunction() {
-//     this.child.webDataRocks.customizeCell(this.customizeCellFunction);
-// }
 
  setOption(option, value) {
   this.child.webDataRocks.setOptions({

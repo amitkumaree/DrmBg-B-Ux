@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { RestService } from 'src/app/_service';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
-import {  p_report_param, tt_gl_trans } from 'src/app/bank-resolver/Models';
+import {  p_report_param, SystemValues, tt_gl_trans } from 'src/app/bank-resolver/Models';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 // import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { STRING_TYPE } from '@angular/compiler';
 import { Router } from '@angular/router';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 
 @Component({
@@ -16,6 +17,15 @@ import { Router } from '@angular/router';
 export class GenLedgerComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('GenLedger') child: WebDataRocksPivot;
+  modalRef: BsModalRef;
+  isOpenFromDp = false;
+  isOpenToDp = false;
+  sys = new SystemValues();
+  config = {
+    keyboard: false, // ensure esc press doesnt close the modal
+    backdrop: true, // enable backdrop shaded color
+    ignoreBackdropClick: true // disable backdrop click to close the modal
+  };
   genLdgerTrans: tt_gl_trans[] = [];
   prp = new p_report_param();
   reportcriteria: FormGroup;
@@ -31,12 +41,12 @@ export class GenLedgerComponent implements OnInit {
   todate: Date;
   constructor(private svc: RestService,
               private formBuilder: FormBuilder,
-              // private modalService: NgbModal,
+              private modalService: BsModalService,
               private router: Router ) { }
 
   ngOnInit(): void {
-    this.fromdate=new Date(localStorage.getItem('__currentDate'));
-    this.todate=new Date(localStorage.getItem('__currentDate'));
+    this.fromdate=this.sys.CurrentDate;
+    this.todate=this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required],
@@ -46,25 +56,13 @@ export class GenLedgerComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
 
-  //get r() { return this.reportcriteria.controls; }
+
 
   private onLoadScreen(content) {
-    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    // },
-    //   (reason) => {
-    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-    //   });
+    this.modalRef = this.modalService.show(content, this.config);
   }
 
-  // private getDismissReason(reason: any): string {
-  //   if (reason === ModalDismissReasons.ESC) {
-  //     return 'by pressing ESC';
-  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-  //     return 'by clicking on a backdrop';
-  //   } else {
-  //     return `with: ${reason}`;
-  //   }
-  // }
+ 
 
 
   public SubmitReport() {
@@ -85,14 +83,12 @@ export class GenLedgerComponent implements OnInit {
       this.todate=this.reportcriteria.value['toDate'];
       this.isLoading=true;
       this.onReportComplete();
-      // this.modalService.dismissAll(this.content);
     }
   }
 
   public closeAlert() {
     this.showAlert = false;
   }
-  // private pdfmake : pdfMake;
   onPivotReady(GenLedger: WebDataRocksPivot): void {
     console.log('[ready] WebDataRocksPivot', this.child);
   }
@@ -101,7 +97,7 @@ export class GenLedgerComponent implements OnInit {
   onReportComplete(): void {
     debugger;
     if (!this.isLoading)return ;
-    this.prp.brn_cd = localStorage.getItem('__brnCd');;
+    this.prp.brn_cd = this.sys.BranchCode;
     this.prp.from_dt = this.fromdate;
     this.prp.to_dt = this.todate;
     this.prp.ad_from_acc_cd = parseInt(this.reportcriteria.value['fromAcc']);
@@ -240,6 +236,7 @@ export class GenLedgerComponent implements OnInit {
           }
         ]
         });
+        this.modalRef.hide();
       }
     );
   }
