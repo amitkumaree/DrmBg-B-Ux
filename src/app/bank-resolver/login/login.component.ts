@@ -18,12 +18,12 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   returnUrl: string;
   isError = false;
-  brnDtls: m_branch[]=[];
-  systemParam: sm_parameter[]=[];
+  brnDtls: m_branch[] = [];
+  systemParam: sm_parameter[] = [];
   //genparam=new p_gen_param();
-  isLoading=false;
-  showAlert=false;
-  alertMsg='';
+  isLoading = false;
+  showAlert = false;
+  alertMsg = '';
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private rstSvc: RestService,
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
       return;
     }
     debugger;
-    this.isLoading=true;
+    this.isLoading = true;
     const __bName = localStorage.getItem('__bName');
     // this.router.navigate([__bName + '/la']); // TODO remove this it will be after login
     let login = new LOGIN_MASTER();
@@ -59,44 +59,44 @@ export class LoginComponent implements OnInit {
     this.rstSvc.addUpdDel<any>('Mst/GetUserDtls', login).subscribe(
       res => {
         debugger;
-        if(res.length==0)
-        {
-          this.isLoading=false;
-          this.showAlert=true;
-          this.alertMsg='Invalid Credential !!!!!';
+        if (res.length == 0) {
+          this.isLoading = false;
+          this.showAlert = true;
+          this.alertMsg = 'Invalid Credential !!!!!';
         }
-        else{
-        console.log('Login Sucess');
-        this.rstSvc.addUpdDel('Mst/GetSystemParameter', null).subscribe(
-          res => {
-            debugger;
-            try{
-            this.systemParam=res;
-            console.log('ParameterList Sucess');
-            localStorage.setItem('__brnCd',this.f.branch.value);//"101"
-            localStorage.setItem('__brnName',this.brnDtls.find(x=>x.brn_cd=== this.f.branch.value).brn_name);//"101"
-            localStorage.setItem('__currentDate',this.systemParam.find(x=>x.param_cd==="206").param_value);//Day initilaze
-            localStorage.setItem('__cashaccountCD',this.systemParam.find(x=>x.param_cd==="213").param_value);//28101
-            localStorage.setItem('__ddsPeriod',this.systemParam.find(x=>x.param_cd==="220").param_value); // 12
-            localStorage.setItem('__userId', this.f.username.value); // feather
-            this.isLoading=false;
-            this.msg.sendisLoggedInShowHeader(true);
-            this.router.navigate([__bName + '/la']);
-            }
-            catch(exception)
-            {
-              this.isLoading=false;
-               this.showAlert=true;
-               this.alertMsg='Initialization Failed. Contact Administrator !';
-            }
-             },
-          err => {}
-        )
-       }
+        else {
+          console.log('Login Sucess');
+          this.rstSvc.addUpdDel('Mst/GetSystemParameter', null).subscribe(
+            res => {
+              debugger;
+              try {
+                this.systemParam = res;
+                console.log('ParameterList Sucess');
+                localStorage.setItem('__brnCd', this.f.branch.value);//"101"
+                localStorage.setItem('__brnName', this.brnDtls.find(x => x.brn_cd === this.f.branch.value).brn_name);//"101"
+                localStorage.setItem('__currentDate', this.systemParam.find(x => x.param_cd === "206").param_value);//Day initilaze
+                localStorage.setItem('__cashaccountCD', this.systemParam.find(x => x.param_cd === "213").param_value);//28101
+                localStorage.setItem('__ddsPeriod', this.systemParam.find(x => x.param_cd === "220").param_value); // 12
+                localStorage.setItem('__userId', this.f.username.value); // feather
+                this.isLoading = false;
+                this.msg.sendisLoggedInShowHeader(true);
+                this.router.navigate([__bName + '/la']);
+              }
+              catch (exception) {
+                this.isLoading = false;
+                this.showAlert = true;
+                this.alertMsg = 'Initialization Failed. Contact Administrator !';
+              }
+            },
+            err => { }
+          )
+        }
       },
-      err => { this.isLoading=false;
-               this.showAlert=true;
-               this.alertMsg='Invalid Credential !!!!!'; }
+      err => {
+        this.isLoading = false;
+        this.showAlert = true;
+        this.alertMsg = 'Invalid Credential !!!!!';
+      }
     )
   }
   closeAlert() {
@@ -110,17 +110,16 @@ export class LoginComponent implements OnInit {
     localStorage.removeItem('__cashaccountCD');
     localStorage.removeItem('__ddsPeriod');
     localStorage.removeItem('__userId');
-    
+
     this.router.navigate(['/']);
   }
 
-  GetBranchMaster()
-  {
+  GetBranchMaster() {
     debugger;
     this.rstSvc.addUpdDel('Mst/GetBranchMaster', null).subscribe(
       res => {
         debugger;
-        this.brnDtls=res;
+        this.brnDtls = res;
         // this.genparam.brn_cd="101";
         // this.genparam.gs_acc_type_cd=11;
         // this.genparam.ls_catg_cd=0;
@@ -135,7 +134,7 @@ export class LoginComponent implements OnInit {
         //   err => { debugger;}
         // )
       },
-      err => { debugger;}
+      err => { debugger; }
     )
   }
 }

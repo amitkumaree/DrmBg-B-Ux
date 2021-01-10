@@ -1,3 +1,5 @@
+import Utils from "src/app/_utility/utils";
+
 export class SystemValues {
   private __brnCd: string;
   private __brnName: string;
@@ -22,7 +24,7 @@ export class SystemValues {
   }
   /* expected dt dd/mm/yy */
   get CurrentDate(): Date {
-    return this.convertStringToDt(this.__currentDate);
+    return Utils.convertStringToDt(this.__currentDate);
   }
   get CashAccCode(): number {
     return +this.__cashaccountCD;
@@ -35,8 +37,8 @@ export class SystemValues {
   }
 
   /** expected format of the string is dd/mm/yyyy */
-  private convertStringToDt(str: string): Date {
-    const dateParts = str.split('/');
-    return new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
-  }
+  // private convertStringToDt(str: string): Date {
+  //   const dateParts = str.split('/');
+  //   return new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+  // }
 }
