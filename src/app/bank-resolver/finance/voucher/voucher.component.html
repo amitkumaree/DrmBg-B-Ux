@@ -16,8 +16,16 @@
       <div>
         <label for="fromDate">From Date</label>
         <div class="input-group">
-          <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-MM-dd' " formControlName="fromDate"
-            id="fd" type="date">
+          <!-- <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-MM-dd' " formControlName="fromDate"
+            id="fd" type="date"> -->
+            <input type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="fromdate" disabled bsDatepicker
+            formControlName="fromDate" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
+            [isOpen]="isOpenFromDp">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" (click)="isOpenFromDp = !isOpenFromDp">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
       </div>
       <div>
@@ -30,7 +38,7 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" (click)="Submit()">Submit</button>
-    <button class="btn btn-primary" (click)="modal.close('Close click')">Close</button>
+    <button class="btn btn-light" (click)="modalRef.hide()">Close</button>
   </div>
 </ng-template>
 
@@ -70,9 +78,10 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" (click)="Submit()">Submit</button>
-    <button class="btn btn-primary" (click)="modal.close('Close click')">Close</button>
+    <button class="btn btn-light" (click)="modalRef.hide()">Close</button>
   </div>
 </ng-template>
+
 <loading *ngIf="isLoading"></loading>
 
 <div class="row d-flex justify-content-center align-items-center pt-4"
@@ -117,7 +126,12 @@
               </td>
               <td>
                 <h6>Voucher Dt : </h6>
-                <h3>{{_voucherDt | date}}</h3>
+                 <!-- <h3><input type="text"  style="height: 25px" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="_voucherDt" disabled bsDatepicker
+                  [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
+                  [isOpen]="isOpenFromDp"></h3> 
+                 <h3>{{_voucherDt |date}}</h3>
+                 <h3>{{_voucherDt }}</h3> -->
+                 <h3>{{_voucherDt | date: 'dd/MM/yyyy'}}</h3>
               </td>
               <td *ngIf="!insertMode">
                 <h6>Voucher Type : </h6>
