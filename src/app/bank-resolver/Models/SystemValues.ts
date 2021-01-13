@@ -7,6 +7,7 @@ export class SystemValues {
   private __cashaccountCD: string;
   private __ddsPeriod: string;
   private __userId: string;
+  private __bName: string;
 
   constructor() {
     this.__brnCd = localStorage.getItem('__brnCd');
@@ -15,6 +16,7 @@ export class SystemValues {
     this.__cashaccountCD = localStorage.getItem('__cashaccountCD');
     this.__ddsPeriod = localStorage.getItem('__ddsPeriod');
     this.__userId = localStorage.getItem('__userId');
+    this.__bName = localStorage.getItem('__bName');
   }
   get BranchCode(): string {
     return this.__brnCd;
@@ -34,6 +36,9 @@ export class SystemValues {
   }
   get UserId(): string {
     return this.__userId;
+  }
+  get BankName(): string {
+    return this.__bName;
   }
 
   /** expected format of the string is dd/mm/yyyy */

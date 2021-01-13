@@ -36,6 +36,10 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
   accDtlsFrm: FormGroup;
   ngOnInit(): void {
     this.show = true;
+    this.resetFormData();
+  }
+
+  private resetFormData(): void {
     this.accDtlsFrm = this.frmBldr.group({
       brn_cd: [''],
       acc_type_cd: [''],
@@ -116,6 +120,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
 
   setAcctDetails(): void {
     if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
+      this.resetFormData();
       this.getShadowBalance();
       this.accDtlsFrm.patchValue({
         brn_cd: this.acctDtls.brn_cd,

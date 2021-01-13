@@ -1,11 +1,12 @@
 import {
   mm_title, mm_category, mm_state, mm_dist, mm_vill,
-  mm_kyc, mm_service_area, mm_block, mm_customer, ShowMessage, MessageType
+  mm_kyc, mm_service_area, mm_block, mm_customer, ShowMessage, MessageType, SystemValues
 } from './../../Models';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
 import { formatDate } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-utcustomer-profile',
@@ -14,11 +15,11 @@ import { formatDate } from '@angular/common';
 })
 export class UTCustomerProfileComponent implements OnInit {
   constructor(private frmBldr: FormBuilder,
-    // tslint:disable-next-line:align
-    private svc: RestService) { }
+    private svc: RestService, private router: Router) { }
   get f() { return this.custMstrFrm.controls; }
   static existingCustomers: mm_customer[] = [];
 
+  sys = new SystemValues();
   retrieveClicked = false;
   selectedCustomer: mm_customer;
   enableModifyAndDel = false;
@@ -41,6 +42,8 @@ export class UTCustomerProfileComponent implements OnInit {
   operation: string;
   selectedBlock: mm_block;
   selectedServiceArea: mm_service_area;
+  isOpenDOBdp = false;
+  isOpenDODdp = false;
 
   ngOnInit(): void {
     this.operation = 'New';
@@ -57,8 +60,8 @@ export class UTCustomerProfileComponent implements OnInit {
       guardian_name: ['', Validators.required],
       cust_dt: [''],
       old_cust_cd: [''],
-      dt_of_birth: [''],
-      age: [''],
+      dt_of_birth: [{value: '', disabled: true}],
+      age: [{value: '', disabled: true}],
       sex: [''],
       marital_status: [''],
       catg_cd: [''],
@@ -78,7 +81,7 @@ export class UTCustomerProfileComponent implements OnInit {
       farmer_type: [''],
       email: [''],
       monthly_income: [''],
-      date_of_death: [''],
+      date_of_death: [{value: '', disabled: true}],
       sms_flag: [''],
       status: [''],
       pan: [''],
@@ -220,21 +223,24 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public suggestCustomer(): void {
-    debugger;
     this.suggestedCustomer = UTCustomerProfileComponent.existingCustomers
       .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase())
         || c.cust_cd.toString().startsWith(this.f.cust_name.value))
       .slice(0, 20);
   }
 
-  public onDobChange(): void {
-    const dob = new Date(this.f.dt_of_birth.value);
-    const timeDiff = Math.abs(Date.now() - dob.getTime());
-
-    this.f.age.setValue(Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25));
+  public onDobChange(value: Date): number {
+    debugger;
+    if (null !== value) {
+    const timeDiff = Math.abs(Date.now() - value.getTime());
+    const age = Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25)
+    this.f.age.setValue(age);
+    return age;
+    }
   }
 
   public SelectCustomer(cust: mm_customer): void {
+    debugger;
     this.selectedCustomer = cust;
     this.onClearClick();
     this.enableModifyAndDel = true;
@@ -251,7 +257,7 @@ export class UTCustomerProfileComponent implements OnInit {
       guardian_name: cust.guardian_name,
       cust_dt: cust.cust_dt,
       old_cust_cd: cust.old_cust_cd,
-      dt_of_birth: formatDate(new Date(cust.dt_of_birth), 'yyyy-MM-dd', 'en'),
+      dt_of_birth: cust.dt_of_birth, //formatDate(new Date(cust.dt_of_birth), 'yyyy-MM-dd', 'en'),
       age: cust.age,
       sex: cust.sex,
       marital_status: cust.marital_status,
@@ -353,7 +359,7 @@ export class UTCustomerProfileComponent implements OnInit {
   mapFormGrpToCustMaster(): mm_customer {
     const cust = new mm_customer();
     try {
-      cust.brn_cd = localStorage.getItem('__brnCd'); // '101';
+      cust.brn_cd = this.sys.BranchCode; // '101';
       cust.cust_cd = (null === this.f.cust_cd.value || '' === this.f.cust_cd.value)
         ? 0 : +this.f.cust_cd.value;
       cust.cust_type = this.f.cust_type.value;
@@ -394,7 +400,7 @@ export class UTCustomerProfileComponent implements OnInit {
       cust.date_of_death = ('' === this.f.date_of_death.value
         || '0001-01-01T00:00:00' === this.f.date_of_death.value)
         ? null : this.f.date_of_death.value;
-      cust.sms_flag = this.f.sms_flag.value;
+      cust.sms_flag = this.f.sms_flag.value ? 'Y' : 'N';
       cust.status = this.f.status.value;
       cust.pan = this.f.pan.value;
       cust.nominee = this.f.nominee.value;
@@ -442,5 +448,9 @@ export class UTCustomerProfileComponent implements OnInit {
       },
       err => { this.isLoading = false; }
     );
+  }
+
+  onBackClick() {
+    this.router.navigate([this.sys.BankName + '/la']);
   }
 }
