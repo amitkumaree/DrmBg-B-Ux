@@ -1,8 +1,9 @@
+import { Router } from '@angular/router';
 import { AccOpenDM } from './../../Models/deposit/AccOpenDM';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { RestService, InAppMessageService } from 'src/app/_service';
-import { MessageType, mm_acc_type, mm_operation, ShowMessage, td_def_trans_trf, tm_depositall } from '../../Models';
+import { MessageType, mm_acc_type, mm_operation, ShowMessage, SystemValues, td_def_trans_trf, tm_depositall } from '../../Models';
 import { tm_denomination_trans } from '../../Models/deposit/tm_denomination_trans';
 import { DatePipe } from '@angular/common';
 
@@ -15,12 +16,13 @@ import { DatePipe } from '@angular/common';
 export class AccounTransactionsComponent implements OnInit {
 
   constructor(private svc: RestService, private msg: InAppMessageService,
-    private frmBldr: FormBuilder, public datepipe: DatePipe) { }
+    private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router) { }
   private static operations: mm_operation[] = [];
   operations: mm_operation[];
   AcctTypes: mm_operation[];
   transType: DynamicSelect;
   isLoading: boolean;
+  sys = new SystemValues();
   accTransFrm: FormGroup;
   tdDefTransFrm: FormGroup;
   get f() { return this.accTransFrm.controls; }
@@ -211,21 +213,21 @@ export class AccounTransactionsComponent implements OnInit {
     if (this.td.trans_type.value === 'C') {
       saveTransaction.tmdenominationtrans = this.tm_denominationList;
     } else if (this.td.trans_type.value === 'T') {
-
+      // TODO - transfer code to come here
     }
     this.svc.addUpdDel<AccOpenDM>('Deposit/InsertAccountOpeningData', saveTransaction).subscribe(
       res => {
         debugger;
         this.isLoading = false;
       },
-      err => { this.isLoading = false; console.log('Error on onSaveClick' + err); }
+      err => { this.isLoading = false; console.log('Error on onSaveClick' + err); debugger;}
     );
   }
 
   mappTddefTransFromFrm(): td_def_trans_trf {
     const toReturn = new td_def_trans_trf();
-    // toReturn.trans_dt = new Date(this.convertDate(localStorage.getItem('__currentDate')) + ' UTC');
-    toReturn.trans_dt = this.datepipe.transform(new Date(localStorage.getItem('__currentDate')), 'dd/MM/yyyy');
+    toReturn.trans_dt = this.sys.CurrentDate;
+    // toReturn.trans_dt = this.datepipe.transform(new Date(localStorage.getItem('__currentDate')), 'dd/MM/yyyy');
     toReturn.acc_type_cd = this.td.acc_type_cd.value;
     toReturn.acc_num = this.td.acc_num.value;
     toReturn.trans_type = this.td.trans_type.value;
@@ -238,7 +240,7 @@ export class AccounTransactionsComponent implements OnInit {
     toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
     toReturn.particulars = this.td.particulars.value;
     toReturn.approval_status = 'U';
-    toReturn.brn_cd = localStorage.getItem('__brnCd');
+    toReturn.brn_cd = this.sys.BranchCode;
 
     return toReturn;
   }
@@ -259,8 +261,8 @@ export class AccounTransactionsComponent implements OnInit {
 
   addDenomination() {
     const temp_denomination = new tm_denomination_trans();
-    temp_denomination.brn_cd = localStorage.getItem('__brnCd');
-    temp_denomination.trans_dt = this.datepipe.transform(new Date(localStorage.getItem('__currentDate')), 'dd/MM/yyyy');
+    temp_denomination.brn_cd = this.sys.BranchCode;
+    temp_denomination.trans_dt = this.sys.CurrentDate;
     this.tm_denominationList.push(temp_denomination);
   }
 
@@ -314,6 +316,10 @@ export class AccounTransactionsComponent implements OnInit {
     setTimeout(() => {
       this.showMsg = new ShowMessage();
     }, 3000);
+  }
+
+  onBackClick() {
+    this.router.navigate([this.sys.BankName + '/la']);
   }
 }
 export class DynamicSelect {
