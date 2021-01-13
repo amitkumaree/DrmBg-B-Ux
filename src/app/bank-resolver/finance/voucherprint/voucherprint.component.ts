@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef, ElementRef } from '@angular/core';
-import { p_report_param } from '../../Models';
+import { p_report_param, SystemValues } from '../../Models';
 import { T_VOUCHER_NARRATION } from '../../Models/T_VOUCHER_NARRATION';
 import { RestService } from 'src/app/_service';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
@@ -7,6 +7,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import html2pdf from 'html2pdf.js';
 // import jsPDF from 'jspdf';
 import { Router } from '@angular/router';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-voucherprint',
@@ -16,6 +17,15 @@ import { Router } from '@angular/router';
 export class VoucherprintComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('reportcontent') reportcontent: ElementRef;
+  modalRef: BsModalRef;
+  isOpenFromDp = false;
+  isOpenToDp = false;
+  sys = new SystemValues();
+  config = {
+    keyboard: false, // ensure esc press doesnt close the modal
+    backdrop: true, // enable backdrop shaded color
+    ignoreBackdropClick: true // disable backdrop click to close the modal
+  };
   prp =new p_report_param();
   tvn:  T_VOUCHER_NARRATION[]=[];
   reportcriteria: FormGroup;
@@ -28,13 +38,13 @@ export class VoucherprintComponent implements OnInit {
   isLoading = false;
 
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-     // private modalService: NgbModal,
+     private modalService: BsModalService,
      private router: Router) { }
 
   ngOnInit(): void {
     debugger;
-    this.fromdate=new Date(localStorage.getItem('__currentDate'));
-    this.todate=new Date(localStorage.getItem('__currentDate'));
+    this.fromdate=this.sys.CurrentDate;
+    this.todate=this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
@@ -42,12 +52,7 @@ export class VoucherprintComponent implements OnInit {
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
-    debugger;
-    // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-    // },
-    //   (reason) => {
-    //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-    //   });
+    this.modalRef = this.modalService.show(content, this.config);
   }
   // private getDismissReason(reason: any): string {
   //   if (reason === ModalDismissReasons.ESC) {
@@ -91,8 +96,9 @@ export class VoucherprintComponent implements OnInit {
         debugger;
         this.tvn = res;
         this.isLoading=false;
+        this.modalRef.hide();
       },
-      err => { }
+      err => { this.modalRef.hide();}
     );
   }
 

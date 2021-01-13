@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RestService } from 'src/app/_service';
-import { MessageType, ShowMessage } from '../../Models';
+import { MessageType, ShowMessage, SystemValues } from '../../Models';
 import { p_gen_param } from '../../Models/p_gen_param';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-daycomplition',
@@ -11,15 +12,16 @@ import { p_gen_param } from '../../Models/p_gen_param';
   styleUrls: ['./daycomplition.component.css']
 })
 export class DaycomplitionComponent implements OnInit {
-
-  constructor(private router: Router,private formBuilder: FormBuilder,private svc: RestService) { }
+  isOpenFromDp = false;
+  sys = new SystemValues();
+  constructor(private router: Router,private formBuilder: FormBuilder,private modalService: BsModalService,private svc: RestService) { }
   isLoading = false;
   alertMsg = '';
   closingdate: Date;
   closingdata: FormGroup;
   showMsg: ShowMessage;
   ngOnInit(): void {
-    this.closingdate=this.convertDate(localStorage.getItem('__currentDate'));
+    this.closingdate=this.sys.CurrentDate;
     this.closingdata = this.formBuilder.group({
       closingdate: [null, Validators.required],
       closingbal: [null, Validators.compose([Validators.required, Validators.pattern('^[0-9]+$')])]
@@ -51,7 +53,7 @@ private dayCompletionCall (clsDt :any,clsamt:any)
 {
   this.showMsg =null;
   var pgp = new p_gen_param();
-  pgp.brn_cd = localStorage.getItem('__brnCd');
+  pgp.brn_cd = this.sys.BranchCode;
   pgp.gs_user_type = 'A';//TDB
   pgp.gs_user_id= localStorage.getItem('__userId');
   pgp.ad_prn_amt=parseFloat(clsamt);

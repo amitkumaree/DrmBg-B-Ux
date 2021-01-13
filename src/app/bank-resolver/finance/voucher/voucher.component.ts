@@ -253,7 +253,8 @@ export class VoucherComponent implements OnInit {
   }
 
   editVoucherFromGroup(acc_cd: number, dr_cr: string, cr_amount: number, dr_amount: number): FormGroup {
-    let accNames = this.maccmaster.filter(function (el) { return (el.acc_cd === acc_cd); }).map(function (el) { return el.acc_name; }).sort();
+    debugger
+    let accNames = this.maccmaster.filter(function (el) { return (el.acc_cd === acc_cd); }).map(function (el) { return el.acc_name; }).sort().toString();
     return this.formBuilder.group({
       'dr_cr': [dr_cr, Validators.compose([Validators.required])],
       'acc_cd': [acc_cd, Validators.compose([Validators.required])],
@@ -338,7 +339,7 @@ export class VoucherComponent implements OnInit {
           if (this.VoucherF.value[0].acc_cd == null)
             this.RemoveItem(0);
         this._voucherId = this.tvdRet[0].voucher_id;
-        this._voucherDt = this.convertStringToDt(this.tvdRet[0].voucher_dt.toString());
+        this._voucherDt = this.convertDate(this.tvdRet[0].voucher_dt.toString());
         this._voucherTyp = this.tvdRet[0].transaction_type == "C" ? "Cash" : this.tvdRet[0].transaction_type == "L" ? "Clearing" : "Transfer";
         this._approvalSts = this.tvdRet[0].approval_status == "A" ? "Approved" : "Unapproved";
         this._totalCr = 0;
@@ -367,13 +368,14 @@ export class VoucherComponent implements OnInit {
         this.tvdRet = res;
         for (let x = 0; x < this.tvdRet.length; x++) {
           this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
-          this.VoucherF.push(this.editVoucherFromGroup(this.tvdRet[x].acc_cd, this.tvdRet[x].debit_credit_flag, this.tvdRet[x].cr_amount, this.tvdRet[x].dr_amount));
+          this.VoucherF.push(this.editVoucherFromGroup(this.tvdRet[x].acc_cd, this.tvdRet[x].debit_credit_flag=='D'?'Debit':'Credit', this.tvdRet[x].cr_amount, this.tvdRet[x].dr_amount));
         }
+       
         if (this.VoucherF.value.length > 0)
           if (this.VoucherF.value[0].acc_cd == null)
             this.RemoveItem(0);
         this._voucherId = this.tvdRet[0].voucher_id;
-        this._voucherDt = this.convertStringToDt(this.tvdRet[0].voucher_dt.toString());
+        this._voucherDt = this.convertDate(this.tvdRet[0].voucher_dt.toString());
         this._voucherTyp = this.tvdRet[0].transaction_type == "C" ? "Cash" : this.tvdRet[0].transaction_type == "L" ? "Clearing" : "Transfer";
         this._approvalSts = this.tvdRet[0].approval_status == "A" ? "Approved" : "Unapproved";
         this._totalCr = 0;
@@ -460,7 +462,7 @@ export class VoucherComponent implements OnInit {
       for (let x = 0; x < this.VoucherF.length; x++) {
         let tvdSave = new T_VOUCHER_DTLS();
         tvdSave.approval_status = 'A';
-        tvdSave.brn_cd =  localStorage.getItem('__brnCd');
+        tvdSave.brn_cd =  this.sys.BranchCode;
         tvdSave.approved_by = 'ADMIN'
         tvdSave.approved_dt = new Date();
         //tvdSave.voucher_dt = this._voucherDt;

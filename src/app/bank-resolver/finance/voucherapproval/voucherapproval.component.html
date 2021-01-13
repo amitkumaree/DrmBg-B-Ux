@@ -1,78 +1,86 @@
 <ng-template #content let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Retrieve Voucher</h4>
-      <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Retrieve Voucher</h4>
+    <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Error!</strong> {{alertMsg}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body">
-      <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error!</strong> {{alertMsg}}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form [formGroup]="reportcriteria">
-        <div>
-          <label for="fromDate">From Date</label>
-          <div class="input-group">
-            <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-MM-dd' " formControlName="fromDate"
-              id="fd" type="date">
-          </div>
-        </div>
-        <div>
-          <label for="voucherNo">Voucher No</label>
-          <div class="input-group">
-            <input id="voucherNo" class="form-control" name="vn" formControlName="voucherNo" id="vn" type="text">
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" (click)="Submit()">Submit</button>
-      <button class="btn btn-primary" (click)="modal.close('Close click')">Close</button>
-    </div>
-  </ng-template>
-  
-  <ng-template #contentbatch let-modal bd-example-modal-lg>
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Retrieve All Voucher</h4>
-      <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <!-- Default inline 1-->
+    <form [formGroup]="reportcriteria">
       <div>
-        <div class="custom-control custom-radio custom-control-inline">
-          <input type="radio" class="custom-control-input" id="U" name="app_flg" [(ngModel)]="app_flg" value="U"
-            (change)="changeAppFlg()" mdbInput>
-          <label class="custom-control-label" for="U"><strong>UnApproved</strong></label>
-        </div>
-  
-        <!-- Default inline 2-->
-        <div class="custom-control custom-radio custom-control-inline">
-          <input type="radio" class="custom-control-input" id="A" name="app_flg" [(ngModel)]="app_flg" value="A"
-            (change)="changeAppFlg()" mdbInput>
-          <label class="custom-control-label" for="A"><strong>Approved</strong></label>
+        <label for="fromDate">From Date</label>
+        <div class="input-group">
+          <!-- <input id="fromDate" class="form-control" placeholder="yyyy-mm-dd" name="fd" [ngModel]="fromdate  | date:'yyyy-MM-dd' " formControlName="fromDate"
+            id="fd" type="date"> -->
+            <input type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="fromdate" disabled bsDatepicker
+            formControlName="fromDate" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
+            [isOpen]="isOpenFromDp">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" (click)="isOpenFromDp = !isOpenFromDp">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
       </div>
-  
-  
-  
-      <table class="table table-sm table-hover">
-        <tr *ngFor="let item of tvnRetFilter; let i = index;"title="Click to Select"  (click)="OpenVoucher(item)" style="cursor: pointer;">
-          <td>{{item.voucher_id}}</td>
-          <td>{{item.narrationdtl}}</td>
-          <td>{{item.transaction_type}}</td>
-        </tr>
-      </table>
+      <div>
+        <label for="voucherNo">Voucher No</label>
+        <div class="input-group">
+          <input id="voucherNo" class="form-control" name="vn" formControlName="voucherNo" id="vn" type="text">
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="Submit()">Submit</button>
+    <button class="btn btn-light" (click)="modalRef.hide()">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #contentbatch let-modal bd-example-modal-lg>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Retrieve All Voucher</h4>
+    <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <!-- Default inline 1-->
+    <div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" class="custom-control-input" id="U" name="app_flg" [(ngModel)]="app_flg" value="U"
+          (change)="changeAppFlg()" mdbInput>
+        <label class="custom-control-label" for="U"><strong>UnApproved</strong></label>
+      </div>
+
+      <!-- Default inline 2-->
+      <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" class="custom-control-input" id="A" name="app_flg" [(ngModel)]="app_flg" value="A"
+          (change)="changeAppFlg()" mdbInput>
+        <label class="custom-control-label" for="A"><strong>Approved</strong></label>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" (click)="Submit()">Submit</button>
-      <button class="btn btn-primary" (click)="modal.close('Close click')">Close</button>
-    </div>
-  </ng-template>
+
+
+
+    <table class="table table-sm table-hover">
+      <tr *ngFor="let item of tvnRetFilter; let i = index;"title="Click to Select"  (click)="OpenVoucher(item)" style="cursor: pointer;">
+        <td>{{item.voucher_id}}</td>
+        <td>{{item.narrationdtl}}</td>
+        <td>{{item.transaction_type}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="Submit()">Submit</button>
+    <button class="btn btn-light" (click)="modalRef.hide()">Close</button>
+  </div>
+</ng-template>
   <loading *ngIf="isLoading"></loading>
   
   <div class="row d-flex justify-content-center align-items-center pt-4"
