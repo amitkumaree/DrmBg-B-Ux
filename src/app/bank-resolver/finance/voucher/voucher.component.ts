@@ -298,6 +298,9 @@ export class VoucherComponent implements OnInit {
     this.maccmaster=this.maccmasterRet.filter(x=>x.acc_cd!=28101);
     this.VoucherF.controls[0].get('acc_cd').setValue(28101);
     this.VoucherF.controls[0].get('desc').setValue(this.maccmasterRet.find(x=>x.acc_cd===28101).acc_name);
+    this.VoucherF.controls[0].get('dr_amt').disable();
+    this.VoucherF.controls[0].get('cr_amt').disable();
+    this.VoucherF.controls[0].get('desc').disable();
     }
     else{
       this.InitializeListOnly();

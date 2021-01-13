@@ -95,12 +95,23 @@ export class VoucherprintComponent implements OnInit {
       res => {
         debugger;
         this.tvn = res;
+        for (let x = 0; x < this.tvn.length; x++) {
+          this.tvn[x].voucher_dt= this.convertDate(this.tvn[x].voucher_dt.toString());
+          this.tvn[x].narration= this.tvn[x].narration.replace('/','');
+        }
         this.isLoading=false;
         this.modalRef.hide();
       },
       err => { this.modalRef.hide();}
     );
   }
+  private  convertDate(datestring:string):Date
+{
+var parts = datestring.match(/(\d+)/g);
+// new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+//return new Date(year, month, day);
+}
 
   //   public downloadPDF() {
   //   debugger;
