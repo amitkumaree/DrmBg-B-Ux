@@ -4,7 +4,7 @@ export class tm_denomination_trans extends baseModel {
 
   public brn_cd: string;
   public trans_cd: number;
-  public trans_dt: string;
+  public trans_dt: Date;
   public rupees: number;
   public count: number;
   public total: number;

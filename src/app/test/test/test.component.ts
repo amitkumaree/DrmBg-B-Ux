@@ -817,7 +817,7 @@ saveData()
     this.accountTypeDiv = Number(accType);
 
     this.tm_deposit.acc_type_cd = Number(accType);
-    this.tm_deposit.acc_type_desc = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
+    //this.tm_deposit.acc_type_desc = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
 
     // this.selectedConstitutionList = null;
     this.selectedConstitutionList = this.constitutionList.filter(x => x.acc_type_cd.toString() === accType.toString());
@@ -1045,7 +1045,7 @@ removeSignatory()
     debugger;
     if (intro_acc_typ_cd != null && intro_acc_typ_cd > 0) {
       this.td_introducerlist[idx].introducer_acc_type = Number(intro_acc_typ_cd);
-      this.td_introducerlist[idx].acc_type_desc = this.introducerAccTypeList.filter(x => x.acc_type_cd.toString() === intro_acc_typ_cd.toString())[0].acc_type_desc;
+      this.td_introducerlist[idx].introducer_acc_type_desc = this.introducerAccTypeList.filter(x => x.acc_type_cd.toString() === intro_acc_typ_cd.toString())[0].acc_type_desc;
     }
   }
 

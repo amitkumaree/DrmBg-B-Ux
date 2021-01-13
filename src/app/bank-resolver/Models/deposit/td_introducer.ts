@@ -1,3 +1,4 @@
+
 import { baseModel } from '../baseModel';
 
 export class td_introducer extends baseModel{
@@ -8,5 +9,5 @@ export class td_introducer extends baseModel{
   public introducer_name : string;
   public introducer_acc_type : number;
   public introducer_acc_num : string;
-  public acc_type_desc: string;
+  public introducer_acc_type_desc: string;
 }

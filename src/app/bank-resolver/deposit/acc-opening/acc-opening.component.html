@@ -58,8 +58,13 @@
         </div>
         <div class="form-group col-3">
           <small for="cust_dob">Date Of Birth</small>
-          <input style="height:25px" disabled type="date" class="form-control form-control-sm" id="cust_dob"
-          [ngModel]="tm_deposit.date_of_birth | date:'yyyy-MM-dd'" placeholder="Cust DOB">
+
+          <!-- <input style="height:25px" disabled type="date" class="form-control form-control-sm" id="cust_dob"
+          [ngModel]="tm_deposit.date_of_birth | date:'yyyy-MM-dd'" placeholder="Cust DOB"> -->
+
+          <input style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="tm_deposit.date_of_birth" disabled bsDatepicker
+          [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+
 
         </div>
         <div class="form-group col-2">
@@ -202,7 +207,17 @@
 
         <div class="form-group col-3">
           <small for="dbs_acc_open_dt">Opening Date</small>
-          <input style="height:25px;" [disabled]='disableAll' [ngModel]="tm_deposit.opening_dt | date:'dd/mm/yyyy'" placeholder="dd/mm/yyyy" type="Date" class="form-control form-control-sm" id="dbs_acc_open_dt">
+          <!-- <input style="height:25px;" [disabled]='disableAll' [ngModel]="tm_deposit.opening_dt | date:'dd/mm/yyyy'" placeholder="dd/mm/yyyy" type="Date" class="form-control form-control-sm" id="dbs_acc_open_dt"> -->
+
+          <input style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="tm_deposit.opening_dt" disabled bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+          <!-- <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" (click)="isOpenFromDp = !isOpenFromDp">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+          </div> -->
+
+
         </div>
 
       </div>
@@ -369,8 +384,12 @@
         <div class="form-row">
           <div class="form-group col-3">
             <small for="dep_mat_dt">Maturity Date</small>
-            <input [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-              class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Maturity Date">
+            <!-- <input [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
+              class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Maturity Date"> -->
+
+            <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy"
+              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+
           </div>
 
 
@@ -1169,9 +1188,9 @@
         <div class="form-group col-3">
           <small for="intr_acc_type">Account Type</small>
            <select [disabled]='disableAll' style="height:25px; font-size: small; padding-top: 0px; background-color: whitesmoke;" id="intr_acc_type"
-            class="form-control form-control-sm" [(ngModel)]="t1.acc_type_cd" (focusout)="setIntroducerAccountType($event.target.value, i)">
-            <option [value]="t1.acc_type_cd" disabled selected>{{t1.acc_type_cd}}-{{t1.acc_type_desc}}</option>
-            <option *ngFor="let l of introducerAccTypeList" [value]="l.acc_type_cd">{{l.acc_type_cd}}-{{l.acc_type_desc}}</option>
+            class="form-control form-control-sm" [(ngModel)]="t1.introducer_acc_type" (focusout)="setIntroducerAccountType($event.target.value, i)">
+            <option [value]="t1.introducer_acc_type" disabled selected>{{t1.introducer_acc_type}}-{{t1.introducer_acc_type_desc}}</option>
+            <option *ngFor="let l of introducerAccTypeList" [value]="l.introducer_acc_type_cd">{{l.introducer_acc_type_cd}}-{{l.introducer_acc_type_desc}}</option>
           </select>
         </div>
 
