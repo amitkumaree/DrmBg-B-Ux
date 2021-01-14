@@ -50,7 +50,7 @@ export class UTCustomerProfileComponent implements OnInit {
     // form defination
     this.custMstrFrm = this.frmBldr.group({
       brn_cd: [''],
-      cust_cd: [''],
+      cust_cd: [{value: '', disabled: true}],
       cust_type: ['', Validators.required],
       title: [''],
       first_name: ['', Validators.required],
@@ -74,7 +74,9 @@ export class UTCustomerProfileComponent implements OnInit {
       pin: [''],
       vill_cd: [''],
       block_cd: ['', { disabled: true }],
-      service_area_cd: [''],
+      block_cd_desc: ['', { disabled: true }],
+      service_area_cd: ['', { disabled: true }],
+      service_area_cd_desc: ['', { disabled: true }],
       occupation: [''],
       phone: [''],
       present_address: [''],
@@ -158,8 +160,10 @@ export class UTCustomerProfileComponent implements OnInit {
     this.selectedServiceArea = this.serviceAreas.filter(e => e.service_area_cd ===
       selectedVillage.service_area_cd)[0];
     this.custMstrFrm.patchValue({
-      service_area_cd: this.selectedServiceArea.service_area_name,
-      block_cd: this.selectedBlock.block_name
+      service_area_cd: this.selectedServiceArea.service_area_cd,
+      service_area_cd_desc: this.selectedServiceArea.service_area_name,
+      block_cd: this.selectedBlock.block_cd,
+      block_cd_desc: this.selectedBlock.block_name
     });
   }
 
@@ -245,6 +249,8 @@ export class UTCustomerProfileComponent implements OnInit {
     this.onClearClick();
     this.enableModifyAndDel = true;
     this.suggestedCustomer = null;
+    this.selectedBlock = this.blocks.filter(e => e.block_cd === cust.block_cd)[0];
+    this.selectedServiceArea = this.serviceAreas.filter(e => e.service_area_cd === cust.service_area_cd)[0];
     this.custMstrFrm.patchValue({
       brn_cd: cust.brn_cd,
       cust_cd: cust.cust_cd,
@@ -271,7 +277,9 @@ export class UTCustomerProfileComponent implements OnInit {
       pin: cust.pin,
       vill_cd: cust.vill_cd,
       block_cd: cust.block_cd,
+      block_cd_desc: this.selectedBlock.block_name,
       service_area_cd: cust.service_area_cd,
+      service_area_cd_desc: this.selectedServiceArea.service_area_name,
       occupation: cust.occupation,
       phone: cust.phone,
       present_address: cust.present_address,
@@ -351,9 +359,16 @@ export class UTCustomerProfileComponent implements OnInit {
     this.showMsg = null;
     this.enableModifyAndDel = false;
     this.custMstrFrm.enable();
+    this.f.cust_cd.disable();
     this.f.cust_name.disable();
     this.f.service_area_cd.disable();
+    this.f.service_area_cd_desc.disable();
     this.f.block_cd.disable();
+    this.f.block_cd_desc.disable();
+    this.f.dt_of_birth.disable();
+    this.f.age.disable();
+    this.f.date_of_death.disable();
+    this.suggestedCustomer = null;
   }
 
   mapFormGrpToCustMaster(): mm_customer {
