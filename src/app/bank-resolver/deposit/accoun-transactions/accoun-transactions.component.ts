@@ -19,6 +19,7 @@ export class AccounTransactionsComponent implements OnInit {
     private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router) { }
   private static operations: mm_operation[] = [];
   operations: mm_operation[];
+  disableOperation = true;
   AcctTypes: mm_operation[];
   transType: DynamicSelect;
   isLoading: boolean;
@@ -27,6 +28,7 @@ export class AccounTransactionsComponent implements OnInit {
   tdDefTransFrm: FormGroup;
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
+  accNoforTransaction: tm_depositall;
   showMsg: ShowMessage;
   showInstrumentDtl = false;
   tm_denominationList: tm_denomination_trans[] = [];
@@ -141,13 +143,16 @@ export class AccounTransactionsComponent implements OnInit {
     });
     this.operations = AccounTransactionsComponent.operations
       .filter(e => e.acc_type_cd === acctTypCdTofilter);
-    this.f.oprn_cd.enable();
+    // this.f.oprn_cd.enable();
     this.f.acct_num.enable();
   }
 
   /* method fires on operation type change */
   public onOperationTypeChange(): void {
     debugger;
+    this.accNoforTransaction.ShowClose = false;
+    this.msg.sendCommonTmDepositAll(this.accNoforTransaction);
+
     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     this.transType = new DynamicSelect();
     if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
@@ -159,6 +164,15 @@ export class AccounTransactionsComponent implements OnInit {
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
       this.transType.key = 'D';
       this.transType.Description = 'Deposit';
+      this.tdDefTransFrm.patchValue({
+        trans_type: this.transType.Description
+      });
+    } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close') {
+      this.transType.key = 'C';
+      this.transType.Description = 'Close';
+      this.accNoforTransaction.ShowClose = true;
+      // this.accNoforTransaction.acc_close_dt = new Date();
+      this.msg.sendCommonTmDepositAll(this.accNoforTransaction);
       this.tdDefTransFrm.patchValue({
         trans_type: this.transType.Description
       });
@@ -176,14 +190,16 @@ export class AccounTransactionsComponent implements OnInit {
 
   public onAccountNumTabOff(): void {
     debugger;
+    this.f.oprn_cd.reset();
+    this.disableOperation = true;
     console.log('onAccountNumTabOff -' + this.f.acct_num.value);
-    this.isLoading = false;
+    this.isLoading = true;
     this.showMsg = null;
     let acc = new tm_depositall();
 
     acc.acc_num = '' + this.f.acct_num.value;
     acc.acc_type_cd = +this.f.acc_type_cd.value;
-    acc.brn_cd = localStorage.getItem('__brnCd');
+    acc.brn_cd = this.sys.BranchCode;
     this.svc.addUpdDel<tm_depositall>('Deposit/GetDepositWithChild', acc).subscribe(
       res => {
         debugger;
@@ -194,6 +210,8 @@ export class AccounTransactionsComponent implements OnInit {
           this.msg.sendCommonTmDepositAll(null);
         } else {
           // TODO check if the acctype given matcches or else throw error, or send acct type while calling
+          this.disableOperation = false;
+          this.accNoforTransaction = acc;
           this.msg.sendCommonTmDepositAll(acc);
           this.tdDefTransFrm.patchValue({
             acc_num: acc.acc_num,
@@ -220,7 +238,7 @@ export class AccounTransactionsComponent implements OnInit {
         debugger;
         this.isLoading = false;
       },
-      err => { this.isLoading = false; console.log('Error on onSaveClick' + err); debugger;}
+      err => { this.isLoading = false; console.log('Error on onSaveClick' + err); debugger; }
     );
   }
 

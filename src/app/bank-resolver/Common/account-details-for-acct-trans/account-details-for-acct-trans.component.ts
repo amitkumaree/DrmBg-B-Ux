@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import { formatDate } from '@angular/common';
+import Utils from 'src/app/_utility/utils';
 
 @Component({
   selector: 'app-account-details-for-acct-trans',
@@ -30,7 +31,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
     );
   }
   subscription: Subscription;
-  acctDtls: tm_depositall;
+  acctDtls = new tm_depositall();
   isLoading = false;
   show = false;
   accDtlsFrm: FormGroup;
@@ -119,6 +120,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
   }
 
   setAcctDetails(): void {
+    debugger;
     if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
       this.resetFormData();
       this.getShadowBalance();
@@ -142,7 +144,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         intt_rt: this.acctDtls.intt_rt,
         tds_applicable: this.acctDtls.tds_applicable,
         last_intt_calc_dt: this.acctDtls.last_intt_calc_dt,
-        acc_close_dt: this.acctDtls.acc_close_dt,
+        acc_close_dt: this.acctDtls.ShowClose ? Utils.getTodaysDtInCorrectFormat() : null,
         closing_prn_amt: this.acctDtls.closing_prn_amt,
         closing_intt_amt: this.acctDtls.closing_intt_amt,
         penal_amt: this.acctDtls.penal_amt,
