@@ -44,7 +44,7 @@
               </div>
               <div class="form-group col-3">
                 <small for="oprn_cd">Operation Type</small>
-                <select id="oprn_cd" [attr.disabled]="null == operations ? '' : null"
+                <select id="oprn_cd" [attr.disabled]="(null == operations || disableOperation) ? '' : null"
                   class="form-control form-control-sm" formControlName="oprn_cd" (change)="onOperationTypeChange()">
                   <option *ngIf="operations" disabled>Choose</option>
                   <option *ngFor="let oper of operations" [value]="oper.oprn_cd">{{oper.oprn_desc}}</option>

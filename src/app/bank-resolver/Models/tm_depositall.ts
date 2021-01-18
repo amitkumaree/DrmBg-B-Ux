@@ -1,6 +1,10 @@
 import { baseModel } from './baseModel';
 
 export class tm_depositall extends baseModel {
+  constructor() {
+    super();
+    this.ShowClose = false;
+  }
   public brn_cd: string;
   public acc_type_cd: number;
   public acc_num: string;
@@ -74,4 +78,8 @@ export class tm_depositall extends baseModel {
   public phone: string;
   public present_address: string;
   public constitution_desc: string;
+
+  /** Below prop is used for by common view please do not delete */
+  public ShowClose: boolean;
+
 }

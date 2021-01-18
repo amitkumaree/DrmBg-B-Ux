@@ -25,8 +25,8 @@
       </div>
       <div class="form-group">
         <label for="branch">Branch</label>
-      <select id="branch" class="form-control form-control-sm" formControlName="branch">
-        <option *ngFor="let option of brnDtls;let i = index" [value]="option.brn_cd" formControlName="branch">{{ option.brn_name }}</option>
+      <select [disabled]="brnDtls" id="branch" class="form-control form-control-sm" formControlName="branch">
+        <option  *ngFor="let option of brnDtls;let i = index" [value]="option.brn_cd" formControlName="branch">{{ option.brn_name }}</option>
       </select>
       </div>
       <button type="button" class="btn btn-light " (click)="cancel()">Cancel</button>
