@@ -60,7 +60,7 @@ export class UTCustomerProfileComponent implements OnInit {
       guardian_name: ['', Validators.required],
       cust_dt: [''],
       old_cust_cd: [''],
-      dt_of_birth: [{value: '', disabled: true}],
+      dt_of_birth: [''],
       age: [{value: '', disabled: true}],
       sex: [''],
       marital_status: [''],
@@ -83,7 +83,7 @@ export class UTCustomerProfileComponent implements OnInit {
       farmer_type: [''],
       email: [''],
       monthly_income: [''],
-      date_of_death: [{value: '', disabled: true}],
+      date_of_death: [''],
       sms_flag: [''],
       status: [''],
       pan: [''],
@@ -365,9 +365,9 @@ export class UTCustomerProfileComponent implements OnInit {
     this.f.service_area_cd_desc.disable();
     this.f.block_cd.disable();
     this.f.block_cd_desc.disable();
-    this.f.dt_of_birth.disable();
+    // this.f.dt_of_birth.disable();
     this.f.age.disable();
-    this.f.date_of_death.disable();
+    // this.f.date_of_death.disable();
     this.suggestedCustomer = null;
   }
 
