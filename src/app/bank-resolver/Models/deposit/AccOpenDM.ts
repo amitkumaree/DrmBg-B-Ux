@@ -15,9 +15,10 @@ export class AccOpenDM
   public  tdsignatory: td_signatory[] = [];
   public  tdaccholder: td_accholder[] = [];
   public  tmdenominationtrans: tm_denomination_trans[] = [];
-  public  tmtransfer: tm_transfer[] = [];
-  public  tddeftranstrf: td_def_trans_trf[] = [];
+
   public  tddeftrans: td_def_trans_trf;
+  public  tddeftranstrf: td_def_trans_trf[] = [];
+  public  tmtransfer: tm_transfer[] = [];
 
 
 

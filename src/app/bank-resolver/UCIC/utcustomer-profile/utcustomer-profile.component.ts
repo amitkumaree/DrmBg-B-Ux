@@ -60,7 +60,7 @@ export class UTCustomerProfileComponent implements OnInit {
       guardian_name: ['', Validators.required],
       cust_dt: [''],
       old_cust_cd: [''],
-      dt_of_birth: [{value: '', disabled: true}],
+      dt_of_birth: [''],
       age: [{value: '', disabled: true}],
       sex: [''],
       marital_status: [''],
@@ -83,7 +83,7 @@ export class UTCustomerProfileComponent implements OnInit {
       farmer_type: [''],
       email: [''],
       monthly_income: [''],
-      date_of_death: [{value: '', disabled: true}],
+      date_of_death: [''],
       sms_flag: [''],
       status: [''],
       pan: [''],
@@ -229,7 +229,8 @@ export class UTCustomerProfileComponent implements OnInit {
   public suggestCustomer(): void {
     this.suggestedCustomer = UTCustomerProfileComponent.existingCustomers
       .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase())
-        || c.cust_cd.toString().startsWith(this.f.cust_name.value))
+        || c.cust_cd.toString().startsWith(this.f.cust_name.value)
+        || ( c.phone !== null && c.phone.startsWith(this.f.cust_name.value)))
       .slice(0, 20);
   }
 
@@ -299,6 +300,7 @@ export class UTCustomerProfileComponent implements OnInit {
       org_status: cust.org_status,
       org_reg_no: cust.org_reg_no
     });
+    this.retrieveClicked = false;
   }
 
   public onNewClick(): void {
@@ -365,9 +367,9 @@ export class UTCustomerProfileComponent implements OnInit {
     this.f.service_area_cd_desc.disable();
     this.f.block_cd.disable();
     this.f.block_cd_desc.disable();
-    this.f.dt_of_birth.disable();
+    // this.f.dt_of_birth.disable();
     this.f.age.disable();
-    this.f.date_of_death.disable();
+    // this.f.date_of_death.disable();
     this.suggestedCustomer = null;
   }
 
