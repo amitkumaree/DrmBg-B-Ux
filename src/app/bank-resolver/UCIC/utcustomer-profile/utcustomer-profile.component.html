@@ -8,8 +8,8 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()" >Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
-      (click)="onDelClick()">Delete</button>
+    <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
+      (click)="onDelClick()">Delete</button> -->
   </div>
 </div>
 <loading *ngIf="isLoading"></loading>
@@ -28,6 +28,11 @@
     <h6 style="background-color:lightskyblue">Customer Personal Detils:</h6>
     <form [formGroup]="custMstrFrm">
       <div class="form-row">
+        <div class="form-group col-1">
+          <small for="cust_cd">Customer ID</small>
+          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="cust_cd"
+          id="cust_cd" placeholder="Customer ID">
+        </div>
         <div class="form-group col-2">
           <small for="cust_type">Customer Type <span class="text-danger">*</span></small>
           <select id="cust_type" class="form-control form-control-sm" formControlName="cust_type">
@@ -59,7 +64,7 @@
           <input type="text" class="form-control form-control-sm text-capitalize" formControlName="last_name"
             id="last_name" placeholder="Last Name" (input)="onNameChange()" autocomplete="chrome-off">
         </div>
-        <div class="form-group col-3">
+        <div class="form-group col-2">
           <small for="cust_name">Name</small>
           <input type="text" class="form-control form-control-sm" autocomplete="chrome-off" formControlName="cust_name"
             id="cust_name" placeholder="Name" disabled (input)="suggestCustomer()">
@@ -82,7 +87,7 @@
           <div class="input-group">
             <input type="text" placeholder="dd/mm/yyyy" class="form-control form-control-sm" bsDatepicker
               [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }" [isOpen]="isOpenDOBdp"
-              (bsValueChange)="onDobChange($event)" formControlName="dt_of_birth" id="dt_of_birth">
+              (bsValueChange)="onDobChange($event)" disabled formControlName="dt_of_birth" id="dt_of_birth">
             <div class="input-group-append">
               <button class="btn btn-outline-secondary btn-sm" type="button" (click)="isOpenDOBdp = !isOpenDOBdp">
                 <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -174,14 +179,16 @@
           <small for="service_area_cd">G.P</small>
           <!-- <select id="service_area_cd" class="form-control form-control-sm" formControlName="service_area_cd" >
           </select> -->
-          <input type="text" class="form-control form-control-sm" formControlName="service_area_cd" id="service_area_cd"
-            disabled>
+          <input type="text" class="form-control form-control-sm d-none" formControlName="service_area_cd" id="service_area_cd">
+          <input type="text" class="form-control form-control-sm" formControlName="service_area_cd_desc" id="service_area_cd_desc"
+            >
         </div>
         <div class="form-group col-2">
           <small for="block_cd">Block</small>
           <!-- <select id="block_cd" class="form-control form-control-sm" formControlName="block_cd" disabled>
           </select> -->
-          <input type="text" class="form-control form-control-sm" formControlName="block_cd" id="block_cd" disabled>
+          <input type="text" class="form-control form-control-sm d-none" formControlName="block_cd" id="block_cd">
+          <input type="text" class="form-control form-control-sm" formControlName="block_cd_desc" id="block_cd_desc">
         </div>
         <div class="form-group col-1">
           <small for="occupation">Occupation</small>
@@ -325,7 +332,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()" >Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
-      (click)="onDelClick()">Delete</button>
+    <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
+      (click)="onDelClick()">Delete</button> -->
   </div>
 </div>
