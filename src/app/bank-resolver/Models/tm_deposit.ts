@@ -67,6 +67,7 @@ export class tm_deposit extends baseModel{
   public month: number;
   public day: number;
   public mat_val: number;
+  public acc_cd: number;
 
   //  End: this below portion is added extra for UX operation only
 

@@ -50,4 +50,19 @@ export class td_def_trans_trf extends baseModel{
   public acc_name: string;
   public brn_cd: string;
   public trf_type_desc: string;
+  public created_by: string;
+  public created_dt: Date;
+  public modified_by: string;
+  public modified_dt: Date;
+
+  public cust_acc_type: string;
+  public cust_acc_desc: string;
+  public cust_acc_number: string;
+  public cust_name: string;
+
+  public gl_acc_code: string;
+  public gl_acc_desc: string;
+
+  public clr_bal: number;
+
 }

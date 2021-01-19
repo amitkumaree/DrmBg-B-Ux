@@ -1381,42 +1381,64 @@
         <h1></h1>
         <h6 style="background-color: lightskyblue">Transfer Debit Details</h6>
 
-        <div class="form-row">
-          <div class="form-group col-4">
-            <small for="debit_ac">A/C & Account No.</small>
-            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="debit_ac">
-          </div>
+        <section *ngFor="let l of td_deftranstrfList; let i=index">
+          <div class="form-row">
+            <div class="form-group col-1">
+              <small for="debit_ac">Account Type</small>
+              <input type="text" [(ngModel)]="l.cust_acc_type" (focusout)="checkAndSetDebitAccType('cust_acc', l.cust_acc_type)" style="height:25px"
+              [disabled]='disableAll' class="form-control form-control-sm text-capitalize" id="debit_ac">
+            </div>
 
-          <div class="form-group col-2">
-            <small for="debit_gl_head">GL Head</small>
-            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-              id="debit_gl_head">
-          </div>
+            <div class="form-group col-3">
+              <small for="debit_ac_dsc">Account Desc</small>
+              <input type="text" [(ngModel)]="l.cust_acc_desc" style="height:25px" disabled class="form-control form-control-sm text-capitalize"
+                id="debit_ac_dsc">
+            </div>
 
-          <div class="form-group col-3">
-            <small for="debit_amount">Amount</small>
-            <input type="text" style="height:25px; text-align-last: right;" type="number" step='any'
+            <div class="form-group col-2">
+              <small for="debit_ac_no">Account Number</small>
+              <input type="text" [(ngModel)]="l.cust_acc_number" style="height:25px" (focusout)="setDebitAccDtls( l.cust_acc_number)"
+              [disabled]='disableAll' class="form-control form-control-sm text-capitalize" id="debit_ac_no">
+            </div>
+
+            <div class="form-group col-3">
+              <small for="debit_ac_name">Acc Holder Name</small>
+              <input type="text" disabled [(ngModel)]="l.cust_name" style="height:25px" class="form-control form-control-sm text-capitalize"
+                id="debit_ac_name">
+            </div>
+
+            <div class="form-group col-2">
+              <small for="debit_amount">Debit Amount</small>
+              <input type="text" [disabled]='disableAll' [(ngModel)]="l.amount" style="height:25px" (focusout)="checkDebitBalance(l.amount)"
               class="form-control form-control-sm text-capitalize" id="debit_amount">
+            </div>
+
+          </div>
+        </section>
+
+        <section *ngFor="let l of td_deftranstrfList; let i=index">
+        <div class="form-row">
+          <div class="form-group col-2">
+            <small for="debit_gl_ac">GL Code</small>
+            <input type="text" (focusout)="checkAndSetDebitAccType('gl_acc', l.gl_acc_code)" [(ngModel)]="l.gl_acc_code" style="height:25px"
+            [disabled]='disableAll' class="form-control form-control-sm text-capitalize" id="debit_gl_ac">
+          </div>
+
+          <div class="form-group col-4">
+            <small for="debit_gl_head">GL Head</small>
+            <input type="text" disabled [(ngModel)]="l.gl_acc_desc" style="height:25px" class="form-control form-control-sm text-capitalize"
+            id="debit_gl_head">
           </div>
 
           <div class="form-group col-3">
             <small for="Inst_num">Instrument Num</small>
-            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="Inst_num">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group col-4">
-            <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="debit_ac">
-          </div>
-
-          <div class="form-group col-2">
             <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-              id="debit_gl_head">
+            [disabled]='disableAll' id="Inst_num">
           </div>
         </div>
+      </section>
 
-        <div class="form-row">
+        <!-- <div class="form-row">
 
           <div class="form-group col-1" style="text-align: left;">
             <label class="form-check-label"> <small> Total Debit</small> </label>
@@ -1437,7 +1459,7 @@
              </button>
           </div>
 
-        </div>
+        </div> -->
 
       </div>
     </div>
