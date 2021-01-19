@@ -7,7 +7,7 @@
       (click)="onModifyClick()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()" >Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
       (click)="onDelClick()">Delete</button> -->
   </div>
@@ -30,16 +30,20 @@
       <div class="form-row">
         <div class="form-group col-1">
           <small for="cust_cd">Customer ID</small>
-          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="cust_cd"
-          id="cust_cd" placeholder="Customer ID">
+          <input type="text" class="form-control form-control-sm text-capitalize" formControlName="cust_cd" id="cust_cd"
+            placeholder="Customer ID">
         </div>
         <div class="form-group col-2">
-          <small for="cust_name">Name</small>
+          <small for="cust_name" *ngIf="!retrieveClicked">Name</small>
+          <small for="cust_name" *ngIf="retrieveClicked">Search name code phone</small>
           <input type="text" class="form-control form-control-sm" autocomplete="chrome-off" formControlName="cust_name"
             id="cust_name" placeholder="Name" disabled (input)="suggestCustomer()">
-          <div class="suggestions border p-2" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
+          <div class="suggestions border p-2" style="width: 150%;" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
+            <strong> [ Customer Cd / Phone ] Name </strong>
             <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer"
-              (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + '] ' + cust.cust_name}}</p>
+              (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + ' / '
+              + ((null === cust.phone) ? '' : cust.phone) +'] '
+              + cust.cust_name}}</p>
           </div>
         </div>
         <div class="form-group col-2">
@@ -179,9 +183,10 @@
           <small for="service_area_cd">G.P</small>
           <!-- <select id="service_area_cd" class="form-control form-control-sm" formControlName="service_area_cd" >
           </select> -->
-          <input type="text" class="form-control form-control-sm d-none" formControlName="service_area_cd" id="service_area_cd">
-          <input type="text" class="form-control form-control-sm" formControlName="service_area_cd_desc" id="service_area_cd_desc"
-            >
+          <input type="text" class="form-control form-control-sm d-none" formControlName="service_area_cd"
+            id="service_area_cd">
+          <input type="text" class="form-control form-control-sm" formControlName="service_area_cd_desc"
+            id="service_area_cd_desc">
         </div>
         <div class="form-group col-2">
           <small for="block_cd">Block</small>
@@ -331,7 +336,7 @@
       (click)="onModifyClick()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()" >Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
       (click)="onDelClick()">Delete</button> -->
   </div>

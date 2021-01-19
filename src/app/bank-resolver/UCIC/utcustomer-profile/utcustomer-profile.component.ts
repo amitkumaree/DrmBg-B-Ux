@@ -229,7 +229,8 @@ export class UTCustomerProfileComponent implements OnInit {
   public suggestCustomer(): void {
     this.suggestedCustomer = UTCustomerProfileComponent.existingCustomers
       .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase())
-        || c.cust_cd.toString().startsWith(this.f.cust_name.value))
+        || c.cust_cd.toString().startsWith(this.f.cust_name.value)
+        || ( c.phone !== null && c.phone.startsWith(this.f.cust_name.value)))
       .slice(0, 20);
   }
 
@@ -299,6 +300,7 @@ export class UTCustomerProfileComponent implements OnInit {
       org_status: cust.org_status,
       org_reg_no: cust.org_reg_no
     });
+    this.retrieveClicked = false;
   }
 
   public onNewClick(): void {
