@@ -1529,11 +1529,13 @@ removeSignatory()
       return;
     }
 
-    if( this.tm_deposit.prn_amt.toString() !== amount.toString())
+    if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === "")
     {
-      this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
-      this.td_deftranstrfList[0].amount = null;
-      return;
+      if (this.tm_deposit.prn_amt.toString() !== amount.toString()) {
+        this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
+        this.td_deftranstrfList[0].amount = null;
+        return;
+      }
     }
 
     if (this.td_deftranstrfList[0].clr_bal === undefined || this.td_deftranstrfList[0].clr_bal === null)
