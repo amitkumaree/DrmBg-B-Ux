@@ -34,6 +34,15 @@
           id="cust_cd" placeholder="Customer ID">
         </div>
         <div class="form-group col-2">
+          <small for="cust_name">Name</small>
+          <input type="text" class="form-control form-control-sm" autocomplete="chrome-off" formControlName="cust_name"
+            id="cust_name" placeholder="Name" disabled (input)="suggestCustomer()">
+          <div class="suggestions border p-2" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
+            <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer"
+              (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + '] ' + cust.cust_name}}</p>
+          </div>
+        </div>
+        <div class="form-group col-2">
           <small for="cust_type">Customer Type <span class="text-danger">*</span></small>
           <select id="cust_type" class="form-control form-control-sm" formControlName="cust_type">
             <option selected disabled>Choose...</option>
@@ -63,15 +72,6 @@
           <small for="last_name">Last Name</small>
           <input type="text" class="form-control form-control-sm text-capitalize" formControlName="last_name"
             id="last_name" placeholder="Last Name" (input)="onNameChange()" autocomplete="chrome-off">
-        </div>
-        <div class="form-group col-2">
-          <small for="cust_name">Name</small>
-          <input type="text" class="form-control form-control-sm" autocomplete="chrome-off" formControlName="cust_name"
-            id="cust_name" placeholder="Name" disabled (input)="suggestCustomer()">
-          <div class="suggestions border p-2" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
-            <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer"
-              (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + '] ' + cust.cust_name}}</p>
-          </div>
         </div>
       </div> <!-- form group row end -->
       <div class="form-row">
