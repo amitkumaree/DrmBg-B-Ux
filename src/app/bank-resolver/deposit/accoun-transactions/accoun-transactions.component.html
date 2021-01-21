@@ -14,7 +14,7 @@
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()" >Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
@@ -150,8 +150,7 @@
                   <div class="form-group col-3">
                     <small for="deno_count">Count</small>
                     <input [(ngModel)]="t1.count" type="text" style="height:25px"
-                      class="form-control form-control-sm text-capitalize"
-                      (change)="calculateTotalDenomination(i)"
+                      class="form-control form-control-sm text-capitalize" (change)="calculateTotalDenomination(i)"
                       id="deno_count" placeholder="Count">
                   </div>
 
@@ -176,84 +175,83 @@
               </div>
 
               <div class="text-right mb-3">
-                <button type="button" style="height:22px; padding-top: 0px;"
-                  class="btn btn-primary btn-sm" (click)="addDenomination()">
+                <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm"
+                  (click)="addDenomination()">
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
 
-                <button type="button" style="height:22px; padding-top: 0px;"
-                  class="btn btn-primary btn-sm" (click)="removeDenomination()">
+                <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm"
+                  (click)="removeDenomination()">
                   <i class="fa fa-minus-circle" aria-hidden="true"></i>
                 </button>
               </div>
 
             </div>
 
-            <div *ngIf="td.trans_type.value === 'T'">
+            <div *ngIf="td.trans_type.value   === 'T'">
               <h1></h1>
               <h6 style="background-color: lightskyblue">Transfer Debit Details</h6>
 
-              <div class="form-row">
-                <div class="form-group col-4">
-                  <small for="debit_ac">A/C & Account No.</small>
-                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-                    id="debit_ac">
+              <section *ngFor="let l of td_deftranstrfList; let i=index">
+                <div class="form-row">
+                  <div class="form-group col-1">
+                    <small for="debit_ac">Account Type</small>
+                    <input type="text" [(ngModel)]="l.cust_acc_type"
+                      (focusout)="checkAndSetDebitAccType('cust_acc', l.cust_acc_type)" style="height:25px"
+                      [disabled]='disableAll' class="form-control form-control-sm text-capitalize" id="debit_ac">
+                  </div>
+
+                  <div class="form-group col-3">
+                    <small for="debit_ac_dsc">Account Desc</small>
+                    <input type="text" [(ngModel)]="l.cust_acc_desc" style="height:25px" disabled
+                      class="form-control form-control-sm text-capitalize" id="debit_ac_dsc">
+                  </div>
+
+                  <div class="form-group col-2">
+                    <small for="debit_ac_no">Account Number</small>
+                    <input type="text" [(ngModel)]="l.cust_acc_number" style="height:25px"
+                      (focusout)="setDebitAccDtls( l.cust_acc_number)" [disabled]='disableAll'
+                      class="form-control form-control-sm text-capitalize" id="debit_ac_no">
+                  </div>
+
+                  <div class="form-group col-3">
+                    <small for="debit_ac_name">Acc Holder Name</small>
+                    <input type="text" disabled [(ngModel)]="l.cust_name" style="height:25px"
+                      class="form-control form-control-sm text-capitalize" id="debit_ac_name">
+                  </div>
+
+                  <div class="form-group col-2">
+                    <small for="debit_amount">Debit Amount</small>
+                    <input type="text" [disabled]='disableAll' [(ngModel)]="l.amount" style="height:25px"
+                      (focusout)="checkDebitBalance(l.amount)" class="form-control form-control-sm text-capitalize"
+                      id="debit_amount">
+                  </div>
+
                 </div>
+              </section>
 
-                <div class="form-group col-2">
-                  <small for="debit_gl_head">GL Head</small>
-                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-                    id="debit_gl_head">
+              <section *ngFor="let l of td_deftranstrfList; let i=index">
+                <div class="form-row">
+                  <div class="form-group col-2">
+                    <small for="debit_gl_ac">GL Code</small>
+                    <input type="text" (focusout)="checkAndSetDebitAccType('gl_acc', l.gl_acc_code)"
+                      [(ngModel)]="l.gl_acc_code" style="height:25px" [disabled]='disableAll'
+                      class="form-control form-control-sm text-capitalize" id="debit_gl_ac">
+                  </div>
+
+                  <div class="form-group col-4">
+                    <small for="debit_gl_head">GL Head</small>
+                    <input type="text" disabled [(ngModel)]="l.gl_acc_desc" style="height:25px"
+                      class="form-control form-control-sm text-capitalize" id="debit_gl_head">
+                  </div>
+
+                  <div class="form-group col-3">
+                    <small for="Inst_num">Instrument Num</small>
+                    <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                      [disabled]='disableAll' id="Inst_num">
+                  </div>
                 </div>
-
-                <div class="form-group col-3">
-                  <small for="debit_amount">Amount</small>
-                  <input type="text" style="height:25px; text-align-last: right;" type="number" step='any'
-                    class="form-control form-control-sm text-capitalize" id="debit_amount">
-                </div>
-
-                <div class="form-group col-3">
-                  <small for="Inst_num">Instrument Num</small>
-                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-                    id="Inst_num">
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group col-4">
-                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-                    id="debit_ac">
-                </div>
-
-                <div class="form-group col-2">
-                  <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-                    id="debit_gl_head">
-                </div>
-              </div>
-
-              <div class="form-row">
-
-                <div class="form-group col-1" style="text-align: left;">
-                  <label class="form-check-label"> <small> Total Debit</small> </label>
-                </div>
-
-                <div class="form-group col-4">
-                  <input type="text" style="height:25px; text-align-last: right;" type="number" step='any'
-                    class="form-control form-control-sm text-capitalize" id="total" placeholder="Total">
-                </div>
-
-                <div class="form-group col-7" style="text-align: right;">
-                  <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm ">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                  </button>
-
-                  <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm ">
-                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
-                  </button>
-                </div>
-
-              </div>
-
+              </section>
             </div>
           </div>
         </div>
@@ -264,7 +262,7 @@
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()" >Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
   </div>
 </div>
