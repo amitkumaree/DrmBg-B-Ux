@@ -36,8 +36,6 @@ export class AccounTransactionsComponent implements OnInit {
   tm_transferList: tm_transfer[] = [];
   accountTypeList: mm_acc_type[] = [];
   acc_master: m_acc_master[] = [];
-  disableAll = true;
-  branchCode = '0';
   tm_deposit = new tm_deposit();
 
   accNoforTransaction: tm_depositall;
@@ -116,6 +114,35 @@ export class AccounTransactionsComponent implements OnInit {
      * TODO Show Account info (tm_deposit)
      * TODO bind td_dep_trans to a form which will be active
      **/
+    const td_deftranstrf: td_def_trans_trf[] = [];
+    this.td_deftranstrfList = td_deftranstrf;
+    var temp_deftranstrf = new td_def_trans_trf()
+    this.td_deftranstrfList.push(temp_deftranstrf);
+    this.getAccountTypeList();
+    this.getCustomerList();
+  }
+
+  getCustomerList() {
+    debugger;
+    const cust = new mm_customer();
+    cust.cust_cd = 0;
+    cust.brn_cd = this.sys.BranchCode;
+
+    if (this.customerList === undefined || this.customerList === null || this.customerList.length === 0) {
+      this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
+        res => {
+          debugger;
+          this.isLoading = false;
+          this.customerList = res;
+        },
+        err => {
+          this.isLoading = false;
+          debugger;
+        }
+      );
+    }
+    else
+    {this.isLoading = false;}
   }
 
   private getOperationMaster(): void {
@@ -357,7 +384,9 @@ export class AccounTransactionsComponent implements OnInit {
 
   setDebitAccDtls(acc_num: string) {
     debugger;
-    if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === "") {
+    if (this.td_deftranstrfList[0].cust_acc_type === undefined
+      || this.td_deftranstrfList[0].cust_acc_type === null
+      || this.td_deftranstrfList[0].cust_acc_type === '') {
       this.HandleMessage(true, MessageType.Warning, 'Account Type in Transfer Details can not be blank');
       this.td_deftranstrfList[0].cust_acc_number = null;
       return;
@@ -373,7 +402,7 @@ export class AccounTransactionsComponent implements OnInit {
     var temp_deposit_list: tm_deposit[] = [];
     var temp_deposit = new tm_deposit();
 
-    temp_deposit.brn_cd = this.branchCode;
+    temp_deposit.brn_cd = this.sys.BranchCode;
     temp_deposit.acc_num = this.td_deftranstrfList[0].cust_acc_number;
     temp_deposit.acc_type_cd = parseInt(this.td_deftranstrfList[0].cust_acc_type);
 
@@ -512,17 +541,17 @@ export class AccounTransactionsComponent implements OnInit {
       return;
     }
 
-    if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null) {
-      this.HandleMessage(true, MessageType.Warning, 'Principal Amount is blank');
-      this.td_deftranstrfList[0].amount = null;
-      return;
-    }
+    // if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null) {
+    //   this.HandleMessage(true, MessageType.Warning, 'Principal Amount is blank');
+    //   this.td_deftranstrfList[0].amount = null;
+    //   return;
+    // }
 
-    if (this.tm_deposit.prn_amt.toString() !== amount.toString()) {
-      this.HandleMessage(true, MessageType.Warning, 'Debit Amount is not matching with Principal Amount');
-      this.td_deftranstrfList[0].amount = null;
-      return;
-    }
+    // if (this.tm_deposit.prn_amt.toString() !== amount.toString()) {
+    //   this.HandleMessage(true, MessageType.Warning, 'Debit Amount is not matching with Principal Amount');
+    //   this.td_deftranstrfList[0].amount = null;
+    //   return;
+    // }
 
     if (this.td_deftranstrfList[0].clr_bal === undefined
       || this.td_deftranstrfList[0].clr_bal === null) {
