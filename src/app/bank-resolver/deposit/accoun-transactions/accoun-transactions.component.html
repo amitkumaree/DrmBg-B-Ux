@@ -18,48 +18,51 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+    <div class="row justify-content-center">
+      <form [formGroup]="accTransFrm" class="col-12" >
+        <div class="form-row">
+          <div class="form-group col-2 offset-2">
+            <small for="acc_type_cd">Account Type</small>
+            <select id="acc_type_cd" class="form-control form-control-sm" formControlName="acc_type_cd"
+              (change)="onAcctTypeChange()">
+              <option *ngIf="AcctTypes" disabled>Choose</option>
+              <option *ngFor="let acctType of AcctTypes" [value]="acctType.acc_type_cd">
+                {{acctType.acc_type_cd +' ' + acctType.acc_type_desc}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-3">
+            <small for="acct_num">Account Number
+              <small style="display: inline;" class="form-text text-muted">
+                Press tab.
+              </small>
+            </small>
+            <input type="number" [attr.disabled]="null == operations ? '' : null"
+              class="form-control form-control-sm " formControlName="acct_num" id="acct_num"
+              placeholder="Account Number" (keydown.Tab)="onAccountNumTabOff()" autocomplete="nope"
+              >
+          </div>
+          <div class="form-group col-2">
+            <small for="oprn_cd">Operation Type</small>
+            <select id="oprn_cd" [attr.disabled]="(null == operations || disableOperation) ? '' : null"
+              class="form-control form-control-sm" formControlName="oprn_cd" (change)="onOperationTypeChange()">
+              <option *ngIf="operations" disabled>Choose</option>
+              <option *ngFor="let oper of operations" [value]="oper.oprn_cd">{{oper.oprn_desc}}</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
         <div class="row">
-          <form [formGroup]="accTransFrm" class="col-12">
-            <div class="form-row">
-              <div class="form-group col-3">
-                <small for="acc_type_cd">Account Type</small>
-                <select id="acc_type_cd" class="form-control form-control-sm" formControlName="acc_type_cd"
-                  (change)="onAcctChange()">
-                  <option *ngIf="AcctTypes" disabled>Choose</option>
-                  <option *ngFor="let acctType of AcctTypes" [value]="acctType.acc_type_cd">{{acctType.acc_type_desc}}
-                  </option>
-                </select>
-              </div>
-              <div class="form-group col-4">
-                <small for="acct_num">Account Number
-                  <small style="display: inline;" class="form-text text-muted">
-                    Press tab.
-                  </small>
-                </small>
-                <input type="number" [attr.disabled]="null == operations ? '' : null"
-                  class="form-control form-control-sm " formControlName="acct_num" id="acct_num"
-                  placeholder="Account Number" (keydown.Tab)="onAccountNumTabOff()" autocomplete="nope">
-              </div>
-              <div class="form-group col-3">
-                <small for="oprn_cd">Operation Type</small>
-                <select id="oprn_cd" [attr.disabled]="(null == operations || disableOperation) ? '' : null"
-                  class="form-control form-control-sm" formControlName="oprn_cd" (change)="onOperationTypeChange()">
-                  <option *ngIf="operations" disabled>Choose</option>
-                  <option *ngFor="let oper of operations" [value]="oper.oprn_cd">{{oper.oprn_desc}}</option>
-                </select>
-              </div>
-            </div>
-          </form>
           <div class="col-12 mt-2">
             <app-account-details-for-acct-trans></app-account-details-for-acct-trans>
           </div>
         </div>
-
       </div>
       <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
-        <form [formGroup]="tdDefTransFrm">
+        <form [formGroup]="tdDefTransFrm" *ngIf="showTransactionDtl">
           <h6 class="mt-2" style="background-color:lightskyblue">Transaction Details</h6>
           <div class="form-row">
             <div class="form-group col-2">
@@ -75,10 +78,12 @@
             </div>
             <div class="form-group col-3">
               <small for="trans_type">Transaction Type</small>
+              <input type="text" class="form-control form-control-sm" formControlName="trans_type_key" hidden
+                id="trans_type_key">
               <input type="text" class="form-control form-control-sm" formControlName="trans_type" disabled
                 id="trans_type">
             </div>
-            <div class="form-group col-3">
+            <div class="form-group col-3" *ngIf="showTransMode">
               <small for="trans_mode">Transaction Mode</small>
               <!-- <input type="text" class="form-control form-control-sm" formControlName="trans_mode"
               id="trans_mode"> -->
@@ -90,14 +95,17 @@
                 <option value="Q">Cheque/Draft</option>
               </select>
             </div>
-            <div class="form-group col-2">
-              <small for="trans_type">Transfer Type</small>
-              <select id="trans_type" class="form-control form-control-sm" formControlName="trans_type">
+            <div class="form-group col-2" *ngIf="!hideOnRenewal">
+              <small for="trf_type">Transfer Type</small>
+              <select id="trf_type" class="form-control form-control-sm" formControlName="trf_type"
+                (change)="onTransTypeChange()">
                 <option *ngIf="operations" disabled>Choose</option>
                 <option *ngIf="operations" value="C">Cash</option>
                 <option *ngIf="operations" value="T">Transfer</option>
               </select>
             </div>
+          </div>
+          <div class="form-row" *ngIf="!hideOnClose">
             <div class="form-group col-2">
               <small for="paid_to">Paid To</small>
               <input type="text" class="form-control form-control-sm" formControlName="paid_to" id="paid_to">
@@ -120,6 +128,8 @@
               <input type="date" class="form-control form-control-sm" formControlName="instrument_dt"
                 id="instrument_dt">
             </div>
+          </div>
+          <div class="form-row" *ngIf="!hideOnClose">
             <div class="form-group col-12">
               <small for="particulars">Particulars</small>
               <textarea type="text" class="form-control form-control-sm" cols="2" formControlName="particulars"
@@ -128,9 +138,9 @@
             </div>
           </div>
         </form>
-        <div class="row" *ngIf="td.trans_type.value !== ''">
+        <div class="row" *ngIf="td.trf_type.value !== ''">
           <div class="col-12 col-sm-6 col-md-12 mt-2">
-            <div *ngIf="td.trans_type.value === 'C'">
+            <div *ngIf="td.trf_type.value === 'C'">
               <h6 style="background-color: lightskyblue">Denomination Details</h6>
 
               <section *ngFor="let t1 of tm_denominationList; let i=index">
@@ -188,8 +198,8 @@
 
             </div>
 
-            <div *ngIf="td.trans_type.value   === 'T'">
-              <h6 style="background-color: lightskyblue">Transfer Debit Details</h6>
+            <div *ngIf="td.trf_type.value   === 'T'">
+              <h6 style="background-color: lightskyblue">Transfer Details</h6>
               <section *ngFor="let l of td_deftranstrfList; let i=index">
                 <div class="form-row">
                   <div class="form-group col-2">
@@ -219,7 +229,7 @@
                   </div>
 
                   <div class="form-group col-2">
-                    <small for="debit_amount">Debit Amount</small>
+                    <small for="debit_amount">Amount</small>
                     <input type="text" [(ngModel)]="l.amount" style="height:25px"
                       (focusout)="checkDebitBalance(l.amount)" class="form-control form-control-sm text-capitalize"
                       id="debit_amount">
@@ -246,7 +256,7 @@
                   <div class="form-group col-3">
                     <small for="Inst_num">Instrument Num</small>
                     <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
-                     id="Inst_num">
+                      id="Inst_num">
                   </div>
                 </div>
               </section>

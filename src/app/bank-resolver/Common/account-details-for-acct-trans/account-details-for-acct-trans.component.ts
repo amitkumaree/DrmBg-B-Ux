@@ -6,6 +6,8 @@ import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import { formatDate } from '@angular/common';
 import Utils from 'src/app/_utility/utils';
+import { mm_constitution } from '../../Models/deposit/mm_constitution';
+import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
 
 @Component({
   selector: 'app-account-details-for-acct-trans',
@@ -34,12 +36,46 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
   acctDtls = new tm_depositall();
   isLoading = false;
   show = false;
+  showInterestDtls = false;
   accDtlsFrm: FormGroup;
+  constitutionList: mm_constitution[] = [];
+  operationalInstrList: mm_oprational_intr[] = [];
   ngOnInit(): void {
     this.show = true;
     this.resetFormData();
+    this.getConstitutionList();
+    this.getOperationalInstr();
   }
 
+  getConstitutionList() {
+    if (this.constitutionList.length > 0) {
+      return;
+    }
+
+    this.constitutionList = [];
+    this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
+      res => {
+        // debugger;
+        this.constitutionList = res;
+      },
+      err => { // debugger;
+      }
+    );
+  }
+
+  getOperationalInstr() {
+    if (this.operationalInstrList.length > 0) {
+      return;
+    }
+
+    this.operationalInstrList = [];
+    this.svc.addUpdDel<any>('Mst/GetOprationalInstr', null).subscribe(
+      res => {
+        this.operationalInstrList = res;
+      },
+      err => { }
+    );
+  }
   private resetFormData(): void {
     this.accDtlsFrm = this.frmBldr.group({
       brn_cd: [''],
@@ -49,10 +85,13 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
       cust_cd: [''],
       intt_trf_type: [''],
       constitution_cd: [''],
+      constitution_cd_desc: [''],
       oprn_instr_cd: [''],
+      oprn_instr_cd_desc: [''],
       opening_dt: [''],
       prn_amt: [''],
       intt_amt: [''],
+      mat_amt: [''],
       dep_period: [''],
       instl_amt: [''],
       instl_no: [''],
@@ -124,6 +163,29 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
     if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
       this.resetFormData();
       this.getShadowBalance();
+      if (this.acctDtls.acc_type_cd === 2
+        || this.acctDtls.acc_type_cd === 3
+        || this.acctDtls.acc_type_cd === 4
+        || this.acctDtls.acc_type_cd === 5) {
+          this.showInterestDtls = true;
+          this.acctDtls.ShowClose = true;
+        }
+      const constitution = this.constitutionList.filter(e => e.constitution_cd
+        === this.acctDtls.constitution_cd)[0];
+      const OprnInstrDesc = this.operationalInstrList.filter(e => e.oprn_cd
+        === this.acctDtls.oprn_instr_cd)[0];
+
+      let intrestType = '';
+      if (this.acctDtls.intt_trf_type === 'O') {
+        intrestType = 'On Maturity';
+       } else if (this.acctDtls.intt_trf_type === 'H') {
+        intrestType = 'Half Yearly';
+       } else if (this.acctDtls.intt_trf_type === 'Q') {
+        intrestType = 'Quarterly';
+       } else if (this.acctDtls.intt_trf_type === 'M') {
+        intrestType = 'Monthly';
+       }
+
       this.accDtlsFrm.patchValue({
         brn_cd: this.acctDtls.brn_cd,
         acc_type_cd: this.acctDtls.acc_type_cd,
@@ -131,12 +193,15 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         renew_id: this.acctDtls.renew_id,
         cust_cd: this.acctDtls.cust_cd,
         cust_name: this.acctDtls.cust_name,
-        intt_trf_type: this.acctDtls.intt_trf_type,
+        intt_trf_type: intrestType,
         constitution_cd: this.acctDtls.constitution_cd,
+        constitution_cd_desc: constitution.constitution_desc,
         oprn_instr_cd: this.acctDtls.oprn_instr_cd,
+        oprn_instr_cd_desc: OprnInstrDesc.oprn_desc,
         opening_dt: this.acctDtls.opening_dt,
         prn_amt: this.acctDtls.prn_amt,
         intt_amt: this.acctDtls.intt_amt,
+        mat_amt: this.acctDtls.prn_amt + this.acctDtls.intt_amt,
         dep_period: this.acctDtls.dep_period,
         instl_amt: this.acctDtls.instl_amt,
         instl_no: this.acctDtls.instl_no,
