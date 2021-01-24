@@ -24,7 +24,7 @@
         <input type="text" class="form-control form-control-sm" formControlName="constitution_cd_desc"
           id="constitution_cd_desc" disabled>
       </div>
-      <div class="form-group col-6">
+      <div class="form-group col-6" *ngIf="!showInterestForRd">
         <small for="oprn_instr_cd">Operation Instr</small>
         <input type="text" class="form-control form-control-sm" formControlName="oprn_instr_cd" id="oprn_instr_cd"
           disabled hidden>
@@ -49,43 +49,81 @@
         <input type="text" class="form-control form-control-sm" formControlName="shadow_bal" id="shadow_bal" disabled>
       </div>
     </div>
-    <div class="form-row" *ngIf="showInterestDtls">
-      <div class="form-group col-6">
+    <div class="form-row">
+      <div class="form-group col-6" *ngIf="showInterestDtls || showInterestForRd">
         <small for="intt_rt">Interest Rate</small>
         <input type="text" class="form-control form-control-sm" formControlName="intt_rt" disabled>
       </div>
-      <div class="form-group col-6">
+      <div class="form-group col-6" *ngIf="showInterestDtls">
         <small for="intt_trf_type">Interest Type</small>
         <input type="text" class="form-control form-control-sm" formControlName="intt_trf_type" disabled>
       </div>
-      <div class="form-group col-4">
+      <div class="form-group col-6" *ngIf="showInterestForRd">
+        <small for="instl_amt">Installment Amt</small>
+        <input type="text" class="form-control form-control-sm" formControlName="instl_amt" disabled>
+      </div>
+      <div class="form-group col-4" *ngIf="showInterestDtls">
         <small for="mat_dt">Maturity Date</small>
         <input type="text" class="form-control form-control-sm" formControlName="mat_dt" disabled>
       </div>
-      <div class="form-group col-4">
+      <div class="form-group col-4" *ngIf="showInterestDtls">
         <small for="mat_status">Maturity Status</small>
         <input type="text" class="form-control form-control-sm" formControlName="mat_status" disabled>
       </div>
-      <div class="form-group col-4">
+      <div class="form-group col-4" *ngIf="showInterestDtls">
         <small for="cert_no">Certificate No.</small>
         <input type="text" class="form-control form-control-sm" formControlName="cert_no" disabled>
       </div>
     </div>
-    <div class="form-row" *ngIf="showInterestDtls">
-      <div class="form-group col-4">
+    <div class="form-row">
+      <div class="form-group col-4" *ngIf="showInterestDtls">
         <small for="prn_amt">Principal Amt</small>
         <input type="text" class="form-control form-control-sm" formControlName="prn_amt" disabled>
       </div>
-      <div class="form-group col-4">
+      <div class="form-group col-4" *ngIf="showInterestDtls">
         <small for="intt_amt">Interest Amt</small>
         <input type="text" class="form-control form-control-sm" formControlName="intt_amt" disabled>
       </div>
-      <div class="form-group col-4">
+      <div class="form-group col-4" *ngIf="showInterestDtls">
         <small for="mat_amt">Maturity Amt</small>
         <input type="text" class="form-control form-control-sm" formControlName="mat_amt" disabled>
       </div>
     </div>
 
+    <button type="button" class="btn btn-link" *ngIf="showInterestForRd"
+    (click)="openModal(content)">Show RD Installaments</button>
+
+    <ng-template #content>
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">RD Installments Details for Acc# {{acctDtls.acc_num}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Installament No</th>
+              <th scope="col">Due Dt</th>
+              <th scope="col">Deposit Dt</th>
+              <th scope="col">Paid</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let item of rdInstallements; let i = index;" >
+            <td>{{item.instl_no}}</td>
+            <td>{{item.due_dt}}</td>
+            <td>{{item.instl_dt}}</td>
+            <td>
+              <i *ngIf="item.status==='P'" style="color: green;" class="fa fa-check"
+              aria-hidden="true"></i>
+              <i *ngIf="item.status!=='P'" style="color: red;" class="fa fa-times"
+              aria-hidden="true"></i>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </ng-template>
 
     <!--
       <div class="form-group col-6">

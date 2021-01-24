@@ -1,6 +1,7 @@
+import { td_rd_installment } from './../../Models/td_rd_installment';
 import { tm_deposit } from './../../Models/tm_deposit';
 import { tm_depositall } from './../../Models';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
@@ -8,6 +9,7 @@ import { formatDate } from '@angular/common';
 import Utils from 'src/app/_utility/utils';
 import { mm_constitution } from '../../Models/deposit/mm_constitution';
 import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-account-details-for-acct-trans',
@@ -15,9 +17,9 @@ import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
   styleUrls: ['./account-details-for-acct-trans.component.css']
 })
 export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
-
+  @ViewChild('content', { static: true }) content: TemplateRef<any>;
   constructor(private frmBldr: FormBuilder, private svc: RestService,
-    private msg: InAppMessageService) {
+    private msg: InAppMessageService, private modalService: BsModalService) {
     this.subscription = this.msg.getCommonTmDepositAll().subscribe(
       res => {
         if (null !== res) {
@@ -37,9 +39,12 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
   isLoading = false;
   show = false;
   showInterestDtls = false;
+  showInterestForRd = false;
   accDtlsFrm: FormGroup;
   constitutionList: mm_constitution[] = [];
   operationalInstrList: mm_oprational_intr[] = [];
+  rdInstallements: td_rd_installment[] = [];
+  modalRef: BsModalRef;
   ngOnInit(): void {
     this.show = true;
     this.resetFormData();
@@ -60,6 +65,22 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
       },
       err => { // debugger;
       }
+    );
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.getRdInstallament();
+    this.modalRef = this.modalService.show(template);
+  }
+
+  getRdInstallament(): void {
+    const rdIns = new td_rd_installment();
+    rdIns.acc_num = this.acctDtls.acc_num;
+    this.svc.addUpdDel<any>('Deposit/GetRDInstallment', rdIns).subscribe(
+      res => {
+        this.rdInstallements = res;
+      },
+      err => { }
     );
   }
 
@@ -170,6 +191,10 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
           this.showInterestDtls = true;
           this.acctDtls.ShowClose = true;
         }
+      if (this.acctDtls.acc_type_cd === 6) {
+        this.showInterestForRd = true;
+        this.acctDtls.ShowClose = true;
+      }
       const constitution = this.constitutionList.filter(e => e.constitution_cd
         === this.acctDtls.constitution_cd)[0];
       const OprnInstrDesc = this.operationalInstrList.filter(e => e.oprn_cd

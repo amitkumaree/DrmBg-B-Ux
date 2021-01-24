@@ -201,7 +201,7 @@ export class AccounTransactionsComponent implements OnInit {
     debugger;
     this.f.oprn_cd.disable();
     this.disableOperation = true;
-    console.log('onAccountNumTabOff -' + this.f.acct_num.value);
+    // console.log('onAccountNumTabOff -' + this.f.acct_num.value);
     this.isLoading = true;
     this.showMsg = null;
     let acc = new tm_depositall();
@@ -298,6 +298,18 @@ export class AccounTransactionsComponent implements OnInit {
         trans_mode: 'V',
         paid_to: 'SELF',
         particulars: 'BY INTEREST ' + this.td.acc_type_desc.value + ' A/C :' + this.f.acct_num.value
+      });
+    } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'rd installment') {
+      this.transType.key = 'D';
+      this.transType.Description = 'Deposit';
+      // this.accNoEnteredForTransaction.ShowClose = true;
+      // this.hideOnRenewal = true;
+      this.hideOnClose = true;
+      // this.accNoEnteredForTransaction.acc_close_dt = new Date();
+      // this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
+      this.tdDefTransFrm.patchValue({
+        trans_type: this.transType.Description,
+        trans_type_key: this.transType.key
       });
     }
   }
@@ -430,6 +442,9 @@ export class AccounTransactionsComponent implements OnInit {
     }
     if ((+this.f.acc_type_cd.value) === 2) {
       toReturn.acc_cd = 14301;
+    }
+    if ((+this.f.acc_type_cd.value) === 6) {
+      toReturn.acc_cd = 14302;
     }
     toReturn.disb_id = 1;
     toReturn.created_by = this.sys.UserId;
