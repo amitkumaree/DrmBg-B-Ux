@@ -146,10 +146,10 @@
               <section *ngFor="let t1 of tm_denominationList; let i=index">
                 <div class="form-row">
                   <div class="form-group col-5">
-                    <small for="trans_type">Rupees</small> <br>
+                    <small >Rupees</small> <br>
                     <select
                       style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-                      id="trans_type" class="form-control form-control-sm"
+                       class="form-control form-control-sm"
                       (change)="setDenomination($event.target.value, i)">
                       <option value="t1.rupees" disabled selected>{{t1.rupees_desc}}</option>
                       <option [value]="l.rupees" *ngFor="let l of denominations">{{l.desc}}</option>
