@@ -18,6 +18,7 @@ import { p_gen_param } from '../../Models/p_gen_param';
 import { tm_deposit } from '../../Models/tm_deposit';
 import { exit } from 'process';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import Utils from 'src/app/_utility/utils';
 
 @Component({
   selector: 'app-acc-opening',
@@ -96,6 +97,10 @@ export class AccOpeningComponent implements OnInit {
 
   customerList: mm_customer[] = [];
   suggestedCustomer: mm_customer[];
+  suggestedCustomerSignatories: mm_customer[];
+  suggestedCustomerSignatoriesIdx : number;
+  suggestedCustomerJointHolder: mm_customer[];
+
   selectedCustomer = new mm_customer();
 
   categoryList: mm_category[] = [];
@@ -168,6 +173,8 @@ export class AccOpeningComponent implements OnInit {
 
     this.savingsDepoSpclPeriod = this.sys.DdsPeriod;
     this.suggestedCustomer = null;
+    this.suggestedCustomerSignatories = null;
+    this.suggestedCustomerJointHolder = null;
 
     this.getCustomerList();
     this.getCategoryList();
@@ -323,6 +330,7 @@ export class AccOpeningComponent implements OnInit {
 
 
     this.tm_deposit = this.masterModel.tmdeposit ;
+
     this.td_signatoryList = this.masterModel.tdsignatory;
     this.setCustDtls(this.tm_deposit.cust_cd);
     this.setAccountType(this.tm_deposit.acc_type_cd);
@@ -356,6 +364,18 @@ export class AccOpeningComponent implements OnInit {
       }
 
     this.tm_denominationList = this.masterModel.tmdenominationtrans;
+    if ( this.tm_denominationList === undefined || this.tm_denominationList === null || this.tm_denominationList.length === 0)
+    {
+      null;
+    }
+    else
+    {
+      for (var idx in this.tm_denominationList)
+      {
+        this.setDenomination(this.tm_denominationList[idx].rupees, Number(idx));
+      }
+
+    }
 
     this.td_deftrans = this.masterModel.tddeftrans;
     this.setTransType(this.td_deftrans.trf_type);
@@ -661,6 +681,16 @@ saveData()
     {
       this.showAlertMsg('WARNING' , 'Please supply required value in transaction details');
       exit(0);
+    }
+
+
+    if (this.td_deftrans.trf_type === 'C')
+    {
+      if (this.denominationGrandTotal < this.tm_deposit.prn_amt)
+      {
+        this.showAlertMsg('WARNING' , 'Principal amount and Total Denomination not matching!!');
+        exit(0);
+      }
     }
 
     // Populating data for TD_DEP_TRANS ================================================================
@@ -1029,13 +1059,19 @@ saveData()
 
   }
 
-  setTransType(tt: any) {
+  setTransType(tt: any)
+  {
     // this.transTypeFlg = val;
     debugger;
+
+    if (this.td_deftrans.trf_type === 'T') {
+      const deno: tm_denomination_trans[] = [];
+      this.tm_denominationList = deno;
+      this.denominationGrandTotal = 0;
+    }
+
     this.td_deftrans.trf_type = tt;
-    this.td_deftrans.trf_type_desc = this.transferTypeList.filter( x => x.trf_type.toString() === tt)[0].trf_type_desc;
-
-
+    this.td_deftrans.trf_type_desc = this.transferTypeList.filter(x => x.trf_type.toString() === tt)[0].trf_type_desc;
 
   }
 
@@ -1086,9 +1122,36 @@ saveData()
 
 
   public suggestCustomer(): void {
-    this.suggestedCustomer = this.customerList
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_deposit.cust_name.toLowerCase()))
+  this.suggestedCustomer = this.customerList
+      .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_deposit.cust_name.toLowerCase())
+        || c.cust_cd.toString().startsWith(this.tm_deposit.cust_name)
+        || ( c.phone !== null && c.phone.startsWith(this.tm_deposit.cust_name)))
       .slice(0, 20);
+  }
+
+  public suggestCustomerSignatories(idx: number): void {
+    debugger;
+    this.suggestedCustomerSignatoriesIdx = idx;
+    this.suggestedCustomerSignatories = this.customerList
+        .filter(c => c.cust_name.toLowerCase().startsWith(this.td_signatoryList[idx].signatory_name.toLowerCase())
+          || c.cust_cd.toString().startsWith(this.td_signatoryList[idx].signatory_name)
+          || ( c.phone !== null && c.phone.startsWith(this.td_signatoryList[idx].signatory_name)))
+        .slice(0, 10);
+    }
+
+    public suggestCustomerJointHolder(): void {
+
+      }
+
+  public setCustDtlsSignatories(cust_cd: number, idx: number): void {
+    this.td_signatoryList[idx].signatory_name = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0].cust_name;
+    this.suggestedCustomerSignatories = null;
+  }
+
+  public setCustDtlsJointHolder(cust_cd: number): void {
+    this.tm_deposit.cust_cd = cust_cd;
+    this.populateCustDtls(cust_cd);
+    this.suggestedCustomerJointHolder = null;
   }
 
   public setCustDtls(cust_cd: number): void {
@@ -1107,7 +1170,14 @@ saveData()
     temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
 
     this.tm_deposit.cust_name = temp_mm_cust.cust_name;
-    this.tm_deposit.cust_type = temp_mm_cust.cust_type;
+    if (temp_mm_cust.cust_type === 'M')
+    {
+    this.tm_deposit.cust_type = "Member";
+    }
+    else
+    {
+      this.tm_deposit.cust_type = "Non-Member";
+    }
     this.tm_deposit.gurdain_name = temp_mm_cust.guardian_name;
 
     // this.tm_deposit.date_of_birth = temp_mm_cust.dt_of_birth;
@@ -1529,26 +1599,25 @@ removeSignatory()
       return;
     }
 
-    if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === "")
-    {
       if (this.tm_deposit.prn_amt.toString() !== amount.toString()) {
         this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
         this.td_deftranstrfList[0].amount = null;
         return;
       }
-    }
+
 
     if (this.td_deftranstrfList[0].clr_bal === undefined || this.td_deftranstrfList[0].clr_bal === null)
     {
       this.td_deftranstrfList[0].clr_bal = 0;
     }
 
-    if( parseInt (this.td_deftranstrfList[0].clr_bal.toString()) < parseInt( amount.toString()))
-    {
-      this.showAlertMsg('WARNING', 'Insufficient Balance');
-      this.td_deftranstrfList[0].amount = null;
-      return;
-    }
+    if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === "") {
+      if (parseInt(this.td_deftranstrfList[0].clr_bal.toString()) < parseInt(amount.toString())) {
+        this.showAlertMsg('WARNING', 'Insufficient Balance');
+        this.td_deftranstrfList[0].amount = null;
+        return;
+      }
+  }
 
   }
 
@@ -1611,11 +1680,17 @@ processInstallmentNo() {
 
     temp_gen_param2.ls_catg_cd = this.tm_deposit.category_cd;
     debugger;
+
+    if ( typeof(this.tm_deposit.opening_dt) === "string")
+    {
+      this.tm_deposit.opening_dt = Utils.convertStringToDt(this.tm_deposit.opening_dt);
+    }
     // tslint:disable-next-line: max-line-length
     //temp_gen_param2.ai_period = Math.floor(Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()) ) / (1000 * 60 * 60 * 24));
     temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
 
 
+    debugger;
     if (temp_gen_param1.an_intt_rate > 0) {
       this.calCrdIntReg(temp_gen_param1);
     }
@@ -1747,6 +1822,12 @@ processInstallmentNo() {
       temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
       temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
       // tslint:disable-next-line: max-line-length
+
+      if ( typeof(this.tm_deposit.opening_dt) === "string")
+      {
+        this.tm_deposit.opening_dt = Utils.convertStringToDt(this.tm_deposit.opening_dt);
+      }
+
       temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
       temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
@@ -1789,6 +1870,7 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
 }
 
   processInterest() {
+    debugger;
     var temp_gen_param = new p_gen_param();
 
     temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
@@ -1832,6 +1914,11 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
       temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
       temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
       // tslint:disable-next-line: max-line-length
+      if ( typeof(this.tm_deposit.opening_dt) === "string")
+      {
+        this.tm_deposit.opening_dt = Utils.convertStringToDt(this.tm_deposit.opening_dt);
+      }
+
       temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
       temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
@@ -1882,6 +1969,11 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
     temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
     temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
     // tslint:disable-next-line: max-line-length
+    if ( typeof(this.tm_deposit.opening_dt) === "string")
+    {
+      this.tm_deposit.opening_dt = Utils.convertStringToDt(this.tm_deposit.opening_dt);
+    }
+
     temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
     temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
