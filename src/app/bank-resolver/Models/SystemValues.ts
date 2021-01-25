@@ -5,6 +5,7 @@ export class SystemValues {
   private __brnName: string;
   private __currentDate: string;
   private __cashaccountCD: string;
+  private __suspanceccountCD: string;
   private __ddsPeriod: string;
   private __userId: string;
   private __bName: string;
@@ -14,10 +15,13 @@ export class SystemValues {
     this.__brnName = localStorage.getItem('__brnName');
     this.__currentDate = localStorage.getItem('__currentDate');
     this.__cashaccountCD = localStorage.getItem('__cashaccountCD');
+    // this.__suspanceccountCD = localStorage.getItem('__suspanceccountCD');
+    this.__suspanceccountCD = '10000';
     this.__ddsPeriod = localStorage.getItem('__ddsPeriod');
     this.__userId = localStorage.getItem('__userId');
     this.__bName = localStorage.getItem('__bName');
   }
+
   get BranchCode(): string {
     return this.__brnCd;
   }
@@ -31,6 +35,11 @@ export class SystemValues {
   get CashAccCode(): number {
     return +this.__cashaccountCD;
   }
+
+  get SuspanceAccCode(): number {
+    return +this.__suspanceccountCD;
+  }
+
   get DdsPeriod(): number {
     return +this.__ddsPeriod;
   }

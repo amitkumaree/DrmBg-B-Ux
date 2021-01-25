@@ -122,8 +122,8 @@
       <section *ngFor="let l of td_signatoryList; let i=index">
         <div class="form-row">
           <div class="form-group col-6">
-            <small for="auth_sig">Name of Authorised Signatories</small>
-            <input [disabled]='i==0' [(ngModel)]="l.signatory_name" type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="auth_sig"
+            <small for="auth_sig">Name of Authorised Signatory</small>
+            <input [disabled]="i==0 || disableAll" [(ngModel)]="l.signatory_name" type="text" style="height:25px" class="form-control form-control-sm text-capitalize" id="auth_sig"
             (ngModelChange)="l.signatory_name"  (input)="suggestCustomerSignatories(i)"
             placeholder="Name of Authorised Signatories">
 
@@ -220,8 +220,10 @@
 
         <div class="form-group col-5">
           <small for="acc_no">Account Number</small>
-          <input style="height:25px" [disabled]='disableAccountTypeAndNo' (change)="getAccountOpeningTempData()" [(ngModel)]="tm_deposit.acc_num" type="text" class="form-control form-control-sm text-capitalize" id="acc_no"
+          <input style="height:25px" [disabled]="operationType == 'I'" (change)="getAccountOpeningTempData()" [(ngModel)]="tm_deposit.acc_num" type="text" class="form-control form-control-sm text-capitalize" id="acc_no"
             placeholder="Account Number">
+          <!-- <input style="height:25px" [disabled]='disableAccountTypeAndNo' (change)="getAccountOpeningTempData()" [(ngModel)]="tm_deposit.acc_num" type="text" class="form-control form-control-sm text-capitalize" id="acc_no"
+            placeholder="Account Number"> -->
         </div>
 
         <div class="form-group col-3">
@@ -1350,7 +1352,7 @@
             <small for="trans_type">Rupees</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-              id="trans_type" class="form-control form-control-sm" [disabled]='disableAll'
+              id="trans_type" class="form-control form-control-sm" [disabled]="disableAll"
               (change)="setDenomination($event.target.value, i)">
               <option [value]="t1.rupees" disabled selected>{{t1.rupees_desc}}</option>
               <option [value]="l.rupees" *ngFor="let l of denominations" >{{l.desc}}</option>
@@ -1360,14 +1362,15 @@
 
           <div class="form-group col-3">
             <small for="deno_count">Count</small>
-            <input [(ngModel)]="t1.count" type="text" [disabled]='disableAll' style="height:25px" class="form-control form-control-sm text-capitalize" id="deno_count"
+            <input [(ngModel)]="t1.count" type="text" [disabled]="disableAll"
+            style="height:25px" class="form-control form-control-sm text-capitalize" id="deno_count"
             (change)="calculateTotalDenomination(i)" placeholder="Count">
           </div>
 
           <div class="form-group col-4">
             <small for="deno_total">Total</small>
-            <input [(ngModel)]="t1.total" type="text" [disabled]='disableAll' style="height:25px" class="form-control form-control-sm text-capitalize" id="deno_total"
-              placeholder="Total">
+            <input [(ngModel)]="t1.total" type="text" disabled
+             style="height:25px" class="form-control form-control-sm text-capitalize" id="deno_total"  placeholder="Total">
           </div>
         </div>
         </section>
@@ -1399,7 +1402,7 @@
 
       <div *ngIf="td_deftrans.trf_type=='T'">
         <h1></h1>
-        <h6 style="background-color: lightskyblue">Transfer Debit Details</h6>
+        <h6 style="background-color: lightskyblue">Transfer Details</h6>
 
         <section *ngFor="let l of td_deftranstrfList; let i=index">
           <div class="form-row">
@@ -1428,7 +1431,7 @@
             </div>
 
             <div class="form-group col-2">
-              <small for="debit_amount">Debit Amount</small>
+              <small for="debit_amount">Amount</small>
               <input type="text" [disabled]='disableAll' [(ngModel)]="l.amount" style="height:25px" (focusout)="checkDebitBalance(l.amount)"
               class="form-control form-control-sm text-capitalize" id="debit_amount">
             </div>
