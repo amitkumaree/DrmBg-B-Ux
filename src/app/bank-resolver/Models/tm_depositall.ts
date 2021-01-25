@@ -4,6 +4,7 @@ export class tm_depositall extends baseModel {
   constructor() {
     super();
     this.ShowClose = false;
+    // this.ShowIntrestDtls = false;
   }
   public brn_cd: string;
   public acc_type_cd: number;
@@ -81,5 +82,6 @@ export class tm_depositall extends baseModel {
 
   /** Below prop is used for by common view please do not delete */
   public ShowClose: boolean;
+  // public ShowIntrestDtls: boolean;
 
 }

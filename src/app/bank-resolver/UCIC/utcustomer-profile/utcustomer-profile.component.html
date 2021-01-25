@@ -233,7 +233,7 @@
         <div class="form-group col-2">
           <small for="monthly_income">Monthly Income</small>
           <input type="number" class="form-control form-control-sm" id="monthly_income" formControlName="monthly_income"
-            placeholder="Ledger Number">
+            placeholder="Monthly income">
         </div>
         <div class="form-group col-2">
           <small for="phone">Phone Number</small>
@@ -250,8 +250,6 @@
         </div>
         <div class="form-group col-2">
           <small for="date_of_death">Date Of Death</small>
-          <!-- <input type="date" class="form-control form-control-sm" formControlName="date_of_death" id="date_of_death"
-            placeholder="Date of Death"> -->
           <div class="input-group">
             <input type="text" placeholder="dd/mm/yyyy" class="form-control form-control-sm" bsDatepicker
               [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }" [isOpen]="isOpenDODdp"
@@ -266,7 +264,7 @@
         <div class="form-group col-2">
           <small for="status">Customer Status</small>
           <select id="status" class="form-control form-control-sm" formControlName="status">
-            <option value="A">Active</option>
+            <option value="A" selected>Active</option>
             <option value="D">Death</option>
           </select>
         </div>
