@@ -362,8 +362,8 @@ export class AccOpeningComponent implements OnInit {
     debugger;
     this.td_nomineeList = this.masterModel.tdnominee;
     this.td_signatoryList = this.masterModel.tdsignatory;
-
     this.td_accholderList = this.masterModel.tdaccholder;
+
     // tslint:disable-next-line: forin
     for (var idx in this.td_accholderList) {
       this.setRelationship( this.td_accholderList[idx].relation, Number(idx));
@@ -383,12 +383,27 @@ export class AccOpeningComponent implements OnInit {
 
     }
 
+    debugger;
     this.td_deftrans = this.masterModel.tddeftrans;
     this.setTransType(this.td_deftrans.trf_type);
-
     this.td_deftranstrfList = this.masterModel.tddeftranstrf;
-
     this.tm_transferList = this.masterModel.tmtransfer;
+
+    if (this.td_deftrans.trf_type === 'T') {
+
+      if (this.td_deftranstrfList[0].acc_num === '0000') {
+        this.td_deftranstrfList[0].gl_acc_code = this.td_deftranstrfList[0].acc_type_cd.toString();
+        this.checkAndSetDebitAccType('gl_acc', this.td_deftranstrfList[0].gl_acc_code)
+
+      }
+      else {
+        this.td_deftranstrfList[0].cust_acc_type = this.td_deftranstrfList[0].acc_type_cd.toString();
+        this.td_deftranstrfList[0].cust_acc_number = this.td_deftranstrfList[0].acc_num;
+        this.checkAndSetDebitAccType('cust_acc', this.td_deftranstrfList[0].cust_acc_type);
+        this.setDebitAccDtls(this.td_deftranstrfList[0].acc_num);
+      }
+    }
+
   }
 
 
@@ -1503,7 +1518,7 @@ removeSignatory()
       }
       else
       {
-        this.showAlertMsg('WARNING', 'GL Code in Transfer Details is not Blank');
+        this.showAlertMsg('WARNING', 'GL Code and Account Type can not have value simultaneously');
         this.td_deftranstrfList[0].cust_acc_type = null;
         return;
       }
@@ -1553,7 +1568,7 @@ removeSignatory()
           if (temp_acc_master === undefined || temp_acc_master === null)
           {
             this.td_deftranstrfList[0].gl_acc_desc = null;
-            this.showAlertMsg('WARNING', 'Invalid GL Code');
+            this.showAlertMsg('WARNING', 'GL Code and Account Type can not have value simultaneously');
             return;
           }
           else
