@@ -103,6 +103,7 @@ export class AccOpeningComponent implements OnInit {
   suggestedCustomerSignatories: mm_customer[];
   suggestedCustomerSignatoriesIdx : number;
   suggestedCustomerJointHolder: mm_customer[];
+  suggestedCustomerJointHolderIdx : number;
 
   selectedCustomer = new mm_customer();
 
@@ -1192,25 +1193,55 @@ saveData()
     debugger;
     this.suggestedCustomerSignatoriesIdx = idx;
     this.suggestedCustomerSignatories = this.customerList
-        .filter(c => c.cust_name.toLowerCase().startsWith(this.td_signatoryList[idx].signatory_name.toLowerCase())
-          || c.cust_cd.toString().startsWith(this.td_signatoryList[idx].signatory_name)
-          || ( c.phone !== null && c.phone.startsWith(this.td_signatoryList[idx].signatory_name)))
-        .slice(0, 10);
-    }
-
-    public suggestCustomerJointHolder(): void {
-
-      }
+      .filter(c => c.cust_name.toLowerCase().startsWith(this.td_signatoryList[idx].signatory_name.toLowerCase())
+        || c.cust_cd.toString().startsWith(this.td_signatoryList[idx].signatory_name)
+        || (c.phone !== null && c.phone.startsWith(this.td_signatoryList[idx].signatory_name)))
+      .slice(0, 10);
+  }
 
   public setCustDtlsSignatories(cust_cd: number, idx: number): void {
     this.td_signatoryList[idx].signatory_name = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0].cust_name;
     this.suggestedCustomerSignatories = null;
   }
 
-  public setCustDtlsJointHolder(cust_cd: number): void {
-    this.tm_deposit.cust_cd = cust_cd;
-    this.populateCustDtls(cust_cd);
+  public suggestCustomerJointHolder(idx: number): void {
+    this.suggestedCustomerJointHolderIdx = idx;
+    this.suggestedCustomerJointHolder = this.customerList
+      .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholderList[idx].cust_cd.toString())
+        || c.cust_cd.toString().startsWith(this.td_accholderList[idx].cust_cd.toString())
+        || (c.phone !== null && c.phone.startsWith(this.td_accholderList[idx].cust_cd.toString())))
+      .slice(0, 10);
+  }
+
+
+
+  public setCustDtlsJointHolder(cust_cd: number, idx: number): void {
+    this.td_accholderList[idx].cust_cd = cust_cd;
     this.suggestedCustomerJointHolder = null;
+    this.getSetJointHolderName(idx);
+  }
+
+
+  getSetJointHolderName(idx: number) {
+    var temp_mm_cust = new mm_customer();
+    temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === this.td_accholderList[idx].cust_cd.toString())[0];
+
+    if (!temp_mm_cust) {
+      this.td_accholderList[idx].cust_cd = null;
+      this.td_accholderList[idx].acc_holder = null;
+      this.showAlertMsg('ERROR', 'Joint Holder Customer Not Found');
+      return;
+    }
+
+    if (temp_mm_cust.cust_cd === this.tm_deposit.cust_cd) {
+      this.td_accholderList[idx].cust_cd = null;
+      this.td_accholderList[idx].acc_holder = null;
+      this.showAlertMsg('ERROR', 'First Holder and Joint Holder can not be same');
+      return;
+    }
+
+    this.td_accholderList[idx].cust_cd = Number(this.td_accholderList[idx].cust_cd);
+    this.td_accholderList[idx].acc_holder = temp_mm_cust.cust_name;
   }
 
   public setCustDtls(cust_cd: number): void {
@@ -1318,35 +1349,7 @@ removeSignatory()
     }
   }
 
-  getSetJointHolderName(idx: number) {
-    var temp_mm_cust = new mm_customer();
-    temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === this.td_accholderList[idx].cust_cd.toString())[0];
 
-    if (!temp_mm_cust) {
-      this.td_accholderList[idx].cust_cd = null;
-      this.td_accholderList[idx].acc_holder = null;
-      this.showAlertMsg('ERROR' , 'Joint Holder Customer Not Found');
-      return;
-    }
-
-    if ( temp_mm_cust.cust_cd ===  this.tm_deposit.cust_cd)
-    {
-      this.td_accholderList[idx].cust_cd = null;
-      this.td_accholderList[idx].acc_holder = null;
-      this.showAlertMsg('ERROR' , 'First Holder and Joint Holder can not be same');
-      return;
-    }
-
-
-    this.td_accholderList[idx].cust_cd = Number(this.td_accholderList[idx].cust_cd);
-    this.td_accholderList[idx].acc_holder = temp_mm_cust.cust_name;
-
-    // this.addSignatory();
-    // let l = this.td_signatoryList.length;
-
-    // this.td_signatoryList[l - 1].cust_cd = this.td_accholderList[idx].cust_cd;
-    // this.td_signatoryList[l - 1].signatory_name = this.td_accholderList[idx].acc_holder;
-  }
 
 
   addIntroducer() {
