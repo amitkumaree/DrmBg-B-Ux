@@ -161,8 +161,22 @@
       <div class="form-row">
         <div class="form-group col-3">
           <small for="joint_cust_code">Cust Code</small>
-          <input type="text" [disabled]='disableAll' [(ngModel)]="t1.cust_cd" style="height:25px" class="form-control form-control-sm text-capitalize"
-            (change)="getSetJointHolderName(i)" id="joint_cust_code" placeholder="Cust Code">
+          <!-- <input type="text" [disabled]='disableAll' [(ngModel)]="t1.cust_cd" style="height:25px" class="form-control form-control-sm text-capitalize"
+            (change)="getSetJointHolderName(i)" id="joint_cust_code" placeholder="Cust Code"> -->
+
+            <input type="text" [disabled]='disableAll' [(ngModel)]="t1.cust_cd" style="height:25px" class="form-control form-control-sm text-capitalize"
+            (input)="suggestCustomerJointHolder(i)" id="joint_cust_code" placeholder="Cust Code">
+
+            <div  class="suggestions border p-2" *ngIf="suggestedCustomerJointHolder && i==suggestedCustomerJointHolderIdx">
+              <strong> [ Customer Cd / Phone ] Name </strong>
+              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomerJointHolder"
+              (click)="setCustDtlsJointHolder(cust.cust_cd, i)">
+              {{'[' + cust.cust_cd + ' / '
+              + ((null === cust.phone) ? '' : cust.phone) +'] '
+              + cust.cust_name}}
+            </p>
+            </div>
+
         </div>
 
         <div class="form-group col-6">
