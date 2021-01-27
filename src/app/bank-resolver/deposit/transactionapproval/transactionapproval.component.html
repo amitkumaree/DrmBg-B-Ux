@@ -2,7 +2,8 @@
   style="background-color: #78c2ad21; text-align: center;">
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button> -->
-    <button type="button" [disabled]="undefined === selectedVm" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onApproveClick()">Approve</button>
+    <button type="button" [disabled]="undefined === selectedVm" class="btn btn-primary btn-sm ml-1 mr-1"
+      (click)="onApproveClick()">Approve</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Set Filter</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Remove Filter</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClickRefreshList()">Refresh List</button>
@@ -43,15 +44,17 @@
         <div class="row">
           <div class="col-12 ">
             <h6 style="background-color:lightskyblue">Unapproved Trasanction List</h6>
-              <div class=" row">
-                <label for="colFormLabelSm" class="col-5 col-form-label col-form-label-sm">Filter Account Type</label>
-                <div class="col-6">
-                  <select id="title" class="form-control form-control-sm" (change)="onChangeAcctType($event.target.value)">
-                    <option *ngIf="uniqueAccTypes" selected value="-99">All</option>
-                    <option *ngFor="let accType of uniqueAccTypes " [value]="accType.acc_type_cd">{{accType.acc_type_desc}}</option>
-                  </select>
-                </div>
+            <div class=" row">
+              <label for="colFormLabelSm" class="col-5 col-form-label col-form-label-sm">Filter Account Type</label>
+              <div class="col-6">
+                <select id="title" class="form-control form-control-sm"
+                  (change)="onChangeAcctType($event.target.value)">
+                  <option *ngIf="uniqueAccTypes" selected value="-99">All</option>
+                  <option *ngFor="let accType of uniqueAccTypes " [value]="accType.acc_type_cd">
+                    {{accType.acc_type_desc}}</option>
+                </select>
               </div>
+            </div>
             <div class="table-responsive" class="scroll-when-long">
               <table class="table table-sm table-hover">
                 <thead>
@@ -77,9 +80,21 @@
             </div>
           </div>
           <div class="col-12">
-            <app-dw-rd-instl-view *ngIf="selectedAccountType === 6"></app-dw-rd-instl-view>
-            <app-dw-td-intt-dtls-view *ngIf="selectedAccountType === 2 || selectedAccountType === 5"
-            ></app-dw-td-intt-dtls-view>
+            <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 6"
+              (click)="openModal(content)">Show RD Installaments</button>
+            <ng-template #content>
+              <div class="modal-header">
+                <h4 class="modal-title pull-left">RD Installments Details for Acc# {{selectedVm.tm_deposit.acc_num}}</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <app-dw-rd-instl-view></app-dw-rd-instl-view>
+              </div>
+            </ng-template>
+            <app-dw-td-intt-dtls-view *ngIf="selectedAccountType === 2 || selectedAccountType === 5">
+            </app-dw-td-intt-dtls-view>
             <app-dw-renewal-view *ngIf="selectedTransactionMode === 'R'"></app-dw-renewal-view>
           </div>
         </div>
@@ -95,7 +110,8 @@
   style="background-color: #78c2ad21; text-align: center;">
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onNewClick()">New</button> -->
-    <button type="button" [disabled]="undefined === selectedVm" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onApproveClick()">Approve</button>
+    <button type="button" [disabled]="undefined === selectedVm" class="btn btn-primary btn-sm ml-1 mr-1"
+      (click)="onApproveClick()">Approve</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Set Filter</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Remove Filter</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClickRefreshList()">Refresh List</button>
