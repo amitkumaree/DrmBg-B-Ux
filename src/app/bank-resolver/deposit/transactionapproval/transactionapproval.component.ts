@@ -183,7 +183,7 @@ export class TransactionapprovalComponent implements OnInit {
     this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
       res => {
         this.isLoading = false;
-        const n: number = res;
+        const n: number = res; 
         if (n !== 0) {
           this.HandleMessage(true, MessageType.Warning, 'Failed Execute approval P_UPDATE_TD_DEP_TRANS.');
         }
