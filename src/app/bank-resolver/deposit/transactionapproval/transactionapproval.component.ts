@@ -190,36 +190,58 @@ export class TransactionapprovalComponent implements OnInit {
     param.adt_trans_dt = this.sys.CurrentDate;
     param.ad_acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
     param.as_acc_num = this.selectedVm.tm_deposit.acc_num;
-    this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
+    param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
+    param.gs_user_id = this.sys.UserId;
+    this.svc.addUpdDel<any>('Deposit/ApproveAccountTranaction', param).subscribe(
       res => {
         this.isLoading = false;
-        const n: number = res;
-        if (n !== 0) {
-          this.HandleMessage(true, MessageType.Warning, 'Failed Execute approval P_UPDATE_TD_DEP_TRANS.');
+        if (res === '0') {
+          this.selectedVm.td_def_trans_trf.approval_status = 'A';
+          this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
+            + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
+            + ' is approved.');
+          setTimeout(() => {
+            this.onClickRefreshList();
+          }, 3000);
+        } else {
+          this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
         }
-        if (null !== this.selectedVm.td_def_trans_trf.trans_type) {
-          param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
-          this.svc.addUpdDel<any>('Common/P_UPDATE_DENOMINATION', param).subscribe(
-            res => {
-              const n: number = res;
-              if (n !== 0) {
-                this.HandleMessage(true, MessageType.Warning, 'Failed to update denomination.');
-              }
-            },
-            err => {
-              this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
-            }
-          );
-        }
-        // update the Un approved flag with approved.
-        // TODO below not woking
-        this.selectedVm.td_def_trans_trf.approval_status = 'A';
       },
       err => {
         this.isLoading = false;
-        this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+        this.HandleMessage(true, MessageType.Error, JSON.stringify(err));
       }
     );
+    // this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
+    //   res => {
+    //     this.isLoading = false;
+    //     const n: number = res;
+    //     if (n !== 0) {
+    //       this.HandleMessage(true, MessageType.Warning, 'Failed Execute approval P_UPDATE_TD_DEP_TRANS.');
+    //     }
+    //     if (null !== this.selectedVm.td_def_trans_trf.trans_type) {
+    //       param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
+    //       this.svc.addUpdDel<any>('Common/P_UPDATE_DENOMINATION', param).subscribe(
+    //         res => {
+    //           const n: number = res;
+    //           if (n !== 0) {
+    //             this.HandleMessage(true, MessageType.Warning, 'Failed to update denomination.');
+    //           }
+    //         },
+    //         err => {
+    //           this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+    //         }
+    //       );
+    //     }
+    //     // update the Un approved flag with approved.
+    //     // TODO below not woking
+    //     this.selectedVm.td_def_trans_trf.approval_status = 'A';
+    //   },
+    //   err => {
+    //     this.isLoading = false;
+    //     this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+    //   }
+    // );
   }
 
   public onChangeAcctType(acctTypeCd: number): void {
