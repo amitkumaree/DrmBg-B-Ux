@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 // import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from 'src/app/_service';
-import { MessageType, ShowMessage } from '../../Models';
+import { MessageType, ShowMessage, SystemValues } from '../../Models';
 import { p_gen_param } from '../../Models/p_gen_param';
 import { sd_day_operation } from '../../Models/sd_day_operation';
 
@@ -18,6 +18,7 @@ export class DayinitializationComponent implements OnInit {
     // private modalService: NgbModal,
     ) { }
   isLoading = false;
+  sys = new SystemValues();
   sdoRet: sd_day_operation[] = [];
   showMsg: ShowMessage;
   initcriteria: FormGroup;
@@ -41,7 +42,7 @@ private getDayOpertion ()
   this.showMsg =null;
   var sdo = new sd_day_operation();
   //sdo.operation_dt =this.convertDate(localStorage.getItem('__currentDate'));// new Date();
-  sdo.operation_dt =new Date(this.convertDate(localStorage.getItem('__currentDate'))+" UTC")
+  sdo.operation_dt =this.sys.CurrentDate;
   debugger;
   this.svc.addUpdDel<any>('Sys/GetDayOperation', sdo).subscribe(
     res => {
@@ -54,12 +55,14 @@ private getDayOpertion ()
         this.sdoRet = res;
         this.isRetrieve=true;
         this.isOk=false;
-      }
+        this.sdoRet.forEach(x=>x.operation_dt=this.convertDate(x.operation_dt.toString()))
+        }
       else
       {
       this.sdoRet = res;
       this.isRetrieve=false;
       this.isOk=true;
+      this.sdoRet.forEach(x=>x.operation_dt=this.convertDate(x.operation_dt.toString()))
       }
     },
     err => { debugger;  this.isLoading = false;}

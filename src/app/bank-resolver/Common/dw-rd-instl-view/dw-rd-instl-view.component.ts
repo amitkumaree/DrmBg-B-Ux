@@ -15,8 +15,12 @@ export class DwRdInstlViewComponent implements OnInit, OnDestroy {
     this.subscription = this.msg.getCommonAccountNum().subscribe(
       res => {
         debugger;
-        this.accNum = res;
-        this.getRdIntallementDtls();
+        if (null !== res) {
+          this.accNum = res;
+          this.getRdIntallementDtls();
+        } else {
+          this.installemnts = [];
+        }
       },
       err => { }
     );
@@ -31,8 +35,8 @@ export class DwRdInstlViewComponent implements OnInit, OnDestroy {
   private getRdIntallementDtls(): void {
     debugger;
     if (null !== this.accNum && '' !== this.accNum) {
-      let rdInstallament = new td_rd_installment();
-      rdInstallament.acc_num = this.accNum
+      const rdInstallament = new td_rd_installment();
+      rdInstallament.acc_num = this.accNum;
       this.svc.addUpdDel<any>('Deposit/GetRDInstallment', rdInstallament).subscribe(
         res => {
           this.installemnts = res;

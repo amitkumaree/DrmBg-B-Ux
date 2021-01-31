@@ -64,7 +64,11 @@ private dayCompletionCall (clsDt :any,clsamt:any)
       this.isLoading = false;
       this.alertMsg = res.output;
       this.closingdata.setValue['closingbal']=0;
-      this.HandleMessage(true, MessageType.Sucess,this.alertMsg );
+      if (res.flag = -1)
+      this.HandleMessage(true, MessageType.Error,this.alertMsg );
+      else
+      this.HandleMessage(true, MessageType.Error,this.alertMsg );
+      
     },
     err => { debugger;  this.isLoading = false;}
   );
