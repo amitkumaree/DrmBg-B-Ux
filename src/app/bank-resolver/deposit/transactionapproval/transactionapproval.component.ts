@@ -195,7 +195,7 @@ export class TransactionapprovalComponent implements OnInit {
     this.svc.addUpdDel<any>('Deposit/ApproveAccountTranaction', param).subscribe(
       res => {
         this.isLoading = false;
-        if (res === '0') {
+        if (res === 0) {
           this.selectedVm.td_def_trans_trf.approval_status = 'A';
           this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
             + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
@@ -209,7 +209,7 @@ export class TransactionapprovalComponent implements OnInit {
       },
       err => {
         this.isLoading = false;
-        this.HandleMessage(true, MessageType.Error, JSON.stringify(err));
+        this.HandleMessage(true, MessageType.Error, err.error.text);
       }
     );
     // this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
@@ -252,6 +252,41 @@ export class TransactionapprovalComponent implements OnInit {
       this.filteredVm = this.vm.filter(e => e.mm_acc_type.acc_type_cd === acctTypeCd);
     }
   }
+
+  onDeleteClick(): void {
+    debugger;
+    if (!(confirm('Are you sure you want to Delete Transaction of Acc ' + this.selectedVm.tm_deposit.acc_num
+    + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
+      return;
+    }
+
+    this.isLoading = true;
+    let param = new td_def_trans_trf();
+    param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
+    param.trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
+    // const dt = this.sys.CurrentDate;
+    param.trans_dt = this.sys.CurrentDate;
+    param.acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
+    param.acc_num = this.selectedVm.tm_deposit.acc_num;
+
+    this.svc.addUpdDel<any>('Deposit/DeleteAccountOpeningData ', param).subscribe(
+      res => {
+        this.isLoading = false;
+        if (res === 0) {
+          this.onClickRefreshList();
+          this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
+            + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
+            + ' is deleted.');
+        } else {
+          this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
+        }
+      },
+      err => {
+        this.isLoading = false;
+        this.HandleMessage(true, MessageType.Error, err.error.text);
+      }
+    );
+  }
   // groupBy(xs, f) {
   //   const gc = xs.reduce((r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r), {})
   //   return Object.keys(gc).map(acc_type_cd => ({ acc_type_cd: acc_type_cd, events: gc[acc_type_cd] }));;
@@ -263,5 +298,4 @@ export class TransactionapprovalComponent implements OnInit {
   //   debugger;
   //   this.elementRef.nativeElement.style.setProperty('--bkcolor', 'red');
   // }
-
 }

@@ -15,9 +15,14 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
     private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonAcctInfo().subscribe(
       res => {
-        debugger;
-        this.acctDtls = res;
-        this.setAcctDetails();
+        if (null !== res) {
+          this.acctDtls = res;
+          this.setAcctDetails();
+        } else {
+          if (undefined !== this.accDtlsFrm) {
+            this.accDtlsFrm.reset();
+          }
+        }
       },
       err => { }
     );
@@ -76,7 +81,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
   }
 
   setAcctDetails(): void {
-    if (undefined !== this.acctDtls && null !== this.acctDtls) {
+    if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
       this.accDtlsFrm.patchValue({
         brn_cd: this.acctDtls.brn_cd,
         acc_type_cd: this.acctDtls.acc_type_cd,
@@ -121,7 +126,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
         transfer_dt: this.acctDtls.transfer_dt,
         agent_cd: this.acctDtls.agent_cd,
       });
-    }
+    }  else { this.accDtlsFrm.reset(); }
   }
 
   ngOnDestroy(): void {
