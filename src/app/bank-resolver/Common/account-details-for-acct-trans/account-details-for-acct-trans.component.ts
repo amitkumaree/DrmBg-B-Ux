@@ -69,19 +69,9 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
   }
 
   openModal(template: TemplateRef<any>) {
-    this.getRdInstallament();
+    // this.getRdInstallament();
+    this.msg.sendCommonAccountNum(this.acctDtls.acc_num);
     this.modalRef = this.modalService.show(template);
-  }
-
-  getRdInstallament(): void {
-    const rdIns = new td_rd_installment();
-    rdIns.acc_num = this.acctDtls.acc_num;
-    this.svc.addUpdDel<any>('Deposit/GetRDInstallment', rdIns).subscribe(
-      res => {
-        this.rdInstallements = res;
-      },
-      err => { }
-    );
   }
 
   getOperationalInstr() {

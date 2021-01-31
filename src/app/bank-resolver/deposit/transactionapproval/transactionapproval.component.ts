@@ -1,14 +1,15 @@
 import { p_gen_param } from './../../Models/p_gen_param';
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 // import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsService } from 'ngx-export-as';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import {
   MessageType, mm_customer, ShowMessage, td_def_trans_trf,
-  mm_acc_type, tm_deposit
+  mm_acc_type, tm_deposit, SystemValues
 } from '../../Models';
 import { TranApprovalVM } from '../../Models/TranApprovalVM';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-transactionapproval',
@@ -17,9 +18,9 @@ import { TranApprovalVM } from '../../Models/TranApprovalVM';
 
 })
 export class TransactionapprovalComponent implements OnInit {
-
+  @ViewChild('content', { static: true }) content: TemplateRef<any>;
   constructor(private svc: RestService, private elementRef: ElementRef,
-    private msg: InAppMessageService) { }
+    private msg: InAppMessageService, private modalService: BsModalService) { }
   static accType: mm_acc_type[] = [];
   selectedAccountType: number;
   selectedTransactionMode: string;
@@ -33,6 +34,8 @@ export class TransactionapprovalComponent implements OnInit {
   tdDepTransGroup: any;
   custTitle: string;
   uniqueAccTypes: mm_acc_type[] = [];
+  modalRef: BsModalRef;
+  sys = new SystemValues();
   // cust: mm_customer;
   // tdDepTransRet: td_def_trans_trf[] = [];
 
@@ -41,7 +44,9 @@ export class TransactionapprovalComponent implements OnInit {
     this.getAcctTypeMaster();
 
   }
-
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+  }
   public onClickRefreshList() {
     this.msg.sendCommonTransactionInfo(null);
     this.msg.sendCommonCustInfo(null);
@@ -113,7 +118,7 @@ export class TransactionapprovalComponent implements OnInit {
   private getTranAcctInfo(forAcc: string): void {
     this.isLoading = false;
     let acc = new tm_deposit();
-    acc.acc_num = forAcc; acc.brn_cd = localStorage.getItem('__brnCd');
+    acc.acc_num = forAcc; acc.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     this.svc.addUpdDel<tm_deposit>('Deposit/GetDepositView', acc).subscribe(
       res => {
         acc = res[0];
@@ -138,7 +143,7 @@ export class TransactionapprovalComponent implements OnInit {
 
   private GetUnapprovedDepTrans(): void {
     this.isLoading = true;
-    this.tdDepTrans.brn_cd = localStorage.getItem('__brnCd');
+    this.tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', this.tdDepTrans).subscribe(
       res => {
         const tdDepTransRet = res as td_def_trans_trf[];
@@ -146,7 +151,7 @@ export class TransactionapprovalComponent implements OnInit {
         tdDepTransRet.forEach(element => {
           const vm = new TranApprovalVM();
           vm.mm_acc_type = TransactionapprovalComponent.accType.
-          filter(e => e.acc_type_cd === element.acc_type_cd)[0];
+            filter(e => e.acc_type_cd === element.acc_type_cd)[0];
           vm.td_def_trans_trf = element;
           this.vm.push(vm);
           // add and check account type in unique account type list
@@ -165,52 +170,78 @@ export class TransactionapprovalComponent implements OnInit {
   }
 
   public onApproveClick(): void {
-    debugger;
-    if ((this.selectedVm.tm_deposit.clr_bal - this.selectedVm.td_def_trans_trf.amount) < 0) {
-      this.HandleMessage(true, MessageType.Warning, 'Balance Will Be Negative....So Operation Rejected.' +
-        'You First Approve The Deposit Vouchers Then Approve This Voucher.');
-
-      return;
+    if (this.selectedVm.td_def_trans_trf.trans_type.toLocaleLowerCase() === 'W') {
+      if (this.selectedVm.tm_deposit.acc_type_cd === 1 ||
+        this.selectedVm.tm_deposit.acc_type_cd === 7) {
+        if ((this.selectedVm.tm_deposit.clr_bal - this.selectedVm.td_def_trans_trf.amount) < 0) {
+          this.HandleMessage(true, MessageType.Warning, 'Balance Will Be Negative....So Operation Rejected.' +
+            'You First Approve The Deposit Vouchers Then Approve This Voucher.');
+          return;
+        }
+      }
     }
+
+    debugger;
     this.isLoading = true;
     let param = new p_gen_param();
-    param.brn_cd = localStorage.getItem('__brnCd');
+    param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     param.ad_trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
-    const dt = new Date(localStorage.getItem('__currentDate'));
-    param.adt_trans_dt = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes()));;
+    // const dt = this.sys.CurrentDate;
+    param.adt_trans_dt = this.sys.CurrentDate;
     param.ad_acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
     param.as_acc_num = this.selectedVm.tm_deposit.acc_num;
-    this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
+    param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
+    param.gs_user_id = this.sys.UserId;
+    this.svc.addUpdDel<any>('Deposit/ApproveAccountTranaction', param).subscribe(
       res => {
         this.isLoading = false;
-        const n: number = res;
-        if (n !== 0) {
-          this.HandleMessage(true, MessageType.Warning, 'Failed Execute approval P_UPDATE_TD_DEP_TRANS.');
+        if (res === '0') {
+          this.selectedVm.td_def_trans_trf.approval_status = 'A';
+          this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
+            + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
+            + ' is approved.');
+          setTimeout(() => {
+            this.onClickRefreshList();
+          }, 3000);
+        } else {
+          this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
         }
-        // update the Un approved flag with approved.
-        // TODO below not woking
-        this.selectedVm.td_def_trans_trf.approval_status = 'A';
       },
       err => {
         this.isLoading = false;
-        this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+        this.HandleMessage(true, MessageType.Error, JSON.stringify(err));
       }
     );
-
-    if (null !== this.selectedVm.td_def_trans_trf.trans_type) {
-      param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
-      this.svc.addUpdDel<any>('Common/P_UPDATE_DENOMINATION', param).subscribe(
-        res => {
-          const n: number = res;
-          if (n !== 0) {
-            this.HandleMessage(true, MessageType.Warning, 'Failed to update denomination.');
-          }
-        },
-        err => {
-          this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
-        }
-      );
-    }
+    // this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
+    //   res => {
+    //     this.isLoading = false;
+    //     const n: number = res;
+    //     if (n !== 0) {
+    //       this.HandleMessage(true, MessageType.Warning, 'Failed Execute approval P_UPDATE_TD_DEP_TRANS.');
+    //     }
+    //     if (null !== this.selectedVm.td_def_trans_trf.trans_type) {
+    //       param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
+    //       this.svc.addUpdDel<any>('Common/P_UPDATE_DENOMINATION', param).subscribe(
+    //         res => {
+    //           const n: number = res;
+    //           if (n !== 0) {
+    //             this.HandleMessage(true, MessageType.Warning, 'Failed to update denomination.');
+    //           }
+    //         },
+    //         err => {
+    //           this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+    //         }
+    //       );
+    //     }
+    //     // update the Un approved flag with approved.
+    //     // TODO below not woking
+    //     this.selectedVm.td_def_trans_trf.approval_status = 'A';
+    //   },
+    //   err => {
+    //     this.isLoading = false;
+    //     this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+    //   }
+    // );
   }
 
   public onChangeAcctType(acctTypeCd: number): void {
@@ -218,7 +249,7 @@ export class TransactionapprovalComponent implements OnInit {
     if (acctTypeCd === -99) {
       this.filteredVm = this.vm;
     } else {
-    this.filteredVm = this.vm.filter(e => e.mm_acc_type.acc_type_cd === acctTypeCd);
+      this.filteredVm = this.vm.filter(e => e.mm_acc_type.acc_type_cd === acctTypeCd);
     }
   }
   // groupBy(xs, f) {

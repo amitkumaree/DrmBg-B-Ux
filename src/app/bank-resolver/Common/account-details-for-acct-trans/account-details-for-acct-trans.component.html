@@ -92,7 +92,6 @@
 
     <button type="button" class="btn btn-link" *ngIf="showInterestForRd"
     (click)="openModal(content)">Show RD Installaments</button>
-
     <ng-template #content>
       <div class="modal-header">
         <h4 class="modal-title pull-left">RD Installments Details for Acc# {{acctDtls.acc_num}}</h4>
@@ -101,27 +100,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <table class="table table-sm table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Installament No</th>
-              <th scope="col">Due Dt</th>
-              <th scope="col">Deposit Dt</th>
-              <th scope="col">Paid</th>
-            </tr>
-          </thead>
-          <tr *ngFor="let item of rdInstallements; let i = index;" >
-            <td>{{item.instl_no}}</td>
-            <td>{{item.due_dt}}</td>
-            <td>{{item.instl_dt}}</td>
-            <td>
-              <i *ngIf="item.status==='P'" style="color: green;" class="fa fa-check"
-              aria-hidden="true"></i>
-              <i *ngIf="item.status!=='P'" style="color: red;" class="fa fa-times"
-              aria-hidden="true"></i>
-            </td>
-          </tr>
-        </table>
+        <app-dw-rd-instl-view></app-dw-rd-instl-view>
       </div>
     </ng-template>
 
