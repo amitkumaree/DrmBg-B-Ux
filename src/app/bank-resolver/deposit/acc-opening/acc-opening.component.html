@@ -68,7 +68,7 @@
           <!-- <input style="height:25px" disabled type="date" class="form-control form-control-sm" id="cust_dob"
           [ngModel]="tm_deposit.date_of_birth | date:'yyyy-MM-dd'" placeholder="Cust DOB"> -->
 
-          <input style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="tm_deposit.date_of_birth" disabled bsDatepicker
+          <input style="height:25px; " type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="tm_deposit.date_of_birth" disabled bsDatepicker
           [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
 
 
@@ -247,11 +247,6 @@
           <input style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
           [ngModel]="tm_deposit.opening_dt" disabled bsDatepicker
           [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
-          <!-- <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" (click)="isOpenFromDp = !isOpenFromDp">
-              <i class="fa fa-calendar" aria-hidden="true"></i>
-            </button>
-          </div> -->
 
 
         </div>
@@ -423,7 +418,7 @@
             <!-- <input [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
               class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Maturity Date"> -->
 
-            <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy"
+            <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
               [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
 
           </div>
@@ -550,8 +545,12 @@
         <div class="form-row">
           <div class="form-group col-3">
             <small for="dbs_mat_dt">Maturity Date</small>
-            <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Maturity Date">
+            <!-- <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
+            class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Maturity Date"> -->
+
+            <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
+              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+
           </div>
 
           <div class="form-group col-2">
@@ -661,7 +660,7 @@
 
           <div class="form-group col-2">
             <small for="term_dep_interest">Interest</small>
-            <input style="height:25px; text-align-last: right;" disabled type="number" min="0"  step='any'
+            <input [(ngModel)]="tm_deposit.intt_amt" style="height:25px; text-align-last: right;" disabled type="number" min="0"  step='any'
               class="form-control form-control-sm text-capitalize" id="term_dep_interest">
           </div>
 
@@ -676,8 +675,11 @@
         <div class="form-row">
           <div class="form-group col-3">
             <small for="term_dep_mat_dt">Maturity Date</small>
-            <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="term_dep_mat_dt" placeholder="Maturity Date">
+            <!-- <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
+            class="form-control form-control-sm text-capitalize" id="term_dep_mat_dt" placeholder="Maturity Date"> -->
+
+            <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
+              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
           </div>
 
           <div class="form-group col-2">
@@ -797,8 +799,12 @@
 
           <div class="form-group col-3">
             <small for="mis_mat_dt">Maturity Date</small>
-            <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="mis_mat_dt" placeholder="Maturity Date">
+            <!-- <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
+            class="form-control form-control-sm text-capitalize" id="mis_mat_dt" placeholder="Maturity Date"> -->
+
+            <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
+              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+
           </div>
 
           <div class="form-group col-2">
@@ -882,10 +888,14 @@
               class="form-control form-control-sm text-capitalize" id="rec_dep_matu_val">
           </div>
 
-          <div class="form-group col-3">
+          <div class="form-group col-2">
             <small for="rec_dep_mat_dt">Maturity Date</small>
-            <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt" placeholder="Maturity Date">
+            <!-- <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
+            class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt" placeholder="Maturity Date"> -->
+
+              <input disabled style="height:25px; width: 150px;" type="text" placeholder="dd/mm/yyyy"
+              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+
           </div>
         </div>
 
@@ -1196,8 +1206,12 @@
 
                 <div class="form-group col-4">
                   <small for="rec_dep_mat_dt">Maturity Date</small>
-                  <input [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-                    class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt" placeholder="Maturity Date">
+                  <!-- <input [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
+                    class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt" placeholder="Maturity Date"> -->
+
+                    <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
+              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+
                 </div>
               </div>
 

@@ -312,6 +312,7 @@ export class AccOpeningComponent implements OnInit {
   assignModelsFromMasterData()
   {
 
+    debugger;
     var retDepositPeriodArr = [];
 
     this.tm_deposit = new tm_deposit();
@@ -357,12 +358,22 @@ export class AccOpeningComponent implements OnInit {
 
     this.td_introducerlist = this.masterModel.tdintroducer;
 
+    if (this.tm_deposit.intt_amt != undefined && this.tm_deposit.intt_amt != null)
+    {
+      this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
+    }
+
     if ( this.tm_deposit.dep_period != undefined && this.tm_deposit.dep_period != null)
     {
     retDepositPeriodArr =  this.depositPeriodParser(this.tm_deposit.dep_period);
     this.tm_deposit.year = Number(retDepositPeriodArr[0]);
     this.tm_deposit.month = Number(retDepositPeriodArr[1]);
     this.tm_deposit.day = Number(retDepositPeriodArr[2]);
+    }
+
+    if ( this.tm_deposit.standing_instr_flag !== undefined && this.tm_deposit.standing_instr_flag !== null)
+    {
+      this.setStandingInstrAfterMatu(Number(this.tm_deposit.standing_instr_flag));
     }
 
     // tslint:disable-next-line: forin
@@ -1955,7 +1966,7 @@ processInstallmentNo() {
       temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
       temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
-
+debugger;
       this.f_calctdintt_reg(temp_gen_param);
 
       // this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
@@ -2003,7 +2014,8 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
     {
       if ( this.tm_deposit.instl_amt === undefined || this.tm_deposit.instl_amt === null ||
         this.tm_deposit.instl_no === undefined || this.tm_deposit.instl_no ===  null ||
-        temp_gen_param.an_intt_rate === undefined || temp_gen_param.an_intt_rate === null )
+        this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null )
+        // temp_gen_param.an_intt_rate === undefined || temp_gen_param.an_intt_rate === null )
       {
         return;
       }
@@ -2081,6 +2093,12 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
     this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
     this.tm_deposit.mat_dt.setDate(this.tm_deposit.mat_dt.getDate() + this.tm_deposit.day);
 
+    if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 4)
+    {
+      debugger;
+      this.calculateInterestRate();
+    }
+
     if (  ( (this.tm_deposit.year === undefined || this.tm_deposit.year === null ) &&
               (this.tm_deposit.month === undefined || this.tm_deposit.month === null) &&
               (this.tm_deposit.day === undefined || this.tm_deposit.day === null) ) ||
@@ -2114,6 +2132,26 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
 
     this.f_calctdintt_reg(temp_gen_param);
     }
+
+calculateInterestRate()
+{
+  debugger;
+  var temp_gen_param2 = new p_gen_param();
+  temp_gen_param2.acc_cd = this.tm_deposit.acc_type_cd;
+  temp_gen_param2.from_dt = this.sys.CurrentDate;
+  temp_gen_param2.ls_catg_cd = this.tm_deposit.category_cd;
+  temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24)) - 1;
+  this.svc.addUpdDel<any>('Deposit/GET_INT_RATE', temp_gen_param2).subscribe(
+    res => {
+      debugger;
+      this.tm_deposit.intt_rt = Number(res);
+    },
+    err => {
+      debugger;
+    }
+  );
+
+}
 
 backScreen()
 {
