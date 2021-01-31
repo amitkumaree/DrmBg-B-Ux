@@ -24,6 +24,7 @@ export class AccounTransactionsComponent implements OnInit {
     private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router) { }
   private static operations: mm_operation[] = [];
   operations: mm_operation[];
+  unApprovedTransactionLst: td_def_trans_trf[] = [];
   disableOperation = true;
   AcctTypes: mm_operation[];
   transType: DynamicSelect;
@@ -130,6 +131,21 @@ export class AccounTransactionsComponent implements OnInit {
     this.td_deftranstrfList.push(temp_deftranstrf);
     this.getAccountTypeList();
     this.getCustomerList();
+    this.GetUnapprovedDepTrans();
+  }
+
+  /** silently bring all the unapproved transaction
+   * silently because it will be needed during save
+   */
+  private GetUnapprovedDepTrans(): void {
+    const tdDepTrans = new td_def_trans_trf();
+    tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
+    this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', tdDepTrans).subscribe(
+      res => {
+        this.unApprovedTransactionLst = res;
+      },
+      err => { this.isLoading = false; }
+    );
   }
 
   getCustomerList() {
@@ -354,8 +370,23 @@ export class AccounTransactionsComponent implements OnInit {
     }
   }
 
+  private checkUnaprovedTransactionExixts(): boolean {
+    const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
+      === this.td.acc_num.value)[0];
+
+    if (Object.keys(unapprovedTrans).length === 0) {
+      return false;
+    }
+    return true;
+  }
   onSaveClick(): void {
     debugger;
+    if (this.checkUnaprovedTransactionExixts()) {
+      this.HandleMessage(true, MessageType.Warning,
+        'Un-pproved Transaction already exists for the Account ' + this.td.acc_num.value);
+      return;
+    }
+
     this.isLoading = true;
     const saveTransaction = new AccOpenDM();
     const tdDefTrans = this.mappTddefTransFromFrm();

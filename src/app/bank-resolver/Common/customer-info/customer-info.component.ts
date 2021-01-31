@@ -1,5 +1,4 @@
 import { Input } from '@angular/core';
-import { formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -16,8 +15,14 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
     private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonCustInfo().subscribe(
       res => {
-        this.cust = res;
-        this.getCategoryMaster();
+        if (null !== res) {
+          this.cust = res;
+          this.getCategoryMaster();
+        } else {
+          if (undefined !== this.custMstrFrm) {
+            this.custMstrFrm.reset();
+          }
+        }
       },
       err => { }
     );
@@ -69,7 +74,7 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
       date_of_death: [''],
       sms_flag: [''],
       status: [''],
-      pan: [''],
+      pan: ['',],
       nominee: [''],
       nom_relation: [''],
       kyc_photo_type: [''],
@@ -99,8 +104,9 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
   }
 
   private getCustomer(): void {
+    debugger;
     const cust = this.cust;
-    if (undefined !== cust && null !== cust) {
+    if (undefined !== cust && Object.keys(cust).length !== 0) {
       const category = CustomerInfoComponent.categories.
         filter(e => e.catg_cd === cust.catg_cd)[0];
       this.custMstrFrm.patchValue({
@@ -115,7 +121,7 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
         guardian_name: cust.guardian_name,
         cust_dt: cust.cust_dt,
         old_cust_cd: cust.old_cust_cd,
-        dt_of_birth: formatDate(cust.dt_of_birth, 'dd/MMM/yyyy', 'en-US'),
+        dt_of_birth: cust.dt_of_birth,
         age: cust.age,
         sex: cust.sex,
         marital_status: cust.marital_status,
@@ -150,7 +156,8 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
         org_reg_no: cust.org_reg_no,
         catg_desc: category.catg_desc
       });
-    }
+    } else { this.custMstrFrm.reset(); }
+
   }
 
   ngOnDestroy(): void {

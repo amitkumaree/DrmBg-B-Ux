@@ -1,8 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { tm_denomination_trans } from './../../Models/deposit/tm_denomination_trans';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
-import { mm_acc_type, td_def_trans_trf } from '../../Models';
+import { mm_acc_type, SystemValues, td_def_trans_trf } from '../../Models';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import Utils from 'src/app/_utility/utils';
 
 @Component({
   selector: 'app-transaction-details',
@@ -10,24 +13,36 @@ import { mm_acc_type, td_def_trans_trf } from '../../Models';
   styleUrls: ['./transaction-details.component.css']
 })
 export class TransactionDetailsComponent implements OnInit, OnDestroy {
-
+  @ViewChild('content', { static: true }) content: TemplateRef<any>;
   constructor(private frmBldr: FormBuilder, private svc: RestService,
-    private msg: InAppMessageService) {
+    private msg: InAppMessageService, private modalService: BsModalService) {
     this.subscription = this.msg.getCommonTransactionInfo().subscribe(
       res => {
-        debugger;
-        this.transactionDtl = res;
-        this.setTransactionDtl();
+        this.showDenominationDtl = false;
+        this.totalOfDenomination = 0;
+        if (null !== res) {
+          this.transactionDtl = res;
+          this.setTransactionDtl();
+        } else {
+          if (undefined !== this.transactionDtlsFrm) {
+            this.transactionDtlsFrm.reset();
+          }
+        }
+
       },
       err => { }
     );
   }
-
+  modalRef: BsModalRef;
   subscription: Subscription;
   isLoading = false;
   show = false;
+  showDenominationDtl = false;
   transactionDtl: td_def_trans_trf;
   transactionDtlsFrm: FormGroup;
+  tmDenominationTransLst: tm_denomination_trans[] = [];
+  totalOfDenomination = 0;
+  sys = new SystemValues();
 
   ngOnInit(): void {
     this.show = true;
@@ -88,7 +103,9 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
   }
 
   setTransactionDtl(): void {
-    if (undefined !== this.transactionDtl && null !== this.transactionDtl) {
+    this.showDenominationDtl = false;
+    this.totalOfDenomination = 0;
+    if (undefined !== this.transactionDtl && Object.keys(this.transactionDtl).length !== 0) {
       this.svc.addUpdDel<mm_acc_type[]>('Mst/GetAccountTypeMaster', null).subscribe(
         res => {
           const accType = res.filter(e => e.acc_type_cd === this.transactionDtl.acc_type_cd)[0];
@@ -107,9 +124,9 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
                   this.transactionDtl.trans_mode === 'Q' ? 'Cheque' : null,
             amount: this.transactionDtl.amount,
             instrument_dt: this.transactionDtl.instrument_dt.toString() === '0001-01-01T00:00:00' ? null :
-             this.transactionDtl.instrument_dt ,
+              this.transactionDtl.instrument_dt,
             instrument_num: this.transactionDtl.instrument_num === 0 ? null :
-             this.transactionDtl.instrument_num,
+              this.transactionDtl.instrument_num,
             paid_to: this.transactionDtl.paid_to,
             token_num: this.transactionDtl.token_num,
             approval_status: this.transactionDtl.approval_status === 'U' ? 'Un Approved' :
@@ -122,7 +139,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
             voucher_dt: this.transactionDtl.voucher_dt,
             voucher_id: this.transactionDtl.voucher_id,
             trf_type: this.transactionDtl.trf_type === 'C' ? 'Cash' :
-             this.transactionDtl.trf_type === 'T' ? 'Tranfer' : '',
+              this.transactionDtl.trf_type === 'T' ? 'Tranfer' : '',
             tr_acc_cd: this.transactionDtl.tr_acc_cd,
             acc_cd: this.transactionDtl.acc_cd,
             share_amt: this.transactionDtl.share_amt,
@@ -152,11 +169,39 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
             acc_name: this.transactionDtl.acc_name,
             brn_cd: this.transactionDtl.brn_cd,
           });
+          this.getDenominationDtl();
         },
         err => { this.isLoading = false; }
       );
+    } else { this.transactionDtlsFrm.reset(); }
+
+  }
+
+  private getDenominationDtl(): void {
+    if (this.transactionDtl.trf_type === 'C') {
+      let tmDenoTrf = new tm_denomination_trans();
+      tmDenoTrf.brn_cd = this.sys.BranchCode;
+      tmDenoTrf.trans_cd = this.transactionDtl.trans_cd;
+      tmDenoTrf.trans_dt = Utils.convertStringToDt(this.transactionDtl.trans_dt.toString());
+      this.svc.addUpdDel<any>('Common/GetDenominationDtls', tmDenoTrf).subscribe(
+        res => {
+          if (null !== res && Object.keys(res).length !== 0) {
+            this.showDenominationDtl = true;
+            this.tmDenominationTransLst = res;
+            this.tmDenominationTransLst.forEach(element => {
+              this.totalOfDenomination += element.total;
+            });
+          }
+        },
+        err => { }
+      );
     }
   }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+  }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }

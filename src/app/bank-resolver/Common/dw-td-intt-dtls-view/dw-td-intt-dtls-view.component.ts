@@ -14,8 +14,13 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
     this.subscription = this.msg.getCommonAcctInfo().subscribe(
       res => {
         debugger;
-        this.acctDtls = res;
-        this.getInterestList();
+        if (null !== res) {
+          this.acctDtls = res;
+          this.getInterestList();
+        } else {
+          this.interestDetails = [];
+        }
+
       },
       err => { }
     );
@@ -31,17 +36,16 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
     debugger;
     if (undefined !== this.acctDtls &&
       null !== this.acctDtls) {
-        let tdIntDtl = new td_intt_dtls();
-        tdIntDtl.acc_type_cd = this.acctDtls.acc_type_cd;
-        tdIntDtl.acc_num = this.acctDtls.acc_num;
-        this.svc.addUpdDel<any>('Deposit/GetInttDetails', tdIntDtl).subscribe(
-          res => {
-            debugger;
-            this.interestDetails = res[0];
-          },
-          err => { }
-        );
-      }
+      const tdIntDtl = new td_intt_dtls();
+      tdIntDtl.acc_type_cd = this.acctDtls.acc_type_cd;
+      tdIntDtl.acc_num = this.acctDtls.acc_num;
+      this.svc.addUpdDel<any>('Deposit/GetInttDetails', tdIntDtl).subscribe(
+        res => {
+          this.interestDetails = res[0];
+        },
+        err => { }
+      );
+    }
   }
 
   ngOnDestroy(): void {
