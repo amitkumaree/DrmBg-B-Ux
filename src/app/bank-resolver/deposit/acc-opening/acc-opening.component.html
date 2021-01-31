@@ -6,8 +6,8 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="modifyData()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="deleteData()">Delete</button>
   </div>
 </div>
 
@@ -234,7 +234,7 @@
 
         <div class="form-group col-5">
           <small for="acc_no">Account Number</small>
-          <input style="height:25px" [disabled]="operationType == 'I'" (change)="getAccountOpeningTempData()" [(ngModel)]="tm_deposit.acc_num" type="text" class="form-control form-control-sm text-capitalize" id="acc_no"
+          <input style="height:25px" [disabled]="operationType == 'I' || operationType == 'U'" (change)="getAccountOpeningTempData()" [(ngModel)]="tm_deposit.acc_num" type="text" class="form-control form-control-sm text-capitalize" id="acc_no"
             placeholder="Account Number">
           <!-- <input style="height:25px" [disabled]='disableAccountTypeAndNo' (change)="getAccountOpeningTempData()" [(ngModel)]="tm_deposit.acc_num" type="text" class="form-control form-control-sm text-capitalize" id="acc_no"
             placeholder="Account Number"> -->
@@ -412,7 +412,7 @@
 
           <div class="form-group col-3">
             <small for="dep_interest">Interest</small>
-            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.intt_amt" style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+            <input disabled [(ngModel)]="tm_deposit.intt_amt" style="height:25px; text-align-last: right;" type="number" min="0" step='any'
               class="form-control form-control-sm text-capitalize" id="dep_interest">
           </div>
         </div>
@@ -535,7 +535,7 @@
 
           <div class="form-group col-2">
             <small for="dbs_interest">Interest</small>
-            <input [(ngModel)]="tm_deposit.intt_amt" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+            <input [(ngModel)]="tm_deposit.intt_amt" disabled style="height:25px; text-align-last: right;" type="number" min="0" step='any'
               class="form-control form-control-sm text-capitalize" id="dbs_interest">
           </div>
 
@@ -661,7 +661,7 @@
 
           <div class="form-group col-2">
             <small for="term_dep_interest">Interest</small>
-            <input style="height:25px; text-align-last: right;" [disabled]='disableAll' type="number" min="0"  step='any'
+            <input style="height:25px; text-align-last: right;" disabled type="number" min="0"  step='any'
               class="form-control form-control-sm text-capitalize" id="term_dep_interest">
           </div>
 
@@ -786,7 +786,7 @@
 
           <div class="form-group col-3">
             <small for="mis_interest">Interest</small>
-            <input [(ngModel)]="tm_deposit.intt_amt" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+            <input [(ngModel)]="tm_deposit.intt_amt" disabled style="height:25px; text-align-last: right;" type="number" min="0" step='any'
               class="form-control form-control-sm text-capitalize" id="mis_interest">
           </div>
 
@@ -872,7 +872,7 @@
 
           <div class="form-group col-2">
             <small for="rec_dep_interest">Interest</small>
-            <input [(ngModel)]="tm_deposit.intt_amt" [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
+            <input [(ngModel)]="tm_deposit.intt_amt" disabled style="height:25px; text-align-last: right;" type="number" min="0" value='0' step='any'
               class="form-control form-control-sm text-capitalize" id="rec_dep_interest">
           </div>
 
@@ -1369,7 +1369,7 @@
               id="trans_type" class="form-control form-control-sm" [disabled]="disableAll"
               (change)="setDenomination($event.target.value, i)">
               <option [value]="t1.rupees" disabled selected>{{t1.rupees_desc}}</option>
-              <option [value]="l.rupees" *ngFor="let l of denominations" >{{l.desc}}</option>
+              <option [value]="l.value" *ngFor="let l of denominationList" >{{l.rupees}}</option>
               </select>
           </div>
 
@@ -1520,7 +1520,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="modifyData()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="deleteData()">Delete</button>
   </div>
 </div>
