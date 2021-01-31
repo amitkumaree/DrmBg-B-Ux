@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '
 import { Router } from '@angular/router';
 // import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from 'src/app/_service';
-import { T_VOUCHER_DTLS, m_acc_master, SystemValues } from '../../Models';
+import { T_VOUCHER_DTLS, m_acc_master, SystemValues, MessageType, ShowMessage } from '../../Models';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
@@ -14,7 +14,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 })
 export class VoucherComponent implements OnInit {
 
-  tvd = new T_VOUCHER_DTLS();
+  tvd = new T_VOUCHER_DTLS(); 
   tvdRet: T_VOUCHER_DTLS[] = [];
   tvn = new T_VOUCHER_DTLS();
   tvnRet: T_VOUCHER_DTLS[] = [];
@@ -25,8 +25,9 @@ export class VoucherComponent implements OnInit {
   tvdGroupRes: any;
   reportcriteria: FormGroup;
   closeResult = '';
-  alertMsg = '';
-  showAlert = false;
+  //alertMsg = '';
+ // showAlert = false;
+  showMsg: ShowMessage;
   onVoucherCreation: FormGroup;
   VoucherF: FormArray;
   _voucherId: any;
@@ -172,8 +173,7 @@ export class VoucherComponent implements OnInit {
   Submit() {
     debugger;
     if (this.reportcriteria.invalid) {
-      this.showAlert = true;
-      this.alertMsg = "Invalid Input.";
+       this.HandleMessage(true, MessageType.Error, 'Invalid Input.');
       return false;
     }
     else
@@ -197,23 +197,18 @@ export class VoucherComponent implements OnInit {
   }
   Save() {
     debugger;
-    this.showAlert = false;
-    let isAccCDBlank = false;
+     let isAccCDBlank = false;
     if (this._voucherNarration == null || this._voucherNarration == '') {
-      this.showAlert = true;
-      this.alertMsg = "Narration can not be blank !"
+      this.HandleMessage(true, MessageType.Error, 'Narration can not be blank !');
     }
     else if (this.getTotalDr() == 0) {
-      this.showAlert = true;
-      this.alertMsg = "Debit Amount Can not be Zero !"
+     this.HandleMessage(true, MessageType.Error, 'Debit Amount Can not be Zero !');
     }
     else if (this.getTotalCr() == 0) {
-      this.showAlert = true;
-      this.alertMsg = "Credit Amount Can not be Zero !"
+     this.HandleMessage(true, MessageType.Error, '"Credit Amount Can not be Zero !');
     }
     else if (this.getTotalCr() != this.getTotalDr()) {
-      this.showAlert = true;
-      this.alertMsg = "Debit and Credit Amount must be equal !"
+      this.HandleMessage(true, MessageType.Error, 'Debit and Credit Amount must be equal !');
     }
 
     else {
@@ -224,8 +219,10 @@ export class VoucherComponent implements OnInit {
         }
       }
       if (isAccCDBlank) {
-        this.showAlert = true;
-        this.alertMsg = "Account Code Can not be Blank !"
+        //this.showAlert = true;
+        //this.alertMsg = "Account Code Can not be Blank !"
+        this.HandleMessage(true, MessageType.Error, 'Account Code Can not be Blank !');
+        
       }
       else {
         this.InsertVoucher();
@@ -238,7 +235,7 @@ export class VoucherComponent implements OnInit {
     this.getVoucherDtl(this.sys.BranchCode, item.voucher_dt, item.voucher_id, item.narrationdtl)
   }
   closeAlert() {
-    this.showAlert = false;
+    //this.showAlert = false;
   }
   get voucherData() { return <FormArray>this.onVoucherCreation.get('VoucherF'); }
 
@@ -298,8 +295,10 @@ export class VoucherComponent implements OnInit {
     this.maccmaster=this.maccmasterRet.filter(x=>x.acc_cd!=28101);
     this.VoucherF.controls[0].get('acc_cd').setValue(28101);
     this.VoucherF.controls[0].get('desc').setValue(this.maccmasterRet.find(x=>x.acc_cd===28101).acc_name);
-    this.VoucherF.controls[0].get('dr_amt').disable();
-    this.VoucherF.controls[0].get('cr_amt').disable();
+    //this.VoucherF.controls[0].get('dr_amt').disable();
+    //this.VoucherF.controls[0].get('cr_amt').disable();
+    this.VoucherF.controls[0].get('dr_amt').untouched;
+    this.VoucherF.controls[0].get('cr_amt').untouched;
     this.VoucherF.controls[0].get('desc').disable();
     }
     else{
@@ -502,6 +501,7 @@ export class VoucherComponent implements OnInit {
   }
   public getTotalCr() {
     let total = 0;
+    debugger;
     try {
       for (var i = 0; i < this.VoucherF.value.length; i++) {
         if (this.VoucherF.value[i].cr_amt > 0) {
@@ -530,12 +530,13 @@ export class VoucherComponent implements OnInit {
   }
 
   public drAmountInput(row, event) {
-    this.showAlert = false;
+    //this.showAlert = false;
     if (this.voucherData.value[row].acc_cd == null || this.voucherData.value[row].acc_cd == '') {
-      this.showAlert = true;
+      //this.showAlert = true;
       this.VoucherF.controls[row].get('dr_amt').setValue(null);
       this.VoucherF.controls[row].get('cr_amt').setValue(null);
-      this.alertMsg = "Account Code Can not be Blank !"
+      this.HandleMessage(true, MessageType.Error, 'Account Code Can not be Blank !');
+      //this.alertMsg = "Account Code Can not be Blank !"
       return;
     }
    try {
@@ -557,12 +558,13 @@ export class VoucherComponent implements OnInit {
     catch (exception) { let x = 0; }
   }
   public crAmountInput(row, event) {
-    this.showAlert = false;
+    //this.showAlert = false;
     if (this.voucherData.value[row].acc_cd == null || this.voucherData.value[row].acc_cd == '') {
-      this.showAlert = true;
+      //this.showAlert = true;
       this.VoucherF.controls[row].get('dr_amt').setValue(null);
       this.VoucherF.controls[row].get('cr_amt').setValue(null);
-      this.alertMsg = "Account Code Can not be Blank !"
+      this.HandleMessage(true, MessageType.Error, 'Account Code Can not be Blank !');
+     // this.alertMsg = "Account Code Can not be Blank !"
       return;
     }
     try {
@@ -621,6 +623,13 @@ return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
 private convertStringToDt(str: string): Date {
   const dateParts = str.substring(0,10).split('/');
   return new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+}
+
+private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
+  this.showMsg = new ShowMessage();
+  this.showMsg.Show = show;
+  this.showMsg.Type = type;
+  this.showMsg.Message = message;
 }
 
 }

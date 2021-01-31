@@ -55,12 +55,14 @@ private getDayOpertion ()
         this.sdoRet = res;
         this.isRetrieve=true;
         this.isOk=false;
-      }
+        this.sdoRet.forEach(x=>x.operation_dt=this.convertDate(x.operation_dt.toString()))
+        }
       else
       {
       this.sdoRet = res;
       this.isRetrieve=false;
       this.isOk=true;
+      this.sdoRet.forEach(x=>x.operation_dt=this.convertDate(x.operation_dt.toString()))
       }
     },
     err => { debugger;  this.isLoading = false;}
