@@ -15,6 +15,7 @@ export class InAppMessageService {
   private commonTranInfo = new BehaviorSubject<td_def_trans_trf>(null);
   private commonAccountNumDtl = new BehaviorSubject<string>(null);
   private hideTitleOnHeader = new BehaviorSubject<boolean>(null);
+  private commonShawdowBal = new BehaviorSubject<number>(null);
 
   constructor() { }
   /* Below code is example code */
@@ -42,4 +43,7 @@ export class InAppMessageService {
 
   sendhideTitleOnHeader(hide: boolean) { this.hideTitleOnHeader.next(hide); }
   gethideTitleOnHeader() { return this.hideTitleOnHeader.asObservable(); }
+
+  sendShdowBalance(shadowBal: number) { this.commonShawdowBal.next(shadowBal); }
+  getShdowBalance() { return this.commonShawdowBal.asObservable(); }
 }

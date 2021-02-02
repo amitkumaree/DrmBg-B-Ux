@@ -33,6 +33,19 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
       },
       err => { }
     );
+    this.subscription = this.msg.getShdowBalance().subscribe(
+      res => {
+        if (null !== res) {
+          debugger;
+          res = +res;
+          res += this.ShadowBalance;
+          this.accDtlsFrm.patchValue({
+            shadow_bal: res
+          });
+        }
+      },
+      err => { }
+    );
   }
   subscription: Subscription;
   acctDtls = new tm_depositall();
@@ -41,6 +54,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
   showInterestDtls = false;
   showInterestForRd = false;
   accDtlsFrm: FormGroup;
+  ShadowBalance: number;
   constitutionList: mm_constitution[] = [];
   operationalInstrList: mm_oprational_intr[] = [];
   rdInstallements: td_rd_installment[] = [];
@@ -254,12 +268,14 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
 
   getShadowBalance(): void {
     const tmDep = new tm_deposit();
+    this.ShadowBalance = 0;
     tmDep.acc_type_cd = this.acctDtls.acc_type_cd;
     tmDep.brn_cd = this.acctDtls.brn_cd;
     tmDep.acc_num = this.acctDtls.acc_num;
     this.svc.addUpdDel<any>('Deposit/GetShadowBalance', tmDep).subscribe(
       res => {
         if (undefined !== res && null !== res && !isNaN(+res)) {
+          this.ShadowBalance = res;
           this.accDtlsFrm.patchValue({
             shadow_bal: res
           });

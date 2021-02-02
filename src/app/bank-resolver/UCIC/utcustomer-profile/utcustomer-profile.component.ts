@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RestService } from 'src/app/_service';
 import { formatDate } from '@angular/common';
 import { Router } from '@angular/router';
+import Utils from 'src/app/_utility/utils';
 
 @Component({
   selector: 'app-utcustomer-profile',
@@ -50,7 +51,7 @@ export class UTCustomerProfileComponent implements OnInit {
     // form defination
     this.custMstrFrm = this.frmBldr.group({
       brn_cd: [''],
-      cust_cd: [{value: '', disabled: true}],
+      cust_cd: [{ value: '', disabled: true }],
       cust_type: ['', Validators.required],
       title: [''],
       first_name: ['', Validators.required],
@@ -61,7 +62,7 @@ export class UTCustomerProfileComponent implements OnInit {
       cust_dt: [''],
       old_cust_cd: [''],
       dt_of_birth: [''],
-      age: [{value: '', disabled: true}],
+      age: [{ value: '', disabled: true }],
       sex: [''],
       marital_status: [''],
       catg_cd: [''],
@@ -78,7 +79,7 @@ export class UTCustomerProfileComponent implements OnInit {
       service_area_cd: ['', { disabled: true }],
       service_area_cd_desc: ['', { disabled: true }],
       occupation: [''],
-      phone: [''],
+      phone: [null, [Validators.pattern('[0-9 ]{12}'), Validators.maxLength(12)]],
       present_address: [''],
       farmer_type: [''],
       email: [''],
@@ -195,8 +196,9 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public onNameChange(): void {
-    debugger;
-    let cust_name = this.f.first_name.value + ' ' + this.f.middle_name.value + ' ' + this.f.last_name.value;
+    const cust_name = (this.f.first_name.value) + ' '
+      + this.f.middle_name.value + ' '
+      + this.f.last_name.value;
     this.custMstrFrm.patchValue({
       cust_name: cust_name
     });
@@ -230,17 +232,17 @@ export class UTCustomerProfileComponent implements OnInit {
     this.suggestedCustomer = UTCustomerProfileComponent.existingCustomers
       .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase())
         || c.cust_cd.toString().startsWith(this.f.cust_name.value)
-        || ( c.phone !== null && c.phone.startsWith(this.f.cust_name.value)))
+        || (c.phone !== null && c.phone.startsWith(this.f.cust_name.value)))
       .slice(0, 20);
   }
 
   public onDobChange(value: Date): number {
     debugger;
     if (null !== value) {
-    const timeDiff = Math.abs(Date.now() - value.getTime());
-    const age = Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25)
-    this.f.age.setValue(age);
-    return age;
+      const timeDiff = Math.abs(Date.now() - value.getTime());
+      const age = Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25)
+      this.f.age.setValue(age);
+      return age;
     }
   }
 
@@ -309,6 +311,7 @@ export class UTCustomerProfileComponent implements OnInit {
 
   public onSaveClick(): void {
     debugger;
+    if (!this.validateControls()) { return; }
     this.isLoading = true;
     const cust = this.mapFormGrpToCustMaster();
     this.svc.addUpdDel<any>('UCIC/InsertCustomerDtls', cust).subscribe(
@@ -328,6 +331,18 @@ export class UTCustomerProfileComponent implements OnInit {
       },
       err => { this.isLoading = false; }
     );
+  }
+
+  validateControls(): boolean {
+    if (!Utils.ValidatePAN(this.f.pan.value)) {
+      this.HandleMessage(true, MessageType.Error, 'PAN is not valid');
+      return false;
+    }
+    if (!Utils.ValidatePhone(this.f.phone.value)) {
+      this.HandleMessage(true, MessageType.Error, 'Phone number is not valid');
+      return false;
+    }
+    return true;
   }
 
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
@@ -439,6 +454,7 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public onModifyClick(): void {
+    this.validateControls();
     this.showMsg = null;
     this.isLoading = true;
     const cust = this.mapFormGrpToCustMaster();

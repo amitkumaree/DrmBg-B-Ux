@@ -34,7 +34,7 @@ const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
   // { path: 'te-st', component: UTCustomerProfileComponent },
-  { path: 'te-st', component: TransactionapprovalComponent },
+  { path: 'te-st', component: AccounTransactionsComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},

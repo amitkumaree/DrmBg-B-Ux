@@ -257,6 +257,8 @@ export class AccounTransactionsComponent implements OnInit {
     this.showTransMode = false;
     this.accNoEnteredForTransaction.ShowClose = false;
     this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
+    // this.msg.sendShdowBalance(0);
+    this.td.amount.setValue(null);
 
     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     this.transType = new DynamicSelect();
@@ -379,10 +381,30 @@ export class AccounTransactionsComponent implements OnInit {
     }
     return true;
   }
+
+  onAmtChng(): void {
+    if ((+this.td.amount.value) < 0) {
+      this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
+      return;
+    }
+    // check this.td.trans_type_key === 'W' / 'D'
+    if (this.td.trans_type_key.value === 'W') {
+      this.msg.sendShdowBalance(-(+this.td.amount.value));
+    } else if (this.td.trans_type_key.value === 'D') {
+      this.msg.sendShdowBalance((+this.td.amount.value));
+    }
+  }
+
   onSaveClick(): void {
     debugger;
+
+    if ((+this.td.amount.value) <= 0) {
+      this.HandleMessage(true, MessageType.Error, 'Amount can not be blank');
+      return;
+    }
+
     if (this.checkUnaprovedTransactionExixts()) {
-      this.HandleMessage(true, MessageType.Warning,
+      this.HandleMessage(true, MessageType.Error,
         'Un-pproved Transaction already exists for the Account ' + this.td.acc_num.value);
       return;
     }
@@ -762,10 +784,7 @@ export class AccounTransactionsComponent implements OnInit {
     }
 
   }
-  private convertDate(datestring: string): Date {
-    const parts = datestring.match(/(\d+)/g);
-    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-  }
+
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
     this.showMsg = new ShowMessage();
     this.showMsg.Show = show;

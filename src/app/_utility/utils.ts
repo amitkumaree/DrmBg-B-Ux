@@ -1,4 +1,7 @@
 export default class Utils {
+  static regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+  static regMobile = new RegExp('(?:(?:\\+|0{0,2})91(\\s*[\\- ]\\s*)?|[0 ]?)?[789]\\d{9}|(\\d[ -]?){10}\\d', 'g');
+
   public static convertStringToDt(str: string): Date {
     str = str.substring(0, 10);
     const dateParts = str.split('/');
@@ -13,8 +16,24 @@ export default class Utils {
     const yyyy = today.getFullYear();
 
     return (((dd < 10) ? ('0' + dd) : dd) + '/'
-            + ((mm < 10) ? '0' + mm : mm) + '/'
-            + yyyy);
+      + ((mm < 10) ? '0' + mm : mm) + '/'
+      + yyyy);
+  }
+
+  public static ValidatePAN(pan: string): boolean {
+    if (this.regpan.test(pan)) { // valid pan card number
+      return true;
+    } else {
+      return false; // invalid pan card number
+    }
+  }
+
+  public static ValidatePhone(phone: string): boolean {
+    if (this.regMobile.test(phone)) { // valid pan card number
+      return true;
+    } else {
+      return false; // invalid pan card number
+    }
   }
 
   // private static some() {

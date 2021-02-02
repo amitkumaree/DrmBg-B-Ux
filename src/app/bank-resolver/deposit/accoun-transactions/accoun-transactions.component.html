@@ -105,8 +105,9 @@
               </select>
             </div>
             <div class="form-group col-2">
-              <small for="amount">Amount </small>
-              <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount">
+              <small for="amount">Amount <span class="text-danger">*</span> </small>
+              <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
+              (change)="onAmtChng()">
             </div>
           </div>
           <div class="form-row" *ngIf="!hideOnClose">
