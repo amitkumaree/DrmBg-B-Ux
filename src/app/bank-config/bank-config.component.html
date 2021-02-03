@@ -19,25 +19,27 @@
         <td style="width: 95%;">
           <!-- <tr style="background-color: #1076eb"> -->
       <tr>
-        <td style="width: 30%;"><b>Bank Name</b></td>
-        <td style="width: 25%;"><b>DB Server</b></td>
-        <td style="width: 20%;"><b>User Id</b></td>
-        <td style="width: 20%;"><b>PassWord</b></td>
+        <td style="width: 20%;"><b>Bank Name</b></td>
+        <td style="width: 20%;"><b>DB Server</b></td>
+        <td style="width: 15%;"><b>User Id</b></td>
+        <td style="width: 15%;"><b>PassWord</b></td>
+        <td style="width: 15%;"><b>Sig User Id</b></td>
+        <td style="width: 15%;"><b>Sig PassWord</b></td>
         <!-- <td style="width: 5%;"></td> -->
       </tr>
       <tr>
-        <td><input disabled mdbInput class="inp1" size="40" placeholder="Enter Bank Name.."
+        <td><input disabled mdbInput class="inp1" size="20" placeholder="Enter Bank Name.."
             [(ngModel)]="bankConfigMst.bankname" type="text"></td>
 
-        <td><input class="inp1" size="30" placeholder="Enter Server IP.." [(ngModel)]="bankConfigMst.connstring.server"
+        <td><input class="inp1" size="20" placeholder="Enter Server IP.." [(ngModel)]="bankConfigMst.connstring.server"
             type="text"></td>
 
-        <td><input class="inp1" size="22" placeholder="Enter Server UserId.."
+        <td><input class="inp1" size="15" placeholder="Enter Server UserId.."
             [(ngModel)]="bankConfigMst.connstring.userId" type="text"></td>
 
         <td *ngIf="!showPass">
           <div class="input-group">
-            <input type="password" class="form-control" size="20" placeholder="Enter Server Password.."
+            <input type="password" class="form-control" size="15" placeholder="Enter Server Password.."
               style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58); background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
               [(ngModel)]="bankConfigMst.connstring.password">
             <i class="fa fa-eye-slash" style="font-size:20px; color: black;  margin-top: 5px; margin-left: 2px;"
@@ -46,14 +48,6 @@
         </td>
 
         <td *ngIf="showPass">
-          <!-- <div class="input-group">
-            <input class="form-control" size="20" placeholder="Enter Server Password.."
-              style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
-              [(ngModel)]="bankConfigMst.connstring.password" type="text">
-            <i class="fa fa-eye" style="font-size:20px; color:#1076eb;;  margin-top: 5px; margin-left: 2px;"
-             (click)="showPassword()"></i>
-          </div> -->
-
           <div class="input-group mb-3">
             <input type="text" class="form-control" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
             [(ngModel)]="bankConfigMst.connstring.password" type="text">
@@ -65,6 +59,30 @@
 
         </td>
 
+        <td><input class="inp1" size="15" placeholder="Enter Server Signature UserId.."
+          [(ngModel)]="bankConfigMst.connstring.siguserId" type="text"></td>
+
+      <td *ngIf="!showPass">
+        <div class="input-group">
+          <input type="password" class="form-control" size="15" placeholder="Enter Server Signature Password.."
+            style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58); background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
+            [(ngModel)]="bankConfigMst.connstring.sigpassword">
+          <i class="fa fa-eye-slash" style="font-size:20px; color: black;  margin-top: 5px; margin-left: 2px;"
+            (click)="showPassword()"></i>
+        </div>
+      </td>
+
+      <td *ngIf="showPass">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
+          [(ngModel)]="bankConfigMst.connstring.sigpassword" type="text">
+          <div class="input-group-append">
+            <span class="input-group-icon" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"><i class="fa fa-eye" style="font-size:20px; color:#1076eb;;  margin-top: 5px; margin-left: 2px;"
+              (click)="showPassword()"></i></span>
+          </div>
+        </div>
+
+      </td>
 
 
         <!-- <td>
