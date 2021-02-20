@@ -10,6 +10,7 @@ import {
 } from '../../Models';
 import { TranApprovalVM } from '../../Models/TranApprovalVM';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-transactionapproval',
@@ -20,7 +21,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 export class TransactionapprovalComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   constructor(private svc: RestService, private elementRef: ElementRef,
-    private msg: InAppMessageService, private modalService: BsModalService) { }
+    private msg: InAppMessageService, private modalService: BsModalService
+    ,private router: Router) { }
   static accType: mm_acc_type[] = [];
   selectedAccountType: number;
   selectedTransactionMode: string;
@@ -286,6 +288,10 @@ export class TransactionapprovalComponent implements OnInit {
         this.HandleMessage(true, MessageType.Error, err.error.text);
       }
     );
+  }
+
+  onBackClick() {
+    this.router.navigate([this.sys.BankName + '/la']);
   }
   // groupBy(xs, f) {
   //   const gc = xs.reduce((r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r), {})

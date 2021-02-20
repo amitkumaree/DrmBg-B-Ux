@@ -9,7 +9,7 @@
     (click)="onClickRefreshList()">Refresh List</button>
     <button type="button" [disabled]="undefined === selectedVm"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="onDeleteClick()">Delete</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
   </div>
 </div>
 <loading *ngIf="isLoading"></loading>
@@ -117,7 +117,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClickRefreshList()">Refresh List</button>
     <button type="button" [disabled]="undefined === selectedVm"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="onDeleteClick()">Delete</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
   </div>
 </div>
 
