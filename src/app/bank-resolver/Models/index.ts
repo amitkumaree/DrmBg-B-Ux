@@ -30,3 +30,4 @@ export * from './deposit/td_intt_dtls';
 export * from './mm_operation';
 export * from './tm_depositall';
 export * from './SystemValues';
+export * from './kyc_sig';

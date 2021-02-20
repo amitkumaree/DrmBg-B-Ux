@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 })
 export class TransactionapprovalComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
+  @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
   constructor(private svc: RestService, private elementRef: ElementRef,
     private msg: InAppMessageService, private modalService: BsModalService
     ,private router: Router) { }
@@ -47,7 +48,7 @@ export class TransactionapprovalComponent implements OnInit {
 
   }
   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
+    this.modalRef = this.modalService.show(template , {class: 'modal-lg'});
   }
   public onClickRefreshList() {
     this.msg.sendCommonTransactionInfo(null);
@@ -111,6 +112,7 @@ export class TransactionapprovalComponent implements OnInit {
       res => {
         this.selectedVm.mm_customer = res[0];
         this.msg.sendCommonCustInfo(res[0]);
+        this.msg.sendcustomerCodeForKyc(this.selectedVm.mm_customer.cust_cd);
         this.isLoading = false;
       },
       err => { this.isLoading = false; }
