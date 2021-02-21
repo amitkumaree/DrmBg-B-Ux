@@ -11,6 +11,7 @@ import {
 import { tm_denomination_trans } from '../../Models/deposit/tm_denomination_trans';
 import { DatePipe } from '@angular/common';
 import { tm_transfer } from '../../Models/deposit/tm_transfer';
+import { tt_denomination } from '../../Models/deposit/tt_denomination';
 
 @Component({
   selector: 'app-accoun-transactions',
@@ -51,11 +52,12 @@ export class AccounTransactionsComponent implements OnInit {
   showMsg: ShowMessage;
   showInstrumentDtl = false;
   tm_denominationList: tm_denomination_trans[] = [];
-  denominations = [
-    { rupees: '2000', desc: 'Two Thousand (Rs.2000)' },
-    { rupees: '500', desc: 'Five Hundred (Rs.500)' },
-    { rupees: '100', desc: 'Hundred (Rs.100)' },
-    { rupees: '50', desc: 'Fifty (Rs.50)' }];
+  denominationList: tt_denomination[] = [];
+  // denominations = [
+  //   { rupees: '2000', desc: 'Two Thousand (Rs.2000)' },
+  //   { rupees: '500', desc: 'Five Hundred (Rs.500)' },
+  //   { rupees: '100', desc: 'Hundred (Rs.100)' },
+  //   { rupees: '50', desc: 'Fifty (Rs.50)' }];
   denominationGrandTotal = 0;
 
   ngOnInit(): void {
@@ -132,8 +134,22 @@ export class AccounTransactionsComponent implements OnInit {
     this.getAccountTypeList();
     this.getCustomerList();
     this.GetUnapprovedDepTrans();
+    this.getDenominationList();
   }
 
+  private getDenominationList(): void {
+    debugger;
+    var denoList: tt_denomination[] = [];
+    this.svc.addUpdDel<any>('Common/GetDenomination', null).subscribe(
+      res => {
+        debugger;
+        denoList = res;
+        this.denominationList = denoList.sort((a,b) => (a.value < b.value) ? 1 : -1 );
+      },
+      err => { // debugger;
+      }
+    );
+  }
   /** silently bring all the unapproved transaction
    * silently because it will be needed during save
    */
@@ -376,7 +392,7 @@ export class AccounTransactionsComponent implements OnInit {
     const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
       === this.td.acc_num.value)[0];
 
-    if (Object.keys(unapprovedTrans).length === 0) {
+    if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
       return false;
     }
     return true;
@@ -555,7 +571,7 @@ export class AccounTransactionsComponent implements OnInit {
   setDenomination(val: number, idx: number) {
     debugger;
     this.tm_denominationList[idx].rupees = Number(val);
-    this.tm_denominationList[idx].rupees_desc = this.denominations.filter(x => x.rupees === val.toString())[0].desc;
+    this.tm_denominationList[idx].rupees_desc = this.denominationList.filter(x => x.rupees === val.toString())[0].rupees;
     this.calculateTotalDenomination(idx);
   }
 

@@ -9,7 +9,9 @@
     (click)="onClickRefreshList()">Refresh List</button>
     <button type="button" [disabled]="undefined === selectedVm"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="onDeleteClick()">Delete</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+   <button type="button" [disabled]="undefined === selectedVm"
+    class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
   </div>
 </div>
 <loading *ngIf="isLoading"></loading>
@@ -117,11 +119,24 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClickRefreshList()">Refresh List</button>
     <button type="button" [disabled]="undefined === selectedVm"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="onDeleteClick()">Delete</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
+    <button type="button" [disabled]="undefined === selectedVm"
+    class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
   </div>
 </div>
 
-
+<ng-template #kycContent >
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">KYC details for Acc# {{selectedVm.tm_deposit.acc_num}}
+    </h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-kyc></app-kyc>
+  </div>
+</ng-template>
 <!-- <loading *ngIf="isLoading"></loading>
 
 <div class="row d-flex justify-content-center align-items-center pt-4"

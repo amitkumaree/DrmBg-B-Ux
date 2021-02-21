@@ -16,6 +16,7 @@ export class InAppMessageService {
   private commonAccountNumDtl = new BehaviorSubject<string>(null);
   private hideTitleOnHeader = new BehaviorSubject<boolean>(null);
   private commonShawdowBal = new BehaviorSubject<number>(null);
+  private customerCodeForKyc = new BehaviorSubject<number>(null);
 
   constructor() { }
   /* Below code is example code */
@@ -46,4 +47,7 @@ export class InAppMessageService {
 
   sendShdowBalance(shadowBal: number) { this.commonShawdowBal.next(shadowBal); }
   getShdowBalance() { return this.commonShawdowBal.asObservable(); }
+
+  sendcustomerCodeForKyc(custCd: number) { this.customerCodeForKyc.next(custCd); }
+  getcustomerCodeForKyc() { return this.customerCodeForKyc.asObservable(); }
 }
