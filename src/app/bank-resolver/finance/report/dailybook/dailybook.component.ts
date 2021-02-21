@@ -8,6 +8,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { STRING_TYPE } from '@angular/compiler';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dailybook',
@@ -17,6 +18,8 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 export class DailybookComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('DailyCashBook') child: WebDataRocksPivot;
+  ReportUrl :SafeResourceUrl;
+  UrlString:string ="http://localhost:63011/DayBookViewer"
   modalRef: BsModalRef;
   isOpenFromDp = false;
   isOpenToDp = false;
@@ -43,9 +46,9 @@ export class DailybookComponent implements OnInit {
   todate: Date;
   isLoading = false;
   constructor(private svc: RestService, private formBuilder: FormBuilder,
-    private modalService: BsModalService
+    private modalService: BsModalService,private _domSanitizer : DomSanitizer
     // private modalService: NgbModal,
-    , private router: Router) { }
+    , private router: Router) { this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) }
   ngOnInit(): void {
     debugger;
     this.fromdate = this.sys.CurrentDate; // new Date(localStorage.getItem('__currentDate'));
