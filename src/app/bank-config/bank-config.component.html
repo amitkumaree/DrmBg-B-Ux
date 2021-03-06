@@ -60,13 +60,13 @@
         </td>
 
         <td><input class="inp1" size="15" placeholder="Enter Server Signature UserId.."
-          [(ngModel)]="bankConfigMst.connstring.siguserId" type="text"></td>
+          [(ngModel)]="bankConfigMst.connstring.sigUserId" type="text"></td>
 
       <td *ngIf="!showPass">
         <div class="input-group">
           <input type="password" class="form-control" size="15" placeholder="Enter Server Signature Password.."
             style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58); background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
-            [(ngModel)]="bankConfigMst.connstring.sigpassword">
+            [(ngModel)]="bankConfigMst.connstring.sigPassword">
           <i class="fa fa-eye-slash" style="font-size:20px; color: black;  margin-top: 5px; margin-left: 2px;"
             (click)="showPassword()"></i>
         </div>
@@ -75,7 +75,7 @@
       <td *ngIf="showPass">
         <div class="input-group mb-3">
           <input type="text" class="form-control" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
-          [(ngModel)]="bankConfigMst.connstring.sigpassword" type="text">
+          [(ngModel)]="bankConfigMst.connstring.sigPassword" type="text">
           <div class="input-group-append">
             <span class="input-group-icon" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"><i class="fa fa-eye" style="font-size:20px; color:#1076eb;;  margin-top: 5px; margin-left: 2px;"
               (click)="showPassword()"></i></span>
