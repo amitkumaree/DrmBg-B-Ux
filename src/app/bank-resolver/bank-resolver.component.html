@@ -1,5 +1,10 @@
-<div class="container-fluid" style="background-color: #78c2ad21;">
+<app-header *ngIf="showHeader"></app-header>
+<div class="daseboard_home">
   <h4 class="text-center" *ngIf="passedValue && showTitle">Welcome to {{passedValue.description}}</h4>
-  <app-header *ngIf="showHeader"></app-header>
+
   <router-outlet></router-outlet>
 </div>
+<footer class="sticky-footer">
+  <span style="line-height: 5; font-size: 12px;"><strong>Developed By: <a href="https://synergicsoftek.in/"
+        target="_blank">Synergic Softek Solutions PVT. LTD</a></strong></span>
+</footer>

@@ -25,6 +25,7 @@
     "html2pdf.js": "^0.9.2",
     "jspdf": "^1.5.3",
     "ng-auto-complete": "^4.1.15",
+    "ng2-date-picker": "^11.0.0",
     "ngx-bootstrap": "^6.2.0",
     "ngx-export-as": "^1.5.0",
     "ngx-json-viewer": "^2.4.0",

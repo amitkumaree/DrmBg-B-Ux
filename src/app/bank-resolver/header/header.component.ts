@@ -1,10 +1,9 @@
 import { BankConfiguration } from './../Models/bankConfiguration';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InAppMessageService, RestService } from 'src/app/_service';
-import { BankConfigMst, mainmenu, submenu, screenlist } from '../Models';
+import { BankConfigMst, mainmenu, submenu, screenlist, SystemValues } from '../Models';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -36,10 +35,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showSubMenu = false;
   showScreenTitle = false;
   selectedScreenToShow: string;
+  sys = new SystemValues();
 
   ngOnInit(): void {
     this.bankName = localStorage.getItem('__bName');
     this.getBankConfigMaster();
+
   }
 
   toggleCollapsed(): void {

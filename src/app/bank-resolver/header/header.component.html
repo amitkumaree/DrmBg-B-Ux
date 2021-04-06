@@ -1,8 +1,19 @@
 <div>
+  <header class="header_class">
+    <div class="wrapper">
+      <ul class="header_top">
+        <li><strong>Bank: </strong>{{sys.BankName}}</li>
+        <li><strong>Branch: </strong>{{sys.BranchName}}</li>
+        <li><strong>Financial Year: </strong>2018-19</li>
+        <li><strong>User: </strong>{{sys.UserId}}</li>
+        <li class="date"><strong>Opening Dt: </strong> {{sys.CurrentDate | date:'dd-MM-yyyy'}}</li>
+      </ul>
+    </div>
+  </header>
   <div class="row" *ngIf="showMenu">
-    <nav class="navbar navbar-expand-lg col-md-12 col-xl-12">
+    <nav class="navbar navbar-expand-lg col-md-12 col-xl-12" style="background-color: #228ed3 !important;">
       <button class="navbar-toggler" type="button" (click)="toggleCollapsed()">
-        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon" style="color: white;font-size: small;"></span>
       </button>
 
       <div class="collapse navbar-collapse" [ngClass]="{'collapse': collapsed, 'navbar-collapse': true}">
@@ -23,7 +34,7 @@
   </div>
   <div class="row" *ngIf="showChildMenu">
     <nav class="navbar navbar-expand-lg col-md-12 col-xl-12">
-      <button type="button" class="btn " (click)="back('child')"><i class="fa fa-arrow-left"></i></button>
+      <button type="button" class="btn " (click)="back('child')"><i  style="color: white;font-size: small;" class="fa fa-arrow-left"></i></button>
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let cmenu of childMenu.menu">
           <a class="nav-link" *ngIf="cmenu.activeflag === 'Y'" (click)="showSubChildMenuFor(cmenu)">{{cmenu.name}} </a>
@@ -40,7 +51,7 @@
 
   <div class="row" *ngIf="showSubMenu">
     <nav class="navbar navbar-expand-lg col-md-12 col-xl-12">
-      <button type="button" class="btn" (click)="back('sub')"><i class="fa fa-arrow-left"></i></button>
+      <button type="button" class="btn" (click)="back('sub')"><i style="color: white; font-size: small;" class="fa fa-arrow-left"></i></button>
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let sMenu of subMenu.menu">
           <a class="nav-link" *ngIf="sMenu.activeflag === 'Y'" (click)="gotoScreen(sMenu)">{{sMenu.screen}} </a>
