@@ -7,6 +7,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { STRING_TYPE } from '@angular/compiler';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
 
 
 @Component({
@@ -34,7 +35,8 @@ export class CashaccountComponent implements OnInit {
   showReport = false;
   showAlert = false;
   isLoading = false;
-  
+  ReportUrl: SafeResourceUrl;
+  UrlString = '';
   alertMsg = '';
   fd: any;
   td: any;
@@ -42,7 +44,7 @@ export class CashaccountComponent implements OnInit {
   fromdate: Date;
   todate:Date;
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-    private modalService: BsModalService,
+    private modalService: BsModalService,private _domSanitizer : DomSanitizer,
     private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=this.sys.CurrentDate;//new Date(localStorage.getItem('__currentDate'));
@@ -73,9 +75,14 @@ export class CashaccountComponent implements OnInit {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.todate=this.reportcriteria.value['toDate'];
-      this.isLoading=true;
-      this.onReportComplete();
+      //this.isLoading=true;
+      //this.onReportComplete();
       // this.modalService.dismissAll(this.content);
+      this.UrlString=this.svc.getReportUrl()
+      this.UrlString=this.UrlString+"WebForm/Fin/cashaccount?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+this.convertDtToString(this.fromdate)+"&to_dt="+this.convertDtToString(this.todate)+"&acc_cd="+localStorage.getItem('__cashaccountCD')
+      debugger;
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) //20/01/2019
+      this.modalRef.hide();
     }
   }
 
@@ -270,148 +277,14 @@ exportPDFTitle() {
   });
 }
 
-/////////////////////////////////////////////////
-// onReportComplete(): void {
-//   debugger;
-//   this.prp.brn_cd='101';
-//   this.prp.from_dt= this.fromdate;
-//   this.prp.to_dt=this.toDate;
-//   this.prp.acc_cd=28101;
-//   let fdate = new Date(this.fromdate);
-//   let tdate = new Date(this.toDate);
-//   this.fd = (("0" + fdate.getDate()).slice(-2)) + "/" + (("0" + (fdate.getMonth() + 1)).slice(-2)) + "/" + (fdate.getFullYear());
-//   this.td = (("0" + tdate.getDate()).slice(-2)) + "/" + (("0" + (tdate.getMonth() + 1)).slice(-2)) + "/" + (tdate.getFullYear());
-//   this.dt = new Date();
-//   this.dt = (("0" + this.dt.getDate()).slice(-2)) + "/" + (("0" + (this.dt.getMonth() + 1)).slice(-2)) + "/" + (this.dt.getFullYear()) + " " + this.dt.getHours() + ":" + this.dt.getMinutes();
-//   this.child.webDataRocks.off("reportcomplete");
-//   this.svc.addUpdDel<any>('Report/PopulateDailyCashBook',this.prp).subscribe(
-//     (data: tt_cash_account[]) => this.dailyCash = data,
-//     error => { console.log(error); },
-//     () => {
-//         debugger;
-//        this.child.webDataRocks.setReport({
-//         dataSource: {
-//            data:this.dailyCash
-//         },
-//         tableSizes: {
-//           columns: [
-//             {
-//               idx: 0,
-//               width: 75
-//             },
-//             {
-//               idx: 1,
-//               width: 200
-//             },
-//             {
-//               idx: 2,
-//               width: 100
-//             },
-//             {
-//               idx: 3,
-//               width: 75
-//             },
-//             {
-//               idx: 4,
-//               width: 200
-//             },
-//             {
-//               idx: 5,
-//               width: 100
-//             }
-//           ]
-//         },
-//         "options": {
-//           "grid": {
-//               "type": "flat",
-//               "showTotals": "off",
-//               "showGrandTotals": "off",
-//               "title": "Synergic Banking Cash Report"
-//           }
-//           },
-//           "slice": {
-//             "rows": [
-//                 {
-//                     "uniqueName": "dr_acc_cd",
-//                     "caption": "Debit",
-//                     "sort": "unsorted"
-//                 },
-//                 {
-//                     "uniqueName": "dr_particulars",
-//                     "caption": "Dr Description",
-//                     "sort": "unsorted"
-//                 },
-//                 {
-//                     "uniqueName": "dr_amt",
-//                     "caption": "Dr Amount",
-//                     "sort": "unsorted"
-//                 },
-//                 {
-//                   "uniqueName": "cr_acc_cd",
-//                   "caption": "Credit",
-//                     "sort": "unsorted"
-//               },
-//               {
-//                   "uniqueName": "cr_particulars",
-//                   "caption": "Cr Description",
-//                     "sort": "unsorted"
-//               },
-//               {
-//                   "uniqueName": "cr_amt",
-//                   "caption": "Cr Amount",
-//                     "sort": "unsorted"
-//               }
-//             ],
-
-//             "flatOrder": [
-//                 "Debit",
-//                 "Dr Description",
-//                 "Dr Amount",
-//                 "Credit",
-//                 "Cr Description",
-//                 "Cr Amount",
-//             ]
-//         },
-//         "conditions": [
-//           {
-//               "formula": "#value < 2500",
-//             "measure": "cr_amt",
-//               "format": {
-//                   "backgroundColor": "#f45328",
-//                   "color": "#FFFFFF"
-//               }
-//           },
-//           {
-//               "formula": "#value > 35000",
-//               "measure": "cr_amt",
-//               "format": {
-//                   "backgroundColor": "#0598df",
-//                   "color": "#FFFFFF"
-//               }
-//           }
-//       ],
-//           "formats": [{
-//             "name": "",
-//             "thousandsSeparator": " ",
-//             "decimalSeparator": ".",
-//             "decimalPlaces": 2,
-//             "maxSymbols": 20,
-//             "currencySymbol": "",
-//             "currencySymbolAlign": "left",
-//             "nullValue": " ",
-//             "infinityValue": "Infinity",
-//             "divideByZeroValue": "Infinity"
-//         }]
-//       });
-//     }
-//   );
-// }
-///////////////////
 
 closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
-
+private convertDtToString(tmpDate: Date): String {
+    
+  return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
+}
 
 }

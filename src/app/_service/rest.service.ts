@@ -35,6 +35,17 @@ export class RestService {
 
     return url;
   }
+  public getReportUrl(): string {
+     debugger;
+    let url = '';
+    const __bName = localStorage.getItem('__bName');
+    if (null !== RestService.configuration
+      && RestService.configuration.length > 0) {
+        url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
+      }
+    url = url.substr(0,url.length-1)+"Rpt/"
+    return url;
+  }
 
   public getAll<T>(ofwhat: string): Observable<T> {
     return this.http.get<T>(this.getUrl() + ofwhat);

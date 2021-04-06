@@ -7,6 +7,7 @@ import { tt_scroll_book } from 'src/app/bank-resolver/Models/tt_scroll_book';
 import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
 import { RestService } from 'src/app/_service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-scrollbook',
@@ -31,6 +32,8 @@ export class ScrollbookComponent implements OnInit {
   closeResult = '';
   showReport = false;
   showAlert = false;
+  ReportUrl: SafeResourceUrl;
+  UrlString = '';
   alertMsg = '';
   fd: any;
   td: any;
@@ -39,7 +42,7 @@ export class ScrollbookComponent implements OnInit {
   todate:Date;
   isLoading = false;
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-    private modalService: BsModalService,
+    private modalService: BsModalService,private _domSanitizer : DomSanitizer,
     private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=this.sys.CurrentDate;
@@ -69,9 +72,11 @@ export class ScrollbookComponent implements OnInit {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.todate=this.reportcriteria.value['toDate'];
-      this.isLoading=true;
-      this.onReportComplete();
-      // this.modalService.dismissAll(this.content);
+      this.UrlString=this.svc.getReportUrl()
+      this.UrlString=this.UrlString+"WebForm/Fin/dayscrollbook?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+this.convertDtToString(this.fromdate)+"&adt_to_dt="+this.convertDtToString(this.todate)
+      debugger;
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.modalRef.hide();
     }
   }
 
@@ -269,5 +274,9 @@ exportPDFTitle() {
 closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
+}
+private convertDtToString(tmpDate: Date): String {
+    
+  return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
 }
 }

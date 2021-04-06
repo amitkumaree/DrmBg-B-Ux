@@ -8,6 +8,7 @@ import { STRING_TYPE } from '@angular/compiler';
 import { tt_cash_cum_trial } from 'src/app/bank-resolver/Models/tt_cash_cum_trial';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-cashcumtrial',
@@ -33,6 +34,8 @@ export class CashcumtrialComponent implements OnInit {
   showReport = false;
   showAlert = false;
   isLoading = false;
+  ReportUrl: SafeResourceUrl;
+  UrlString = '';
   alertMsg = '';
   fd: any;
   td: any;
@@ -40,7 +43,7 @@ export class CashcumtrialComponent implements OnInit {
   fromdate: Date;
   todate:Date;
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-    private modalService: BsModalService,
+    private modalService: BsModalService,private _domSanitizer : DomSanitizer,
     private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=this.sys.CurrentDate;
@@ -71,9 +74,14 @@ export class CashcumtrialComponent implements OnInit {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.todate=this.reportcriteria.value['toDate'];
-      this.isLoading=true;
-      this.onReportComplete();
+      //this.isLoading=true;
+      //this.onReportComplete();
       // this.modalService.dismissAll(this.content);
+      this.UrlString=this.svc.getReportUrl()
+      this.UrlString=this.UrlString+"WebForm/Fin/cashcumtrail?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+this.convertDtToString(this.fromdate)+"&to_dt="+this.convertDtToString(this.todate)
+      debugger;
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.modalRef.hide();
     }
   }
 
@@ -275,5 +283,8 @@ closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
-
+private convertDtToString(tmpDate: Date): String {
+    
+  return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
+}
 }

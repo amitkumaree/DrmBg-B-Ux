@@ -7,6 +7,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { STRING_TYPE } from '@angular/compiler';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
 
 
 @Component({
@@ -32,6 +33,8 @@ export class GenLedgerComponent implements OnInit {
   closeResult = '';
   isLoading = false;
   showAlert = false;
+  ReportUrl: SafeResourceUrl;
+  UrlString = '';
   urlToCall: '';
   alertMsg = '';
   fd: any;
@@ -42,6 +45,7 @@ export class GenLedgerComponent implements OnInit {
   constructor(private svc: RestService,
               private formBuilder: FormBuilder,
               private modalService: BsModalService,
+              private _domSanitizer : DomSanitizer,
               private router: Router ) { }
 
   ngOnInit(): void {
@@ -66,7 +70,7 @@ export class GenLedgerComponent implements OnInit {
 
 
   public SubmitReport() {
-    this.isLoading = true;
+    //this.isLoading = true;
     if (this.reportcriteria.invalid) {
       this.showAlert = true;
       this.alertMsg = 'Invalid Input.';
@@ -81,8 +85,13 @@ export class GenLedgerComponent implements OnInit {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.todate=this.reportcriteria.value['toDate'];
-      this.isLoading=true;
-      this.onReportComplete();
+      // this.isLoading=true;
+      // this.onReportComplete();
+      this.UrlString=this.svc.getReportUrl()
+      this.UrlString=this.UrlString+"WebForm/Fin/generalledger?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+this.convertDtToString(this.fromdate)+"&adt_to_dt="+this.convertDtToString(this.todate)+"&ad_from_acc_cd="+parseInt(this.reportcriteria.value['fromAcc'])+"&ad_to_acc_Cd="+parseInt (this.reportcriteria.value['toAcc'])
+      debugger;
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.modalRef.hide();
     }
   }
 
@@ -270,5 +279,9 @@ export class GenLedgerComponent implements OnInit {
   closeScreen()
   {
     this.router.navigate([localStorage.getItem('__bName') + '/la']);
+  }
+  private convertDtToString(tmpDate: Date): String {
+    
+    return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
   }
 }

@@ -8,6 +8,7 @@ import { STRING_TYPE } from '@angular/compiler';
 import { tt_trial_balance } from 'src/app/bank-resolver/Models/tt_trial_balance';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-trialbalance',
@@ -34,6 +35,8 @@ export class TrialbalanceComponent implements OnInit {
   showReport = false;
   showAlert = false;
   isLoading=false;
+  ReportUrl: SafeResourceUrl;
+  UrlString = '';
   alertMsg = '';
   fd: any;
   td: any;
@@ -41,7 +44,7 @@ export class TrialbalanceComponent implements OnInit {
   fromdate: Date;
   todate:Date;
   constructor(private svc: RestService,private formBuilder: FormBuilder,
-    private modalService: BsModalService,
+    private modalService: BsModalService, private _domSanitizer : DomSanitizer,
     private router: Router ) { }
   ngOnInit(): void {
     this.fromdate=this.sys.CurrentDate;
@@ -67,10 +70,11 @@ export class TrialbalanceComponent implements OnInit {
     else {
       this.showAlert = false;
       this.fromdate=this.reportcriteria.value['fromDate'];
-      //this.toDate=this.reportcriteria.value['toDate'];
-      this.isLoading=true;
-      this.onReportComplete();
-      // this.modalService.dismissAll(this.content);
+      this.UrlString=this.svc.getReportUrl()
+      this.UrlString=this.UrlString+"WebForm/Fin/trialbalance?"+"brn_cd="+this.sys.BranchCode+"&trial_dt="+this.convertDtToString(this.fromdate)+"&pl_acc_cd=12302"+"&gp_acc_cd=50001"
+      debugger;
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.modalRef.hide();
     }
   }
 
@@ -231,5 +235,8 @@ closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
-
+private convertDtToString(tmpDate: Date): String {
+    
+  return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
+}
 }
