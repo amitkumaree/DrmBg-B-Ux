@@ -39,7 +39,7 @@
                   (change)="onChangeAcctType($event.target.value)">
                   <option *ngIf="uniqueAccTypes" selected value="-99">All</option>
                   <option *ngFor="let accType of uniqueAccTypes " [value]="accType.acc_type_cd">
-                    {{accType.acc_type_desc}}</option>
+                    {{accType.acc_type_cd +' ' +accType.acc_type_desc}}</option>
                 </select>
               </div>
             </div>

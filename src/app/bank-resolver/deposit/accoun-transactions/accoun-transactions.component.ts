@@ -187,6 +187,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   private getOperationMaster(): void {
+    debugger;
     this.isLoading = true;
     if (undefined !== AccounTransactionsComponent.operations &&
       null !== AccounTransactionsComponent.operations &&

@@ -60,12 +60,13 @@ export class TransactionapprovalComponent implements OnInit {
   }
 
   private getAcctTypeMaster(): void {
+    debugger;
     this.isLoading = true;
     if (undefined !== TransactionapprovalComponent.accType &&
       null !== TransactionapprovalComponent.accType &&
       TransactionapprovalComponent.accType.length > 0) {
       this.isLoading = false;
-      this.uniqueAccTypes = TransactionapprovalComponent.accType;
+      // this.uniqueAccTypes = TransactionapprovalComponent.accType;
       this.GetUnapprovedDepTrans();
     } else {
       this.svc.addUpdDel<mm_acc_type[]>('Mst/GetAccountTypeMaster', null).subscribe(
@@ -155,7 +156,7 @@ export class TransactionapprovalComponent implements OnInit {
         tdDepTransRet.forEach(element => {
           const vm = new TranApprovalVM();
           vm.mm_acc_type = TransactionapprovalComponent.accType.
-            filter(e => e.acc_type_cd === element.acc_type_cd)[0];
+            filter(e => e.acc_type_cd === element.acc_type_cd && e.dep_loan_flag === 'D')[0];
           vm.td_def_trans_trf = element;
           this.vm.push(vm);
           // add and check account type in unique account type list
@@ -165,7 +166,10 @@ export class TransactionapprovalComponent implements OnInit {
           }
 
         });
+
+        this.uniqueAccTypes = this.uniqueAccTypes.sort((a , b) => (a.acc_type_cd < b.acc_type_cd ? -1 : 1));
         this.filteredVm = this.vm;
+        this.filteredVm = this.filteredVm.sort((a , b) => (a.td_def_trans_trf.trans_cd < b.td_def_trans_trf.trans_cd ? -1 : 1));
         // this.tdDepTransGroup = this.groupBy(this.tdDepTransRet, (c) => c.acc_type_cd);
         this.isLoading = false;
       },

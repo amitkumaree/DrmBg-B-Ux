@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import { tm_deposit } from '../../Models';
+import { mm_constitution } from '../../Models/deposit/mm_constitution';
+import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
 
 @Component({
   selector: 'app-account-details',
@@ -30,10 +32,18 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
   subscription: Subscription;
   acctDtls: tm_deposit;
   isLoading = false;
+  constitutionList: mm_constitution[] = [];
+  operationalInstrList: mm_oprational_intr[] = [];
   show = false;
   accDtlsFrm: FormGroup;
   ngOnInit(): void {
     this.show = true;
+    this.resetFormData();
+    this.getConstitutionList();
+    this.getOperationalInstr();
+  }
+
+  private resetFormData(): void {
     this.accDtlsFrm = this.frmBldr.group({
       brn_cd: [''],
       acc_type_cd: [''],
@@ -42,7 +52,9 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
       cust_cd: [''],
       intt_trf_type: [''],
       constitution_cd: [''],
+      constitution_cd_desc: [''],
       oprn_instr_cd: [''],
+      oprn_instr_cd_desc: [''],
       opening_dt: [''],
       prn_amt: [''],
       intt_amt: [''],
@@ -79,9 +91,43 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
       agent_cd: [''],
     });
   }
+  getConstitutionList() {
+    if (this.constitutionList.length > 0) {
+      return;
+    }
+
+    this.constitutionList = [];
+    this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
+      res => {
+        // debugger;
+        this.constitutionList = res;
+      },
+      err => { // debugger;
+      }
+    );
+  }
+
+  getOperationalInstr() {
+    if (this.operationalInstrList.length > 0) {
+      return;
+    }
+
+    this.operationalInstrList = [];
+    this.svc.addUpdDel<any>('Mst/GetOprationalInstr', null).subscribe(
+      res => {
+        this.operationalInstrList = res;
+      },
+      err => { }
+    );
+  }
 
   setAcctDetails(): void {
     if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
+      const constitution = this.constitutionList.filter(e => e.constitution_cd
+        === this.acctDtls.constitution_cd)[0];
+      const OprnInstrDesc = this.operationalInstrList.filter(e => e.oprn_cd
+        === this.acctDtls.oprn_instr_cd)[0];
+
       this.accDtlsFrm.patchValue({
         brn_cd: this.acctDtls.brn_cd,
         acc_type_cd: this.acctDtls.acc_type_cd,
@@ -90,7 +136,9 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
         cust_cd: this.acctDtls.cust_cd,
         intt_trf_type: this.acctDtls.intt_trf_type,
         constitution_cd: this.acctDtls.constitution_cd,
+        constitution_cd_desc: constitution.constitution_desc,
         oprn_instr_cd: this.acctDtls.oprn_instr_cd,
+        oprn_instr_cd_desc: OprnInstrDesc.oprn_desc,
         opening_dt: this.acctDtls.opening_dt,
         prn_amt: this.acctDtls.prn_amt,
         intt_amt: this.acctDtls.intt_amt,

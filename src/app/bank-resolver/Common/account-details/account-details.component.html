@@ -11,7 +11,9 @@
       <div class="form-group col-6">
         <small for="constitution_cd">Constitution</small>
         <input type="text" class="form-control form-control-sm" formControlName="constitution_cd" id="constitution_cd"
-           disabled>
+        hidden disabled>
+      <input type="text" class="form-control form-control-sm" formControlName="constitution_cd_desc"
+        id="constitution_cd_desc" disabled>
       </div>
       <div class="form-group col-6">
         <small for="dep_period">Deposit Period</small>
@@ -36,7 +38,9 @@
       <div class="form-group col-6">
         <small for="oprn_instr_cd">Operation</small>
         <input type="text" class="form-control form-control-sm" formControlName="oprn_instr_cd" id="oprn_instr_cd"
-           disabled>
+          disabled hidden>
+        <input type="text" class="form-control form-control-sm" formControlName="oprn_instr_cd_desc"
+          id="oprn_instr_cd_desc" disabled>
       </div>
       <div class="form-group col-6">
         <small for="mat_dt">Maturity Date</small>
