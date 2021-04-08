@@ -82,7 +82,7 @@ export class GenLedger2Component implements OnInit {
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.todate=this.reportcriteria.value['toDate'];
       this.UrlString=this.svc.getReportUrl()
-      this.UrlString=this.UrlString+"WebForm/Fin/generalledger?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+this.convertDtToString(this.fromdate)+"&adt_to_dt="+this.convertDtToString(this.todate)+"&ad_from_acc_cd="+parseInt(this.reportcriteria.value['fromAcc'])+"&ad_to_acc_Cd="+parseInt (this.reportcriteria.value['toAcc'])
+      this.UrlString=this.UrlString+"WebForm/Fin/generalledgerdtls?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+this.convertDtToString(this.fromdate)+"&adt_to_dt="+this.convertDtToString(this.todate)+"&ad_from_acc_cd="+parseInt(this.reportcriteria.value['fromAcc'])+"&ad_to_acc_Cd="+parseInt (this.reportcriteria.value['toAcc'])
       debugger;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
