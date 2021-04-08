@@ -9,6 +9,8 @@ export class SystemValues {
   private __ddsPeriod: string;
   private __userId: string;
   private __bName: string;
+  private __minBalWdChq: string;
+  private __minBalNoChq: string;
 
   constructor() {
     this.__brnCd = localStorage.getItem('__brnCd');
@@ -20,6 +22,8 @@ export class SystemValues {
     this.__ddsPeriod = localStorage.getItem('__ddsPeriod');
     this.__userId = localStorage.getItem('__userId');
     this.__bName = localStorage.getItem('__bName');
+    this.__minBalWdChq = localStorage.getItem('__minBalWdChq');
+    this.__minBalNoChq = localStorage.getItem('__minBalNoChq');
   }
 
   get BranchCode(): string {
@@ -49,6 +53,13 @@ export class SystemValues {
   get BankName(): string {
     return this.__bName;
   }
+  get MinBalanceWithCheque(): string {
+    return this.__minBalWdChq;
+  }
+  get MinBalanceWithOutCheque(): string {
+    return this.__minBalNoChq;
+  }
+
 
   /** expected format of the string is dd/mm/yyyy */
   // private convertStringToDt(str: string): Date {

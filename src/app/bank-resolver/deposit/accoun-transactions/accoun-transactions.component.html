@@ -65,7 +65,7 @@
         <form [formGroup]="tdDefTransFrm" *ngIf="showTransactionDtl">
           <h6 class="mt-2" style="background-color:lightskyblue">Transaction Details</h6>
           <div class="form-row">
-            <div class="form-group col-2">
+            <div class="form-group col-3">
               <small for="acc_type_cd">Account Type</small>
               <input type="text" hidden class="form-control form-control-sm" disabled formControlName="acc_type_cd"
                 id="acc_type_cd">
@@ -83,8 +83,8 @@
               <input type="text" class="form-control form-control-sm" formControlName="trans_type" disabled
                 id="trans_type">
             </div>
-            <div class="form-group col-3" *ngIf="showTransMode">
-              <small for="trans_mode">Transaction Mode</small>
+            <div class="form-group col-2" *ngIf="showTransMode">
+              <small for="trans_mode">Trans Mode</small>
               <!-- <input type="text" class="form-control form-control-sm" formControlName="trans_mode"
               id="trans_mode"> -->
               <select id="trans_mode" class="form-control form-control-sm" formControlName="trans_mode"

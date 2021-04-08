@@ -144,7 +144,7 @@ export class AccounTransactionsComponent implements OnInit {
       res => {
         debugger;
         denoList = res;
-        this.denominationList = denoList.sort((a,b) => (a.value < b.value) ? 1 : -1 );
+        this.denominationList = denoList.sort((a, b) => (a.value < b.value) ? 1 : -1);
       },
       err => { // debugger;
       }
@@ -197,6 +197,7 @@ export class AccounTransactionsComponent implements OnInit {
         .filter((thing, i, arr) => {
           return arr.indexOf(arr.find(t => t.acc_type_cd === thing.acc_type_cd)) === i;
         });
+      this.AcctTypes = this.AcctTypes.sort((a, b) => (a.acc_type_cd > b.acc_type_cd ? 1 : -1));
     } else {
       this.svc.addUpdDel<mm_operation[]>('Mst/GetOperationDtls', null).subscribe(
         res => {
@@ -207,6 +208,7 @@ export class AccounTransactionsComponent implements OnInit {
             .filter((thing, i, arr) => {
               return arr.indexOf(arr.find(t => t.acc_type_cd === thing.acc_type_cd)) === i;
             });
+          this.AcctTypes = this.AcctTypes.sort((a, b) => (a.acc_type_cd > b.acc_type_cd ? 1 : -1));
         },
         err => { this.isLoading = false; }
       );
@@ -400,16 +402,60 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   onAmtChng(): void {
+    this.HandleMessage(false);
     if ((+this.td.amount.value) < 0) {
       this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
+      this.td.amount.setValue('');
       return;
     }
-    // check this.td.trans_type_key === 'W' / 'D'
-    if (this.td.trans_type_key.value === 'W') {
-      this.msg.sendShdowBalance(-(+this.td.amount.value));
-    } else if (this.td.trans_type_key.value === 'D') {
-      this.msg.sendShdowBalance((+this.td.amount.value));
-    }
+
+    const tmDep = new tm_deposit();
+    let shadowBalance = 0;
+    const accTypeCd = +this.f.acc_type_cd.value;
+    tmDep.acc_type_cd = accTypeCd;
+    tmDep.brn_cd = this.sys.BranchCode;
+    tmDep.acc_num = this.f.acct_num.value;
+    this.svc.addUpdDel<any>('Deposit/GetShadowBalance', tmDep).subscribe(
+      res => {
+        debugger;
+        if (undefined !== res && null !== res && !isNaN(+res)) {
+          shadowBalance = res;
+          if (shadowBalance - (+this.td.amount.value) < 0) {
+            this.HandleMessage(true, MessageType.Error, 'Amount can not be withdrawn more than balanace amount in Account.');
+            this.td.amount.setValue('');
+            return;
+          } else {
+            let minBal = 0;
+            if (this.accNoEnteredForTransaction.cheque_facility_flag === 'Y') { minBal = +this.sys.MinBalanceWithCheque; }
+            else { minBal = +this.sys.MinBalanceWithOutCheque; }
+            if (shadowBalance - (+this.td.amount.value) < minBal) {
+              let c = confirm('Amount is less than minimum balance ' + minBal + '. Press Ok to continue, else Cancel');
+              if (c) {
+                if (this.td.trans_type_key.value === 'W') {
+                  this.msg.sendShdowBalance(-(+this.td.amount.value));
+                } else if (this.td.trans_type_key.value === 'D') {
+                  this.msg.sendShdowBalance((+this.td.amount.value));
+                }
+              } else {
+                this.td.amount.setValue('');
+              }
+              return;
+            } else {
+              // check this.td.trans_type_key === 'W' / 'D'
+              if (this.td.trans_type_key.value === 'W') {
+                this.msg.sendShdowBalance(-(+this.td.amount.value));
+              } else if (this.td.trans_type_key.value === 'D') {
+                this.msg.sendShdowBalance((+this.td.amount.value));
+              }
+            }
+          }
+        }
+      },
+      err => {
+        this.isLoading = false; console.log(err);
+        this.HandleMessage(true, MessageType.Error, 'Balance in account can not be determined, Try again later.');
+      }
+    );
   }
 
   onSaveClick(): void {
@@ -422,7 +468,7 @@ export class AccounTransactionsComponent implements OnInit {
 
     if (this.checkUnaprovedTransactionExixts()) {
       this.HandleMessage(true, MessageType.Error,
-        'Un-pproved Transaction already exists for the Account ' + this.td.acc_num.value);
+        'Un-approved Transaction already exists for the Account ' + this.td.acc_num.value);
       return;
     }
 
@@ -532,7 +578,7 @@ export class AccounTransactionsComponent implements OnInit {
     // this.getOperationMaster();
     this.f.oprn_cd.disable();
     this.f.acct_num.disable();
-    this.msg.sendCommonTmDepositAll(new tm_depositall());
+    this.msg.sendCommonTmDepositAll(null);
     this.tm_denominationList = [];
     this.td_deftranstrfList = [];
 
