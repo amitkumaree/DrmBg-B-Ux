@@ -48,6 +48,7 @@ export class tm_deposit extends baseModel{
   public gurdain_name: string; //--------------------
   public date_of_birth: Date; //--------------------
   public sex: string; //--------------------
+  public sexType: string; //--------------------
   public phone: string; //--------------------
   public category_cd: number; //--------------------
   public category_desc: string; //--------------------

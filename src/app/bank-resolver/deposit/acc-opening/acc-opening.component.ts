@@ -1,8 +1,8 @@
 import { SystemValues } from './../../Models/SystemValues';
 
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef,TemplateRef} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RestService } from 'src/app/_service';
+import { InAppMessageService, RestService } from 'src/app/_service';
 import { mm_category, mm_customer, m_acc_master, td_def_trans_trf } from '../../Models';
 import { AccOpenDM } from '../../Models/deposit/AccOpenDM';
 import { mm_acc_type } from '../../Models/deposit/mm_acc_type';
@@ -30,12 +30,14 @@ import { tt_denomination } from '../../Models/deposit/tt_denomination';
 
 
 export class AccOpeningComponent implements OnInit {
+  @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
 
   constructor(
     // private frmBldr: FormBuilder,
     private svc: RestService,
     private modalService: BsModalService,
-    private router: Router
+    private router: Router,
+    private msg: InAppMessageService,
   ) { }
 
   static accTypes: mm_acc_type[] = [];
@@ -119,6 +121,11 @@ export class AccOpeningComponent implements OnInit {
   acc_master :  m_acc_master[] = [];
 
   p_gen_param = new p_gen_param();
+
+  sexType = [
+    { type: 'M', desc: 'Male' },
+    { type: 'F', desc: 'Female' },
+    { type: 'O', desc: 'Other' },];
 
   relationship = [
     { id: 1, val: 'Father' },
@@ -207,6 +214,10 @@ export class AccOpeningComponent implements OnInit {
     this.getOperationalInstr();
 
     // console.log(this.constitutionDtParser('YEAR=1;Month=10;Days=25;'));
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template , {class: 'modal-lg'});
   }
 
   private convertDate(datestring: string): Date {
@@ -1302,6 +1313,7 @@ saveData()
 
   public setCustDtls(cust_cd: number): void {
     this.tm_deposit.cust_cd = cust_cd;
+    this.msg.sendcustomerCodeForKyc(cust_cd);
     this.populateCustDtls(cust_cd);
     this.suggestedCustomer = null;
   }
@@ -1330,6 +1342,8 @@ saveData()
     this.tm_deposit.date_of_birth = new Date(temp_mm_cust.dt_of_birth);
 
     this.tm_deposit.sex = temp_mm_cust.sex;
+    this.tm_deposit.sexType = this.sexType.filter(c => c.type.toString() === this.tm_deposit.sex.toString())[0].desc;
+
     this.tm_deposit.phone = temp_mm_cust.phone;
 
     this.tm_deposit.occupation = temp_mm_cust.occupation;

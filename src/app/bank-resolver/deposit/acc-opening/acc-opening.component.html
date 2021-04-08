@@ -8,9 +8,12 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="deleteData()">Delete</button>
+    <button type="button" [disabled]="undefined === tm_deposit.cust_cd"
+    class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button>
   </div>
 
-<div class="container col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1" >
+
+<div class="container col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-3" >
 
   <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
     <strong>{{alertMsgType}}: </strong>
@@ -21,7 +24,7 @@
   </div>
 
   <div class="row">
-    <div class="col-12 col-sm-6 col-md-7 border">
+    <div class="col-12 col-sm-6 col-md-7 border-right">
       <h1></h1>
       <h6 style="background-color:lightskyblue">Personal Information</h6>
       <!-- <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3"> -->
@@ -68,13 +71,12 @@
 
           <input style="height:25px; " type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="tm_deposit.date_of_birth" disabled bsDatepicker
           [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
-
-
         </div>
+
         <div class="form-group col-2">
           <small for="cust_sex">Sex</small>
           <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize" id="cust_sex"
-          [(ngModel)]="tm_deposit.sex" placeholder="Customer Sex">
+          [(ngModel)]="tm_deposit.sexType" placeholder="Customer Sex">
         </div>
       </div>
 
@@ -113,7 +115,7 @@
     </div>
 
 
-    <div class="col-6 col-md-5 border">
+    <div class="col-6 col-md-5 border-left">
       <h1></h1>
       <h6 style="background-color: lightskyblue">Authorised Signatories</h6>
 
@@ -211,9 +213,9 @@
 
 <!-- <======================================================================================> -->
 
-<div class="container col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-1">
+<div class="container col-xs-12 col-sm-12 col-md-11 col-lg-11 mb-2 bg-white p-3">
   <div class="row">
-    <div class="col-12 col-sm-6 col-md-7 border">
+    <div class="col-12 col-sm-6 col-md-7 border-right">
 
       <!-- <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2  p-6 border"> -->
       <h1></h1>
@@ -281,7 +283,8 @@
           <div class="form-group col-6">
             <br>
             <div class="container border">
-              <div class="form-check">
+              <div class="form-check text-left">
+
                 <label class="form-check-label">
                   <input [disabled]='disableAll' type="checkbox" value="false" [checked]="tm_deposit.cheque_facility_flag == 'Y'"
                   (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Cheque Facility</small>
@@ -1227,7 +1230,7 @@
 
     <!-- <==================================================================================> -->
 
-    <div class="col-6 col-md-5 border">
+    <div class="col-6 col-md-5 border-left">
       <h1></h1>
       <h6 style="background-color: lightskyblue">Introducer Details</h6>
 
@@ -1314,7 +1317,7 @@
   <!-- <================================================================> -->
 
   <div class="row">
-    <div class="col-12 col-sm-6 col-md-12 border">
+    <div class="col-12 col-sm-6 col-md-12">
       <h1></h1>
       <h6 style="background-color:lightskyblue">Nominee Details</h6>
 
@@ -1367,7 +1370,7 @@
 
 
   <div class="row">
-    <div class="col-12 col-sm-6 col-md-12 border">
+    <div class="col-12 col-sm-6 col-md-12">
       <div *ngIf="td_deftrans.trf_type=='C'">
         <h1></h1>
         <h6 style="background-color: lightskyblue">Denomination Details</h6>
@@ -1532,7 +1535,20 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="deleteData()">Delete</button>
+    <button type="button" [disabled]="undefined === tm_deposit.cust_cd"
+    class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button>
   </div>
 
 </div>
 
+<ng-template #kycContent >
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">KYC Details</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-kyc></app-kyc>
+  </div>
+</ng-template>
