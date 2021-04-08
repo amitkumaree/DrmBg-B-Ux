@@ -454,12 +454,14 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public onModifyClick(): void {
+    debugger;
     this.validateControls();
     this.showMsg = null;
     this.isLoading = true;
     const cust = this.mapFormGrpToCustMaster();
     this.svc.addUpdDel<any>('UCIC/UpdateCustomerDtls', cust).subscribe(
       res => {
+        debugger;
         if (null !== res && res > 0) {
           if (this.retrieveClicked) {
             // update this cust details in the list of existing cutomer
