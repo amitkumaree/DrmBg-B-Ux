@@ -36,7 +36,6 @@ export class KycComponent implements OnInit, OnDestroy {
   }
 
   getImage(_custCD: number) {
-    debugger;
     this.isLoading = true;
     this.kycSig.cust_cd = _custCD;//this.selectedVm.tm_deposit.cust_cd;
     this.kycSig.img_typ = 'SIGNATURE';//'SIGNATURE';
