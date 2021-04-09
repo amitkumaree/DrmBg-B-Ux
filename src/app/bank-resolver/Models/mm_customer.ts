@@ -44,4 +44,8 @@ export class mm_customer {
   public org_status: string;
   public org_reg_no: number;
   public extra_data: number;
+  public created_by: string;
+  public created_dt: Date;
+  public modified_by: string;
+  public modified_dt: Date;
 }

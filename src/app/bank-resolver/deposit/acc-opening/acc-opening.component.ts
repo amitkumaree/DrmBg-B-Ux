@@ -1338,8 +1338,8 @@ saveData()
     }
     this.tm_deposit.gurdain_name = temp_mm_cust.guardian_name;
 
-    // this.tm_deposit.date_of_birth = temp_mm_cust.dt_of_birth;
-    this.tm_deposit.date_of_birth = new Date(temp_mm_cust.dt_of_birth);
+    this.tm_deposit.date_of_birth = temp_mm_cust.dt_of_birth;
+    // this.tm_deposit.date_of_birth = new Date(temp_mm_cust.dt_of_birth);
 
     this.tm_deposit.sex = temp_mm_cust.sex;
     this.tm_deposit.sexType = this.sexType.filter(c => c.type.toString() === this.tm_deposit.sex.toString())[0].desc;

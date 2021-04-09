@@ -197,7 +197,7 @@ export class UTCustomerProfileComponent implements OnInit {
 
   public onNameChange(): void {
     const cust_name = (this.f.first_name.value) + ' '
-      + ((this.f.middle_name.value === null) ? '' : ( this.f.middle_name.value + ' '))
+      + ((this.f.middle_name.value === null) ? '' : (this.f.middle_name.value + ' '))
       + this.f.last_name.value;
     this.custMstrFrm.patchValue({
       cust_name: cust_name
@@ -314,23 +314,55 @@ export class UTCustomerProfileComponent implements OnInit {
     if (!this.validateControls()) { return; }
     this.isLoading = true;
     const cust = this.mapFormGrpToCustMaster();
-    this.svc.addUpdDel<any>('UCIC/InsertCustomerDtls', cust).subscribe(
-      res => {
-        this.custMstrFrm.patchValue({
-          cust_cd: res
-        });
-        cust.cust_cd = res;
-        if (this.retrieveClicked) {
-          // add this cust details in the list of existing cutomer
-          // this will ensure, retrieve wont be needed every time
+    let newCustomer = false;
+
+    if (cust.cust_cd === 0) {
+      newCustomer = true;
+    }
+
+    if (newCustomer) {
+      cust.created_by = this.sys.UserId;
+      cust.modified_by = this.sys.UserId;
+      this.svc.addUpdDel<any>('UCIC/InsertCustomerDtls', cust).subscribe(
+        res => {
+          this.custMstrFrm.patchValue({
+            cust_cd: res
+          });
+          cust.cust_cd = res;
           UTCustomerProfileComponent.existingCustomers.push(cust);
-        }
-        this.HandleMessage(true, MessageType.Sucess,
-          cust.cust_cd + ', Customer created sucessfully');
-        this.isLoading = false;
-      },
-      err => { this.isLoading = false; }
-    );
+          this.HandleMessage(true, MessageType.Sucess,
+            cust.cust_cd + ', Customer created sucessfully');
+          this.isLoading = false;
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      cust.modified_by = this.sys.UserId;
+      this.svc.addUpdDel<any>('UCIC/UpdateCustomerDtls', cust).subscribe(
+        res => {
+          if (null !== res && res > 0) {
+            if (undefined !== UTCustomerProfileComponent.existingCustomers ||
+                null !== UTCustomerProfileComponent.existingCustomers ||
+                UTCustomerProfileComponent.existingCustomers.length > 0) {
+              UTCustomerProfileComponent.existingCustomers.forEach(element => {
+                if (element.cust_cd === cust.cust_cd) {
+                  element = cust;
+                }
+              });
+            } else {
+              UTCustomerProfileComponent.existingCustomers.push(cust);
+            }
+            this.HandleMessage(true, MessageType.Sucess,
+              cust.cust_cd + ', Customer updated sucessfully');
+          } else {
+            this.HandleMessage(true, MessageType.Warning,
+              cust.cust_cd + ', Could not update Customer');
+          }
+          this.isLoading = false;
+        },
+        err => { this.isLoading = false; }
+      );
+    }
   }
 
   validateControls(): boolean {
@@ -454,14 +486,12 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public onModifyClick(): void {
-    debugger;
     this.validateControls();
     this.showMsg = null;
     this.isLoading = true;
     const cust = this.mapFormGrpToCustMaster();
     this.svc.addUpdDel<any>('UCIC/UpdateCustomerDtls', cust).subscribe(
       res => {
-        debugger;
         if (null !== res && res > 0) {
           if (this.retrieveClicked) {
             // update this cust details in the list of existing cutomer
