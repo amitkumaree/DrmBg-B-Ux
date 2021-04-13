@@ -556,12 +556,13 @@ export class AccounTransactionsComponent implements OnInit {
     } else if (this.td.trf_type.value === 'C') {
       toReturn.tr_acc_cd = 28101;
     }
-    if ((+this.f.acc_type_cd.value) === 2) {
-      toReturn.acc_cd = 14301;
-    }
-    if ((+this.f.acc_type_cd.value) === 6) {
-      toReturn.acc_cd = 14302;
-    }
+    // if ((+this.f.acc_type_cd.value) === 2) {
+    //   toReturn.acc_cd = 14301;
+    // }
+    // if ((+this.f.acc_type_cd.value) === 6) {
+    //   toReturn.acc_cd = 14302;
+    // }
+    toReturn.acc_cd = this.accNoEnteredForTransaction.acc_cd;
     toReturn.disb_id = 1;
     toReturn.created_by = this.sys.UserId;
 

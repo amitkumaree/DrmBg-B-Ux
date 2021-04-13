@@ -121,7 +121,7 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
         guardian_name: cust.guardian_name,
         cust_dt: cust.cust_dt,
         old_cust_cd: cust.old_cust_cd,
-        dt_of_birth: cust.dt_of_birth,
+        dt_of_birth: cust.dt_of_birth.toString().substr(0, 10),
         age: cust.age,
         sex: cust.sex,
         marital_status: cust.marital_status,

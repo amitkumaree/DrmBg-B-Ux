@@ -486,11 +486,11 @@ export class UTCustomerProfileComponent implements OnInit {
         ? 0 : +this.f.cust_cd.value;
       cust.cust_type = this.f.cust_type.value;
       cust.title = this.f.title.value;
-      cust.first_name = this.f.first_name.value;
-      cust.middle_name = this.f.middle_name.value === null ? '' : this.f.middle_name.value;
-      cust.last_name = this.f.last_name.value;
-      cust.cust_name = this.f.cust_name.value;
-      cust.guardian_name = this.f.guardian_name.value;
+      cust.first_name = this.f.first_name.value.toUpperCase();
+      cust.middle_name = this.f.middle_name.value === null ? '' : this.f.middle_name.value.toUpperCase();
+      cust.last_name = this.f.last_name.value.toUpperCase();
+      cust.cust_name = this.f.cust_name.value.toUpperCase();
+      cust.guardian_name = this.f.guardian_name.value.toUpperCase();
       cust.cust_dt = ('' === this.f.cust_dt.value
         || '0001-01-01T00:00:00' === this.f.cust_dt.value) ? null : this.f.cust_dt.value;
       cust.old_cust_cd = this.f.old_cust_cd.value;

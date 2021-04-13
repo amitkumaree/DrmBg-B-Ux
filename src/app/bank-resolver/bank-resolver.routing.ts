@@ -33,7 +33,8 @@ import { AccounTransactionsComponent } from './deposit/accoun-transactions/accou
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
-  // { path: 'te-st', component: AccounTransactionsComponent },
+  { path: 'te-st1', component: TransactionapprovalComponent },
+  { path: 'te-st2', component: AccounTransactionsComponent },
   { path: 'te-st', component: UTCustomerProfileComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
