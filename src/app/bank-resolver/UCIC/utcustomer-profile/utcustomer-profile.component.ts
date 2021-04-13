@@ -1,13 +1,14 @@
 import {
   mm_title, mm_category, mm_state, mm_dist, mm_vill,
-  mm_kyc, mm_service_area, mm_block, mm_customer, ShowMessage, MessageType, SystemValues
+  mm_kyc, mm_service_area, mm_block, mm_customer, ShowMessage, MessageType, SystemValues, kyc_sig
 } from './../../Models';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RestService } from 'src/app/_service';
+import { InAppMessageService, RestService } from 'src/app/_service';
 import { formatDate } from '@angular/common';
 import { Router } from '@angular/router';
 import Utils from 'src/app/_utility/utils';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-utcustomer-profile',
@@ -16,10 +17,12 @@ import Utils from 'src/app/_utility/utils';
 })
 export class UTCustomerProfileComponent implements OnInit {
   constructor(private frmBldr: FormBuilder,
-    private svc: RestService, private router: Router) { }
+    private svc: RestService, private router: Router,
+    private modalService: BsModalService, private msg: InAppMessageService) { }
   get f() { return this.custMstrFrm.controls; }
   static existingCustomers: mm_customer[] = [];
-
+  @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
+  modalRef: BsModalRef;
   sys = new SystemValues();
   retrieveClicked = false;
   selectedCustomer: mm_customer;
@@ -36,6 +39,9 @@ export class UTCustomerProfileComponent implements OnInit {
   districts: mm_dist[] = [];
   categories: mm_category[] = [];
   custMstrFrm: FormGroup;
+  fileToUpload: File = null;
+  // image = new kyc_sig();
+  // base64Image: string;
   /* possible values of operation
     New, Retrieve, Modify, delete
     We will use to globally set operation of the page
@@ -45,6 +51,47 @@ export class UTCustomerProfileComponent implements OnInit {
   selectedServiceArea: mm_service_area;
   isOpenDOBdp = false;
   isOpenDODdp = false;
+  SIGNATURE: kyc_sig;
+  PHOTO: kyc_sig;
+  KYC: kyc_sig;
+  ADDRESS: kyc_sig;
+  config = {
+    keyboard: false,
+    backdrop: true,
+    ignoreBackdropClick: true,
+    class: 'modal-lg'
+  };
+
+  // public onModifyClick(): void {
+  //   this.validateControls();
+  //   this.showMsg = null;
+  //   this.isLoading = true;
+  //   const cust = this.mapFormGrpToCustMaster();
+  //   this.svc.addUpdDel<any>('UCIC/UpdateCustomerDtls', cust).subscribe(
+  //     res => {
+  //       if (null !== res && res > 0) {
+  //         if (this.retrieveClicked) {
+  //           // update this cust details in the list of existing cutomer
+  //           // this will ensure, retrieve wont be needed every time
+  //           UTCustomerProfileComponent.existingCustomers.push(cust);
+  //           UTCustomerProfileComponent.existingCustomers.forEach(element => {
+  //             if (element.cust_cd === cust.cust_cd) {
+  //               element = cust;
+  //             }
+  //           });
+  //         }
+  //         this.HandleMessage(true, MessageType.Sucess,
+  //           cust.cust_cd + ', Customer updated sucessfully');
+  //       } else {
+  //         this.HandleMessage(true, MessageType.Warning,
+  //           cust.cust_cd + ', Could not update Customer');
+  //       }
+  //       this.isLoading = false;
+  //     },
+  //     err => { this.isLoading = false; }
+  //   );
+  // }
+  disableImageSave = true;
 
   ngOnInit(): void {
     this.operation = 'New';
@@ -106,6 +153,10 @@ export class UTCustomerProfileComponent implements OnInit {
     this.getBlockMster();
     this.getServiceAreaMaster();
     this.onRetrieveClick();
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, this.config);
   }
 
   private getTitleMaster(): void {
@@ -249,6 +300,7 @@ export class UTCustomerProfileComponent implements OnInit {
   public SelectCustomer(cust: mm_customer): void {
     debugger;
     this.selectedCustomer = cust;
+    this.msg.sendcustomerCodeForKyc(this.selectedCustomer.cust_cd);
     this.onClearClick();
     this.enableModifyAndDel = true;
     this.suggestedCustomer = null;
@@ -291,7 +343,7 @@ export class UTCustomerProfileComponent implements OnInit {
       monthly_income: cust.monthly_income,
       date_of_death: cust.date_of_death,
       sms_flag: cust.sms_flag,
-      status: cust.status,
+      status: cust.status == null ? 'A' : cust.status,
       pan: cust.pan,
       nominee: cust.nominee,
       nom_relation: cust.nom_relation,
@@ -329,9 +381,11 @@ export class UTCustomerProfileComponent implements OnInit {
             cust_cd: res
           });
           cust.cust_cd = res;
+          this.selectedCustomer = cust;
           UTCustomerProfileComponent.existingCustomers.push(cust);
           this.HandleMessage(true, MessageType.Sucess,
             cust.cust_cd + ', Customer created sucessfully');
+          this.msg.sendcustomerCodeForKyc(cust.cust_cd);
           this.isLoading = false;
         },
         err => { this.isLoading = false; }
@@ -342,18 +396,21 @@ export class UTCustomerProfileComponent implements OnInit {
         res => {
           if (null !== res && res > 0) {
             if (undefined !== UTCustomerProfileComponent.existingCustomers ||
-                null !== UTCustomerProfileComponent.existingCustomers ||
-                UTCustomerProfileComponent.existingCustomers.length > 0) {
-              UTCustomerProfileComponent.existingCustomers.forEach(element => {
-                if (element.cust_cd === cust.cust_cd) {
-                  element = cust;
+              null !== UTCustomerProfileComponent.existingCustomers ||
+              UTCustomerProfileComponent.existingCustomers.length > 0) {
+                const pos = UTCustomerProfileComponent.existingCustomers
+                .findIndex(e => e.cust_cd === cust.cust_cd);
+                if (pos >= 0){
+                  UTCustomerProfileComponent.existingCustomers.splice(pos, 1);
+                  UTCustomerProfileComponent.existingCustomers.push(cust);
                 }
-              });
+
             } else {
               UTCustomerProfileComponent.existingCustomers.push(cust);
             }
             this.HandleMessage(true, MessageType.Sucess,
               cust.cust_cd + ', Customer updated sucessfully');
+            this.msg.sendcustomerCodeForKyc(cust.cust_cd);
           } else {
             this.HandleMessage(true, MessageType.Warning,
               cust.cust_cd + ', Could not update Customer');
@@ -370,6 +427,7 @@ export class UTCustomerProfileComponent implements OnInit {
       this.HandleMessage(true, MessageType.Error, 'PAN is not valid');
       return false;
     }
+    debugger;
     if (!Utils.ValidatePhone(this.f.phone.value)) {
       this.HandleMessage(true, MessageType.Error, 'Phone number is not valid');
       return false;
@@ -465,13 +523,13 @@ export class UTCustomerProfileComponent implements OnInit {
         || '0001-01-01T00:00:00' === this.f.date_of_death.value)
         ? null : this.f.date_of_death.value;
       cust.sms_flag = this.f.sms_flag.value ? 'Y' : 'N';
-      cust.status = this.f.status.value;
+      cust.status = this.f.status.value ? 'A' : this.f.status.value;
       cust.pan = this.f.pan.value;
       cust.nominee = this.f.nominee.value;
       cust.nom_relation = this.f.nom_relation.value;
       cust.kyc_photo_type = this.f.kyc_photo_type.value;
       cust.kyc_photo_no = this.f.kyc_photo_no.value;
-      cust.kyc_address_type = this.f.kyc_address_type.value;
+      cust.kyc_address_type = null; // as per defect fix
       cust.kyc_address_no = this.f.kyc_address_no.value;
       cust.org_status = this.f.org_status.value;
       cust.org_reg_no = +this.f.org_reg_no.value;
@@ -484,35 +542,99 @@ export class UTCustomerProfileComponent implements OnInit {
 
     return cust;
   }
+  handleFileInput(files: FileList, imgType: string) {
+    this.fileToUpload = files.item(0);
+    const name = this.fileToUpload.name; const size = this.fileToUpload.size;
+    if (size / (1024 * 1024) > 1) {
+      // this.errMessage = 'File size should be less than 1mb.';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const image = new Image();
+      image.src = e.target.result;
+      image.onload = rs => {
+        const imgHeight = rs.currentTarget['height'];
+        const imgWidth = rs.currentTarget['width'];
 
-  public onModifyClick(): void {
-    this.validateControls();
-    this.showMsg = null;
-    this.isLoading = true;
-    const cust = this.mapFormGrpToCustMaster();
-    this.svc.addUpdDel<any>('UCIC/UpdateCustomerDtls', cust).subscribe(
-      res => {
-        if (null !== res && res > 0) {
-          if (this.retrieveClicked) {
-            // update this cust details in the list of existing cutomer
-            // this will ensure, retrieve wont be needed every time
-            UTCustomerProfileComponent.existingCustomers.push(cust);
-            UTCustomerProfileComponent.existingCustomers.forEach(element => {
-              if (element.cust_cd === cust.cust_cd) {
-                element = cust;
-              }
-            });
-          }
-          this.HandleMessage(true, MessageType.Sucess,
-            cust.cust_cd + ', Customer updated sucessfully');
-        } else {
-          this.HandleMessage(true, MessageType.Warning,
-            cust.cust_cd + ', Could not update Customer');
+        // console.log(imgHeight, imgWidth);
+        debugger;
+        // this.base64Image = e.target.result;
+        let img = new kyc_sig();
+        // console.log(this.base64Image);
+        img.cust_cd = this.selectedCustomer.cust_cd;
+        img.img_cont = e.target.result; // this.b64toBlob(this.base64Image,"image/jpeg",0)
+        img.img_cont = img.img_cont;
+        img.img_typ = imgType;
+        img.created_by = this.sys.UserId;
+        // img.img_cont_byte = null;
+        debugger;
+        switch (imgType) {
+          case 'PHOTO':
+            this.PHOTO = img;
+            this.disableImageSave = false;
+            break;
+          case 'SIGNATURE':
+            this.SIGNATURE = img;
+            this.disableImageSave = false;
+            break;
+          case 'ADDRESS':
+            this.ADDRESS = img;
+            this.disableImageSave = false;
+            break;
+          case 'KYC':
+            this.KYC = img;
+            this.disableImageSave = false;
+            break;
         }
-        this.isLoading = false;
-      },
-      err => { this.isLoading = false; }
-    );
+        // this.svc.addUpdDel('UCIC/WriteKycSig', this.image).subscribe(
+        //   res => {
+        //     //this.sucessMsg = name + ' uploaded sucessfully!!';
+        //   },
+        //   err => { }
+        // );
+      };
+    };
+    reader.readAsDataURL(this.fileToUpload);
+  }
+  onSaveImgClick(): void {
+    debugger;
+    if (this.PHOTO !== undefined && this.PHOTO !== null && this.PHOTO.img_cont.length > 1) {
+      this.svc.addUpdDel('UCIC/WriteKycSig', this.PHOTO).subscribe(
+        res => {
+          //this.sucessMsg = name + ' uploaded sucessfully!!';
+          this.disableImageSave = true;
+        },
+        err => { }
+      );
+    }
+    if (this.SIGNATURE !== undefined && this.SIGNATURE !== null && this.SIGNATURE.img_cont.length > 1) {
+      this.svc.addUpdDel('UCIC/WriteKycSig', this.SIGNATURE).subscribe(
+        res => {
+          //this.sucessMsg = name + ' uploaded sucessfully!!';
+          this.disableImageSave = true;
+        },
+        err => { }
+      );
+    }
+    if (this.KYC !== undefined && this.KYC !== null && this.KYC.img_cont.length > 1) {
+      this.svc.addUpdDel('UCIC/WriteKycSig', this.KYC).subscribe(
+        res => {
+          //this.sucessMsg = name + ' uploaded sucessfully!!';
+          this.disableImageSave = true;
+        },
+        err => { }
+      );
+    }
+    if (this.ADDRESS !== undefined && this.ADDRESS !== null && this.ADDRESS.img_cont.length > 1) {
+      this.svc.addUpdDel('UCIC/WriteKycSig', this.ADDRESS).subscribe(
+        res => {
+          //this.sucessMsg = name + ' uploaded sucessfully!!';
+          this.disableImageSave = true;
+        },
+        err => { }
+      );
+    }
   }
 
   onBackClick() {

@@ -29,10 +29,10 @@ export default class Utils {
   }
 
   public static ValidatePhone(phone: string): boolean {
-    if (this.regMobile.test(phone)) { // valid pan card number
+    if (this.regMobile.test(phone)) { // valid Phone
       return true;
     } else {
-      return false; // invalid pan card number
+      return false; // invalid phone
     }
   }
 
