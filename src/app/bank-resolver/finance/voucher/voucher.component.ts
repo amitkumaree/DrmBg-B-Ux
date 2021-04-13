@@ -308,7 +308,7 @@ export class VoucherComponent implements OnInit {
   changeAppFlg() {
     debugger;
     this.tvnRetFilter = [];
-    this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
+    this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg).sort((a , b) => (a.voucher_id < b.voucher_id ? -1 : 1));;
   }
 
   onFocused(e) {
@@ -402,8 +402,8 @@ export class VoucherComponent implements OnInit {
       res => {
         debugger;
         this.tvnRet = res;
-        this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
-        this.isLoading=false;
+        this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg).sort((a , b) => (a.voucher_id < b.voucher_id ? -1 : 1));
+         this.isLoading=false;
         // this.modalService.open(this.contentbatch, { ariaLabelledBy: 'modal-basic-title', size: 'lg', backdrop: 'static' }).result.then((result) => {
         // },
         //   (reason) => {
@@ -439,6 +439,7 @@ export class VoucherComponent implements OnInit {
           debugger;
           this._voucherId = res;
           this._approvalSts = "Unapproved";
+          this._voucherTyp = this._voucherTyp == "C" ? "Cash" : this._voucherTyp == "L" ? "Clearing" : "Transfer";
           this.insertMode = false;
           this.isDel = true;
           this.isAddNew = true;

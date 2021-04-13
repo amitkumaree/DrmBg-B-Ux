@@ -58,12 +58,7 @@
 
 <div class="row d-flex justify-content-center align-items-center pt-4"
 style="background-color: #78c2ad21; min-height: 20vh;">
-<div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-sm mb-4 bg-white p-3">
-  <div>
-  <!-- <button type="button" class="btn btn-rounded btn-primary m-1"  (click)="exportPDFTitle()">Download PDF</button> -->
-   <button type="button" class="btn btn-rounded btn-primary m-1" (click)="closeScreen()" >Close</button>
-</div>
-</div>
+
 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
   <iframe *ngIf="ReportUrl" [src]="ReportUrl" width="100%" height="700px" allowfullscreen></iframe>
 </div>
