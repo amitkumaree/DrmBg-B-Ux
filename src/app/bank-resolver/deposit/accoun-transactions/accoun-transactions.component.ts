@@ -408,54 +408,59 @@ export class AccounTransactionsComponent implements OnInit {
       this.td.amount.setValue('');
       return;
     }
-
-    const tmDep = new tm_deposit();
-    let shadowBalance = 0;
-    const accTypeCd = +this.f.acc_type_cd.value;
-    tmDep.acc_type_cd = accTypeCd;
-    tmDep.brn_cd = this.sys.BranchCode;
-    tmDep.acc_num = this.f.acct_num.value;
-    this.svc.addUpdDel<any>('Deposit/GetShadowBalance', tmDep).subscribe(
-      res => {
-        debugger;
-        if (undefined !== res && null !== res && !isNaN(+res)) {
-          shadowBalance = res;
-          if (shadowBalance - (+this.td.amount.value) < 0) {
-            this.HandleMessage(true, MessageType.Error, 'Amount can not be withdrawn more than balanace amount in Account.');
-            this.td.amount.setValue('');
-            return;
-          } else {
-            let minBal = 0;
-            if (this.accNoEnteredForTransaction.cheque_facility_flag === 'Y') { minBal = +this.sys.MinBalanceWithCheque; }
-            else { minBal = +this.sys.MinBalanceWithOutCheque; }
-            if (shadowBalance - (+this.td.amount.value) < minBal) {
-              let c = confirm('Amount is less than minimum balance ' + minBal + '. Press Ok to continue, else Cancel');
-              if (c) {
-                if (this.td.trans_type_key.value === 'W') {
-                  this.msg.sendShdowBalance(-(+this.td.amount.value));
-                } else if (this.td.trans_type_key.value === 'D') {
-                  this.msg.sendShdowBalance((+this.td.amount.value));
-                }
-              } else {
-                this.td.amount.setValue('');
-              }
+    if (this.td.trans_type_key.value === 'W') {
+      const tmDep = new tm_deposit();
+      let shadowBalance = 0;
+      const accTypeCd = +this.f.acc_type_cd.value;
+      tmDep.acc_type_cd = accTypeCd;
+      tmDep.brn_cd = this.sys.BranchCode;
+      tmDep.acc_num = this.f.acct_num.value;
+      this.svc.addUpdDel<any>('Deposit/GetShadowBalance', tmDep).subscribe(
+        res => {
+          debugger;
+          if (undefined !== res && null !== res && !isNaN(+res)) {
+            shadowBalance = res;
+            if (shadowBalance - (+this.td.amount.value) < 0) {
+              this.HandleMessage(true, MessageType.Error, 'Amount can not be withdrawn more than balanace amount in Account.');
+              this.td.amount.setValue('');
               return;
             } else {
-              // check this.td.trans_type_key === 'W' / 'D'
-              if (this.td.trans_type_key.value === 'W') {
+              let minBal = 0;
+              if (this.accNoEnteredForTransaction.cheque_facility_flag === 'Y') { minBal = +this.sys.MinBalanceWithCheque; }
+              else { minBal = +this.sys.MinBalanceWithOutCheque; }
+              if (shadowBalance - (+this.td.amount.value) < minBal) {
+                let c = confirm('Amount is less than minimum balance ' + minBal + '. Press Ok to continue, else Cancel');
+                if (c) {
+                  if (this.td.trans_type_key.value === 'W') {
+                    this.msg.sendShdowBalance(-(+this.td.amount.value));
+                  } else if (this.td.trans_type_key.value === 'D') {
+                    this.msg.sendShdowBalance((+this.td.amount.value));
+                  }
+                } else {
+                  this.td.amount.setValue('');
+                }
+                return;
+              } else {
+                // check this.td.trans_type_key === 'W' / 'D'
                 this.msg.sendShdowBalance(-(+this.td.amount.value));
-              } else if (this.td.trans_type_key.value === 'D') {
-                this.msg.sendShdowBalance((+this.td.amount.value));
+                // if (this.td.trans_type_key.value === 'W') {
+
+                // } else if (this.td.trans_type_key.value === 'D') {
+
+                // }
               }
             }
           }
+        },
+        err => {
+          this.isLoading = false; console.log(err);
+          this.HandleMessage(true, MessageType.Error, 'Balance in account can not be determined, Try again later.');
         }
-      },
-      err => {
-        this.isLoading = false; console.log(err);
-        this.HandleMessage(true, MessageType.Error, 'Balance in account can not be determined, Try again later.');
-      }
-    );
+      );
+    } else {
+      this.msg.sendShdowBalance((+this.td.amount.value));
+    }
+
   }
 
   onSaveClick(): void {
