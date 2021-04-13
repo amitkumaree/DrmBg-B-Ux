@@ -168,7 +168,7 @@ export class VoucherapprovalComponent implements OnInit {
     debugger;
     if (this.reportcriteria.invalid) {
       this.showAlert = true;
-      this.alertMsg = "Invalid Input.";
+      this.alertMsg = "Error : Invalid Input.";
       return false;
     }
     else
@@ -300,7 +300,8 @@ export class VoucherapprovalComponent implements OnInit {
   changeAppFlg() {
     debugger;
     this.tvnRetFilter = [];
-    this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
+    //this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
+    this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg).sort((a , b) => (a.voucher_id < b.voucher_id ? -1 : 1));;
   }
 
   onFocused(e) {
@@ -392,7 +393,8 @@ export class VoucherapprovalComponent implements OnInit {
       res => {
         debugger;
         this.tvnRet = res;
-        this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
+        //this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
+        this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg).sort((a , b) => (a.voucher_id < b.voucher_id ? -1 : 1));;
         this.isLoading=false;
         // this.modalService.open(this.contentbatch, { ariaLabelledBy: 'modal-basic-title', size: 'lg', backdrop: 'static' }).result.then((result) => {
         // },
@@ -470,9 +472,10 @@ export class VoucherapprovalComponent implements OnInit {
           debugger;
           let x = res;
           //this._voucherDt = this._voucherDt
-          this._voucherTyp = "C";
+          //this._voucherTyp = "C";
+          //this._voucherTyp = this._voucherTyp == "Cash" ? "C" : this._voucherTyp == "Clearing" ? "L" : "T";
           this._approvalSts = "Approved";
-          this.insertMode = true;
+          this.insertMode = false;
           this.isDel = true;
           this.isAddNew = true;
           this.isRetrieve = false;
@@ -483,8 +486,13 @@ export class VoucherapprovalComponent implements OnInit {
           this.isApprove = true;
           this.isClear = false;
           this.isLoading=false;
+          this.showAlert = true;
+          this.alertMsg = "Info : Voucher Approved Sucessfully.";
         },
-        err => {this.isLoading=false; }
+        err => {this.isLoading=false; 
+          this.showAlert = true;
+          this.alertMsg = "Error : Approval Faild.";
+        }
       );
     }
     catch (exception) { let x = 0; }
@@ -524,7 +532,7 @@ export class VoucherapprovalComponent implements OnInit {
       this.showAlert = true;
       this.VoucherF.controls[row].get('dr_amt').setValue(null);
       this.VoucherF.controls[row].get('cr_amt').setValue(null);
-      this.alertMsg = "Account Code Can not be Blank !"
+      this.alertMsg = "Error : Account Code Can not be Blank !"
       return;
     }
    try {
@@ -551,7 +559,7 @@ export class VoucherapprovalComponent implements OnInit {
       this.showAlert = true;
       this.VoucherF.controls[row].get('dr_amt').setValue(null);
       this.VoucherF.controls[row].get('cr_amt').setValue(null);
-      this.alertMsg = "Account Code Can not be Blank !"
+      this.alertMsg = "Error : Account Code Can not be Blank !"
       return;
     }
     try {
