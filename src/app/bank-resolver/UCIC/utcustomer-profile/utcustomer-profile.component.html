@@ -5,9 +5,12 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onRetrieveClick(true)">Retrieve</button>
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
       (click)="onModifyClick()">Modify</button> -->
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
+      || f.guardian_name.value ===''" (click)="openModal(kycContent)">Kyc</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
+      || f.guardian_name.value ===''" (click)="openModal(UploadImg)">Upload Document</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()"
-    [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
     || f.guardian_name.value ===''">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
@@ -302,10 +305,11 @@
           <input type="text" class="form-control form-control-sm text-uppercase" formControlName="kyc_photo_no"
             id="kyc_photo_no" placeholder="Photo ID Number">
         </div>
-        <div class="form-group col-2">
+        <!-- <div class="form-group col-2">
           <small for="PhotoId">Upload Photo ID</small>
-          <input type="file" class="form-control-file form-control-sm" id="PhotoId">
-        </div>
+          <input [disabled]="f.cust_cd.value === '' || f.cust_cd.value === 0" type="file"
+            class="form-control-file form-control-sm" id="PhotoId">
+        </div> -->
         <div class="form-group col-2">
           <small for="kyc_address_type">Address ID Type</small>
           <select id="kyc_address_type" class="form-control form-control-sm" formControlName="kyc_address_type">
@@ -318,10 +322,11 @@
           <input type="text" class="form-control form-control-sm" formControlName="kyc_address_no" id="kyc_address_no"
             placeholder="Address Id Number ">
         </div>
-        <div class="form-group col-2">
+        <!-- <div class="form-group col-2">
           <small for="addressID">Upload Address ID</small>
-          <input type="file" class="form-control-file form-control-sm" id="addressID">
-        </div>
+          <input [disabled]="f.cust_cd.value === '' || f.cust_cd.value === 0" type="file"
+            class="form-control-file form-control-sm" id="addressID">
+        </div> -->
       </div> <!-- form group row end -->
       <div class="form-row">
       </div> <!-- form group row end -->
@@ -335,12 +340,99 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onRetrieveClick(true)">Retrieve</button>
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
       (click)="onModifyClick()">Modify</button> -->
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
+    || f.guardian_name.value ===''" (click)="openModal(kycContent)">Kyc</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
+    || f.guardian_name.value ===''" (click)="openModal(UploadImg)">Upload Document</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()"
-    [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
-    || f.guardian_name.value ==='' || f.cust_cd.value > 0">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
+    || f.guardian_name.value ===''">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="!enableModifyAndDel"
       (click)="onDelClick()">Delete</button> -->
   </div>
 </div>
+
+<ng-template #kycContent>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">KYC details
+    </h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-kyc></app-kyc>
+  </div>
+</ng-template>
+
+<ng-template #UploadImg>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Upload's Section
+    </h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-6">
+        <figure class="figure" *ngIf="PHOTO">
+          <img src="{{PHOTO.img_cont}}" class="figure-img img-fluid img-thumbnail rounded mx-auto d-block">
+          <figcaption class="figure-caption">Picture</figcaption>
+        </figure>
+        <div class="form-group">
+          <small for="PhotoId">Upload Picture</small>
+          <input (change)="handleFileInput($event.target.files, 'PHOTO')" type="file"
+            class="form-control-file form-control-sm" id="photo" accept="image/*">
+        </div>
+
+      </div>
+      <div class="col-6">
+        <figure class="figure" *ngIf="SIGNATURE">
+          <img src="{{SIGNATURE.img_cont}}" class="figure-img img-fluid img-thumbnail rounded mx-auto d-block">
+          <figcaption class="figure-caption">Signature</figcaption>
+        </figure>
+        <div class="form-group">
+          <small for="PhotoId">Upload Signature</small>
+          <input (change)="handleFileInput($event.target.files, 'SIGNATURE')" type="file"
+            class="form-control-file form-control-sm" id="signature" accept="image/*">
+        </div>
+
+      </div>
+      <hr>
+      <div class="col-6">
+        <figure class="figure" *ngIf="ADDRESS">
+          <img src="{{ADDRESS.img_cont}}" class="figure-img img-fluid img-thumbnail rounded mx-auto d-block">
+          <figcaption class="figure-caption">Address</figcaption>
+        </figure>
+        <div class="form-group">
+          <small for="PhotoId">Upload Address</small>
+          <input (change)="handleFileInput($event.target.files, 'ADDRESS')" type="file"
+            class="form-control-file form-control-sm" id="address" accept="image/*">
+        </div>
+
+      </div>
+      <div class="col-6">
+        <figure class="figure" *ngIf="KYC">
+          <img src="{{KYC.img_cont}}" class="figure-img img-fluid img-thumbnail rounded mx-auto d-block">
+          <figcaption class="figure-caption">Kyc document</figcaption>
+        </figure>
+        <div class="form-group">
+          <small for="PhotoId">Upload Kyc Document</small>
+          <input (change)="handleFileInput($event.target.files, 'KYC')" type="file"
+            class="form-control-file form-control-sm" id="kyc" accept="image/*">
+        </div>
+
+      </div>
+      <div class="col-12">
+        <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveImgClick()"
+          [disabled]="disableImageSave">Save</button>
+        <button type="button" class="btn btn-light btn-sm ml-1 mr-1 float-right"
+          (click)="modalRef.hide()">Cancel</button>
+
+      </div>
+    </div>
+
+  </div>
+</ng-template>

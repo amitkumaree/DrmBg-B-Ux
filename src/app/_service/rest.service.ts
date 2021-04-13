@@ -32,7 +32,6 @@ export class RestService {
     // console.log(url);
     //
     // url = 'https://localhost:5001/api/';
-
     return url;
   }
   public getReportUrl(): string {

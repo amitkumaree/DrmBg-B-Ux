@@ -62,8 +62,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    localStorage.removeItem('__bName');
-    this.router.navigate(['/']);
+    // localStorage.removeItem('__bName');
+    // this.router.navigate(['/']);
+    this.msg.sendisLoggedInShowHeader(false);
+    this.router.navigate([this.bankName + '/login']);
+  }
+
+  goToHome() {
+    this.router.navigate([this.bankName + '/la']);
+      this.showMenu = true;
+      this.showChildMenu = false;
+      this.showSubMenu = false;
   }
 
   showChildMenuFor(menu: mainmenu): void {
