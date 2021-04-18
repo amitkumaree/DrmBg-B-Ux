@@ -29,6 +29,7 @@ import { DayinitializationComponent } from './system/dayinitialization/dayinitia
 import { DaycomplitionComponent } from './system/daycomplition/daycomplition.component';
 import { AdduserComponent } from './system/adduser/adduser.component';
 import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
+import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -48,6 +49,7 @@ const routes: Routes = [
       { path: 'la', component: LandingComponent },
       { path: 'UT_CustomerProfile', component: UTCustomerProfileComponent },
       { path: 'UT_SelfHelp', component: UTSelfHelpComponent },
+      { path: 'UR_MemberList', component: MemberListComponent },
       { path: 'FT_Voucher', component: VoucherComponent },
       { path: 'FT_ApproveTrns', component: VoucherapprovalComponent },
       { path: 'FT_PrintVoucher', component: VoucherprintComponent },

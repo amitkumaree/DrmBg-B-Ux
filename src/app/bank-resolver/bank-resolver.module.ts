@@ -37,6 +37,7 @@ import { DaycomplitionComponent } from './system/daycomplition/daycomplition.com
 import { AdduserComponent } from './system/adduser/adduser.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { KycComponent } from './Common/kyc/kyc.component';
+import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import { KycComponent } from './Common/kyc/kyc.component';
     DayinitializationComponent,
     DaycomplitionComponent,
     AdduserComponent,
-    KycComponent
+    KycComponent,
+    MemberListComponent
   ],
   imports: [
     CommonModule,
