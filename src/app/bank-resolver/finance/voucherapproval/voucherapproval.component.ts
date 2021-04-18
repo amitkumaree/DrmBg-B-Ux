@@ -487,11 +487,11 @@ export class VoucherapprovalComponent implements OnInit {
           this.isClear = false;
           this.isLoading=false;
           this.showAlert = true;
-          this.alertMsg = "Info : Voucher Approved Sucessfully.";
+          this.alertMsg = "INFORMATION : Voucher Approved Sucessfully.";
         },
         err => {this.isLoading=false; 
           this.showAlert = true;
-          this.alertMsg = "Error : Approval Faild.";
+          this.alertMsg = "ERROR : Approval Faild.";
         }
       );
     }
@@ -532,7 +532,7 @@ export class VoucherapprovalComponent implements OnInit {
       this.showAlert = true;
       this.VoucherF.controls[row].get('dr_amt').setValue(null);
       this.VoucherF.controls[row].get('cr_amt').setValue(null);
-      this.alertMsg = "Error : Account Code Can not be Blank !"
+      this.alertMsg = "ERROR : Account Code Can not be Blank !"
       return;
     }
    try {
@@ -559,7 +559,7 @@ export class VoucherapprovalComponent implements OnInit {
       this.showAlert = true;
       this.VoucherF.controls[row].get('dr_amt').setValue(null);
       this.VoucherF.controls[row].get('cr_amt').setValue(null);
-      this.alertMsg = "Error : Account Code Can not be Blank !"
+      this.alertMsg = "ERROR : Account Code Can not be Blank !"
       return;
     }
     try {
