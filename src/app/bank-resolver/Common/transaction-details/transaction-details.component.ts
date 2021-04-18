@@ -103,6 +103,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
   }
 
   setTransactionDtl(): void {
+    debugger;
     this.showDenominationDtl = false;
     this.totalOfDenomination = 0;
     if (undefined !== this.transactionDtl && Object.keys(this.transactionDtl).length !== 0) {
@@ -111,7 +112,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
           const accType = res.filter(e => e.acc_type_cd === this.transactionDtl.acc_type_cd)[0];
 
           this.transactionDtlsFrm.patchValue({
-            trans_dt: this.transactionDtl.trans_dt,
+            trans_dt: this.transactionDtl.trans_dt.toString().substr(0, 10),
             trans_cd: this.transactionDtl.trans_cd,
             acc_type_cd: accType.acc_type_desc,
             acc_num: this.transactionDtl.acc_num,
@@ -120,11 +121,14 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
                 this.transactionDtl.trans_type === 'I' ? 'Interest Payment' : null,
             trans_mode: this.transactionDtl.trans_mode === 'R' ? 'Renewal' :
               this.transactionDtl.trans_mode === 'C' ? 'Close' :
-                this.transactionDtl.trans_mode === 'I' ? 'Interest' :
-                  this.transactionDtl.trans_mode === 'Q' ? 'Cheque' : null,
+                this.transactionDtl.trans_mode === 'I' ? 'Interest Payment' :
+                  this.transactionDtl.trans_mode === 'W' ? 'Withdrawal Slip' :
+                    this.transactionDtl.trans_mode === 'V' ? 'Voucher' :
+                      this.transactionDtl.trans_mode === 'O' ? 'Open' :
+                        this.transactionDtl.trans_mode === 'Q' ? 'Cheque' : null,
             amount: this.transactionDtl.amount,
             instrument_dt: this.transactionDtl.instrument_dt.toString() === '0001-01-01T00:00:00' ? null :
-              this.transactionDtl.instrument_dt,
+              this.transactionDtl.instrument_dt.toString().substr(0, 10),
             instrument_num: this.transactionDtl.instrument_num === 0 ? null :
               this.transactionDtl.instrument_num,
             paid_to: this.transactionDtl.paid_to,
@@ -132,11 +136,11 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
             approval_status: this.transactionDtl.approval_status === 'U' ? 'Un Approved' :
               this.transactionDtl.approval_status === 'A' ? 'Approved' : '',
             approved_by: this.transactionDtl.approved_by,
-            approved_dt: this.transactionDtl.approved_dt,
+            approved_dt: this.transactionDtl.approved_dt.toString().substr(0, 10),
             particulars: this.transactionDtl.particulars,
             tr_acc_type_cd: this.transactionDtl.tr_acc_type_cd,
             tr_acc_num: this.transactionDtl.tr_acc_num,
-            voucher_dt: this.transactionDtl.voucher_dt,
+            voucher_dt: this.transactionDtl.voucher_dt.toString().substr(0, 10),
             voucher_id: this.transactionDtl.voucher_id,
             trf_type: this.transactionDtl.trf_type === 'C' ? 'Cash' :
               this.transactionDtl.trf_type === 'T' ? 'Tranfer' : '',
@@ -155,7 +159,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
             curr_numbert_rate: this.transactionDtl.curr_intt_rate,
             ovd_numbert_rate: this.transactionDtl.ovd_intt_rate,
             instl_no: this.transactionDtl.instl_no,
-            instl_start_dt: this.transactionDtl.instl_start_dt,
+            instl_start_dt: this.transactionDtl.instl_start_dt.toString().substr(0, 10),
             periodicity: this.transactionDtl.periodicity,
             disb_id: this.transactionDtl.disb_id,
             comp_unit_no: this.transactionDtl.comp_unit_no,

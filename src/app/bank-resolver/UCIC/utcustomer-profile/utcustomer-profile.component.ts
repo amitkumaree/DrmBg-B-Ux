@@ -40,6 +40,7 @@ export class UTCustomerProfileComponent implements OnInit {
   categories: mm_category[] = [];
   custMstrFrm: FormGroup;
   fileToUpload: File = null;
+  sucessMsgs: string[] = [];
   // image = new kyc_sig();
   // base64Image: string;
   /* possible values of operation
@@ -92,6 +93,8 @@ export class UTCustomerProfileComponent implements OnInit {
   //   );
   // }
   disableImageSave = true;
+  fileTypes = ['jpg', 'jpeg', 'png'];
+  errMessage = '';
 
   ngOnInit(): void {
     this.operation = 'New';
@@ -156,6 +159,14 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, this.config);
+  }
+  openUploadModal(template: TemplateRef<any>) {
+    this.sucessMsgs = [];
+    this.PHOTO = null;
+    this.KYC = null;
+    this.ADDRESS = null;
+    this.SIGNATURE = null;
     this.modalRef = this.modalService.show(template, this.config);
   }
 
@@ -486,11 +497,11 @@ export class UTCustomerProfileComponent implements OnInit {
         ? 0 : +this.f.cust_cd.value;
       cust.cust_type = this.f.cust_type.value;
       cust.title = this.f.title.value;
-      cust.first_name = this.f.first_name.value;
-      cust.middle_name = this.f.middle_name.value === null ? '' : this.f.middle_name.value;
-      cust.last_name = this.f.last_name.value;
-      cust.cust_name = this.f.cust_name.value;
-      cust.guardian_name = this.f.guardian_name.value;
+      cust.first_name = this.f.first_name.value.toUpperCase();
+      cust.middle_name = this.f.middle_name.value === null ? '' : this.f.middle_name.value.toUpperCase();
+      cust.last_name = this.f.last_name.value.toUpperCase();
+      cust.cust_name = this.f.cust_name.value.toUpperCase();
+      cust.guardian_name = this.f.guardian_name.value.toUpperCase();
       cust.cust_dt = ('' === this.f.cust_dt.value
         || '0001-01-01T00:00:00' === this.f.cust_dt.value) ? null : this.f.cust_dt.value;
       cust.old_cust_cd = this.f.old_cust_cd.value;
@@ -543,19 +554,28 @@ export class UTCustomerProfileComponent implements OnInit {
     return cust;
   }
   handleFileInput(files: FileList, imgType: string) {
+    this.errMessage = ''; this.sucessMsgs = [];
     this.fileToUpload = files.item(0);
     const name = this.fileToUpload.name; const size = this.fileToUpload.size;
-    if (size / (1024 * 1024) > 1) {
-      // this.errMessage = 'File size should be less than 1mb.';
+    const extension = name.split('.').pop().toLowerCase();
+
+    if (extension.toUpperCase() !== 'JPG'){
+      this.errMessage = 'Images with JPG file types allowed.';
       return;
     }
+
+    if (size / (1024 * 1024) > 1) {
+      this.errMessage = 'File size should be less than 1mb.';
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const image = new Image();
       image.src = e.target.result;
       image.onload = rs => {
-        const imgHeight = rs.currentTarget['height'];
-        const imgWidth = rs.currentTarget['width'];
+        // const imgHeight = rs.currentTarget['height'];
+        // const imgWidth = rs.currentTarget['width'];
 
         // console.log(imgHeight, imgWidth);
         debugger;
@@ -602,8 +622,8 @@ export class UTCustomerProfileComponent implements OnInit {
     if (this.PHOTO !== undefined && this.PHOTO !== null && this.PHOTO.img_cont.length > 1) {
       this.svc.addUpdDel('UCIC/WriteKycSig', this.PHOTO).subscribe(
         res => {
-          //this.sucessMsg = name + ' uploaded sucessfully!!';
-          this.disableImageSave = true;
+          this.sucessMsgs.push('Picture uploaded sucessfully!!');
+          this.PHOTO = null;
         },
         err => { }
       );
@@ -611,8 +631,8 @@ export class UTCustomerProfileComponent implements OnInit {
     if (this.SIGNATURE !== undefined && this.SIGNATURE !== null && this.SIGNATURE.img_cont.length > 1) {
       this.svc.addUpdDel('UCIC/WriteKycSig', this.SIGNATURE).subscribe(
         res => {
-          //this.sucessMsg = name + ' uploaded sucessfully!!';
-          this.disableImageSave = true;
+          this.sucessMsgs.push('Signature uploaded sucessfully!!');
+          this.SIGNATURE = null;
         },
         err => { }
       );
@@ -620,8 +640,8 @@ export class UTCustomerProfileComponent implements OnInit {
     if (this.KYC !== undefined && this.KYC !== null && this.KYC.img_cont.length > 1) {
       this.svc.addUpdDel('UCIC/WriteKycSig', this.KYC).subscribe(
         res => {
-          //this.sucessMsg = name + ' uploaded sucessfully!!';
-          this.disableImageSave = true;
+          this.sucessMsgs.push('Customer Kyc uploaded sucessfully!!');
+          this.KYC = null;
         },
         err => { }
       );
@@ -629,8 +649,8 @@ export class UTCustomerProfileComponent implements OnInit {
     if (this.ADDRESS !== undefined && this.ADDRESS !== null && this.ADDRESS.img_cont.length > 1) {
       this.svc.addUpdDel('UCIC/WriteKycSig', this.ADDRESS).subscribe(
         res => {
-          //this.sucessMsg = name + ' uploaded sucessfully!!';
-          this.disableImageSave = true;
+          this.sucessMsgs.push('Address uploaded sucessfully!!');
+          this.ADDRESS = null;
         },
         err => { }
       );

@@ -22,7 +22,8 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
     private msg: InAppMessageService, private modalService: BsModalService) {
     this.subscription = this.msg.getCommonTmDepositAll().subscribe(
       res => {
-        if (null !== res) {
+        if (null !== res && undefined !== res &&
+          res.acc_cd !== 0) {
           this.acctDtls = res;
           this.setAcctDetails();
         } else {

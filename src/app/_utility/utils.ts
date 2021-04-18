@@ -29,7 +29,12 @@ export default class Utils {
   }
 
   public static ValidatePhone(phone: string): boolean {
-    if (this.regMobile.test(phone)) { // valid Phone
+    // if (this.regMobile.test(phone)) { // valid Phone
+    //   return true;
+    // } else {
+    //   return false; // invalid phone
+    // }
+    if (phone.length >= 10 && phone.length <= 12) { // valid Phone
       return true;
     } else {
       return false; // invalid phone

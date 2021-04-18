@@ -79,6 +79,9 @@ export class tm_depositall extends baseModel {
   public phone: string;
   public present_address: string;
   public constitution_desc: string;
+  public acc_cd: number;
+  public intt_acc_cd: number;
+  public intt_prov_acc_cd: number;
 
   /** Below prop is used for by common view please do not delete */
   public ShowClose: boolean;
