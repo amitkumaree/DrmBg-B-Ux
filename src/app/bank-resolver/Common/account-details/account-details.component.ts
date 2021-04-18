@@ -17,7 +17,8 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
     private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonAcctInfo().subscribe(
       res => {
-        if (null !== res) {
+        if (null !== res && undefined !== res &&
+          res.cust_cd !== 0) {
           this.acctDtls = res;
           this.setAcctDetails();
         } else {

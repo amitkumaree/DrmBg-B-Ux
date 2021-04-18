@@ -8,7 +8,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
       || f.guardian_name.value ===''" (click)="openModal(kycContent)">Kyc</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
-      || f.guardian_name.value ===''" (click)="openModal(UploadImg)">Upload Document</button>
+      || f.guardian_name.value ===''" (click)="openUploadModal(UploadImg)">Upload Document</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
     || f.guardian_name.value ===''">Save</button>
@@ -343,7 +343,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
     || f.guardian_name.value ===''" (click)="openModal(kycContent)">Kyc</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
-    || f.guardian_name.value ===''" (click)="openModal(UploadImg)">Upload Document</button>
+    || f.guardian_name.value ===''" (click)="openUploadModal(UploadImg)">Upload Document</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onClearClick()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()" [disabled]="f.cust_type.value ==='' || f.first_name.value ===''
     || f.guardian_name.value ===''">Save</button>
@@ -376,6 +376,14 @@
   </div>
   <div class="modal-body">
     <div class="row">
+      <div class="col-12">
+        <div class="alert alert-danger" role="alert" *ngIf="errMessage.length > 1">
+          {{errMessage}}
+        </div>
+        <div class="alert alert-success" role="alert" *ngFor="let msg of sucessMsgs">
+          {{msg}}
+        </div>
+      </div>
       <div class="col-6">
         <figure class="figure" *ngIf="PHOTO">
           <img src="{{PHOTO.img_cont}}" class="figure-img img-fluid img-thumbnail rounded mx-auto d-block">

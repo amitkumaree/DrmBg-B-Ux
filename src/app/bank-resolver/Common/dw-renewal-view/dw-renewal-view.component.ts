@@ -15,9 +15,15 @@ export class DwRenewalViewComponent implements OnInit, OnDestroy {
     private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonAcctInfo().subscribe(
       res => {
-        debugger;
-        this.acctDtls = res;
-        // this.setAcctDetails();
+        if (null !== res && undefined !== res &&
+          res.cust_cd !== 0) {
+          this.acctDtls = res;
+          this.setAcctDetails();
+        } else {
+          if (undefined !== this.accDtlsFrm) {
+            this.accDtlsFrm.reset();
+          }
+        }
       },
       err => { }
     );

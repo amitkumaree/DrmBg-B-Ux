@@ -15,7 +15,8 @@ export class DwRdInstlViewComponent implements OnInit, OnDestroy {
     this.subscription = this.msg.getCommonAccountNum().subscribe(
       res => {
         debugger;
-        if (null !== res) {
+        if (null !== res && undefined !== res &&
+          +res !== 0) {
           this.accNum = res;
           this.getRdIntallementDtls();
         } else {

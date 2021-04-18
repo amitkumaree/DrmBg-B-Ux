@@ -14,7 +14,8 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
     this.subscription = this.msg.getCommonAcctInfo().subscribe(
       res => {
         debugger;
-        if (null !== res) {
+        if (null !== res && undefined !== res &&
+          res.cust_cd !== 0) {
           this.acctDtls = res;
           this.getInterestList();
         } else {

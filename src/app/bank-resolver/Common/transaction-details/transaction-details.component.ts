@@ -121,8 +121,11 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
                 this.transactionDtl.trans_type === 'I' ? 'Interest Payment' : null,
             trans_mode: this.transactionDtl.trans_mode === 'R' ? 'Renewal' :
               this.transactionDtl.trans_mode === 'C' ? 'Close' :
-                this.transactionDtl.trans_mode === 'I' ? 'Interest' :
-                  this.transactionDtl.trans_mode === 'Q' ? 'Cheque' : null,
+                this.transactionDtl.trans_mode === 'I' ? 'Interest Payment' :
+                  this.transactionDtl.trans_mode === 'W' ? 'Withdrawal Slip' :
+                    this.transactionDtl.trans_mode === 'V' ? 'Voucher' :
+                      this.transactionDtl.trans_mode === 'O' ? 'Open' :
+                        this.transactionDtl.trans_mode === 'Q' ? 'Cheque' : null,
             amount: this.transactionDtl.amount,
             instrument_dt: this.transactionDtl.instrument_dt.toString() === '0001-01-01T00:00:00' ? null :
               this.transactionDtl.instrument_dt.toString().substr(0, 10),

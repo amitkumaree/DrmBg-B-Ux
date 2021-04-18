@@ -15,7 +15,8 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
     private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonCustInfo().subscribe(
       res => {
-        if (null !== res) {
+        if (null !== res && undefined !== res &&
+          res.cust_cd !== 0) {
           this.cust = res;
           this.getCategoryMaster();
         } else {
