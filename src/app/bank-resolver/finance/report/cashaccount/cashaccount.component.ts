@@ -96,7 +96,7 @@ export class CashaccountComponent implements OnInit {
       setTimeout(() => {
         //console.log('hide');
         this.isLoading = false;
-      }, 2000);
+      }, 3000);
     }
   }
 

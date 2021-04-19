@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(private rstSvc: RestService, private router: Router,
-    private msg: InAppMessageService) {
+              private msg: InAppMessageService) {
       this.subscription = this.msg.gethideTitleOnHeader().subscribe(
         res => {
           debugger;
@@ -70,9 +70,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   goToHome() {
     this.router.navigate([this.bankName + '/la']);
-      this.showMenu = true;
-      this.showChildMenu = false;
-      this.showSubMenu = false;
+    this.showMenu = true;
+    this.showChildMenu = false;
+    this.showSubMenu = false;
+    this.showScreenTitle = false;
   }
 
   showChildMenuFor(menu: mainmenu): void {
