@@ -8,7 +8,7 @@ import { STRING_TYPE } from '@angular/compiler';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
-
+import Utils from 'src/app/_utility/utils';
 
 @Component({
   selector: 'app-gen-ledger',
@@ -88,7 +88,7 @@ export class GenLedgerComponent implements OnInit {
       // this.isLoading=true;
       // this.onReportComplete();
       this.UrlString=this.svc.getReportUrl()
-      this.UrlString=this.UrlString+"WebForm/Fin/generalledger?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+this.convertDtToString(this.fromdate)+"&adt_to_dt="+this.convertDtToString(this.todate)+"&ad_from_acc_cd="+parseInt(this.reportcriteria.value['fromAcc'])+"&ad_to_acc_Cd="+parseInt (this.reportcriteria.value['toAcc'])
+      this.UrlString=this.UrlString+"WebForm/Fin/generalledger?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+Utils.convertDtToString(this.fromdate)+"&adt_to_dt="+Utils.convertDtToString(this.todate)+"&ad_from_acc_cd="+parseInt(this.reportcriteria.value['fromAcc'])+"&ad_to_acc_Cd="+parseInt (this.reportcriteria.value['toAcc'])
       debugger;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
@@ -280,8 +280,5 @@ export class GenLedgerComponent implements OnInit {
   {
     this.router.navigate([localStorage.getItem('__bName') + '/la']);
   }
-  private convertDtToString(tmpDate: Date): String {
-    
-    return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
-  }
+
 }

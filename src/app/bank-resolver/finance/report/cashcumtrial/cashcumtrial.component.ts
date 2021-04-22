@@ -9,6 +9,7 @@ import { tt_cash_cum_trial } from 'src/app/bank-resolver/Models/tt_cash_cum_tria
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
+import Utils from 'src/app/_utility/utils';
 
 @Component({
   selector: 'app-cashcumtrial',
@@ -78,7 +79,7 @@ export class CashcumtrialComponent implements OnInit {
       //this.onReportComplete();
       // this.modalService.dismissAll(this.content);
       this.UrlString=this.svc.getReportUrl()
-      this.UrlString=this.UrlString+"WebForm/Fin/cashcumtrail?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+this.convertDtToString(this.fromdate)+"&to_dt="+this.convertDtToString(this.todate)
+      this.UrlString=this.UrlString+"WebForm/Fin/cashcumtrail?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+Utils.convertDtToString(this.fromdate)+"&to_dt="+Utils.convertDtToString(this.todate)
       debugger;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
@@ -283,8 +284,5 @@ closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
-private convertDtToString(tmpDate: Date): String {
-    
-  return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
-}
+
 }

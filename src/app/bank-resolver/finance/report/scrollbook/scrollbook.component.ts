@@ -8,6 +8,7 @@ import { WebDataRocksPivot } from 'src/app/webdatarocks/webdatarocks.angular4';
 import { RestService } from 'src/app/_service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
+import Utils from 'src/app/_utility/utils';
 
 @Component({
   selector: 'app-scrollbook',
@@ -73,7 +74,7 @@ export class ScrollbookComponent implements OnInit {
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.todate=this.reportcriteria.value['toDate'];
       this.UrlString=this.svc.getReportUrl()
-      this.UrlString=this.UrlString+"WebForm/Fin/dayscrollbook?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+this.convertDtToString(this.fromdate)+"&adt_to_dt="+this.convertDtToString(this.todate)
+      this.UrlString=this.UrlString+"WebForm/Fin/dayscrollbook?"+"as_brn_cd="+this.sys.BranchCode+"&adt_from_dt="+Utils.convertDtToString(this.fromdate)+"&adt_to_dt="+Utils.convertDtToString(this.todate)
       debugger;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
@@ -275,8 +276,5 @@ closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
-private convertDtToString(tmpDate: Date): String {
-    
-  return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
-}
+
 }

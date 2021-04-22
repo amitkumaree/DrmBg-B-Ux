@@ -8,6 +8,7 @@ import { STRING_TYPE } from '@angular/compiler';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { DomSanitizer,SafeResourceUrl } from '@angular/platform-browser';
+import Utils from 'src/app/_utility/utils';
 
 
 @Component({
@@ -79,7 +80,7 @@ export class CashaccountComponent implements OnInit {
       //this.onReportComplete();
       // this.modalService.dismissAll(this.content);
       this.UrlString=this.svc.getReportUrl()
-      this.UrlString=this.UrlString+"WebForm/Fin/cashaccount?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+this.convertDtToString(this.fromdate)+"&to_dt="+this.convertDtToString(this.todate)+"&acc_cd="+localStorage.getItem('__cashaccountCD')
+      this.UrlString=this.UrlString+"WebForm/Fin/cashaccount?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+Utils.convertDtToString(this.fromdate)+"&to_dt="+Utils.convertDtToString(this.todate)+"&acc_cd="+localStorage.getItem('__cashaccountCD')
       debugger;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) //20/01/2019
       this.modalRef.hide();
@@ -282,9 +283,6 @@ closeScreen()
 {
   this.router.navigate([localStorage.getItem('__bName') + '/la']);
 }
-private convertDtToString(tmpDate: Date): String {
-    
-  return tmpDate.getDate().toString()+"/"+tmpDate.getMonth().toString()+"/"+tmpDate.getFullYear();
-}
+
 
 }

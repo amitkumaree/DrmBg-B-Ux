@@ -20,6 +20,11 @@ export default class Utils {
       + yyyy);
   }
 
+  public static convertDtToString(tmpDate: Date): String {
+    
+    return tmpDate.getDate().toString()+"/"+(tmpDate.getMonth()+1).toString()+"/"+tmpDate.getFullYear();
+  }
+
   public static ValidatePAN(pan: string): boolean {
     if (this.regpan.test(pan)) { // valid pan card number
       return true;
