@@ -77,7 +77,7 @@ export class MemberListComponent implements OnInit {
       this.modalRef.hide();
       setTimeout(() => {
         this.isLoading = false;
-      }, 4000);
+      }, 10000);
     }
   }
 
