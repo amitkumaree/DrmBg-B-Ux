@@ -90,8 +90,12 @@ export class GenLedgerComponent implements OnInit {
       this.UrlString=this.svc.getReportUrl()
       this.UrlString=this.UrlString+"WebForm/Fin/generalledger?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+Utils.convertDtToString(this.fromdate)+"&adt_to_dt="+Utils.convertDtToString(this.todate)+"&ad_from_acc_cd="+parseInt(this.reportcriteria.value['fromAcc'])+"&ad_to_acc_Cd="+parseInt (this.reportcriteria.value['toAcc'])
       debugger;
+      this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 4000);
     }
   }
 

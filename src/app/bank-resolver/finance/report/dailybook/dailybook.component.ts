@@ -110,8 +110,12 @@ export class DailybookComponent implements OnInit {
       this.UrlString=this.svc.getReportUrl()
       this.UrlString=this.UrlString+"WebForm/Fin/DayBookViewer?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+Utils.convertDtToString(this.fromdate)+"&to_dt="+Utils.convertDtToString(this.todate)+"&acc_cd="+localStorage.getItem('__cashaccountCD')
       debugger;
-      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) //20/01/2019
+      this.isLoading = true;
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 3000);
     }
   }
 

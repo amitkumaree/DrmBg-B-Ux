@@ -90,10 +90,8 @@ export class CashaccountComponent implements OnInit {
       debugger;
       this.isLoading = true;
       this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) // 20/01/2019
-
       this.modalRef.hide();
       setTimeout(() => {
-        //console.log('hide');
         this.isLoading = false;
       }, 3000);
     }

@@ -74,8 +74,12 @@ export class TrialbalanceComponent implements OnInit {
       this.UrlString=this.svc.getReportUrl()
       this.UrlString=this.UrlString+"WebForm/Fin/trialbalance?"+"brn_cd="+this.sys.BranchCode+"&trial_dt="+Utils.convertDtToString(this.fromdate)+"&pl_acc_cd=12302"+"&gp_acc_cd=50001"
       debugger;
+      this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 4000);
     }
   }
 
