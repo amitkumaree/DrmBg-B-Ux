@@ -86,7 +86,7 @@ export class CashcumtrialComponent implements OnInit {
       this.modalRef.hide();
       setTimeout(() => {
         this.isLoading = false;
-      }, 3000);
+      }, 8000);
     }
   }
 
