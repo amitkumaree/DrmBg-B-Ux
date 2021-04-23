@@ -99,6 +99,7 @@ export class VoucherprintComponent implements OnInit {
           this.tvn[x].voucher_dt= this.convertDate(this.tvn[x].voucher_dt.toString());
           this.tvn[x].narration= this.tvn[x].narration.replace('/','');
         }
+        this.tvn = this.tvn.sort((a , b) => (a.voucher_id < b.voucher_id ? -1 : 1));
         this.isLoading=false;
         this.modalRef.hide();
       },
