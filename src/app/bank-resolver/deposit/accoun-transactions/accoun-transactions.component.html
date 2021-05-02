@@ -19,7 +19,7 @@
   </div>
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
     <div class="row justify-content-center">
-      <form [formGroup]="accTransFrm" class="col-12" >
+      <form [formGroup]="accTransFrm" class="col-12">
         <div class="form-row">
           <div class="form-group col-2 offset-2">
             <small for="acc_type_cd">Account Type</small>
@@ -37,10 +37,9 @@
                 Press tab.
               </small>
             </small>
-            <input type="number" [attr.disabled]="null == operations ? '' : null"
-              class="form-control form-control-sm " formControlName="acct_num" id="acct_num"
-              placeholder="Account Number" (keydown.Tab)="onAccountNumTabOff()" autocomplete="nope"
-              >
+            <input type="number" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
+              formControlName="acct_num" id="acct_num" placeholder="Account Number" (keydown.Tab)="onAccountNumTabOff()"
+              name="x-field-1" autocomplete="new-field-1">
           </div>
           <div class="form-group col-2">
             <small for="oprn_cd">Operation Type</small>
@@ -95,7 +94,7 @@
                 <option value="Q">Cheque/Draft</option>
               </select>
             </div>
-            <div class="form-group col-2" *ngIf="!hideOnRenewal">
+            <div class="form-group col-2" *ngIf="showTranferType">
               <small for="trf_type">Transfer Type</small>
               <select id="trf_type" class="form-control form-control-sm" formControlName="trf_type"
                 (change)="onTransTypeChange()">
@@ -104,10 +103,76 @@
                 <option *ngIf="operations" value="T">Transfer</option>
               </select>
             </div>
-            <div class="form-group col-2">
+            <div class="form-group col-2" *ngIf="!hideOnRenewal">
               <small for="amount">Amount <span class="text-danger">*</span> </small>
               <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
-              (change)="onAmtChng()">
+                (change)="onAmtChng()">
+            </div>
+            <div class="form-group col-2" *ngIf="hideOnRenewal">
+              <small for="amount" *ngIf="hideOnRenewal">Principal Amt <span class="text-danger">*</span> </small>
+              <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
+                (focusout)="onAmtChngDuringRenewal()">
+            </div>
+          </div>
+          <div class="form-row" *ngIf="hideOnRenewal">
+            <div class="form-group col-3">
+              <small for="constitution_cd">Constitution</small>
+              <input type="text" class="form-control form-control-sm" formControlName="constitution_cd"
+                id="constitution_cd" hidden disabled>
+              <input type="text" class="form-control form-control-sm" formControlName="constitution_cd_desc"
+                id="constitution_cd_desc" disabled>
+            </div>
+            <div class="form-group col-3">
+              <small for="cert_no">Certificate No.</small>
+              <input type="text" class="form-control form-control-sm" formControlName="cert_no" disabled>
+            </div>
+            <div class="form-group col-3">
+              <small for="opening_dt">Opening Date</small>
+              <input type="text" class="form-control form-control-sm" formControlName="opening_dt" id="opening_dt"
+                disabled>
+            </div>
+            <div class="form-group col-3">
+              <small for="mat_dt">Maturity Date</small>
+              <input type="text" class="form-control form-control-sm" formControlName="mat_dt" disabled>
+            </div>
+            <div class="form-row bg-light">
+              <div class="form-group col-12 text-center">
+                <small for="dep_period_d">Deposit Period</small>
+              </div>
+              <div class="form-group col-4">
+                <small for="dep_period_y">Year</small>
+                <input type="text" (change)="onDepositePeriodChange()" class="form-control form-control-sm"
+                  formControlName="dep_period_y">
+              </div>
+              <div class="form-group col-4">
+                <small for="dep_period_m">Month</small>
+                <input type="text" (change)="onDepositePeriodChange()" class="form-control form-control-sm"
+                  formControlName="dep_period_m">
+              </div>
+              <div class="form-group col-4">
+                <small for="dep_period_d">Day</small>
+                <input type="text" (change)="onDepositePeriodChange()" class="form-control form-control-sm"
+                  formControlName="dep_period_d">
+              </div>
+            </div>
+            <div class="form-group col-3">
+              <small for="intt_trf_type">Interest Type</small>
+              <select class="form-control form-control-sm" formControlName="intt_trf_type" (change)="processInterest()">
+                <option disabled>Choose</option>
+                <option value="M">Monthly</option>
+                <option value="Q">Quarterly</option>
+                <option value="H">Half-Yearly</option>
+                <option value="Y">Yearly</option>
+                <option value="O">On-Maturity</option>
+              </select>
+            </div>
+            <div class="form-group col-3">
+              <small for="intt_rate">Interest Rate</small>
+              <input type="text" (focusout)="processInterest()" class="form-control form-control-sm" formControlName="intt_rate">
+            </div>
+            <div class="form-group col-3 bg-light">
+              <small for="interest">Interest</small>
+              <input type="text" class="form-control form-control-sm" formControlName="interest" disabled>
             </div>
           </div>
           <div class="form-row" *ngIf="!hideOnClose">
@@ -147,11 +212,10 @@
               <section *ngFor="let t1 of tm_denominationList; let i=index">
                 <div class="form-row">
                   <div class="form-group col-5">
-                    <small >Rupees</small> <br>
+                    <small>Rupees</small> <br>
                     <select
                       style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-                       class="form-control form-control-sm"
-                      (change)="setDenomination($event.target.value, i)">
+                      class="form-control form-control-sm" (change)="setDenomination($event.target.value, i)">
                       <option value="t1.value" disabled selected>{{t1.rupees_desc}}</option>
                       <option [value]="l.value" *ngFor="let l of denominationList">{{l.rupees}}</option>
                     </select>
