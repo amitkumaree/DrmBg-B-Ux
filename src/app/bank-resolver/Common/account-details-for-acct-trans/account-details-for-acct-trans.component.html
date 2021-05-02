@@ -89,9 +89,25 @@
         <input type="text" class="form-control form-control-sm" formControlName="mat_amt" disabled>
       </div>
     </div>
-
-    <button type="button" class="btn btn-link" *ngIf="showInterestForRd"
-    (click)="openModal(content)">Show RD Installaments</button>
+    <div class="form-row bg-light p-1" *ngIf="showInterestDtls">
+      <div class="form-group col-12 text-center">
+        <small for="dep_period_d">Deposit Period</small>
+      </div>
+      <div class="form-group col-4">
+        <small for="dep_period_y">Year</small>
+        <input type="text" class="form-control form-control-sm" formControlName="dep_period_y" disabled>
+      </div>
+      <div class="form-group col-4">
+        <small for="dep_period_m">Month</small>
+        <input type="text" class="form-control form-control-sm" formControlName="dep_period_m" disabled>
+      </div>
+      <div class="form-group col-4">
+        <small for="dep_period_d">Day</small>
+        <input type="text" class="form-control form-control-sm" formControlName="dep_period_d" disabled>
+      </div>
+    </div>
+    <button type="button" class="btn btn-link" *ngIf="showInterestForRd" (click)="openModal(content)">Show RD
+      Installaments</button>
     <ng-template #content>
       <div class="modal-header">
         <h4 class="modal-title pull-left">RD Installments Details for Acc# {{acctDtls.acc_num}}</h4>

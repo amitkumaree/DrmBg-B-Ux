@@ -180,7 +180,10 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
       phone: [''],
       present_address: [''],
       constitution_desc: [''],
-      shadow_bal: ['']
+      shadow_bal: [''],
+      dep_period_y: [''],
+      dep_period_m: [''],
+      dep_period_d: [''],
     });
   }
 
@@ -193,9 +196,9 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         || this.acctDtls.acc_type_cd === 3
         || this.acctDtls.acc_type_cd === 4
         || this.acctDtls.acc_type_cd === 5) {
-          this.showInterestDtls = true;
-          this.acctDtls.ShowClose = true;
-        }
+        this.showInterestDtls = true;
+        this.acctDtls.ShowClose = true;
+      }
       if (this.acctDtls.acc_type_cd === 6) {
         this.showInterestForRd = true;
         this.acctDtls.ShowClose = true;
@@ -208,13 +211,13 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
       let intrestType = '';
       if (this.acctDtls.intt_trf_type === 'O') {
         intrestType = 'On Maturity';
-       } else if (this.acctDtls.intt_trf_type === 'H') {
+      } else if (this.acctDtls.intt_trf_type === 'H') {
         intrestType = 'Half Yearly';
-       } else if (this.acctDtls.intt_trf_type === 'Q') {
+      } else if (this.acctDtls.intt_trf_type === 'Q') {
         intrestType = 'Quarterly';
-       } else if (this.acctDtls.intt_trf_type === 'M') {
+      } else if (this.acctDtls.intt_trf_type === 'M') {
         intrestType = 'Monthly';
-       }
+      }
 
       this.accDtlsFrm.patchValue({
         brn_cd: this.acctDtls.brn_cd,
@@ -228,17 +231,19 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         constitution_cd_desc: constitution.constitution_desc,
         oprn_instr_cd: this.acctDtls.oprn_instr_cd,
         oprn_instr_cd_desc: OprnInstrDesc.oprn_desc,
-        opening_dt: this.acctDtls.opening_dt,
+        opening_dt: this.acctDtls.opening_dt.toString().substr(0, 10),
         prn_amt: this.acctDtls.prn_amt,
         intt_amt: this.acctDtls.intt_amt,
         mat_amt: this.acctDtls.prn_amt + this.acctDtls.intt_amt,
-        dep_period: this.acctDtls.dep_period,
+        dep_period_y: this.acctDtls.dep_period.split(';')[0].split('=')[1],
+        dep_period_m: this.acctDtls.dep_period.split(';')[1].split('=')[1],
+        dep_period_d: this.acctDtls.dep_period.split(';')[2].split('=')[1],
         instl_amt: this.acctDtls.instl_amt,
         instl_no: this.acctDtls.instl_no,
-        mat_dt: this.acctDtls.mat_dt,
+        mat_dt: this.acctDtls.mat_dt.toString().substr(0, 10),
         intt_rt: this.acctDtls.intt_rt,
         tds_applicable: this.acctDtls.tds_applicable,
-        last_intt_calc_dt: this.acctDtls.last_intt_calc_dt,
+        last_intt_calc_dt: this.acctDtls.last_intt_calc_dt.toString().substr(0, 10),
         acc_close_dt: this.acctDtls.ShowClose ? Utils.getTodaysDtInCorrectFormat() : null,
         closing_prn_amt: this.acctDtls.closing_prn_amt,
         closing_intt_amt: this.acctDtls.closing_intt_amt,

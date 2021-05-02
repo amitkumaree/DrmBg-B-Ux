@@ -12,6 +12,9 @@ import { tm_denomination_trans } from '../../Models/deposit/tm_denomination_tran
 import { DatePipe } from '@angular/common';
 import { tm_transfer } from '../../Models/deposit/tm_transfer';
 import { tt_denomination } from '../../Models/deposit/tt_denomination';
+import { mm_constitution } from '../../Models/deposit/mm_constitution';
+import Utils from 'src/app/_utility/utils';
+import { p_gen_param } from '../../Models/p_gen_param';
 
 @Component({
   selector: 'app-accoun-transactions',
@@ -20,7 +23,7 @@ import { tt_denomination } from '../../Models/deposit/tt_denomination';
   providers: [DatePipe]
 })
 export class AccounTransactionsComponent implements OnInit {
-
+  static constitutionList: mm_constitution[] = [];
   constructor(private svc: RestService, private msg: InAppMessageService,
     private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router) { }
   private static operations: mm_operation[] = [];
@@ -49,6 +52,7 @@ export class AccounTransactionsComponent implements OnInit {
 
   accNoEnteredForTransaction: tm_depositall;
   hideOnRenewal = false;
+  showTranferType = true;
   showMsg: ShowMessage;
   showInstrumentDtl = false;
   tm_denominationList: tm_denomination_trans[] = [];
@@ -119,8 +123,20 @@ export class AccounTransactionsComponent implements OnInit {
       intt_till_dt: [''],
       acc_name: [''],
       brn_cd: [''],
-      trf_type_desc: ['']
+      trf_type_desc: [''],
+      constitution_cd: [''],
+      constitution_cd_desc: [''],
+      cert_no: [''],
+      opening_dt: [''],
+      mat_dt: [''],
+      dep_period_y: [''],
+      dep_period_m: [''],
+      dep_period_d: [''],
+      intt_trf_type: [''],
+      intt_rate: [''],
+      interest: ['']
     });
+
 
     /**
      * TODO Create form for getting account type and Account number
@@ -129,17 +145,134 @@ export class AccounTransactionsComponent implements OnInit {
      **/
     const td_deftranstrf: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftranstrf;
-    var temp_deftranstrf = new td_def_trans_trf()
+    let temp_deftranstrf = new td_def_trans_trf()
     this.td_deftranstrfList.push(temp_deftranstrf);
     this.getAccountTypeList();
     this.getCustomerList();
     this.GetUnapprovedDepTrans();
     this.getDenominationList();
+    this.getConstitutionList();
+  }
+
+  processInterest(): void {
+    debugger;
+    let temp_gen_param = new p_gen_param();
+
+    temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
+
+    if (this.td.acc_type_cd.value === 6) {
+      // if (this.td.instl_amt.value === undefined || this.td.instl_amt.value === null ||
+      //   this.td.instl_no.value === undefined || this.td.instl_no.value === null ||
+      //   this.td.intt_rt.value === undefined || this.td.intt_rt.value === null)
+      // // temp_gen_param.an_intt_rate === undefined || temp_gen_param.an_intt_rate === null )
+      // {
+      //   return;
+      // }
+
+      temp_gen_param.ad_instl_amt = +this.td.instl_amt.value;
+      temp_gen_param.an_instl_no = +this.td.instl_no.value;
+      temp_gen_param.an_intt_rate = +this.td.intt_rt.value;
+      this.calCrdIntReg(temp_gen_param);
+    }
+    else {
+
+      // if (((this.tm_deposit.year === undefined || this.tm_deposit.year === null) &&
+      //   (this.tm_deposit.month === undefined || this.tm_deposit.month === null) &&
+      //   (this.tm_deposit.day === undefined || this.tm_deposit.day === null)) ||
+      //   this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null || this.tm_deposit.prn_amt === 0 ||
+      //   this.tm_deposit.intt_trf_type === undefined || this.tm_deposit.intt_trf_type === null) {
+      //   return;
+      // }
+      if (this.td.intt_trf_type.value === '' ||
+        this.td.intt_rate.value === '') {
+        return;
+      }
+
+      debugger;
+      // this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
+      // this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
+      // this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
+      // this.tm_deposit.mat_dt.setDate(this.tm_deposit.mat_dt.getDate() + this.tm_deposit.day);
+
+
+      // var temp_gen_param = new p_gen_param();
+      temp_gen_param.ad_acc_type_cd = +this.td.acc_type_cd.value;
+      temp_gen_param.ad_prn_amt = +this.td.amount.value;
+      temp_gen_param.adt_temp_dt = Utils.convertStringToDt(this.td.opening_dt.value);
+      temp_gen_param.as_intt_type = this.td.intt_trf_type.value;
+      // tslint:disable-next-line: max-line-length
+      // if (typeof (this.td.opening_dt) === 'string') {
+      //   this.tm_deposit.opening_dt = Utils.convertStringToDt(this.td.opening_dt.value);
+      // }
+
+      // if (typeof (this.tm_deposit.mat_dt) === 'string') {
+      //   this.tm_deposit.mat_dt = Utils.convertStringToDt(this.tm_deposit.mat_dt);
+      // }
+
+      const o = Utils.convertStringToDt(this.td.opening_dt.value);
+      const m = Utils.convertStringToDt(this.td.mat_dt.value);
+      var diffDays = Math.ceil((Math.abs(m.getTime() - o.getTime())) / (1000 * 3600 * 24));
+
+      temp_gen_param.ai_period = diffDays;
+      temp_gen_param.ad_intt_rt = +this.td.intt_rate.value;
+
+      this.f_calctdintt_reg(temp_gen_param);
+    }
+  }
+
+  calCrdIntReg(tempGenParam: p_gen_param): void {
+    this.isLoading = true;
+    debugger;
+    this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', tempGenParam).subscribe(
+      res => {
+        debugger;
+        this.tm_deposit.intt_amt = res;
+        this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
+        this.isLoading = false;
+      },
+      err => {
+        this.tm_deposit.intt_amt = 0;
+        this.isLoading = false;
+        debugger;
+      }
+    );
+  }
+
+  f_calctdintt_reg(temp_gen_param: p_gen_param): void {
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
+      res => {
+        this.tdDefTransFrm.patchValue({
+          interest: +res
+        });
+        this.isLoading = false;
+      },
+      err => {
+        this.isLoading = false;
+        debugger;
+      }
+    );
+  }
+
+  getConstitutionList() {
+    if (AccounTransactionsComponent.constitutionList.length > 0) {
+      return;
+    }
+
+    AccounTransactionsComponent.constitutionList = [];
+    this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
+      res => {
+        // debugger;
+        AccounTransactionsComponent.constitutionList = res;
+      },
+      err => { // debugger;
+      }
+    );
   }
 
   private getDenominationList(): void {
     debugger;
-    var denoList: tt_denomination[] = [];
+    let denoList: tt_denomination[] = [];
     this.svc.addUpdDel<any>('Common/GetDenomination', null).subscribe(
       res => {
         debugger;
@@ -230,12 +363,14 @@ export class AccounTransactionsComponent implements OnInit {
     // this.f.oprn_cd.enable();
     this.f.acct_num.enable();
     this.f.oprn_cd.disable();
+    this.msg.sendCommonTmDepositAll(null);
   }
 
   public onAccountNumTabOff(): void {
     debugger;
     this.f.oprn_cd.disable();
     this.disableOperation = true;
+    this.showTranferType = true;
     // console.log('onAccountNumTabOff -' + this.f.acct_num.value);
     this.isLoading = true;
     this.showMsg = null;
@@ -246,7 +381,6 @@ export class AccounTransactionsComponent implements OnInit {
     acc.brn_cd = this.sys.BranchCode;
     this.svc.addUpdDel<tm_depositall>('Deposit/GetDepositWithChild', acc).subscribe(
       res => {
-        debugger;
         acc = res[0];
         if (undefined === acc) {
           this.HandleMessage(true, MessageType.Error,
@@ -263,15 +397,20 @@ export class AccounTransactionsComponent implements OnInit {
         }
         this.isLoading = false;
       },
-      err => { this.f.oprn_cd.disable(); this.isLoading = false; console.log(err); }
+      err => {
+        this.f.oprn_cd.disable(); this.isLoading = false;
+        console.log(err);
+        this.msg.sendCommonTmDepositAll(null);
+      }
     );
   }
 
   /* method fires on operation type change */
   public onOperationTypeChange(): void {
+    this.HandleMessage(false);
+    this.showTranferType = true;
     this.hideOnClose = false;
     this.hideOnRenewal = false;
-    debugger;
     this.showTransactionDtl = true;
     this.showTransMode = false;
     this.accNoEnteredForTransaction.ShowClose = false;
@@ -311,16 +450,30 @@ export class AccounTransactionsComponent implements OnInit {
       this.hideOnClose = true;
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
       this.transType.key = 'D';
+      const constitution = AccounTransactionsComponent.constitutionList.filter(e => e.constitution_cd
+        === this.accNoEnteredForTransaction.constitution_cd)[0];
       this.transType.Description = 'Renewal';
       this.accNoEnteredForTransaction.ShowClose = true;
       this.hideOnRenewal = true;
+      this.showTranferType = false;
       this.hideOnClose = true;
       // this.accNoEnteredForTransaction.acc_close_dt = new Date();
+      console.log(this.accNoEnteredForTransaction);
       this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
       this.tdDefTransFrm.patchValue({
         trans_type: this.transType.Description,
-        trans_type_key: this.transType.key
+        trans_type_key: this.transType.key,
+        constitution_cd: this.accNoEnteredForTransaction.constitution_cd,
+        constitution_cd_desc: constitution.constitution_desc,
+        cert_no: this.accNoEnteredForTransaction.cert_no,
+        opening_dt: this.accNoEnteredForTransaction.mat_dt.toString().substr(0, 10),
+        dep_period_y: this.accNoEnteredForTransaction.dep_period.split(';')[0].split('=')[1],
+        dep_period_m: this.accNoEnteredForTransaction.dep_period.split(';')[1].split('=')[1],
+        dep_period_d: this.accNoEnteredForTransaction.dep_period.split(';')[2].split('=')[1],
+        amount: this.accNoEnteredForTransaction.prn_amt
+          + this.accNoEnteredForTransaction.intt_amt
       });
+      this.onDepositePeriodChange();
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'interest payment') {
       this.transType.key = 'D';
       this.transType.Description = 'Interest Payment';
@@ -347,6 +500,30 @@ export class AccounTransactionsComponent implements OnInit {
       this.tdDefTransFrm.patchValue({
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key
+      });
+    }
+  }
+
+  onDepositePeriodChange(): void {
+    debugger;
+    let matDt = 0;
+    this.tdDefTransFrm.patchValue({
+      mat_dt: ''
+    });
+    let d = Utils.convertStringToDt(this.td.opening_dt.value);
+    if ((+this.td.dep_period_y.value) > 0) {
+      matDt = d.setFullYear(d.getFullYear() + (+this.td.dep_period_y.value));
+    }
+    if ((+this.td.dep_period_m.value) > 0) {
+      matDt = d.setMonth(d.getMonth() + (+this.td.dep_period_m.value));
+    }
+    if ((+this.td.dep_period_d.value) > 0) {
+      matDt = d.setDate(d.getDate() + (+this.td.dep_period_d.value));
+    }
+    if (matDt > 0) {
+      this.processInterest();
+      this.tdDefTransFrm.patchValue({
+        mat_dt: Utils.convertDtToString(new Date(matDt))
       });
     }
   }
@@ -461,6 +638,31 @@ export class AccounTransactionsComponent implements OnInit {
       this.msg.sendShdowBalance((+this.td.amount.value));
     }
 
+  }
+
+  onAmtChngDuringRenewal(): void {
+    debugger;
+    this.HandleMessage(false);
+    if ((+this.td.amount.value) < 0) {
+      this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
+      this.td.amount.setValue('');
+      return;
+    }
+    if (this.td.trans_type_key.value === 'D') {
+      const mat_amt = this.accNoEnteredForTransaction.prn_amt
+        + this.accNoEnteredForTransaction.intt_amt;
+
+      if ((mat_amt - (+this.td.amount.value)) > 0) {
+        // open transfer area
+        this.showTranferType = true;
+      } else {
+        // close transfer area
+        this.showTranferType = false;
+        this.HandleMessage(true, MessageType.Error, 'Amount can not be greater than maturity amount.');
+        this.td.amount.setValue('');
+        return;
+      }
+    }
   }
 
   onSaveClick(): void {
@@ -680,15 +882,15 @@ export class AccounTransactionsComponent implements OnInit {
       return;
     }
 
-    if (this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === "") {
+    if (this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === '') {
       this.td_deftranstrfList[0].cust_name = null;
       this.td_deftranstrfList[0].clr_bal = null;
       return;
     }
 
     debugger;
-    var temp_deposit_list: tm_deposit[] = [];
-    var temp_deposit = new tm_deposit();
+    let temp_deposit_list: tm_deposit[] = [];
+    let temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.sys.BranchCode;
     temp_deposit.acc_num = this.td_deftranstrfList[0].cust_acc_number;
@@ -707,7 +909,7 @@ export class AccounTransactionsComponent implements OnInit {
           return;
         }
 
-        var temp_mm_cust = new mm_customer();
+        let temp_mm_cust = new mm_customer();
         temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
         this.td_deftranstrfList[0].cust_name = temp_mm_cust.cust_name;
         this.td_deftranstrfList[0].clr_bal = temp_deposit_list[0].clr_bal;
@@ -735,7 +937,7 @@ export class AccounTransactionsComponent implements OnInit {
       if (this.td_deftranstrfList[0].gl_acc_code === undefined
         || this.td_deftranstrfList[0].gl_acc_code === null
         || this.td_deftranstrfList[0].gl_acc_code === '') {
-        var temp_acc_type = new mm_acc_type();
+        let temp_acc_type = new mm_acc_type();
         temp_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString()
           === accType.toString())[0];
 
@@ -768,7 +970,7 @@ export class AccounTransactionsComponent implements OnInit {
         || this.td_deftranstrfList[0].cust_acc_type === '') {
         if (this.acc_master === undefined || this.acc_master === null || this.acc_master.length === 0) {
           this.isLoading = true;
-          var temp_acc_master = new m_acc_master();
+          let temp_acc_master = new m_acc_master();
           this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
             res => {
               debugger;
@@ -791,7 +993,7 @@ export class AccounTransactionsComponent implements OnInit {
           )
         }
         else {
-          var temp_acc_master = new m_acc_master();
+          let temp_acc_master = new m_acc_master();
           temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
           if (temp_acc_master === undefined || temp_acc_master === null) {
             this.td_deftranstrfList[0].gl_acc_desc = null;

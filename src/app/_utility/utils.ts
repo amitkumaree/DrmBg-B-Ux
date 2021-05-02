@@ -20,9 +20,12 @@ export default class Utils {
       + yyyy);
   }
 
-  public static convertDtToString(tmpDate: Date): String {
-    
-    return tmpDate.getDate().toString()+"/"+(tmpDate.getMonth()+1).toString()+"/"+tmpDate.getFullYear();
+  public static convertDtToString(tmpDate: Date): string {
+    const mm = tmpDate.getMonth() + 1; // getMonth() is zero-based
+    const dd = tmpDate.getDate();
+    return (dd > 9 ? '' : '0') + dd + '/'
+      + (mm > 9 ? '' : '0') + mm
+      + '/' + tmpDate.getFullYear();
   }
 
   public static ValidatePAN(pan: string): boolean {
