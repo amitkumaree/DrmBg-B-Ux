@@ -30,6 +30,7 @@ import { DaycomplitionComponent } from './system/daycomplition/daycomplition.com
 import { AdduserComponent } from './system/adduser/adduser.component';
 import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
 import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
+import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/open-loan-account.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -67,6 +68,7 @@ const routes: Routes = [
       { path: 'DA_DayInit', component: DayinitializationComponent },
       { path: 'DA_DayCmpl', component: DaycomplitionComponent },
       { path: 'UM_AddUsr', component: AdduserComponent },
+      { path: 'LT_OpenLoanAcc', component: OpenLoanAccountComponent },
 
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
