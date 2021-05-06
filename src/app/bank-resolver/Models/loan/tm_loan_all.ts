@@ -48,6 +48,10 @@ export class tm_loan_all extends baseModel {
 
 
   public joint_cust_name: string; // Extra
+  public instalmentTypeDesc : string;
+  public emiFormulaDesc : string;
+
   public joint_cust_code: number; // Extra
   public joint_cust_relation: string; // Extra
+
 }

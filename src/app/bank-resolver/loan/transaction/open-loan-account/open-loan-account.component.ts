@@ -6,6 +6,12 @@ import { mm_customer } from 'src/app/bank-resolver/Models';
 import { SystemValues } from  './../../../Models/SystemValues'
 import { tm_loan_all } from 'src/app/bank-resolver/Models/loan/tm_loan_all';
 import { mm_acc_type } from 'src/app/bank-resolver/Models/deposit/mm_acc_type';
+import { mm_instalment_type } from 'src/app/bank-resolver/Models/loan/mm_instalment_type';
+import { LoanOpenDM } from 'src/app/bank-resolver/Models/loan/LoanOpenDM';
+import { tm_guaranter } from 'src/app/bank-resolver/Models/loan/tm_guaranter';
+import { td_accholder } from 'src/app/bank-resolver/Models/deposit/td_accholder';
+import { tm_loan_sanction } from 'src/app/bank-resolver/Models/loan/tm_loan_sanction';
+import { tm_loan_sanction_dtls } from 'src/app/bank-resolver/Models/loan/tm_loan_sanction_dtls';
 
 
 @Component({
@@ -34,8 +40,21 @@ export class OpenLoanAccountComponent implements OnInit {
 
     customerList: mm_customer[] = [];
     accountTypeList: mm_acc_type[] = [];
+    instalmentTypeList: mm_instalment_type[] = [];
 
+    showAlert = false;
+    alertMsg: string;
+    alertMsgType: string;
+    suggestedCustomer: mm_customer[];
+    suggestedJointCustomer: mm_customer[];
+    isOpenDOBdp = false;
+
+    masterModel = new LoanOpenDM();
     tm_loan_all = new tm_loan_all();
+    tm_guaranter =  new tm_guaranter();
+    td_accholder : td_accholder[] = [];
+    tm_loan_sanction : tm_loan_sanction[] = [];
+    tm_loan_sanction_dtls: tm_loan_sanction_dtls[] = [];
 
     sys = new SystemValues();
 
@@ -49,6 +68,11 @@ export class OpenLoanAccountComponent implements OnInit {
       { id: 7, val: 'Daughter' },
       { id: 8, val: 'Others' }];
 
+      repaymentFormulaList = [
+        { id: 1, val: 'EMI' },
+        { id: 2, val: 'REDUCING' },
+      ]
+
   ngOnInit(): void {
 
     this.branchCode = this.sys.BranchCode;
@@ -59,6 +83,10 @@ export class OpenLoanAccountComponent implements OnInit {
 
     this.getCustomerList();
     this.getAccountTypeList();
+    this.getInstalmentTypeList();
+
+    this.initializeModels();
+
   }
 
   openModal(template: TemplateRef<any>) {
@@ -72,12 +100,38 @@ export class OpenLoanAccountComponent implements OnInit {
     ignoreBackdropClick: true // disable backdrop click to close the modal
   };
 
-  showAlert = false;
-  alertMsg: string;
-  alertMsgType: string;
-  suggestedCustomer: mm_customer[];
-  suggestedJointCustomer: mm_customer[];
-  isOpenDOBdp = false;
+
+
+  initializeModels()
+  {
+
+    this.masterModel = new LoanOpenDM();
+
+    const loan = new tm_loan_all();
+    this.tm_loan_all = loan
+    this.masterModel.tmloanall = this.tm_loan_all;
+    this.tm_loan_all.instl_no = 1;
+
+    const gur = new tm_guaranter();
+    this.tm_guaranter = gur;
+    this.masterModel.tmguaranter = this.tm_guaranter;
+
+    const acc : td_accholder[] = [];
+    acc.push(new td_accholder());
+    this.td_accholder = acc;
+    this.masterModel.tdaccholder = this.td_accholder;
+
+    const loansanc : tm_loan_sanction[] = [];
+    loansanc.push(new tm_loan_sanction());
+    this.tm_loan_sanction = loansanc;
+    this.masterModel.tmlaonsanction = this.tm_loan_sanction;
+
+    const loansancdtl : tm_loan_sanction_dtls[] = [];
+    loansancdtl.push( new tm_loan_sanction_dtls());
+    this.tm_loan_sanction_dtls = loansancdtl;
+    this.masterModel.tmlaonsanctiondtls = this.tm_loan_sanction_dtls
+  }
+
 
   getCustomerList() {
     debugger;
@@ -123,6 +177,26 @@ export class OpenLoanAccountComponent implements OnInit {
     );
   }
 
+
+  getInstalmentTypeList() {
+    debugger;
+    if (this.instalmentTypeList.length > 0) {
+      return;
+    }
+    this.instalmentTypeList = [];
+
+    this.svc.addUpdDel<any>('Mst/GetInstalmentTypeMaster', null).subscribe(
+      res => {
+        debugger;
+        this.instalmentTypeList = res;
+      },
+      err => {
+        debugger;
+      }
+    );
+  }
+
+
   public suggestCustomer(): void {
     this.suggestedCustomer = this.customerList
         .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_loan_all.cust_name.toLowerCase())
@@ -167,6 +241,11 @@ export class OpenLoanAccountComponent implements OnInit {
       this.tm_loan_all.joint_cust_name = temp_mm_cust.cust_name;
     }
 
+    setRelationship(idx: number) {
+      debugger;
+      this.td_accholder[idx].relationId = idx;
+      this.td_accholder[idx].relation = this.relationship.filter(x => x.val.toString() === idx.toString())[0].val;
+    }
 
   public closeAlertMsg() {
     this.showAlert = false;
@@ -177,10 +256,23 @@ export class OpenLoanAccountComponent implements OnInit {
     this.tm_loan_all.loan_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
   }
 
-
   public setLoanType(accType: number): void {
     this.tm_loan_all.acc_cd = Number(accType);
     this.tm_loan_all.loan_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
+  }
+
+
+  public setInstalPeriod(instlType: string): void {
+    debugger;
+    this.tm_loan_all.piriodicity = instlType;
+    this.tm_loan_all.instalmentTypeDesc = this.instalmentTypeList.filter( x => x.desc_type.toString() === instlType)[0].ins_desc;
+  }
+
+
+  public setRepaymentFormula(formula: number): void {
+    debugger;
+    this.tm_loan_all.emi_formula_no = Number(formula);
+    this.tm_loan_all.emiFormulaDesc = this.repaymentFormulaList.filter( x=> x.id.toString() == formula.toString())[0].val
   }
 
   public onDobChange(value: Date): number {
@@ -195,13 +287,7 @@ export class OpenLoanAccountComponent implements OnInit {
 
 
 
-  // setRelationship(relation: string, idx: number) {
-  //   debugger;
-  //   this.td_accholderList[idx].cust_cd = Number(this.td_accholderList[idx].cust_cd);
-  //   this.td_accholderList[idx].relation = relation;
-  //   this.td_accholderList[idx].relationId = this.relationship.filter(x => x.val.toString() === relation)[0].id;
-  //   debugger;
-  // }
+
 
 
 

@@ -8,4 +8,5 @@ export class td_accholder extends baseModel{
   public relation: string;
   public cust_cd: number;
   public relationId: number;
+  public joint_cust_name: string; // extra
 }
