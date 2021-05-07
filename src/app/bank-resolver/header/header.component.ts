@@ -64,6 +64,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout() {
     // localStorage.removeItem('__bName');
     // this.router.navigate(['/']);
+    localStorage.removeItem('__brnName');
+    localStorage.removeItem('__brnCd');
+    localStorage.removeItem('__currentDate');
+    localStorage.removeItem('__cashaccountCD');
+    localStorage.removeItem('__ddsPeriod');
+    localStorage.removeItem('__userId');
     this.msg.sendisLoggedInShowHeader(false);
     this.router.navigate([this.bankName + '/login']);
   }

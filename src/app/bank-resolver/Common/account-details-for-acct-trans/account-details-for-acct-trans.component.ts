@@ -235,9 +235,12 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         prn_amt: this.acctDtls.prn_amt,
         intt_amt: this.acctDtls.intt_amt,
         mat_amt: this.acctDtls.prn_amt + this.acctDtls.intt_amt,
-        dep_period_y: this.acctDtls.dep_period.split(';')[0].split('=')[1],
-        dep_period_m: this.acctDtls.dep_period.split(';')[1].split('=')[1],
-        dep_period_d: this.acctDtls.dep_period.split(';')[2].split('=')[1],
+        dep_period_y: null === this.acctDtls.dep_period ? ''
+          : (this.acctDtls.dep_period.split(';')[0].split('=')[1]),
+        dep_period_m: null === this.acctDtls.dep_period ? ''
+          : (this.acctDtls.dep_period.split(';')[1].split('=')[1]),
+        dep_period_d: null === this.acctDtls.dep_period ? ''
+          : (this.acctDtls.dep_period.split(';')[2].split('=')[1]),
         instl_amt: this.acctDtls.instl_amt,
         instl_no: this.acctDtls.instl_no,
         mat_dt: this.acctDtls.mat_dt.toString().substr(0, 10),

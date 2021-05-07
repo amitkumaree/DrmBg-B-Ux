@@ -31,6 +31,7 @@ import { AdduserComponent } from './system/adduser/adduser.component';
 import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
 import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/open-loan-account.component';
+import { AuthenticationService as AuthGuard } from '../_service/authentication.service';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -48,27 +49,27 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: LoginComponent },
-      { path: 'la', component: LandingComponent },
-      { path: 'UT_CustomerProfile', component: UTCustomerProfileComponent },
-      { path: 'UT_SelfHelp', component: UTSelfHelpComponent },
-      { path: 'UR_MemberList', component: MemberListComponent },
-      { path: 'FT_Voucher', component: VoucherComponent },
-      { path: 'FT_ApproveTrns', component: VoucherapprovalComponent },
-      { path: 'FT_PrintVoucher', component: VoucherprintComponent },
-      { path: 'FR_DayBook', component: DailybookComponent },
-      { path: 'FR_CashAccount', component: CashaccountComponent },
-      { path: 'FR_CashCumTrial', component: CashcumtrialComponent },
-      { path: 'FR_TrialBalance', component: TrialbalanceComponent },
-      { path: 'FR_GeneralLadger', component: GenLedgerComponent },
-      { path: 'FR_DayScrollBook', component: ScrollbookComponent },
-      { path: 'FR_GLTD', component: GenLedger2Component },
-      { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
-      { path: 'DT_AccTrans', component: AccounTransactionsComponent },
-      { path: 'DT_OpenAcc', component: AccOpeningComponent },
-      { path: 'DA_DayInit', component: DayinitializationComponent },
-      { path: 'DA_DayCmpl', component: DaycomplitionComponent },
-      { path: 'UM_AddUsr', component: AdduserComponent },
-      { path: 'LT_OpenLoanAcc', component: OpenLoanAccountComponent },
+      { path: 'la', component: LandingComponent, canActivate: [ AuthGuard ] },
+      { path: 'UT_CustomerProfile', component: UTCustomerProfileComponent, canActivate: [ AuthGuard ] },
+      { path: 'UT_SelfHelp', component: UTSelfHelpComponent, canActivate: [ AuthGuard ] },
+      { path: 'UR_MemberList', component: MemberListComponent, canActivate: [ AuthGuard ] },
+      { path: 'FT_Voucher', component: VoucherComponent, canActivate: [ AuthGuard ] },
+      { path: 'FT_ApproveTrns', component: VoucherapprovalComponent, canActivate: [ AuthGuard ] },
+      { path: 'FT_PrintVoucher', component: VoucherprintComponent, canActivate: [ AuthGuard ] },
+      { path: 'FR_DayBook', component: DailybookComponent, canActivate: [ AuthGuard ] },
+      { path: 'FR_CashAccount', component: CashaccountComponent, canActivate: [ AuthGuard ] },
+      { path: 'FR_CashCumTrial', component: CashcumtrialComponent, canActivate: [ AuthGuard ] },
+      { path: 'FR_TrialBalance', component: TrialbalanceComponent, canActivate: [ AuthGuard ] },
+      { path: 'FR_GeneralLadger', component: GenLedgerComponent, canActivate: [ AuthGuard ] },
+      { path: 'FR_DayScrollBook', component: ScrollbookComponent, canActivate: [ AuthGuard ] },
+      { path: 'FR_GLTD', component: GenLedger2Component, canActivate: [ AuthGuard ] },
+      { path: 'DT_ApproveTran', component: TransactionapprovalComponent, canActivate: [ AuthGuard ] },
+      { path: 'DT_AccTrans', component: AccounTransactionsComponent, canActivate: [ AuthGuard ] },
+      { path: 'DT_OpenAcc', component: AccOpeningComponent, canActivate: [ AuthGuard ] },
+      { path: 'DA_DayInit', component: DayinitializationComponent, canActivate: [ AuthGuard ] },
+      { path: 'DA_DayCmpl', component: DaycomplitionComponent, canActivate: [ AuthGuard ] },
+      { path: 'UM_AddUsr', component: AdduserComponent, canActivate: [ AuthGuard ] },
+      { path: 'LT_OpenLoanAcc', component: OpenLoanAccountComponent, canActivate: [ AuthGuard ] },
 
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
