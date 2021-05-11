@@ -10,6 +10,7 @@ import { tm_transfer } from './tm_transfer';
 export class AccOpenDM
 {
   public  tmdeposit: tm_deposit;
+  public  tmdepositrenew: tm_deposit;
   public  tdintroducer: td_introducer[] = [];
   public  tdnominee: td_nominee[] = [];
   public  tdsignatory: td_signatory[] = [];
