@@ -43,7 +43,7 @@
 
       <div class="form-group col-2">
         <small for="cust_name">Customer Name</small>
-        <input style="height:25px; text-align-last: right;" type="text"  class="form-control form-control-sm text-capitalize" id="cust_name"
+        <input style="height:25px; text-align-last: right;" [disabled]="disablePersonal=='Y'" type="text"  class="form-control form-control-sm text-capitalize" id="cust_name"
           placeholder="Customer Name" [(ngModel)]="tm_loan_all.cust_name" (input)="suggestCustomer()">
           <div class="suggestions border p-2" *ngIf="suggestedCustomer">
             <strong> [ Customer Cd / Phone ] Name </strong>
@@ -61,6 +61,7 @@
         <small for="loan_type">Loan Type</small>
         <select
           style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+          [disabled]="disablePersonal=='Y'"
           [(ngModel)]="tm_loan_all.loan_acc_type" (change)="setLoanAccountType($event.target.value)" id="loan_type" class="form-control form-control-sm">
           <option [value]="tm_loan_all.loan_acc_type" disabled selected>{{tm_loan_all.acc_cd}}-{{tm_loan_all.loan_acc_type}}</option>
           <option *ngFor="let l of accountTypeList" [value]="l.acc_type_cd">{{l.acc_type_cd}}-{{l.acc_type_desc}}</option>
@@ -69,24 +70,20 @@
 
       <div class="form-group col-2">
         <small>Bond No</small>
-        <input class="form-control form-control-sm text-capitalize" id="bond_no" style="height:25px; text-align: right;"
+        <input class="form-control form-control-sm text-capitalize" [disabled]="disablePersonal=='Y'" id="bond_no"
+        style="height:25px; text-align: right;"
         [(ngModel)]="tm_loan_all.loan_acc_no" type="text" placeholder="Bond No">
       </div>
 
       <div class="form-group col-2">
         <small for=due_date>Due Date</small>
         <div class="input-group">
-          <input class="form-control form-control-sm text-capitalize" id="bond_no" style="height:25px; text-align: right;"
+          <input class="form-control form-control-sm text-capitalize" id="due_date" [disabled]="disablePersonal=='Y'"
+          style="height:25px; text-align: right;"
           bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
           [(ngModel)]="tm_loan_all.instl_start_dt" type="text" placeholder="DD/MM/YYYY">
-
-          <!-- <button class="btn btn-outline-secondary btn-sm" type="button">
-            <i class="fa fa-calendar fa-lg" aria-hidden="true"></i>
-          </button> -->
-          <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
         </div>
       </div>
-
     </div>
 
 
@@ -96,21 +93,21 @@
 
       <div class="form-group col-2">
         <small for=curr_int_rate>Current Interest Rate</small>
-        <input class="form-control form-control-sm text-capitalize" id="curr_int_rate"
+        <input class="form-control form-control-sm text-capitalize" [disabled]="disablePersonal=='Y'" id="curr_int_rate"
           style="height:25px; text-align: right; float: none;" type="number" min="0" step='any'
           [(ngModel)]="tm_loan_all.curr_intt" placeholder="Curr Int Rate" >
       </div>
 
       <div class="form-group col-2">
         <small>Overdue Interest Rate</small>
-        <input class="form-control form-control-sm text-capitalize" id="ovd_int_rate"
+        <input class="form-control form-control-sm text-capitalize" [disabled]="disablePersonal=='Y'" id="ovd_int_rate"
           style="height:25px; text-align: right;" type="number" min="0" step='any'
           [(ngModel)]="tm_loan_all.ovd_intt" placeholder="Customer Phone" placeholder="Overdue Interest Rate">
       </div>
 
       <div class="form-group col-2">
         <small>Instalment No</small>
-        <input class="form-control form-control-sm text-capitalize" id="instl_no"
+        <input class="form-control form-control-sm text-capitalize" [disabled]="disablePersonal=='Y'" id="instl_no"
           style="height:25px; text-align: right;" type="number" min="0" step='any'
         [(ngModel)]="tm_loan_all.instl_no" placeholder="Instalment No">
       </div>
@@ -119,6 +116,7 @@
         <small>Installment Type</small>
         <select
           style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+          [disabled]="disablePersonal=='Y'"
           (change)="setInstalPeriod($event.target.value)" [(ngModel)]="tm_loan_all.piriodicity" id="loan_type" class="form-control form-control-sm">
           <option [value]="tm_loan_all.piriodicity" disabled selected>{{tm_loan_all.piriodicity}}-{{tm_loan_all.instalmentTypeDesc}}</option>
           <option *ngFor="let l of instalmentTypeList" [value]="l.desc_type">{{l.desc_type}}-{{l.ins_desc}}</option>
@@ -129,6 +127,7 @@
         <small>Repayment Formula</small>
         <select
           style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+          [disabled]="disablePersonal=='Y'"
           (change)="setRepaymentFormula($event.target.value)" [(ngModel)]="tm_loan_all.emi_formula_no" id="loan_type" class="form-control form-control-sm">
           <option [value]="tm_loan_all.emi_formula_no" selected>{{tm_loan_all.emi_formula_no}}-{{tm_loan_all.emiFormulaDesc}}</option>
           <option *ngFor="let l of repaymentFormulaList" [value]="l.id">{{l.id}}-{{l.val}}</option>
@@ -138,7 +137,8 @@
       <div class="form-group col-1 "></div>
       <div class="form-group col-1 ">
         <br>
-        <input type="checkbox" value="false" [(ngModel)]="tm_loan_all.cheque_facility" [checked]="tm_loan_all.cheque_facility == 'Y'"
+        <input type="checkbox" value="false"  [disabled]="disablePersonal=='Y'"
+        [(ngModel)]="tm_loan_all.cheque_facility" [checked]="tm_loan_all.cheque_facility == 'Y'"
          (change)="tm_loan_all.cheque_facility = $event.target.checked ? 'Y' : 'N' ">
          <small> Cheque Facility</small>
       </div>
@@ -147,7 +147,8 @@
   </div>
 
 
-  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3" *ngIf="1==1">
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+  <!-- *ngIf="tm_loan_all.loan_id != undefined"> -->
     <h1></h1>
     <h6 style="background-color:lightskyblue">Guaranter Details</h6>
 
@@ -162,70 +163,66 @@
       <div class="form-group col-3">
         <small>Guaranter Address</small>
         <input class="form-control form-control-sm text-capitalize" id="guaranter_addr" style="height:25px; text-align: left;"
-          type="text" placeholder="Guaranter Address">
-        <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+          type="text" placeholder="Guaranter Address" [(ngModel)]="tm_guaranter.gua_add">
       </div>
 
       <div class="form-group col-2">
         <small>Father's Name</small>
         <input class="form-control form-control-sm text-capitalize" id="fathers_name" style="height:25px; text-align: left;"
-          type="text" placeholder="Father's Name">
-        <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+          type="text" placeholder="Father's Name" [(ngModel)]="tm_guaranter.office_name">
       </div>
 
       <div class="form-group col-2">
         <small>Monthly Income</small>
         <input class="form-control form-control-sm text-capitalize" id="fathers_name" style="height:25px; text-align: right;"
-          type="number" placeholder="Monthly Income">
-        <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+          type="number" placeholder="Monthly Income" [(ngModel)]="tm_guaranter.salary">
       </div>
 
       <div class="form-group col-1 ">
         <br>
-        <input type="checkbox" value="false" [checked]="'Y' == 'Y'"><small> SEC 58</small>
-        <!-- (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Cheque Facility</small> -->
+        <input type="checkbox" value="false" [(ngModel)]="tm_guaranter.sec_58" [checked]="tm_guaranter.sec_58 == 'Y'">
+        <small> SEC 58</small>
       </div>
 
       <div class="form-group col-2">
         <small>Mobile No.</small>
         <input class="form-control form-control-sm text-capitalize" id="guaranter_mobile" style="height:25px; text-align: left;"
-          type="text" placeholder="Mobile No">
-        <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+          type="text" placeholder="Mobile No" [(ngModel)]="tm_guaranter.mobile">
       </div>
-
 
     </div>
 
 
     <div class="form-row ">
-      <div class="col-6 border-right">
+      <div class="col-4 border-right">
 
         <h1></h1>
         <h6 style="background-color:lightskyblue">All Sanction</h6>
 
+        <section *ngFor="let l of tm_loan_sanction; let i=index">
         <div class="form-row ">
-          <div class="form-group col-5">
+          <div class="form-group col-3">
             <small>Sanctio No</small>
             <input class="form-control form-control-sm text-capitalize" id="sanction_no" style="height:25px; text-align: right;"
-              type="text" placeholder="Sanctio No">
-            <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+            [(ngModel)]="l.sanc_no" type="text" placeholder="Sanctio No">
           </div>
 
           <div class="form-group col-1"></div>
-
-          <div class="form-group col-5">
+          <div class="form-group col-7">
             <small for=sanc_date>Sanctio Date</small>
             <div class="input-group">
               <input class="form-control form-control-sm text-capitalize" id="sanc_date" style="height:25px; text-align: right;"
-                bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }" type="text"
-                placeholder="DD/MM/YYYY">
-              <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+                bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
+                [(ngModel)]="l.sanc_dt" type="text" placeholder="DD/MM/YYYY">
             </div>
           </div>
+          <div class="form-group col-1"></div>
         </div>
+        </section>
+
       </div>
 
-      <div class="col-6 border-left">
+      <div class="col-8 border-left">
         <h1></h1>
         <h6 style="background-color:lightskyblue">Joint Holder</h6>
         <section *ngFor="let t1 of td_accholder; let i = index">
@@ -257,7 +254,6 @@
             <small for="relation">Relation</small> <br>
             <select style="height:25px; text-align-last: left; font-size: small; padding-top: 0px; background-color: whitesmoke;" id="relation"
               class="form-control form-control-sm">
-              <!-- id="relation" class="form-control form-control-sm" (change)="setRelationship($event.target.value, i)"> -->
               <option [value]="t1.relation" selected>{{t1.relationId}}-{{t1.relation}}</option>
               <option *ngFor="let l of relationship" [value]="l.id">{{l.id}}-{{l.val}}</option>
             </select>
@@ -311,23 +307,21 @@
           <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
         </div>
       </div>
-
-
     </div>
   </div>
 
 
-
   <div
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">New</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Retrieve</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Modify</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Clear</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Save</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Delete</button>
-    <button type="button" [disabled]="undefined === undefined" class="btn btn-primary btn-sm ml-1 mr-1">Kyc</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="newAccount()">New</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="modifyData()">Modify</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" >Delete</button>
+    <button type="button" [disabled]="undefined === undefined" class="btn btn-primary btn-sm ml-1 mr-1"
+      (click)="openModal(kycContent)">Kyc</button>
     <!-- class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button> -->
   </div>
 
