@@ -12,6 +12,8 @@ import { tm_guaranter } from 'src/app/bank-resolver/Models/loan/tm_guaranter';
 import { td_accholder } from 'src/app/bank-resolver/Models/deposit/td_accholder';
 import { tm_loan_sanction } from 'src/app/bank-resolver/Models/loan/tm_loan_sanction';
 import { tm_loan_sanction_dtls } from 'src/app/bank-resolver/Models/loan/tm_loan_sanction_dtls';
+import { p_gen_param } from 'src/app/bank-resolver/Models/p_gen_param';
+import { stringify } from '@angular/compiler/src/util';
 
 
 @Component({
@@ -33,8 +35,11 @@ export class OpenLoanAccountComponent implements OnInit {
     branchCode = '0';
     createUser = '';
     updateUser = '';
+    operationType = '';
     createDate: Date;
     updateDate: Date;
+
+    p_gen_param = new p_gen_param();
 
     isLoading = true;
 
@@ -77,8 +82,8 @@ export class OpenLoanAccountComponent implements OnInit {
 
     this.branchCode = this.sys.BranchCode;
     this.createUser = this.sys.UserId;
-    this.updateUser = this.sys.UserId;
     this.createDate = this.sys.CurrentDate;
+    this.updateUser = this.sys.UserId;
     this.updateDate = this.sys.CurrentDate;
 
     this.getCustomerList();
@@ -110,26 +115,27 @@ export class OpenLoanAccountComponent implements OnInit {
     const loan = new tm_loan_all();
     this.tm_loan_all = loan
     this.masterModel.tmloanall = this.tm_loan_all;
-    this.tm_loan_all.instl_no = 1;
+    // this.tm_loan_all.instl_no = 1;
 
     const gur = new tm_guaranter();
     this.tm_guaranter = gur;
     this.masterModel.tmguaranter = this.tm_guaranter;
 
     const acc : td_accholder[] = [];
-    acc.push(new td_accholder());
     this.td_accholder = acc;
     this.masterModel.tdaccholder = this.td_accholder;
+   // this.masterModel.tdaccholder.push(new td_accholder());
 
     const loansanc : tm_loan_sanction[] = [];
-    loansanc.push(new tm_loan_sanction());
     this.tm_loan_sanction = loansanc;
     this.masterModel.tmlaonsanction = this.tm_loan_sanction;
+   // this.masterModel.tmlaonsanction.push(new tm_loan_sanction());
 
     const loansancdtl : tm_loan_sanction_dtls[] = [];
-    loansancdtl.push( new tm_loan_sanction_dtls());
     this.tm_loan_sanction_dtls = loansancdtl;
     this.masterModel.tmlaonsanctiondtls = this.tm_loan_sanction_dtls
+   // this.masterModel.tmlaonsanctiondtls.push( new tm_loan_sanction_dtls());
+
   }
 
 
@@ -247,10 +253,6 @@ export class OpenLoanAccountComponent implements OnInit {
       this.td_accholder[idx].relation = this.relationship.filter(x => x.val.toString() === idx.toString())[0].val;
     }
 
-  public closeAlertMsg() {
-    this.showAlert = false;
-  }
-
   public setLoanAccountType(accType: number): void {
     this.tm_loan_all.acc_cd = Number(accType);
     this.tm_loan_all.loan_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
@@ -275,21 +277,151 @@ export class OpenLoanAccountComponent implements OnInit {
     this.tm_loan_all.emiFormulaDesc = this.repaymentFormulaList.filter( x=> x.id.toString() == formula.toString())[0].val
   }
 
-  public onDobChange(value: Date): number {
+  newAccount() {    // document.getElementById('account_type').id = '';
     debugger;
-    if (null !== value) {
-      const timeDiff = Math.abs(Date.now() - value.getTime());
-      const age = Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25)
-      // this.f.age.setValue(age);
-      return age;
-    }
+    this.clearData();
+    this.operationType = 'I';
+    this.isLoading = true;
+    debugger;
+    this.getCustomerList();
+
   }
 
 
+    clearData()
+    {
+      this.operationType = '';
+      this.initializeModels();
+    }
+
+    retrieveData()
+    {
+      debugger;
+      this.clearData();
+
+      this.operationType = 'Q';
+
+      this.isLoading = true;
+      this.getCustomerList();
+
+    }
+
+
+    modifyData() {
+      debugger;
+      if ( this.operationType !== 'Q' )
+      {
+        this.showAlertMsg('WARNING' , 'Record not retrived to modify');
+        return;
+      }
+      this.operationType = 'U';
+
+    }
+
+
+  saveData() {
+    debugger;
+
+    if (this.operationType !== 'I' && this.operationType !== 'U' )
+    {
+      this.showAlertMsg('WARNING', 'Create or Update record to Save');
+      return;
+    }
+
+    if (this.operationType === 'I') {
+
+      this.tm_loan_all.brn_cd = this.branchCode;
+      this.tm_loan_all.created_by = this.createUser;
+      this.tm_loan_all.created_dt = this.createDate;
+      this.GetLoanAccountNumberAndInsertData()
+    }
+
+    if (this.operationType === 'U') {
+      this.tm_loan_all.modified_by = this.updateUser;
+      this.tm_loan_all.created_dt = this.updateDate;
+      this.UpdateLoanAccountOpeningData();
+    }
+  }
+
+  GetLoanAccountNumberAndInsertData()
+  {
+    this.p_gen_param.brn_cd = this.branchCode;
+    debugger;
+    this.svc.addUpdDel<any>('Loan/PopulateLoanAccountNumber', this.p_gen_param).subscribe(
+      res => {
+        debugger;
+        let val = '0';
+        this.isLoading = false;
+        val = res;
+        if (val == "" || val == null)
+        {
+          this.showAlertMsg('ERROR', 'Loan Account Number not created !!');
+          return;
+        }
+        this.tm_loan_all.loan_id = val.toString();
+        debugger;
+
+        // this.masterModel.tmguaranter = null;
+        // this.masterModel.tdaccholder = null;
+        // this.masterModel.tmlaonsanction = null;
+        // this.masterModel.tmlaonsanctiondtls = null;
+
+        this.InsertLoanAccountOpeningData();
+      },
+      err => { this.isLoading = false;
+        this.showAlertMsg('ERROR', 'Loan Account Number not created !!!');
+        debugger;}
+
+    );
 
 
 
+  }
 
+  InsertLoanAccountOpeningData() {
+    debugger;
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('Loan/InsertLoanAccountOpeningData', this.masterModel).subscribe(
+      res => {
+        debugger;
+        // this.tm_loan_all.loan_id = res;
+        this.isLoading = false;
+        this.operationType = '';
+        this.showAlertMsg('INFORMATION', 'Record Saved Successfully. LoanId:' + this.tm_loan_all.loan_id );
+      },
+      err => {
+        debugger;
+        this.isLoading = false;
+        console.error('Error on onSaveClick' + JSON.stringify(err));
+        this.showAlertMsg('ERROR', 'Record Not Saved !!!');
+        debugger;
+      }
+    );
+  }
+
+  UpdateLoanAccountOpeningData() {
+
+  }
+
+
+  ValidatData() {
+
+  }
+
+
+  public showAlertMsg(msgTyp: string, msg: string) {
+    this.alertMsgType = msgTyp;
+    this.alertMsg = msg;
+    this.showAlert = true;
+  }
+
+  public closeAlertMsg() {
+    this.showAlert = false;
+  }
+
+  backScreen() {
+    this.router.navigate([this.sys.BranchName + '/la']);
+  }
 
 
 }
