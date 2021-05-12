@@ -15,6 +15,10 @@ import { tm_loan_sanction_dtls } from 'src/app/bank-resolver/Models/loan/tm_loan
 import { p_gen_param } from 'src/app/bank-resolver/Models/p_gen_param';
 import { stringify } from '@angular/compiler/src/util';
 import { exit } from 'process';
+import { mm_sector } from 'src/app/bank-resolver/Models/loan/mm_sector';
+import { mm_activity } from 'src/app/bank-resolver/Models/loan/mm_activity';
+import { mm_crop } from 'src/app/bank-resolver/Models/loan/mm_crop';
+import { p_loan_param } from 'src/app/bank-resolver/Models/loan/p_loan_param';
 
 
 @Component({
@@ -50,12 +54,20 @@ export class OpenLoanAccountComponent implements OnInit {
     accountTypeList: mm_acc_type[] = [];
     instalmentTypeList: mm_instalment_type[] = [];
 
+    sectorList: mm_sector[] = [];
+    activityList: mm_activity[] = [];
+    corpList : mm_crop[] = [];
+
+    selectedActivityList : mm_activity[] = [];
+    selectedCorpList : mm_crop[] = [];
+
     showAlert = false;
     alertMsg: string;
     alertMsgType: string;
     suggestedCustomer: mm_customer[];
     suggestedJointCustomer: mm_customer[];
-    isOpenDOBdp = false;
+    suggestedCustomerJointHolderIdx : number;
+
 
     masterModel = new LoanOpenDM();
     tm_loan_all = new tm_loan_all();
@@ -92,6 +104,10 @@ export class OpenLoanAccountComponent implements OnInit {
     this.getCustomerList();
     this.getAccountTypeList();
     this.getInstalmentTypeList();
+
+    this.getSectorList();
+    this.getActivityList();
+    this.getCorpList();
 
     this.initializeModels();
 
@@ -134,6 +150,9 @@ export class OpenLoanAccountComponent implements OnInit {
     const loansancdtl : tm_loan_sanction_dtls[] = [];
     this.tm_loan_sanction_dtls = loansancdtl;
     this.masterModel.tmlaonsanctiondtls = this.tm_loan_sanction_dtls
+
+    this.selectedActivityList = [];
+    this.selectedCorpList = [];
 
   }
 
@@ -226,6 +245,67 @@ pushTmLoanSanctionDtls()
   }
 
 
+  getSectorList()
+  {
+    debugger;
+    if (this.sectorList.length > 0) {
+      return;
+    }
+    this.sectorList = [];
+
+    this.svc.addUpdDel<any>('Mst/GetSectorMaster', null).subscribe(
+      res => {
+        debugger;
+        this.sectorList = res;
+      },
+      err => {
+        debugger;
+      }
+    );
+
+  }
+
+  getActivityList()
+  {
+    debugger;
+    if (this.activityList.length > 0) {
+      return;
+    }
+    this.activityList = [];
+
+    this.svc.addUpdDel<any>('Mst/GetActivityMaster', null).subscribe(
+      res => {
+        debugger;
+        this.activityList = res;
+      },
+      err => {
+        debugger;
+      }
+    );
+
+  }
+
+  getCorpList()
+  {
+    debugger;
+    if (this.corpList.length > 0) {
+      return;
+    }
+    this.corpList = [];
+
+    this.svc.addUpdDel<any>('Mst/GetCropMaster', null).subscribe(
+      res => {
+        debugger;
+        this.corpList = res;
+      },
+      err => {
+        debugger;
+      }
+    );
+
+  }
+
+
   public suggestCustomer(): void {
     this.suggestedCustomer = this.customerList
         .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_loan_all.cust_name.toLowerCase())
@@ -248,26 +328,28 @@ pushTmLoanSanctionDtls()
       this.tm_loan_all.cust_name = temp_mm_cust.cust_name;
     }
 
-    public suggestJointCustomer(): void {
+    public suggestJointCustomer(idx: number): void {
+      debugger;
+      this.suggestedCustomerJointHolderIdx =idx;
       this.suggestedJointCustomer = this.customerList
-          .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_loan_all.joint_cust_name.toLowerCase())
-            || c.cust_cd.toString().startsWith(this.tm_loan_all.joint_cust_name)
-            || ( c.phone !== null && c.phone.startsWith(this.tm_loan_all.joint_cust_name)))
+          .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholder[idx].joint_cust_name.toLowerCase())
+            || c.cust_cd.toString().startsWith(this.td_accholder[idx].joint_cust_name)
+            || ( c.phone !== null && c.phone.startsWith(this.td_accholder[idx].joint_cust_name)))
           .slice(0, 20);
       }
 
-    public setJointCustDtls(cust_cd: number): void {
-      this.tm_loan_all.joint_cust_code = cust_cd;
-     // this.msg.sendcustomerCodeForKyc(cust_cd);
-      this.populateJointCustDtls(cust_cd);
+    public setJointCustDtls(cust_cd: number, idx: number): void {
+      debugger;
+      this.td_accholder[idx].cust_cd = cust_cd;
+      this.populateJointCustDtls(cust_cd, idx);
       this.suggestedJointCustomer = null;
     }
 
-    populateJointCustDtls(cust_cd: number) {
+    populateJointCustDtls(cust_cd: number, idx: number) {
       debugger;
       var temp_mm_cust = new mm_customer();
       temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
-      this.tm_loan_all.joint_cust_name = temp_mm_cust.cust_name;
+      this.td_accholder[idx].joint_cust_name = temp_mm_cust.cust_name;
     }
 
     setRelationship(idx: number) {
@@ -275,6 +357,20 @@ pushTmLoanSanctionDtls()
       this.td_accholder[idx].relationId = idx;
       this.td_accholder[idx].relation = this.relationship.filter(x => x.val.toString() === idx.toString())[0].val;
     }
+
+    addJointHolder() {
+      if (this.masterModel.tdaccholder != undefined)
+      {
+      var temp_td_accholder = new td_accholder();
+      this.masterModel.tdaccholder.push(temp_td_accholder);
+      }
+    }
+
+    removeJointHolder() {
+      if (this.masterModel.tdaccholder != undefined && this.masterModel.tdaccholder.length > 1)
+        this.masterModel.tdaccholder.pop();
+    }
+
 
   public setLoanAccountType(accType: number): void {
     this.tm_loan_all.acc_cd = Number(accType);
@@ -298,6 +394,71 @@ pushTmLoanSanctionDtls()
     debugger;
     this.tm_loan_all.emi_formula_no = Number(formula);
     this.tm_loan_all.emiFormulaDesc = this.repaymentFormulaList.filter( x=> x.id.toString() == formula.toString())[0].val
+  }
+
+  public setSectorType(sec: string , idx: number): void {
+    debugger;
+    this.tm_loan_sanction_dtls[idx].sector_cd = sec;
+    this.tm_loan_sanction_dtls[idx].sector_desc = this.sectorList.filter(x => x.sector_cd.toString() === sec.toString())[0].sector_desc
+
+    this.tm_loan_sanction_dtls[idx].activity_cd = null;
+    this.tm_loan_sanction_dtls[idx].activity_desc = null;
+    this.tm_loan_sanction_dtls[idx].crop_cd = null;
+    this.tm_loan_sanction_dtls[idx].crop_desc = null;
+    this.tm_loan_sanction_dtls[idx].due_dt = null;
+    this.tm_loan_sanction_dtls[idx].sanc_amt = null;
+
+    this.selectedActivityList = [];
+    this.selectedCorpList = [];
+    this.selectedActivityList = this.activityList.filter( x=> x.sector_cd.toString() === sec.toString());
+  }
+
+  public setActivityType(act: string , idx: number): void {
+    debugger;
+    this.tm_loan_sanction_dtls[idx].activity_cd = act;
+    this.tm_loan_sanction_dtls[idx].activity_desc = this.activityList.filter(x => x.activity_cd.toString() === act.toString())[0].activity_desc;
+
+    this.tm_loan_sanction_dtls[idx].crop_cd = null;
+    this.tm_loan_sanction_dtls[idx].crop_desc = null;
+
+    this.selectedCorpList = this.corpList.filter( x=> x.activity_cd.toString() === act.toString());
+    if (this.selectedCorpList === undefined || this.selectedCorpList.length === 0)
+    {
+      var tmp_corp =new mm_crop();
+      tmp_corp.crop_cd = '00';
+      tmp_corp.crop_desc = 'Others';
+      this.selectedCorpList.push(tmp_corp)
+    }
+  }
+
+  public setCorpType(corp: string , idx: number): void {
+    debugger;
+    this.tm_loan_sanction_dtls[idx].crop_cd = corp;
+    this.tm_loan_sanction_dtls[idx].crop_desc = this.corpList.filter(x => x.crop_cd.toString() === corp.toString())[0].crop_desc;
+
+    if(this.tm_loan_sanction_dtls[idx].crop_cd !== '00')
+    {
+      var temp_p_loan_param = new p_loan_param();
+      temp_p_loan_param.cust_cd = this.masterModel.tmloanall.party_cd;
+      temp_p_loan_param.crop_cd = this.tm_loan_sanction_dtls[idx].crop_cd;
+      temp_p_loan_param = this.setSanctionAmountAndValidity(temp_p_loan_param);
+    }
+  }
+
+  setSanctionAmountAndValidity(loan_param: p_loan_param): any {
+    debugger;
+    var temp_p_loan_param = new p_loan_param();
+
+    this.svc.addUpdDel<any>('Loan/PopulateCropAmtDueDt', temp_p_loan_param).subscribe(
+      res => {
+        debugger;
+        temp_p_loan_param = res;
+      },
+      err => {
+        debugger;
+      }
+    );
+    return temp_p_loan_param;
   }
 
   newAccount() {    // document.getElementById('account_type').id = '';
@@ -478,7 +639,7 @@ pushTmLoanSanctionDtls()
 
   public closeAlertMsg() {
     this.showAlert = false;
-    if(this.operationType = 'N')
+    if(this.operationType == 'N')
     {
       this.disablePersonal = 'N';
     }

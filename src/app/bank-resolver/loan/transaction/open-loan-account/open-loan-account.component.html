@@ -147,8 +147,8 @@
   </div>
 
 
-  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
-  <!-- *ngIf="tm_loan_all.loan_id != undefined"> -->
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3"
+  *ngIf="tm_loan_all.loan_id != undefined">
     <h1></h1>
     <h6 style="background-color:lightskyblue">Guaranter Details</h6>
 
@@ -195,7 +195,6 @@
 
     <div class="form-row ">
       <div class="col-4 border-right">
-
         <h1></h1>
         <h6 style="background-color:lightskyblue">All Sanction</h6>
 
@@ -219,7 +218,6 @@
           <div class="form-group col-1"></div>
         </div>
         </section>
-
       </div>
 
       <div class="col-8 border-left">
@@ -237,15 +235,15 @@
           <div class="form-group col-6">
             <small for="joint_cust_name">Name</small>
             <input style="height:25px; text-align-last: left;" type="text" class="form-control form-control-sm text-capitalize" id="joint_cust_name"
-              placeholder="Customer Name" placeholder="Customer Name"
-              [(ngModel)]="t1.joint_cust_name" (input)="suggestJointCustomer()">
-            <div class="suggestions border p-2" *ngIf="suggestedJointCustomer">
+              placeholder="Joint Holder Name"
+              [(ngModel)]="t1.joint_cust_name" (input)="suggestJointCustomer(i)">
+            <div class="suggestions border p-2" *ngIf="suggestedJointCustomer && i==suggestedCustomerJointHolderIdx">
               <strong> [ Customer Cd / Phone ] Name </strong>
-              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedJointCustomer"
-                (click)="setJointCustDtls(cust.cust_cd)">
-                {{'[' + cust.cust_cd + ' / '
-                + ((null === cust.phone) ? '' : cust.phone) +'] '
-                + cust.cust_name}}
+              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let jc of suggestedJointCustomer"
+                (click)="setJointCustDtls(jc.cust_cd , i)">
+                {{'[' + jc.cust_cd + ' / '
+                + ((null === jc.phone) ? '' : jc.phone) +'] '
+                + jc.cust_name}}
               </p>
             </div>
           </div>
@@ -260,6 +258,17 @@
           </div>
         </div>
         </section>
+
+        <div class="text-right mb-3">
+          <button type="button" style="height:22px; padding-top: 0px;"  class="btn btn-primary btn-sm" (click)="addJointHolder()">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+           </button>
+
+           <button type="button" style="height:22px; padding-top: 0px;"  class="btn btn-primary btn-sm" (click)="removeJointHolder()">
+            <i class="fa fa-minus-circle" aria-hidden="true"></i>
+           </button>
+          </div>
+
       </div>
       </div>
 
@@ -267,36 +276,45 @@
     <h1></h1>
     <h6 style="background-color:lightskyblue">Sanction Details</h6>
 
+    <section *ngFor="let ls of tm_loan_sanction_dtls; let i = index">
     <div class="form-row">
-
       <div class="form-group col-3">
         <small>Sector</small>
-        <input class="form-control form-control-sm text-capitalize" id="sector" style="height:25px; text-align: left;"
-          type="text" placeholder="Sector">
-        <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+        <select
+          style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+          [(ngModel)]="ls.sector_cd" (change)="setSectorType($event.target.value , i)" id="sec_type" class="form-control form-control-sm">
+          <option [value]="ls.sector_cd" disabled selected>{{ls.sector_cd}}-{{ls.sector_desc}}</option>
+          <option *ngFor="let t of sectorList" [value]="t.sector_cd">{{t.sector_cd}}-{{t.sector_desc}}</option>
+        </select>
       </div>
 
       <div class="form-group col-2">
         <small>Activity</small>
-        <input class="form-control form-control-sm text-capitalize" id="activity" style="height:25px; text-align: left;"
-          type="text" placeholder="Activity">
-        <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+        <select
+          style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+          [(ngModel)]="ls.activity_cd" (change)="setActivityType($event.target.value , i)" id="act_type" class="form-control form-control-sm">
+          <option [value]="ls.activity_cd" disabled selected>{{ls.activity_cd}}-{{ls.activity_desc}}</option>
+          <option *ngFor="let t of selectedActivityList" [value]="t.activity_cd">{{t.activity_cd}}-{{t.activity_desc}}</option>
+        </select>
       </div>
 
 
       <div class="form-group col-3">
         <small>Activity Details</small>
-        <input class="form-control form-control-sm text-capitalize" id="activity_details" style="height:25px; text-align: left;"
-          type="text" placeholder="Activity Details">
-        <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+        <select
+          style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+          [(ngModel)]="ls.crop_cd" (change)="setCorpType($event.target.value , i)" id="act_type" class="form-control form-control-sm">
+          <option [value]="ls.crop_cd" disabled selected>{{ls.crop_cd}}-{{ls.crop_desc}}</option>
+          <option *ngFor="let t of selectedCorpList" [value]="t.crop_cd">{{t.crop_cd}}-{{t.crop_desc}}</option>
+        </select>
       </div>
 
       <div class="form-group col-2">
         <small>Sanction Amount</small>
         <input class="form-control form-control-sm text-capitalize" id="sanc_amount"
-          style="height:25px; text-align: right;" type="number" min="0" step='any' placeholder="Sanction Amount">
-        <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
+        [(ngModel)]="ls.sanc_amt" style="height:25px; text-align: right;" type="number" placeholder="Sanction Amount">
       </div>
+
 
       <div class="form-group col-2">
         <small for=due_date>Validity Date</small>
@@ -304,10 +322,10 @@
           <input class="form-control form-control-sm text-capitalize" id="validity_date" style="height:25px; text-align: right;"
             bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }" type="text"
             placeholder="DD/MM/YYYY">
-          <!-- [(ngModel)]="tm_deposit.phone" placeholder="Customer Phone"> -->
         </div>
       </div>
     </div>
+    </section>
   </div>
 
 
