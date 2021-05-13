@@ -39,6 +39,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { KycComponent } from './Common/kyc/kyc.component';
 import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/open-loan-account.component';
+import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transaction-approval/loan-transaction-approval.component';
+import { LoanTransactionDetailsComponent } from './Common/loan-transaction-details/loan-transaction-details.component';
 
 
 @NgModule({
@@ -64,7 +66,9 @@ import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/o
     AdduserComponent,
     KycComponent,
     MemberListComponent,
-    OpenLoanAccountComponent
+    OpenLoanAccountComponent,
+    LoanTransactionApprovalComponent,
+    LoanTransactionDetailsComponent
   ],
   imports: [
     CommonModule,

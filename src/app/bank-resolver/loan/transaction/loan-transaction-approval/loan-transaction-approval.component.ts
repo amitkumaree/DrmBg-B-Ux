@@ -1,30 +1,31 @@
-import { p_gen_param } from './../../Models/p_gen_param';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ExportAsService } from 'ngx-export-as';
 import { InAppMessageService, RestService } from 'src/app/_service';
-import {
-  MessageType, mm_customer, ShowMessage, td_def_trans_trf,
-  mm_acc_type, tm_deposit, SystemValues
-} from '../../Models';
-import { TranApprovalVM } from '../../Models/TranApprovalVM';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { TranApprovalVM } from 'src/app/bank-resolver/Models/TranApprovalVM';
+import {
+  MessageType, mm_acc_type, mm_customer,
+  ShowMessage, SystemValues,
+  td_def_trans_trf, tm_deposit
+} from 'src/app/bank-resolver/Models';
+import { p_gen_param } from 'src/app/bank-resolver/Models/p_gen_param';
 import { Router } from '@angular/router';
+import { tm_loan_all } from 'src/app/bank-resolver/Models/loan/tm_loan_all';
+import { LoanOpenDM } from 'src/app/bank-resolver/Models/loan/LoanOpenDM';
+
 
 @Component({
-  selector: 'app-transactionapproval',
-  templateUrl: './transactionapproval.component.html',
-  styleUrls: ['./transactionapproval.component.css'],
-
+  selector: 'app-loan-transaction-approval',
+  templateUrl: './loan-transaction-approval.component.html',
+  styleUrls: ['./loan-transaction-approval.component.css']
 })
-export class TransactionapprovalComponent implements OnInit {
+export class LoanTransactionApprovalComponent implements OnInit {
+  constructor(private svc: RestService, private elementRef: ElementRef,
+    private msg: InAppMessageService, private modalService: BsModalService,
+    private router: Router) { }
+
+  static accType: mm_acc_type[] = [];
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
-  constructor(private svc: RestService, private elementRef: ElementRef,
-    private msg: InAppMessageService, private modalService: BsModalService
-    ,private router: Router) { }
-  static accType: mm_acc_type[] = [];
   selectedAccountType: number;
   selectedTransactionMode: string;
   vm: TranApprovalVM[] = [];
@@ -48,7 +49,7 @@ export class TransactionapprovalComponent implements OnInit {
 
   }
   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template , {class: 'modal-lg'});
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
   public onClickRefreshList() {
     this.msg.sendCommonTransactionInfo(null);
@@ -62,16 +63,16 @@ export class TransactionapprovalComponent implements OnInit {
   private getAcctTypeMaster(): void {
     debugger;
     this.isLoading = true;
-    if (undefined !== TransactionapprovalComponent.accType &&
-      null !== TransactionapprovalComponent.accType &&
-      TransactionapprovalComponent.accType.length > 0) {
+    if (undefined !== LoanTransactionApprovalComponent.accType &&
+      null !== LoanTransactionApprovalComponent.accType &&
+      LoanTransactionApprovalComponent.accType.length > 0) {
       this.isLoading = false;
       // this.uniqueAccTypes = TransactionapprovalComponent.accType;
       this.GetUnapprovedDepTrans();
     } else {
       this.svc.addUpdDel<mm_acc_type[]>('Mst/GetAccountTypeMaster', null).subscribe(
         res => {
-          TransactionapprovalComponent.accType = res;
+          LoanTransactionApprovalComponent.accType = res;
           this.isLoading = false;
           // this.uniqueAccTypes = TransactionapprovalComponent.accType;
           this.GetUnapprovedDepTrans();
@@ -81,25 +82,29 @@ export class TransactionapprovalComponent implements OnInit {
     }
   }
   public selectTransaction(vm: TranApprovalVM): void {
-    this.selectedVm = vm;
+    this.selectedVm = vm; console.log(vm);
     this.selectedTransactionCd = vm.td_def_trans_trf.trans_cd;
     this.selectedAccountType = vm.td_def_trans_trf.acc_type_cd;
     this.selectedTransactionMode = vm.td_def_trans_trf.trans_mode;
-    this.getTranAcctInfo(vm.td_def_trans_trf.acc_num);
+    // this.getTranAcctInfo(vm.td_def_trans_trf.acc_num);
     this.getDepTrans(vm.td_def_trans_trf);
   }
 
   private getDepTrans(depTras: td_def_trans_trf): void {
     this.isLoading = true;
-    // this.showCust = false; // this is done to forcibly rebind the screen
-    // const defTransaction = new td_def_trans_trf();
-    // defTransaction.trans_cd = this.selectedTransactionCd;
-    // defTransaction.brn_cd = localStorage.getItem('__brnCd');
-    this.svc.addUpdDel<td_def_trans_trf>('Common/GetDepTrans', depTras).subscribe(
+    let tmLoanAll = new tm_loan_all();
+    let loanOpnDm = new LoanOpenDM();
+
+    tmLoanAll.loan_id = '' + depTras.acc_num;
+    tmLoanAll.brn_cd = this.sys.BranchCode;
+    tmLoanAll.acc_cd = depTras.acc_type_cd;
+
+    this.svc.addUpdDel<any>('Loan/GetLoanData', tmLoanAll).subscribe(
       res => {
         debugger;
-        this.selectedVm.td_def_trans_trf = res[0];
-        this.msg.sendCommonTransactionInfo(res[0]); // show transaction details
+        loanOpnDm = res;
+        // this.selectedVm.td_def_trans_trf = res[0];
+        this.msg.sendCommonLoanTransactionInfo(res); // show transaction details
         this.isLoading = false;
       },
       err => { this.isLoading = false; }
@@ -132,7 +137,7 @@ export class TransactionapprovalComponent implements OnInit {
         this.msg.sendCommonAcctInfo(acc);
         this.msg.sendCommonAccountNum(acc.acc_num);
         this.isLoading = false;
-        this.getCustInfo(acc.cust_cd);
+        // this.getCustInfo(acc.cust_cd);
       },
       err => { this.isLoading = false; }
     );
@@ -147,16 +152,19 @@ export class TransactionapprovalComponent implements OnInit {
   }
 
   private GetUnapprovedDepTrans(): void {
+    debugger;
     this.isLoading = true;
     this.tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
+    this.tdDepTrans.trans_type = 'L';
     this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', this.tdDepTrans).subscribe(
       res => {
+        debugger;
         const tdDepTransRet = res as td_def_trans_trf[];
         this.vm = [];
         tdDepTransRet.forEach(element => {
           const vm = new TranApprovalVM();
-          vm.mm_acc_type = TransactionapprovalComponent.accType.
-            filter(e => e.acc_type_cd === element.acc_type_cd && e.dep_loan_flag === 'D')[0];
+          vm.mm_acc_type = LoanTransactionApprovalComponent.accType.
+            filter(e => e.acc_type_cd === element.acc_type_cd && e.dep_loan_flag === 'L')[0];
           vm.td_def_trans_trf = element;
           this.vm.push(vm);
           // add and check account type in unique account type list
@@ -167,9 +175,9 @@ export class TransactionapprovalComponent implements OnInit {
 
         });
 
-        this.uniqueAccTypes = this.uniqueAccTypes.sort((a , b) => (a.acc_type_cd < b.acc_type_cd ? -1 : 1));
+        this.uniqueAccTypes = this.uniqueAccTypes.sort((a, b) => (a.acc_type_cd < b.acc_type_cd ? -1 : 1));
         this.filteredVm = this.vm;
-        this.filteredVm = this.filteredVm.sort((a , b) => (a.td_def_trans_trf.trans_cd < b.td_def_trans_trf.trans_cd ? -1 : 1));
+        this.filteredVm = this.filteredVm.sort((a, b) => (a.td_def_trans_trf.trans_cd < b.td_def_trans_trf.trans_cd ? -1 : 1));
         // this.tdDepTransGroup = this.groupBy(this.tdDepTransRet, (c) => c.acc_type_cd);
         this.isLoading = false;
       },
@@ -178,16 +186,16 @@ export class TransactionapprovalComponent implements OnInit {
   }
 
   public onApproveClick(): void {
-    if (this.selectedVm.td_def_trans_trf.trans_type.toLocaleLowerCase() === 'W') {
-      if (this.selectedVm.tm_deposit.acc_type_cd === 1 ||
-        this.selectedVm.tm_deposit.acc_type_cd === 7) {
-        if ((this.selectedVm.tm_deposit.clr_bal - this.selectedVm.td_def_trans_trf.amount) < 0) {
-          this.HandleMessage(true, MessageType.Warning, 'Balance Will Be Negative....So Operation Rejected.' +
-            'You First Approve The Deposit Vouchers Then Approve This Voucher.');
-          return;
-        }
-      }
-    }
+    // if (this.selectedVm.td_def_trans_trf.trans_type.toLocaleLowerCase() === 'W') {
+    //   if (this.selectedVm.tm_deposit.acc_type_cd === 1 ||
+    //     this.selectedVm.tm_deposit.acc_type_cd === 7) {
+    //     if ((this.selectedVm.tm_deposit.clr_bal - this.selectedVm.td_def_trans_trf.amount) < 0) {
+    //       this.HandleMessage(true, MessageType.Warning, 'Balance Will Be Negative....So Operation Rejected.' +
+    //         'You First Approve The Deposit Vouchers Then Approve This Voucher.');
+    //       return;
+    //     }
+    //   }
+    // }
 
     debugger;
     this.isLoading = true;
@@ -220,6 +228,36 @@ export class TransactionapprovalComponent implements OnInit {
         this.HandleMessage(true, MessageType.Error, err.error.text);
       }
     );
+    // this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
+    //   res => {
+    //     this.isLoading = false;
+    //     const n: number = res;
+    //     if (n !== 0) {
+    //       this.HandleMessage(true, MessageType.Warning, 'Failed Execute approval P_UPDATE_TD_DEP_TRANS.');
+    //     }
+    //     if (null !== this.selectedVm.td_def_trans_trf.trans_type) {
+    //       param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
+    //       this.svc.addUpdDel<any>('Common/P_UPDATE_DENOMINATION', param).subscribe(
+    //         res => {
+    //           const n: number = res;
+    //           if (n !== 0) {
+    //             this.HandleMessage(true, MessageType.Warning, 'Failed to update denomination.');
+    //           }
+    //         },
+    //         err => {
+    //           this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+    //         }
+    //       );
+    //     }
+    //     // update the Un approved flag with approved.
+    //     // TODO below not woking
+    //     this.selectedVm.td_def_trans_trf.approval_status = 'A';
+    //   },
+    //   err => {
+    //     this.isLoading = false;
+    //     this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+    //   }
+    // );
   }
 
   public onChangeAcctType(acctTypeCd: number): void {
@@ -231,10 +269,19 @@ export class TransactionapprovalComponent implements OnInit {
     }
   }
 
+  public ShowOnlyRecovery(show: boolean): void {
+    debugger;
+    if (show) {
+      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.trans_type === 'R');
+    } else {
+      this.filteredVm = this.vm;
+    }
+  }
+
   onDeleteClick(): void {
     debugger;
     if (!(confirm('Are you sure you want to Delete Transaction of Acc ' + this.selectedVm.tm_deposit.acc_num
-    + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
+      + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
       return;
     }
 
@@ -269,4 +316,16 @@ export class TransactionapprovalComponent implements OnInit {
   onBackClick() {
     this.router.navigate([this.sys.BankName + '/la']);
   }
+  // groupBy(xs, f) {
+  //   const gc = xs.reduce((r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r), {})
+  //   return Object.keys(gc).map(acc_type_cd => ({ acc_type_cd: acc_type_cd, events: gc[acc_type_cd] }));;
+  // }
+  // toggleSelection(i) {
+  //   this.tdDepTransGroup[i].open = !this.tdDepTransGroup[i].open;
+  // }
+  // OnSelectTransaction(ev: any) {
+  //   debugger;
+  //   this.elementRef.nativeElement.style.setProperty('--bkcolor', 'red');
+  // }
+
 }
