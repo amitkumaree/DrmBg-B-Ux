@@ -1,3 +1,4 @@
+import { p_loan_param } from 'src/app/bank-resolver/Models/loan/p_loan_param';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -34,6 +35,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
   selectedTransactionCd: number;
   isLoading = false;
   showMsg: ShowMessage;
+  disableApprove = true;
   tdDepTrans = new td_def_trans_trf();
   tdDepTransGroup: any;
   custTitle: string;
@@ -82,7 +84,8 @@ export class LoanTransactionApprovalComponent implements OnInit {
     }
   }
   public selectTransaction(vm: TranApprovalVM): void {
-    this.selectedVm = vm; console.log(vm);
+    this.disableApprove = false;
+    this.selectedVm = vm;
     this.selectedTransactionCd = vm.td_def_trans_trf.trans_cd;
     this.selectedAccountType = vm.td_def_trans_trf.acc_type_cd;
     this.selectedTransactionMode = vm.td_def_trans_trf.trans_mode;
@@ -103,7 +106,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
       res => {
         debugger;
         loanOpnDm = res;
-        // this.selectedVm.td_def_trans_trf = res[0];
+        this.selectedVm.loan = loanOpnDm;
         this.msg.sendCommonLoanTransactionInfo(res); // show transaction details
         this.isLoading = false;
       },
@@ -199,65 +202,97 @@ export class LoanTransactionApprovalComponent implements OnInit {
 
     debugger;
     this.isLoading = true;
-    let param = new p_gen_param();
+    let param = new p_loan_param();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
-    param.ad_trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
+    // param.intt_dt = this.selectedVm.loan.tmloanall.intt_dt;
     // const dt = this.sys.CurrentDate;
-    param.adt_trans_dt = this.sys.CurrentDate;
-    param.ad_acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
-    param.as_acc_num = this.selectedVm.tm_deposit.acc_num;
-    param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
+    param.loan_id = this.selectedVm.loan.tmloanall.loan_id;
+    param.acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
+    // param.recov_amt = this.selectedVm.loan.tddeftrans.rec;
+    param.curr_intt_rate = this.selectedVm.loan.tmloanall.curr_intt_rate;
+    param.curr_prn_recov = this.selectedVm.loan.tmloanall.curr_prn;
+    param.curr_intt_recov = this.selectedVm.loan.tmloanall.curr_intt;
+    param.ovd_intt_recov = this.selectedVm.loan.tmloanall.ovd_intt;
+    // param.gs_user_type = this.sys.u;
     param.gs_user_id = this.sys.UserId;
-    this.svc.addUpdDel<any>('Deposit/ApproveAccountTranaction', param).subscribe(
-      res => {
+    param.commit_roll_flag = 1;
+
+    this.svc.addUpdDel<any>('Loan/CalculateLoanInterest', param).subscribe(
+      loanRes => {
         this.isLoading = false;
-        if (res === 0) {
-          this.selectedVm.td_def_trans_trf.approval_status = 'A';
-          this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
-            + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
-            + ' is approved.');
-          setTimeout(() => {
-            this.onClickRefreshList();
-          }, 3000);
-        } else {
-          this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
-        }
+        // if (res === 0) {
+        //   this.selectedVm.td_def_trans_trf.approval_status = 'A';
+        //   this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
+        //     + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
+        //     + ' is approved.');
+        //   setTimeout(() => {
+        //     this.onClickRefreshList();
+        //   }, 3000);
+        // } else {
+        //   this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
+        // }
+
+        // ON SUCCESS
+        this.isLoading = true;
+        let trnParam = new p_gen_param();
+        trnParam.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
+        trnParam.ad_trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
+        // const dt = this.sys.CurrentDate;
+        trnParam.adt_trans_dt = this.sys.CurrentDate;
+        trnParam.ad_acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
+        trnParam.as_acc_num = this.selectedVm.td_def_trans_trf.acc_num;
+        trnParam.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
+        trnParam.gs_user_id = this.sys.UserId;
+        this.svc.addUpdDel<any>('Deposit/ApproveAccountTranaction', trnParam).subscribe(
+          res => {
+            this.isLoading = false;
+            if (res === 0) {
+              this.selectedVm.td_def_trans_trf.approval_status = 'A';
+              this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
+                + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
+                + ' is approved.');
+              setTimeout(() => {
+                this.onClickRefreshList();
+              }, 3000);
+            } else {
+              this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
+            }
+          },
+          err => {
+            this.isLoading = false;
+            this.HandleMessage(true, MessageType.Error, err.error.text);
+          }
+        );
+
+
       },
-      err => {
+      loanErr => {
         this.isLoading = false;
-        this.HandleMessage(true, MessageType.Error, err.error.text);
+        this.HandleMessage(true, MessageType.Error, loanErr.error.text);
       }
     );
-    // this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
+
+    // this.svc.addUpdDel<any>('Deposit/ApproveAccountTranaction', param).subscribe(
     //   res => {
     //     this.isLoading = false;
-    //     const n: number = res;
-    //     if (n !== 0) {
-    //       this.HandleMessage(true, MessageType.Warning, 'Failed Execute approval P_UPDATE_TD_DEP_TRANS.');
+    //     if (res === 0) {
+    //       this.selectedVm.td_def_trans_trf.approval_status = 'A';
+    //       this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
+    //         + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
+    //         + ' is approved.');
+    //       setTimeout(() => {
+    //         this.onClickRefreshList();
+    //       }, 3000);
+    //     } else {
+    //       this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
     //     }
-    //     if (null !== this.selectedVm.td_def_trans_trf.trans_type) {
-    //       param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
-    //       this.svc.addUpdDel<any>('Common/P_UPDATE_DENOMINATION', param).subscribe(
-    //         res => {
-    //           const n: number = res;
-    //           if (n !== 0) {
-    //             this.HandleMessage(true, MessageType.Warning, 'Failed to update denomination.');
-    //           }
-    //         },
-    //         err => {
-    //           this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
-    //         }
-    //       );
-    //     }
-    //     // update the Un approved flag with approved.
-    //     // TODO below not woking
-    //     this.selectedVm.td_def_trans_trf.approval_status = 'A';
     //   },
     //   err => {
     //     this.isLoading = false;
-    //     this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
+    //     this.HandleMessage(true, MessageType.Error, err.error.text);
     //   }
     // );
+
   }
 
   public onChangeAcctType(acctTypeCd: number): void {
@@ -269,10 +304,10 @@ export class LoanTransactionApprovalComponent implements OnInit {
     }
   }
 
-  public ShowOnlyRecovery(show: boolean): void {
+  public ShowOnlyRecovery(e: any): void {
     debugger;
-    if (show) {
-      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.trans_type === 'R');
+    if (e.target.checked) {
+      this.filteredVm = this.vm.filter(f => f.td_def_trans_trf.trans_type === 'R');
     } else {
       this.filteredVm = this.vm;
     }
