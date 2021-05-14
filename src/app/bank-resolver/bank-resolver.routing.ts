@@ -44,14 +44,14 @@ const routes: Routes = [
   { path: 'te-st3', component: LoanaccountTransactionComponent },
   { path: 'te-st1', component: TransactionapprovalComponent },
   { path: 'te-st2', component: AccounTransactionsComponent },
-  { path: 'te-st4', component: LoanTransactionApprovalComponent },
+  // { path: 'te-st4', component: LoanTransactionApprovalComponent },
   { path: 'te-st', component: UTCustomerProfileComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
   {path: 'NewBankConfig', component: NewBankConfigComponent},
   {path: 'test', component: TestComponent},
-  
+
   {
     path: ':bankName', component: BankResolverComponent,
     children: [
