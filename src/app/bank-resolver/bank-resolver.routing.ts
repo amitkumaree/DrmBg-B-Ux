@@ -31,12 +31,7 @@ import { AdduserComponent } from './system/adduser/adduser.component';
 import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
 import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/open-loan-account.component';
-<<<<<<< HEAD
 import { LoanaccountTransactionComponent } from   './loan/transaction/loanaccount-transaction/loanaccount-transaction.component';
-=======
-import { AuthenticationService as AuthGuard } from '../_service/authentication.service';
-import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transaction-approval/loan-transaction-approval.component';
->>>>>>> 03df011d2a5a06ce31a166c3042d2052e70065d1
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
