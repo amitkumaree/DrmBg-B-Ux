@@ -40,7 +40,8 @@ import { KycComponent } from './Common/kyc/kyc.component';
 import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/open-loan-account.component';
 import { LoanaccountTransactionComponent } from './loan/transaction/loanaccount-transaction/loanaccount-transaction.component';
-import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseinttcalc/loan-accwiseinttcalc.component';
+import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transaction-approval/loan-transaction-approval.component';
+import { LoanTransactionDetailsComponent } from './Common/loan-transaction-details/loan-transaction-details.component';
 
 
 @NgModule({
@@ -49,11 +50,8 @@ import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseint
     UTCustomerProfileComponent, UTSelfHelpComponent, DailybookComponent, CashaccountComponent,
     WebDataRocksPivot, TrialbalanceComponent, CashcumtrialComponent, GenLedgerComponent,
     VoucherprintComponent, AccountDetailsComponent, TransactionDetailsComponent,
-    GenLedger2Component,
-    TransactionapprovalComponent,
-    AccOpeningComponent,
-    CustomerInfoComponent, VoucherComponent,
-    TestComponent,
+    GenLedger2Component, TransactionapprovalComponent, AccOpeningComponent,
+    CustomerInfoComponent, VoucherComponent, TestComponent,
     ScrollbookComponent,
     DwRdInstlViewComponent,
     DwTdInttDtlsViewComponent,
@@ -68,7 +66,8 @@ import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseint
     MemberListComponent,
     OpenLoanAccountComponent,
     LoanaccountTransactionComponent,
-    LoanAccwiseinttcalcComponent
+    LoanTransactionApprovalComponent, 
+    LoanTransactionDetailsComponent
   ],
   imports: [
     CommonModule,
