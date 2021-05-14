@@ -32,6 +32,8 @@ import { AccounTransactionsComponent } from './deposit/accoun-transactions/accou
 import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/open-loan-account.component';
 import { LoanaccountTransactionComponent } from   './loan/transaction/loanaccount-transaction/loanaccount-transaction.component';
+import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transaction-approval/loan-transaction-approval.component';
+import { AuthenticationService as AuthGuard } from '../_service';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -39,7 +41,7 @@ const routes: Routes = [
   { path: 'te-st3', component: LoanaccountTransactionComponent },
   { path: 'te-st1', component: TransactionapprovalComponent },
   { path: 'te-st2', component: AccounTransactionsComponent },
-  // { path: 'te-st4', component: LoanTransactionApprovalComponent },
+  { path: 'te-st4', component: LoanTransactionApprovalComponent },
   { path: 'te-st', component: UTCustomerProfileComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
@@ -52,31 +54,6 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: LoginComponent },
-<<<<<<< HEAD
-      { path: 'la', component: LandingComponent },
-      { path: 'UT_CustomerProfile', component: UTCustomerProfileComponent },
-      { path: 'UT_SelfHelp', component: UTSelfHelpComponent },
-      { path: 'UR_MemberList', component: MemberListComponent },
-      { path: 'FT_Voucher', component: VoucherComponent },
-      { path: 'FT_ApproveTrns', component: VoucherapprovalComponent },
-      { path: 'FT_PrintVoucher', component: VoucherprintComponent },
-      { path: 'FR_DayBook', component: DailybookComponent },
-      { path: 'FR_CashAccount', component: CashaccountComponent },
-      { path: 'FR_CashCumTrial', component: CashcumtrialComponent },
-      { path: 'FR_TrialBalance', component: TrialbalanceComponent },
-      { path: 'FR_GeneralLadger', component: GenLedgerComponent },
-      { path: 'FR_DayScrollBook', component: ScrollbookComponent },
-      { path: 'FR_GLTD', component: GenLedger2Component },
-      { path: 'DT_ApproveTran', component: TransactionapprovalComponent },
-      { path: 'DT_AccTrans', component: AccounTransactionsComponent },
-      { path: 'DT_OpenAcc', component: AccOpeningComponent },
-      { path: 'DA_DayInit', component: DayinitializationComponent },
-      { path: 'DA_DayCmpl', component: DaycomplitionComponent },
-      { path: 'UM_AddUsr', component: AdduserComponent },
-      { path: 'LT_OpenLoanAcc', component: OpenLoanAccountComponent },
-      { path: 'LT_LoanTrans', component: LoanaccountTransactionComponent },
-
-=======
       { path: 'la', component: LandingComponent, canActivate: [ AuthGuard ] },
       { path: 'UT_CustomerProfile', component: UTCustomerProfileComponent, canActivate: [ AuthGuard ] },
       { path: 'UT_SelfHelp', component: UTSelfHelpComponent, canActivate: [ AuthGuard ] },
@@ -99,8 +76,7 @@ const routes: Routes = [
       { path: 'UM_AddUsr', component: AdduserComponent, canActivate: [ AuthGuard ] },
       { path: 'LT_OpenLoanAcc', component: OpenLoanAccountComponent, canActivate: [ AuthGuard ] },
       { path: 'LT_LoanAprv', component: LoanTransactionApprovalComponent, canActivate: [ AuthGuard ] },
->>>>>>> 03df011d2a5a06ce31a166c3042d2052e70065d1
-
+      { path: 'LT_LoanTrans', component: LoanaccountTransactionComponent,  canActivate: [ AuthGuard ]  },
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,
