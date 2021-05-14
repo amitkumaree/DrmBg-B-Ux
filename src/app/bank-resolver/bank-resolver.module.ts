@@ -40,6 +40,7 @@ import { KycComponent } from './Common/kyc/kyc.component';
 import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/open-loan-account.component';
 import { LoanaccountTransactionComponent } from './loan/transaction/loanaccount-transaction/loanaccount-transaction.component';
+import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseinttcalc/loan-accwiseinttcalc.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { LoanaccountTransactionComponent } from './loan/transaction/loanaccount-
     KycComponent,
     MemberListComponent,
     OpenLoanAccountComponent,
-    LoanaccountTransactionComponent
+    LoanaccountTransactionComponent,
+    LoanAccwiseinttcalcComponent
   ],
   imports: [
     CommonModule,
