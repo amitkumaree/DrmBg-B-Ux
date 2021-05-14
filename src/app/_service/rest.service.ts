@@ -77,6 +77,7 @@ export class RestService {
   }
 
   public addUpdDel<T>(ofwhat: string, data: T): Observable<T> {
+    debugger;
     return this.http.post<T>((this.getUrl() + ofwhat), data);
   }
 

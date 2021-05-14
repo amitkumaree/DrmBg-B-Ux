@@ -31,10 +31,12 @@ import { AdduserComponent } from './system/adduser/adduser.component';
 import { AccounTransactionsComponent } from './deposit/accoun-transactions/accoun-transactions.component';
 import { MemberListComponent } from './UCIC/Report/member-list/member-list.component';
 import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/open-loan-account.component';
+import { LoanaccountTransactionComponent } from   './loan/transaction/loanaccount-transaction/loanaccount-transaction.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
+  { path: 'te-st3', component: LoanaccountTransactionComponent },
   { path: 'te-st1', component: TransactionapprovalComponent },
   { path: 'te-st2', component: AccounTransactionsComponent },
   { path: 'te-st', component: UTCustomerProfileComponent },
@@ -43,6 +45,7 @@ const routes: Routes = [
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
   {path: 'NewBankConfig', component: NewBankConfigComponent},
   {path: 'test', component: TestComponent},
+  
   {
     path: ':bankName', component: BankResolverComponent,
     children: [
@@ -69,6 +72,7 @@ const routes: Routes = [
       { path: 'DA_DayCmpl', component: DaycomplitionComponent },
       { path: 'UM_AddUsr', component: AdduserComponent },
       { path: 'LT_OpenLoanAcc', component: OpenLoanAccountComponent },
+      { path: 'LT_LoanTrans', component: LoanaccountTransactionComponent },
 
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },

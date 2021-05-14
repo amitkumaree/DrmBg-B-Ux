@@ -11,4 +11,8 @@ export class tm_loan_sanction_dtls extends baseModel {
   public sanc_status: string;
   public srl_no: number;
   public approval_status: string;
+  public sector_desc: string;
+  public crop_desc: string;
+  public activity_desc: string;
+  public draw_limit: number;
 }

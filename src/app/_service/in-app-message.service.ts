@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { mm_customer, td_def_trans_trf, td_rd_installment, tm_deposit,
   tm_depositall } from '../bank-resolver/Models';
+import { tm_loan_all } from '../bank-resolver/Models/loan/tm_loan_all';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class InAppMessageService {
   private hideTitleOnHeader = new BehaviorSubject<boolean>(null);
   private commonShawdowBal = new BehaviorSubject<number>(null);
   private customerCodeForKyc = new BehaviorSubject<number>(null);
+  private commonTmloanAll = new BehaviorSubject<tm_loan_all>(null);
 
   constructor() { }
   /* Below code is example code */
@@ -50,4 +52,7 @@ export class InAppMessageService {
 
   sendcustomerCodeForKyc(custCd: number) { this.customerCodeForKyc.next(custCd); }
   getcustomerCodeForKyc() { return this.customerCodeForKyc.asObservable(); }
+
+  sendCommonTmLoanAll(acctDtl: tm_loan_all) { this.commonTmloanAll.next(acctDtl); }
+  getCommonTmLoanAll() { return this.commonTmloanAll.asObservable(); }
 }
