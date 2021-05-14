@@ -39,6 +39,7 @@ export class AccounTransactionsComponent implements OnInit {
   showTransMode = false;
   showTransactionDtl = false;
   hideOnClose = false;
+  disableSave = true;
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
 
@@ -463,6 +464,7 @@ export class AccounTransactionsComponent implements OnInit {
       this.tdDefTransFrm.patchValue({
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key,
+        trans_mode: 'R',
         constitution_cd: this.accNoEnteredForTransaction.constitution_cd,
         constitution_cd_desc: constitution.constitution_desc,
         cert_no: this.accNoEnteredForTransaction.cert_no,
@@ -501,6 +503,18 @@ export class AccounTransactionsComponent implements OnInit {
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key
       });
+    }
+  }
+
+  private enableSave(): void {
+    // check all the rules to enable save
+    const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
+      if (((+this.td.amount.value) <= 0)) {
+        this.disableSave = true;
+      } else {
+        this.disableSave = false;
+      }
     }
   }
 
@@ -642,9 +656,10 @@ export class AccounTransactionsComponent implements OnInit {
 
   onAmtChngDuringRenewal(): void {
     debugger;
+    this.showTranferType = false;
     this.HandleMessage(false);
-    if ((+this.td.amount.value) < 0) {
-      this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
+    if ((+this.td.amount.value) <= 0) {
+      this.HandleMessage(true, MessageType.Error, 'Amount can not be negative Or 0.');
       this.td.amount.setValue('');
       return;
     }
@@ -655,9 +670,8 @@ export class AccounTransactionsComponent implements OnInit {
       if ((mat_amt - (+this.td.amount.value)) > 0) {
         // open transfer area
         this.showTranferType = true;
-      } else {
+      } else if (((+this.td.amount.value) - mat_amt) > 0) {
         // close transfer area
-        this.showTranferType = false;
         this.HandleMessage(true, MessageType.Error, 'Amount can not be greater than maturity amount.');
         this.td.amount.setValue('');
         return;
@@ -680,8 +694,12 @@ export class AccounTransactionsComponent implements OnInit {
     }
 
     this.isLoading = true;
+    const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     const saveTransaction = new AccOpenDM();
     const tdDefTrans = this.mappTddefTransFromFrm();
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
+      saveTransaction.tmdepositrenew = this.mapRenewData();
+    }
     saveTransaction.tddeftrans = tdDefTrans;
     if (this.td.trf_type.value === 'C') {
       saveTransaction.tmdenominationtrans = this.tm_denominationList;
@@ -730,7 +748,11 @@ export class AccounTransactionsComponent implements OnInit {
       toReturn.amount = this.accNoEnteredForTransaction.prn_amt;
       toReturn.curr_intt_recov = this.accNoEnteredForTransaction.intt_amt;
     } else {
-      toReturn.amount = +this.td.amount.value;
+      if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
+        toReturn.amount = +this.td.interest.value;
+      } else {
+        toReturn.amount = +this.td.amount.value;
+      }
     }
     toReturn.instrument_num = this.td.instrument_num.value === '' ? 0 : +this.td.instrument_num.value;
     toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
@@ -754,7 +776,10 @@ export class AccounTransactionsComponent implements OnInit {
         toReturn.particulars = 'BY CASH';
       }
     }
-
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'
+      && this.td.trf_type.value === '') {
+      toReturn.trans_type = 'T';
+    }
     toReturn.approval_status = 'U';
     toReturn.brn_cd = this.sys.BranchCode;
 
@@ -769,9 +794,79 @@ export class AccounTransactionsComponent implements OnInit {
     // if ((+this.f.acc_type_cd.value) === 6) {
     //   toReturn.acc_cd = 14302;
     // }
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'){
+      toReturn.curr_prn_recov = ((+this.td.amount.value) + (+this.td.interest.value));
+      toReturn.ovd_prn_recov = this.accNoEnteredForTransaction.prn_amt;
+      toReturn.curr_intt_recov = this.accNoEnteredForTransaction.intt_amt;
+      toReturn.ovd_intt_recov = 0;
+    }
+
     toReturn.acc_cd = this.accNoEnteredForTransaction.acc_cd;
     toReturn.disb_id = 1;
     toReturn.created_by = this.sys.UserId;
+
+    return toReturn;
+  }
+
+  mapRenewData(): tm_deposit {
+
+    const toReturn = new tm_deposit();
+    // Year=0;Month=0;Day=313
+    const depPrd = 'Year=' + (this.td.dep_period_y.value === '' ? '0' : this.td.dep_period_y.value) +
+      ';Month=' + (this.td.dep_period_m.value === '' ? '0' : this.td.dep_period_m.value) +
+      ';Day=' + (this.td.dep_period_d.value === '' ? '0' : this.td.dep_period_d.value);
+
+    toReturn.brn_cd = this.accNoEnteredForTransaction.brn_cd;
+    toReturn.acc_type_cd = this.accNoEnteredForTransaction.acc_type_cd;
+    toReturn.acc_num = this.accNoEnteredForTransaction.acc_num;
+    toReturn.renew_id = this.accNoEnteredForTransaction.renew_id;
+    toReturn.cust_cd = this.accNoEnteredForTransaction.cust_cd;
+    toReturn.intt_trf_type = this.td.intt_trf_type.value;
+    toReturn.constitution_cd = (+this.td.constitution_cd.value);
+    toReturn.oprn_instr_cd = this.accNoEnteredForTransaction.oprn_instr_cd;
+    toReturn.opening_dt = Utils.convertStringToDt(this.td.opening_dt.value);
+    toReturn.prn_amt = (+this.td.amount.value);
+    toReturn.intt_amt = (+this.td.interest.value);
+    toReturn.dep_period = depPrd;
+    toReturn.instl_amt = this.accNoEnteredForTransaction.instl_amt;
+    toReturn.instl_no = this.accNoEnteredForTransaction.instl_no;
+    toReturn.mat_dt = Utils.convertStringToDt(this.td.mat_dt.value);
+    toReturn.intt_rt = (+this.td.intt_rate.value);
+    toReturn.tds_applicable = this.accNoEnteredForTransaction.tds_applicable;
+    toReturn.last_intt_calc_dt = this.accNoEnteredForTransaction.last_intt_calc_dt;
+    // toReturn.acc_close_dt = this.accNoEnteredForTransaction.acc_close_dt;
+    // toReturn.closing_prn_amt = this.accNoEnteredForTransaction.closing_prn_amt;
+    // toReturn.closing_intt_amt = this.accNoEnteredForTransaction.closing_intt_amt;
+    // toReturn.penal_amt = this.accNoEnteredForTransaction.penal_amt;
+    // toReturn.ext_instl_tot = this.accNoEnteredForTransaction.ext_instl_tot;
+    // toReturn.mat_status = this.accNoEnteredForTransaction.mat_status;
+    // toReturn.acc_status = this.accNoEnteredForTransaction.acc_status;
+    // toReturn.curr_bal = this.accNoEnteredForTransaction.curr_bal;
+    // toReturn.clr_bal = this.accNoEnteredForTransaction.clr_bal;
+    toReturn.standing_instr_flag = this.accNoEnteredForTransaction.standing_instr_flag;
+    toReturn.cheque_facility_flag = this.accNoEnteredForTransaction.cheque_facility_flag;
+    toReturn.approval_status = this.accNoEnteredForTransaction.approval_status;
+    toReturn.approved_by = this.accNoEnteredForTransaction.approved_by;
+    toReturn.approved_dt = this.accNoEnteredForTransaction.approved_dt;
+    toReturn.user_acc_num = this.accNoEnteredForTransaction.user_acc_num;
+    // toReturn.lock_mode = this.accNoEnteredForTransaction.lock_mode;
+    // toReturn.loan_id = this.accNoEnteredForTransaction.loan_id;
+    // toReturn.cert_no = this.td.cert_no.value;
+    // toReturn.bonus_amt = this.accNoEnteredForTransaction.bonus_amt;
+    // toReturn.penal_intt_rt = this.accNoEnteredForTransaction.penal_intt_rt;
+    // toReturn.bonus_intt_rt = this.accNoEnteredForTransaction.bonus_intt_rt;
+    // toReturn.transfer_flag = this.accNoEnteredForTransaction.transfer_flag;
+    // toReturn.transfer_dt = this.accNoEnteredForTransaction.transfer_dt;
+    toReturn.agent_cd = this.accNoEnteredForTransaction.agent_cd;
+    toReturn.cust_name = this.accNoEnteredForTransaction.cust_name;
+    toReturn.cust_type = this.accNoEnteredForTransaction.cust_type;
+    toReturn.sex = this.accNoEnteredForTransaction.sex;
+    toReturn.phone = this.accNoEnteredForTransaction.phone;
+    toReturn.occupation = this.accNoEnteredForTransaction.occupation;
+    toReturn.created_by = this.sys.UserId;
+    toReturn.modified_by = this.sys.UserId;
+    toReturn.constitution_desc = this.accNoEnteredForTransaction.constitution_desc;
+    toReturn.acc_cd = this.accNoEnteredForTransaction.acc_cd;
 
     return toReturn;
   }

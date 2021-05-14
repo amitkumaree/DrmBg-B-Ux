@@ -31,3 +31,4 @@ export * from './mm_operation';
 export * from './tm_depositall';
 export * from './SystemValues';
 export * from './kyc_sig';
+export * from './loan/p_loan_param';

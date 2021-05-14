@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
           this.alertMsg = 'Invalid Credential !!!!!';
         }
         else {
-          console.log('Login Sucess');
+          // console.log('Login Sucess');
           this.rstSvc.addUpdDel('Mst/GetSystemParameter', null).subscribe(
             res => {
               debugger;

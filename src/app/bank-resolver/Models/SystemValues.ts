@@ -11,6 +11,7 @@ export class SystemValues {
   private __bName: string;
   private __minBalWdChq: string;
   private __minBalNoChq: string;
+  private __isLoggedIn: boolean;
 
   constructor() {
     this.__brnCd = localStorage.getItem('__brnCd');
@@ -21,9 +22,16 @@ export class SystemValues {
     this.__suspanceccountCD = '10000';
     this.__ddsPeriod = localStorage.getItem('__ddsPeriod');
     this.__userId = localStorage.getItem('__userId');
+    if ('' !== this.__userId && this.__userId.length > 0) {
+      this.__isLoggedIn = true;
+    } else { this.__isLoggedIn = false; }
     this.__bName = localStorage.getItem('__bName');
     this.__minBalWdChq = localStorage.getItem('__minBalWdChq');
     this.__minBalNoChq = localStorage.getItem('__minBalNoChq');
+  }
+
+  get IsUsrLoggedIn(): boolean {
+    return this.__isLoggedIn;
   }
 
   get BranchCode(): string {

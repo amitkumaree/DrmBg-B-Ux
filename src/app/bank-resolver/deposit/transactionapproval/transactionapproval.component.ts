@@ -220,36 +220,6 @@ export class TransactionapprovalComponent implements OnInit {
         this.HandleMessage(true, MessageType.Error, err.error.text);
       }
     );
-    // this.svc.addUpdDel<any>('Common/P_UPDATE_TD_DEP_TRANS', param).subscribe(
-    //   res => {
-    //     this.isLoading = false;
-    //     const n: number = res;
-    //     if (n !== 0) {
-    //       this.HandleMessage(true, MessageType.Warning, 'Failed Execute approval P_UPDATE_TD_DEP_TRANS.');
-    //     }
-    //     if (null !== this.selectedVm.td_def_trans_trf.trans_type) {
-    //       param.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
-    //       this.svc.addUpdDel<any>('Common/P_UPDATE_DENOMINATION', param).subscribe(
-    //         res => {
-    //           const n: number = res;
-    //           if (n !== 0) {
-    //             this.HandleMessage(true, MessageType.Warning, 'Failed to update denomination.');
-    //           }
-    //         },
-    //         err => {
-    //           this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
-    //         }
-    //       );
-    //     }
-    //     // update the Un approved flag with approved.
-    //     // TODO below not woking
-    //     this.selectedVm.td_def_trans_trf.approval_status = 'A';
-    //   },
-    //   err => {
-    //     this.isLoading = false;
-    //     this.HandleMessage(true, MessageType.Warning, JSON.stringify(err));
-    //   }
-    // );
   }
 
   public onChangeAcctType(acctTypeCd: number): void {
@@ -299,15 +269,4 @@ export class TransactionapprovalComponent implements OnInit {
   onBackClick() {
     this.router.navigate([this.sys.BankName + '/la']);
   }
-  // groupBy(xs, f) {
-  //   const gc = xs.reduce((r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r), {})
-  //   return Object.keys(gc).map(acc_type_cd => ({ acc_type_cd: acc_type_cd, events: gc[acc_type_cd] }));;
-  // }
-  // toggleSelection(i) {
-  //   this.tdDepTransGroup[i].open = !this.tdDepTransGroup[i].open;
-  // }
-  // OnSelectTransaction(ev: any) {
-  //   debugger;
-  //   this.elementRef.nativeElement.style.setProperty('--bkcolor', 'red');
-  // }
 }
