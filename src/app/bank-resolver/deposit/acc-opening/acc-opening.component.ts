@@ -1605,6 +1605,8 @@ removeSignatory()
         return;
       }
 
+      this.td_deftranstrfList[0].acc_cd = Number(this.td_deftranstrfList[0].gl_acc_code) ;
+
       if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === "")
       {
         if (this.acc_master === undefined || this.acc_master === null || this.acc_master.length === 0)
