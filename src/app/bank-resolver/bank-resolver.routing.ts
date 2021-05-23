@@ -1,5 +1,4 @@
 import { GenLedgerComponent } from './finance/report/gen-ledger/gen-ledger.component';
-
 import { LandingComponent } from './landing/landing.component';
 import { LoginComponent } from './login/login.component';
 import { BankResolverComponent } from './bank-resolver.component';
@@ -34,15 +33,16 @@ import { OpenLoanAccountComponent } from './loan/transaction/open-loan-account/o
 import { AuthenticationService as AuthGuard } from '../_service/authentication.service';
 import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transaction-approval/loan-transaction-approval.component';
 import { LoanaccountTransactionComponent } from './loan/transaction/loanaccount-transaction/loanaccount-transaction.component';
+import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseinttcalc/loan-accwiseinttcalc.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
-  { path: 'te-st3', component: LoanaccountTransactionComponent },
-  { path: 'te-st1', component: TransactionapprovalComponent },
-  { path: 'te-st2', component: AccounTransactionsComponent },
+  { path: 'te-st3', component: LoanAccwiseinttcalcComponent },
+  //{ path: 'te-st1', component: TransactionapprovalComponent },
+  //{ path: 'te-st2', component: AccounTransactionsComponent },
   // { path: 'te-st4', component: LoanTransactionApprovalComponent },
-  { path: 'te-st', component: UTCustomerProfileComponent },
+  //{ path: 'te-st', component: UTCustomerProfileComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},
@@ -76,7 +76,7 @@ const routes: Routes = [
       { path: 'UM_AddUsr', component: AdduserComponent },
       { path: 'LT_OpenLoanAcc', component: OpenLoanAccountComponent },
       { path: 'LT_LoanTrans', component: LoanaccountTransactionComponent },
-      { path: 'LT_CalcIntt', component: loan-accwiseinttcalcComponent },
+      { path: 'LT_CalcIntt', component: LoanAccwiseinttcalcComponent},
 
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },

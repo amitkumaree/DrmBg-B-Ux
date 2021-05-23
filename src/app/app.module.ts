@@ -18,7 +18,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,7 +28,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MasterConfigComponent,
     BankWiseConfigComponent,
     NewBankConfigComponent,
-    TestComponent
+    TestComponent 
+
   ],
   imports: [
     BrowserModule, HttpClientModule, BrowserAnimationsModule,

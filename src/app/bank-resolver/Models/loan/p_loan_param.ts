@@ -4,6 +4,7 @@ export class p_loan_param {
   public  brn_cd: string;
   public intt_dt: Date;
   public  loan_id: string;
+  public  acc_cd :string;
   public  acc_type_cd: number;
   public  recov_amt : number; 
  public  curr_intt_rate : number;  
