@@ -138,12 +138,12 @@ export class LoanTransactionDetailsComponent implements OnInit, OnDestroy {
             ovd_intt: this.loanOpenDm.tmloanall.ovd_intt,
             loan_id: this.loanOpenDm.tmloanall.loan_id,
             tot_Prn: this.loanOpenDm.tmloanall.curr_prn + this.loanOpenDm.tmloanall.ovd_prn,
-            share_holding: 0, // TODO need to change this
-            audit_fees: this.loanOpenDm.tddeftrans.audit_fees_recov, // TODO need to change this
-            mis_adv: this.loanOpenDm.tddeftrans.mis_advance_recov, // TODO need to change this
+            share_holding: this.loanOpenDm.tmloanall.tot_share_holding,
+            audit_fees: this.loanOpenDm.tddeftrans.audit_fees_recov,
+            mis_adv: this.loanOpenDm.tddeftrans.mis_advance_recov,
             intt_till_dt: this.loanOpenDm.tddeftrans.intt_till_dt,
             instrument_no: this.loanOpenDm.tddeftrans.instrument_num,
-            audit_fees_recc: this.loanOpenDm.tddeftrans.audit_fees_recov, // TODO need to change this
+            audit_fees_recc: this.loanOpenDm.tddeftrans.audit_fees_recov,
             acc_num: this.loanOpenDm.tddeftrans.acc_num,
             // trans_type: this.loanOpenDm.tddeftrans.trans_type === 'R' ? 'Recovery' :
             //   this.loanOpenDm.tddeftrans.trans_type === 'D' ? 'Disbursement' :

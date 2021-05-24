@@ -51,6 +51,10 @@
               + ((null === cust.phone) ? '' : cust.phone) +'] '
               + cust.cust_name}}</p>
           </div>
+          <div class="suggestions border p-2" style="width: 200%; font-size: small;"
+          *ngIf="suggestedCustomer && !(suggestedCustomer.length > 0)">
+          <strong class="text-danger">" {{this.f.cust_name.value}} " does not match with any customer</strong>
+          </div>
         </div>
         <div class="form-group col-2">
           <small for="cust_type">Customer Type <span class="text-danger">*</span></small>
@@ -174,8 +178,8 @@
         </div>
         <div class="form-group col-1">
           <small for="pin">Pin Code</small>
-          <input type="number" class="form-control form-control-sm" formControlName="pin" id="pin"
-            placeholder="Pin code">
+          <input type="text" class="form-control form-control-sm"
+          formControlName="pin" id="pin" maxlength="6" (input)="onPininput($event)" placeholder="Pin code">
         </div>
         <div class="form-group col-2">
           <small for="vill_cd">Village</small>
@@ -270,7 +274,7 @@
         <div class="form-group col-2">
           <small for="status">Customer Status</small>
           <select id="status" class="form-control form-control-sm" formControlName="status">
-            <option value="A" selected>Active</option>
+            <option value="A">Active</option>
             <option value="D">Death</option>
           </select>
         </div>

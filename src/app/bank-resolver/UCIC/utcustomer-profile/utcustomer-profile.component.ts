@@ -122,7 +122,7 @@ export class UTCustomerProfileComponent implements OnInit {
       ward_no: [''],
       state: [''],
       dist: [''],
-      pin: [''],
+      pin: ['', [Validators.maxLength(6)]],
       vill_cd: [''],
       block_cd: ['', { disabled: true }],
       block_cd_desc: ['', { disabled: true }],
@@ -136,7 +136,7 @@ export class UTCustomerProfileComponent implements OnInit {
       monthly_income: [''],
       date_of_death: [''],
       sms_flag: [''],
-      status: [''],
+      status: [{ value: 'A' }],
       pan: [''],
       nominee: [''],
       nom_relation: [''],
@@ -156,6 +156,7 @@ export class UTCustomerProfileComponent implements OnInit {
     this.getBlockMster();
     this.getServiceAreaMaster();
     this.onRetrieveClick();
+    this.f.status.setValue('A');
   }
 
   openModal(template: TemplateRef<any>) {
@@ -308,6 +309,12 @@ export class UTCustomerProfileComponent implements OnInit {
     }
   }
 
+  public onPininput(event: any): void {
+    if (isNaN(event.target.value)) {
+      this.f.pin.setValue('');
+    }
+  }
+
   public SelectCustomer(cust: mm_customer): void {
     debugger;
     this.selectedCustomer = cust;
@@ -370,6 +377,7 @@ export class UTCustomerProfileComponent implements OnInit {
 
   public onNewClick(): void {
     this.onClearClick();
+    this.f.status.setValue('A');
   }
 
   public onSaveClick(): void {
@@ -388,16 +396,21 @@ export class UTCustomerProfileComponent implements OnInit {
       cust.modified_by = this.sys.UserId;
       this.svc.addUpdDel<any>('UCIC/InsertCustomerDtls', cust).subscribe(
         res => {
-          this.custMstrFrm.patchValue({
-            cust_cd: res
-          });
-          cust.cust_cd = res;
-          this.selectedCustomer = cust;
-          UTCustomerProfileComponent.existingCustomers.push(cust);
-          this.HandleMessage(true, MessageType.Sucess,
-            cust.cust_cd + ', Customer created sucessfully');
-          this.msg.sendcustomerCodeForKyc(cust.cust_cd);
           this.isLoading = false;
+          if ((+res) > 0) {
+            this.custMstrFrm.patchValue({
+              cust_cd: res
+            });
+            cust.cust_cd = res;
+            this.selectedCustomer = cust;
+            UTCustomerProfileComponent.existingCustomers.push(cust);
+            this.HandleMessage(true, MessageType.Sucess,
+              cust.cust_cd + ', Customer created sucessfully');
+            this.msg.sendcustomerCodeForKyc(cust.cust_cd);
+          } else {
+            this.HandleMessage(true, MessageType.Error,
+              'Got ' + cust.cust_cd + 'customer code, Customer creation failed');
+          }
         },
         err => { this.isLoading = false; }
       );
@@ -409,12 +422,12 @@ export class UTCustomerProfileComponent implements OnInit {
             if (undefined !== UTCustomerProfileComponent.existingCustomers ||
               null !== UTCustomerProfileComponent.existingCustomers ||
               UTCustomerProfileComponent.existingCustomers.length > 0) {
-                const pos = UTCustomerProfileComponent.existingCustomers
+              const pos = UTCustomerProfileComponent.existingCustomers
                 .findIndex(e => e.cust_cd === cust.cust_cd);
-                if (pos >= 0){
-                  UTCustomerProfileComponent.existingCustomers.splice(pos, 1);
-                  UTCustomerProfileComponent.existingCustomers.push(cust);
-                }
+              if (pos >= 0) {
+                UTCustomerProfileComponent.existingCustomers.splice(pos, 1);
+                UTCustomerProfileComponent.existingCustomers.push(cust);
+              }
 
             } else {
               UTCustomerProfileComponent.existingCustomers.push(cust);
@@ -439,13 +452,14 @@ export class UTCustomerProfileComponent implements OnInit {
       return false;
     }
     debugger;
-    if (!Utils.ValidatePhone(this.f.phone.value)) {
-      this.HandleMessage(true, MessageType.Error, 'Phone number is not valid');
-      return false;
+    if (null !== this.f.phone.value && this.f.phone.value.length > 0) {
+      if (!Utils.ValidatePhone(this.f.phone.value)) {
+        this.HandleMessage(true, MessageType.Error, 'Phone number is not valid');
+        return false;
+      }
+      return true;
     }
-    return true;
   }
-
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
     this.showMsg = new ShowMessage();
     this.showMsg.Show = show;
@@ -559,7 +573,7 @@ export class UTCustomerProfileComponent implements OnInit {
     const name = this.fileToUpload.name; const size = this.fileToUpload.size;
     const extension = name.split('.').pop().toLowerCase();
 
-    if (extension.toUpperCase() !== 'JPG'){
+    if (extension.toUpperCase() !== 'JPG') {
       this.errMessage = 'Images with JPG file types allowed.';
       return;
     }

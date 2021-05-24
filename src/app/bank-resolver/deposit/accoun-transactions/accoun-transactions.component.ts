@@ -352,6 +352,8 @@ export class AccounTransactionsComponent implements OnInit {
   /** method fires on account type change */
   public onAcctTypeChange(): void {
     this.f.acct_num.reset();
+    this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
+    this.HandleMessage(false);
     const acctTypCdTofilter = +this.f.acc_type_cd.value;
     const acctTypeDesription = AccounTransactionsComponent.operations
       .filter(e => e.acc_type_cd === acctTypCdTofilter)[0].acc_type_desc;
@@ -368,8 +370,8 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   public onAccountNumTabOff(): void {
-    debugger;
-    this.f.oprn_cd.disable();
+    this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
+    this.f.oprn_cd.disable(); this.f.oprn_cd.reset();
     this.disableOperation = true;
     this.showTranferType = true;
     // console.log('onAccountNumTabOff -' + this.f.acct_num.value);
@@ -386,15 +388,35 @@ export class AccounTransactionsComponent implements OnInit {
         if (undefined === acc) {
           this.HandleMessage(true, MessageType.Error,
             'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
-          this.msg.sendCommonTmDepositAll(null);
+          this.onResetClick();
         } else {
-          this.disableOperation = false;
-          this.accNoEnteredForTransaction = acc;
-          this.msg.sendCommonTmDepositAll(acc);
-          this.tdDefTransFrm.patchValue({
-            acc_num: acc.acc_num,
-          });
-          this.f.oprn_cd.enable();
+          /* check if account is not closed */
+          if (acc.acc_status.toUpperCase() === 'C') {
+            this.HandleMessage(true, MessageType.Error,
+              'Account number ' + this.f.acct_num.value + ' is closed.');
+            this.onResetClick();
+          } else {
+            /* check if for acct_type 2,4,5 mat is past today date
+             pre mature acctype shpuld not be shown */
+            const cDt = new Date().getTime();
+            const chDt = Utils.convertStringToDt(acc.mat_dt.toString()).getTime()
+            const accTypCode = +this.f.acc_type_cd.value;
+            if ((accTypCode === 2 || accTypCode === 4 || accTypCode === 5)
+              && chDt > cDt) {
+              this.HandleMessage(true, MessageType.Error,
+                'Account number ' + this.f.acct_num.value + ' is not matured yet.');
+              this.onResetClick();
+            } else {
+              this.disableOperation = false;
+              this.accNoEnteredForTransaction = acc;
+              this.msg.sendCommonTmDepositAll(acc);
+              this.tdDefTransFrm.patchValue({
+                acc_num: acc.acc_num,
+              });
+              this.f.oprn_cd.enable();
+            }
+
+          }
         }
         this.isLoading = false;
       },
@@ -408,6 +430,7 @@ export class AccounTransactionsComponent implements OnInit {
 
   /* method fires on operation type change */
   public onOperationTypeChange(): void {
+    this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
     this.HandleMessage(false);
     this.showTranferType = true;
     this.hideOnClose = false;
@@ -667,7 +690,7 @@ export class AccounTransactionsComponent implements OnInit {
       const mat_amt = this.accNoEnteredForTransaction.prn_amt
         + this.accNoEnteredForTransaction.intt_amt;
 
-      if ((mat_amt - (+this.td.amount.value)) > 0) {
+      if ((mat_amt - (+this.td.amount.value)) >= 0) {
         // open transfer area
         this.showTranferType = true;
       } else if (((+this.td.amount.value) - mat_amt) > 0) {
@@ -794,7 +817,7 @@ export class AccounTransactionsComponent implements OnInit {
     // if ((+this.f.acc_type_cd.value) === 6) {
     //   toReturn.acc_cd = 14302;
     // }
-    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'){
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
       toReturn.curr_prn_recov = ((+this.td.amount.value) + (+this.td.interest.value));
       toReturn.ovd_prn_recov = this.accNoEnteredForTransaction.prn_amt;
       toReturn.curr_intt_recov = this.accNoEnteredForTransaction.intt_amt;

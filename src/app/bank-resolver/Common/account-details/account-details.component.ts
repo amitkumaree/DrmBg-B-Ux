@@ -11,7 +11,7 @@ import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.css']
 })
-export class AccountDetailsComponent implements OnInit, OnDestroy  {
+export class AccountDetailsComponent implements OnInit, OnDestroy {
 
   constructor(private frmBldr: FormBuilder, private svc: RestService,
     private msg: InAppMessageService) {
@@ -123,7 +123,9 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
   }
 
   setAcctDetails(): void {
-    if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
+    if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0
+      && (this.acctDtls !== null && this.acctDtls.constitution_cd !== null
+        && this.acctDtls.constitution_cd > 0)) {
       const constitution = this.constitutionList.filter(e => e.constitution_cd
         === this.acctDtls.constitution_cd)[0];
       const OprnInstrDesc = this.operationalInstrList.filter(e => e.oprn_cd
@@ -175,7 +177,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
         transfer_dt: this.acctDtls.transfer_dt.toString().substr(0, 10),
         agent_cd: this.acctDtls.agent_cd,
       });
-    }  else { this.accDtlsFrm.reset(); }
+    } else { this.accDtlsFrm.reset(); }
   }
 
   ngOnDestroy(): void {
