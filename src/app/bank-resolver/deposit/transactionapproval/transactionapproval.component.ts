@@ -23,7 +23,7 @@ export class TransactionapprovalComponent implements OnInit {
   @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
   constructor(private svc: RestService, private elementRef: ElementRef,
     private msg: InAppMessageService, private modalService: BsModalService
-    ,private router: Router) { }
+    , private router: Router) { }
   static accType: mm_acc_type[] = [];
   selectedAccountType: number;
   selectedTransactionMode: string;
@@ -48,7 +48,7 @@ export class TransactionapprovalComponent implements OnInit {
 
   }
   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template , {class: 'modal-lg'});
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
   public onClickRefreshList() {
     this.msg.sendCommonTransactionInfo(null);
@@ -167,9 +167,9 @@ export class TransactionapprovalComponent implements OnInit {
 
         });
 
-        this.uniqueAccTypes = this.uniqueAccTypes.sort((a , b) => (a.acc_type_cd < b.acc_type_cd ? -1 : 1));
+        this.uniqueAccTypes = this.uniqueAccTypes.sort((a, b) => (a.acc_type_cd < b.acc_type_cd ? -1 : 1));
         this.filteredVm = this.vm;
-        this.filteredVm = this.filteredVm.sort((a , b) => (a.td_def_trans_trf.trans_cd < b.td_def_trans_trf.trans_cd ? -1 : 1));
+        this.filteredVm = this.filteredVm.sort((a, b) => (a.td_def_trans_trf.trans_cd < b.td_def_trans_trf.trans_cd ? -1 : 1));
         // this.tdDepTransGroup = this.groupBy(this.tdDepTransRet, (c) => c.acc_type_cd);
         this.isLoading = false;
       },
@@ -230,11 +230,25 @@ export class TransactionapprovalComponent implements OnInit {
       this.filteredVm = this.vm.filter(e => e.mm_acc_type.acc_type_cd === acctTypeCd);
     }
   }
+  public tranCdFilter(searchValue: string): void {
+    if (null !== searchValue && '' !== searchValue) {
+      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.trans_cd.toString().startsWith(searchValue));
+    } else {
+      this.filteredVm = this.vm;
+    }
+  }
+  public acctNumberFilter(searchValue: string): void {
+    if (null !== searchValue && '' !== searchValue) {
+      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.acc_num.startsWith(searchValue));
+    } else {
+      this.filteredVm = this.vm;
+    }
+  }
 
   onDeleteClick(): void {
     debugger;
     if (!(confirm('Are you sure you want to Delete Transaction of Acc ' + this.selectedVm.tm_deposit.acc_num
-    + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
+      + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
       return;
     }
 

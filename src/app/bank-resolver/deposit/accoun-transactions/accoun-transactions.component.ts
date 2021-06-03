@@ -630,6 +630,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   private checkUnaprovedTransactionExixts(): boolean {
+    this.GetUnapprovedDepTrans();
     const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
       === this.td.acc_num.value)[0];
 
@@ -698,7 +699,7 @@ export class AccounTransactionsComponent implements OnInit {
     } else {
       this.msg.sendShdowBalance((+this.td.amount.value));
     }
-
+    this.td_deftranstrfList[0].amount = this.td.amount.value;
   }
 
   onAmtChngDuringRenewal(): void {
@@ -724,6 +725,7 @@ export class AccounTransactionsComponent implements OnInit {
         return;
       }
     }
+    this.td_deftranstrfList[0].amount = this.td.amount.value;
   }
 
   onSaveClick(): void {
@@ -753,8 +755,14 @@ export class AccounTransactionsComponent implements OnInit {
       saveTransaction.tmdenominationtrans = this.tm_denominationList;
     } else if (this.td.trf_type.value === 'T') {
       const tdDefTransAndTranfer = this.mappTddefTransFromFrm();
-      tdDefTransAndTranfer.acc_num = this.td_deftranstrfList[0].cust_acc_number;
-      tdDefTransAndTranfer.acc_name = this.td_deftranstrfList[0].cust_name;
+      if (this.td_deftranstrfList[0].trans_type === 'cust_acc') {
+        tdDefTransAndTranfer.acc_type_cd = +this.td_deftranstrfList[0].cust_acc_type;
+        tdDefTransAndTranfer.acc_num = this.td_deftranstrfList[0].cust_acc_number;
+        tdDefTransAndTranfer.acc_name = this.td_deftranstrfList[0].cust_name;
+      } else {
+        tdDefTransAndTranfer.gl_acc_code = this.td_deftranstrfList[0].gl_acc_code;
+        tdDefTransAndTranfer.gl_acc_desc = this.td_deftranstrfList[0].gl_acc_desc;
+      }
       tdDefTransAndTranfer.amount = this.td_deftranstrfList[0].amount;
       saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
 
@@ -1067,6 +1075,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   checkAndSetDebitAccType(tfrType: string, accType: string) {
+    this.HandleMessage(false);
     debugger;
     if (tfrType === 'cust_acc') {
       if (this.td_deftranstrfList[0].cust_acc_type === undefined
@@ -1088,15 +1097,16 @@ export class AccounTransactionsComponent implements OnInit {
 
         if (temp_acc_type === undefined || temp_acc_type === null) {
           this.td_deftranstrfList[0].cust_acc_type = null;
-          this.HandleMessage(true, MessageType.Warning, 'Invalid Account Type');
+          this.HandleMessage(true, MessageType.Error, 'Invalid Account Type');
           return;
         }
         else {
           this.td_deftranstrfList[0].cust_acc_desc = temp_acc_type.acc_type_desc;
+          this.td_deftranstrfList[0].trans_type = tfrType;
         }
       }
       else {
-        this.HandleMessage(true, MessageType.Warning, 'GL Code in Transfer Details is not Blank');
+        this.HandleMessage(true, MessageType.Error, 'GL Code in Transfer Details is not Blank');
         this.td_deftranstrfList[0].cust_acc_type = null;
         return;
       }
@@ -1107,6 +1117,14 @@ export class AccounTransactionsComponent implements OnInit {
         || this.td_deftranstrfList[0].gl_acc_code === null
         || this.td_deftranstrfList[0].gl_acc_code === '') {
         this.td_deftranstrfList[0].gl_acc_desc = null;
+        return;
+      }
+      debugger;
+      if (this.td_deftranstrfList[0].gl_acc_code === this.sys.CashAccCode.toString()) {
+        this.HandleMessage(true, MessageType.Error, this.sys.CashAccCode.toString() +
+          ' cash acount code is not permissible.');
+        this.td_deftranstrfList[0].gl_acc_desc = null;
+        this.td_deftranstrfList[0].gl_acc_code = '';
         return;
       }
 
@@ -1124,11 +1142,12 @@ export class AccounTransactionsComponent implements OnInit {
               temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
               if (temp_acc_master === undefined || temp_acc_master === null) {
                 this.td_deftranstrfList[0].gl_acc_desc = null;
-                this.HandleMessage(true, MessageType.Warning, 'Invalid GL Code');
+                this.HandleMessage(true, MessageType.Error, 'Invalid GL Code');
                 return;
               }
               else {
                 this.td_deftranstrfList[0].gl_acc_desc = temp_acc_master.acc_name;
+                this.td_deftranstrfList[0].trans_type = tfrType;
               }
             },
             err => {
@@ -1142,20 +1161,22 @@ export class AccounTransactionsComponent implements OnInit {
           temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
           if (temp_acc_master === undefined || temp_acc_master === null) {
             this.td_deftranstrfList[0].gl_acc_desc = null;
-            this.HandleMessage(true, MessageType.Warning, 'Invalid GL Code');
+            this.HandleMessage(true, MessageType.Error, 'Invalid GL Code');
             return;
           }
           else {
             this.td_deftranstrfList[0].gl_acc_desc = temp_acc_master.acc_name;
+            this.td_deftranstrfList[0].trans_type = tfrType;
           }
         }
       }
       else {
-        this.HandleMessage(true, MessageType.Warning, 'Account Type in Transfer Details is not blank');
+        this.HandleMessage(true, MessageType.Error, 'Account Type in Transfer Details is not blank');
         this.td_deftranstrfList[0].gl_acc_code = null;
         return;
       }
     }
+    this.td_deftranstrfList[0].amount = this.td.amount.value;
   }
 
   checkDebitBalance(amount: number) {
@@ -1193,11 +1214,11 @@ export class AccounTransactionsComponent implements OnInit {
       this.td_deftranstrfList[0].clr_bal = 0;
     }
     debugger;
-    if (parseInt(this.td_deftranstrfList[0].clr_bal.toString()) < parseInt(amount.toString())) {
-      this.HandleMessage(true, MessageType.Warning, 'Insufficient Balance');
-      this.td_deftranstrfList[0].amount = null;
-      return;
-    }
+    // if (parseInt(this.td_deftranstrfList[0].clr_bal.toString()) < parseInt(amount.toString())) {
+    //   this.HandleMessage(true, MessageType.Warning, 'Insufficient Balance');
+    //   this.td_deftranstrfList[0].amount = null;
+    //   return;
+    // }
 
   }
 
