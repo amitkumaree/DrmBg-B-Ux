@@ -29,6 +29,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         } else {
           if (undefined !== this.accDtlsFrm) {
             this.accDtlsFrm.reset();
+            this.showInterestForRd = false;
           }
         }
       },
@@ -103,6 +104,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
     );
   }
   private resetFormData(): void {
+    this.showInterestForRd = false;
     this.accDtlsFrm = this.frmBldr.group({
       brn_cd: [''],
       acc_type_cd: [''],
@@ -272,7 +274,10 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         transfer_dt: this.acctDtls.transfer_dt,
         agent_cd: this.acctDtls.agent_cd,
       });
-    } else { this.accDtlsFrm.reset(); }
+    } else {
+      this.accDtlsFrm.reset();
+      this.showInterestForRd = false;
+    }
   }
 
   getShadowBalance(): void {

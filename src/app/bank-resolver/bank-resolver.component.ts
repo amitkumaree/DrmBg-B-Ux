@@ -24,12 +24,23 @@ export class BankResolverComponent implements OnInit, OnDestroy {
       res => {
         debugger;
         if (res === null) {
-          const __bName = localStorage.getItem('__bName');
-          if (__bName !== null) {
-            this.router.navigate([__bName]);
-          }
-          // localStorage.removeItem('__bName');
-          // this.router.navigate(['/']);
+          this.route.paramMap.subscribe(param => {
+            // this.passedValue =
+            debugger;
+            const paramValue = param.get('bankName');
+            if (null !== paramValue) {
+              localStorage.setItem('__bName', paramValue);
+              const __bName = localStorage.getItem('__bName');
+              if (__bName !== null) {
+                this.router.navigate([__bName]);
+              }
+              // localStorage.removeItem('__bName');
+              // this.router.navigate(['/']);
+            } else {
+              // TODO need to think what we will do if the bank name doesnt come
+            }
+            // console.log(param);
+          });
         } else {
           this.showHeader = res;
           this.showTitle = false;

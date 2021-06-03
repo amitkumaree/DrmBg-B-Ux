@@ -144,15 +144,19 @@ export class AccounTransactionsComponent implements OnInit {
      * TODO Show Account info (tm_deposit)
      * TODO bind td_dep_trans to a form which will be active
      **/
-    const td_deftranstrf: td_def_trans_trf[] = [];
-    this.td_deftranstrfList = td_deftranstrf;
-    let temp_deftranstrf = new td_def_trans_trf()
-    this.td_deftranstrfList.push(temp_deftranstrf);
+    this.resetTransfer();
     this.getAccountTypeList();
     this.getCustomerList();
     this.GetUnapprovedDepTrans();
     this.getDenominationList();
     this.getConstitutionList();
+  }
+
+  private resetTransfer() {
+    const td_deftranstrf: td_def_trans_trf[] = [];
+    this.td_deftranstrfList = td_deftranstrf;
+    let temp_deftranstrf = new td_def_trans_trf()
+    this.td_deftranstrfList.push(temp_deftranstrf);
   }
 
   processInterest(): void {
@@ -351,7 +355,9 @@ export class AccounTransactionsComponent implements OnInit {
 
   /** method fires on account type change */
   public onAcctTypeChange(): void {
-    this.f.acct_num.reset();
+    this.tm_denominationList = [];
+    this.resetTransfer();
+    this.f.acct_num.reset(); this.f.oprn_cd.reset();
     this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
     this.HandleMessage(false);
     const acctTypCdTofilter = +this.f.acc_type_cd.value;
@@ -370,6 +376,8 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   public onAccountNumTabOff(): void {
+    this.tm_denominationList = [];
+    this.resetTransfer();
     this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
     this.f.oprn_cd.disable(); this.f.oprn_cd.reset();
     this.disableOperation = true;
@@ -430,6 +438,8 @@ export class AccounTransactionsComponent implements OnInit {
 
   /* method fires on operation type change */
   public onOperationTypeChange(): void {
+    this.tm_denominationList = [];
+    this.resetTransfer();
     this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
     this.HandleMessage(false);
     this.showTranferType = true;
@@ -527,6 +537,20 @@ export class AccounTransactionsComponent implements OnInit {
         trans_type_key: this.transType.key
       });
     }
+    this.patchtdDefTransFrm();
+  }
+
+  private patchtdDefTransFrm(): void {
+    const acctTypCdTofilter = +this.f.acc_type_cd.value;
+    const acctTypeDesription = AccounTransactionsComponent.operations
+      .filter(e => e.acc_type_cd === acctTypCdTofilter)[0].acc_type_desc;
+    this.tdDefTransFrm.patchValue({
+      acc_num: this.accNoEnteredForTransaction.acc_num,
+      acc_type_desc: acctTypeDesription,
+      acc_type_cd: acctTypCdTofilter,
+      trans_type: this.transType.Description,
+      trans_type_key: this.transType.key
+    });
   }
 
   private enableSave(): void {
@@ -724,6 +748,7 @@ export class AccounTransactionsComponent implements OnInit {
       saveTransaction.tmdepositrenew = this.mapRenewData();
     }
     saveTransaction.tddeftrans = tdDefTrans;
+    debugger;
     if (this.td.trf_type.value === 'C') {
       saveTransaction.tmdenominationtrans = this.tm_denominationList;
     } else if (this.td.trf_type.value === 'T') {
@@ -900,7 +925,7 @@ export class AccounTransactionsComponent implements OnInit {
 
   onResetClick(): void {
     this.accTransFrm.reset();
-    this.tdDefTransFrm.reset();
+    this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
     // this.getOperationMaster();
     this.f.oprn_cd.disable();
     this.f.acct_num.disable();
@@ -943,8 +968,10 @@ export class AccounTransactionsComponent implements OnInit {
 
   setDenomination(val: number, idx: number) {
     debugger;
-    this.tm_denominationList[idx].rupees = Number(val);
-    this.tm_denominationList[idx].rupees_desc = this.denominationList.filter(x => x.rupees === val.toString())[0].rupees;
+    val = +val;
+    this.tm_denominationList[idx].rupees = val;
+    this.tm_denominationList[idx].rupees_desc =
+      this.denominationList.filter(x => x.value === val)[0].rupees;
     this.calculateTotalDenomination(idx);
   }
 
@@ -1165,7 +1192,7 @@ export class AccounTransactionsComponent implements OnInit {
       || this.td_deftranstrfList[0].clr_bal === null) {
       this.td_deftranstrfList[0].clr_bal = 0;
     }
-
+    debugger;
     if (parseInt(this.td_deftranstrfList[0].clr_bal.toString()) < parseInt(amount.toString())) {
       this.HandleMessage(true, MessageType.Warning, 'Insufficient Balance');
       this.td_deftranstrfList[0].amount = null;

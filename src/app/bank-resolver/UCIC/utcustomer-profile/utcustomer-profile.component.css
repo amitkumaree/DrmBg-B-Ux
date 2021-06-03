@@ -13,3 +13,6 @@ small{
   z-index: 1;
   font-size: x-small;
 }
+.text-danger {
+  font-size: medium;
+}
