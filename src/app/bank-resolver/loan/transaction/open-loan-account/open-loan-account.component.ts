@@ -41,6 +41,7 @@ export class OpenLoanAccountComponent implements OnInit {
     createUser = '';
     updateUser = '';
     operationType = '';
+    disableAll = 'N';
     // disablePersonal ='Y';
 
     createDate: Date;
@@ -193,12 +194,17 @@ export class OpenLoanAccountComponent implements OnInit {
 
   }
 
-associateChildRecordsWithHeader()
-{
-  this.pushTdAccHolder();
-  this.pushTmLoanSanction();
-  this.pushTmLoanSanctionDtls();
-}
+  associateChildRecordsWithHeader() {
+    this.pushTdAccHolder();
+
+    if (this.masterModel.tmlaonsanction.length == 0) {
+      this.pushTmLoanSanction();
+    }
+
+    if (this.masterModel.tmlaonsanctiondtls.length == 0) {
+      this.pushTmLoanSanctionDtls();
+    }
+  }
 
 pushTdAccHolder()
 {
@@ -525,7 +531,7 @@ pushTmLoanSanctionDtls()
     {
       debugger;
       this.clearData();
-      this.operationType = 'Q';
+      this.operationType = 'R';
       // this.disablePersonal = 'Y';
 
       this.isLoading = true;
@@ -542,9 +548,24 @@ pushTmLoanSanctionDtls()
         return;
       }
       this.operationType = 'U';
+      this.disableAll = 'N';
 
     }
 
+  approveData(idx: number) {
+    debugger;
+    if (this.masterModel.tmlaonsanction[idx].approval_status != undefined &&
+      this.masterModel.tmlaonsanction[idx].approval_status == 'A') {
+      this.showAlertMsg('WARNING', 'Loan Already Approved !!');
+      return;
+    }
+
+    this.masterModel.tmlaonsanction[idx].approval_status = 'A';
+    this.masterModel.tmlaonsanction[idx].approved_dt = this.sys.CurrentDate;
+    this.masterModel.tmlaonsanction[idx].approved_by = this.sys.UserId;
+    this.masterModel.tmlaonsanctiondtls[idx].approval_status = 'A';
+    this.saveData();
+  }
 
   saveData() {
     debugger;
@@ -615,7 +636,7 @@ pushTmLoanSanctionDtls()
        // this.disablePersonal = 'Y';
         this.operationType = 'U';
         this.associateChildRecordsWithHeader();
-        this.showAlertMsg('INFORMATION', 'Record Saved Successfully. LoanId:' + this.tm_loan_all.loan_id );
+        this.showAlertMsg('INFORMATION', 'Loan Account Created Successfully. LoanId:' + this.tm_loan_all.loan_id );
       },
       err => {
         debugger;
@@ -636,7 +657,7 @@ pushTmLoanSanctionDtls()
       res => {
         debugger;
         this.isLoading = false;
-        this.operationType = '';
+        this.operationType = 'U';
         this.showAlertMsg('INFORMATION', 'Record Saved Successfully. LoanId:' + this.tm_loan_all.loan_id );
       },
       err => {
@@ -667,7 +688,9 @@ pushTmLoanSanctionDtls()
           if (this.masterModel.tmloanall.loan_id !== null) {
             debugger;
             this.assignModelsFromMasterData();
+            this.associateChildRecordsWithHeader();
             this.operationType = 'Q';
+            this.disableAll = 'Y';
           }
           else {
             this.showAlertMsg('WARNING', 'No record found!!!');
@@ -703,7 +726,6 @@ pushTmLoanSanctionDtls()
   }
 
   ValidateLoanUpdateData() {
-
     debugger;
     // Guaranter Validation
     if (this.tm_guaranter.gua_name != undefined || this.tm_guaranter.gua_name != null) {
@@ -748,6 +770,10 @@ pushTmLoanSanctionDtls()
       if (this.masterModel.tmlaonsanction[0].loan_id === undefined) {
         this.masterModel.tmlaonsanction[0].loan_id = this.tm_loan_all.loan_id;
         this.masterModel.tmlaonsanction[0].created_by = this.createUser;
+        if (this.masterModel.tmlaonsanction[0].approval_status == undefined ||
+          this.masterModel.tmlaonsanction[0].approval_status == '') {
+          this.masterModel.tmlaonsanction[0].approval_status = 'U';
+        }
       }
       else {
         this.masterModel.tmlaonsanction[0].modified_by = this.updateUser;
@@ -768,24 +794,37 @@ pushTmLoanSanctionDtls()
     else {
       this.masterModel.tmlaonsanctiondtls[0].loan_id = this.tm_loan_all.loan_id;
       this.masterModel.tmlaonsanctiondtls[0].srl_no = this.masterModel.tmlaonsanctiondtls[0].sanc_no;
+      if (this.masterModel.tmlaonsanctiondtls[0].approval_status == undefined ||
+        this.masterModel.tmlaonsanctiondtls[0].approval_status == '') {
+        this.masterModel.tmlaonsanctiondtls[0].approval_status = 'U';
+      }
+      this.masterModel.tmlaonsanctiondtls[0].sanc_status = 'C';
     }
-
 
   }
 
-
+  setValidityDate(idx: number)
+  {
+    debugger;
+    var dt =  this.sys.CurrentDate;
+    dt.setMonth(dt.getMonth() + 1);
+    // dt.setDate(0);
+    this.masterModel.tmlaonsanctiondtls[idx].due_dt = dt;
+  }
 
 
   public showAlertMsg(msgTyp: string, msg: string) {
     this.alertMsgType = msgTyp;
     this.alertMsg = msg;
     this.showAlert = true;
+    this.disableAll = 'Y';
 
     // this.disablePersonal = 'Y';
   }
 
   public closeAlertMsg() {
     this.showAlert = false;
+    this.disableAll = 'N';
     // if(this.operationType == 'N')
     // {
     //   this.disablePersonal = 'N';
