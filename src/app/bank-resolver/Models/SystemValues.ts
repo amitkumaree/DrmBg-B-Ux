@@ -14,6 +14,7 @@ export class SystemValues {
   private __isLoggedIn: boolean;
 
   constructor() {
+    debugger;
     this.__brnCd = localStorage.getItem('__brnCd');
     this.__brnName = localStorage.getItem('__brnName');
     this.__currentDate = localStorage.getItem('__currentDate');
@@ -22,7 +23,7 @@ export class SystemValues {
     this.__suspanceccountCD = '10000';
     this.__ddsPeriod = localStorage.getItem('__ddsPeriod');
     this.__userId = localStorage.getItem('__userId');
-    if ('' !== this.__userId && this.__userId.length > 0) {
+    if (null !== this.__userId && '' !== this.__userId && this.__userId.length > 0) {
       this.__isLoggedIn = true;
     } else { this.__isLoggedIn = false; }
     this.__bName = localStorage.getItem('__bName');

@@ -1,15 +1,7 @@
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center"
   style="background-color: #78c2ad21; min-height: 90vh;">
-  <div *ngIf="showMsg && showMsg.Show" class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
-    <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
-     'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
-      <strong>{{showMsg.Message}}</strong>
-      <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  </div>
+
   <div
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
     <!-- <button type="button" [disabled]="disableSave" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button> -->
@@ -19,6 +11,16 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+    <div *ngIf="showMsg && showMsg.Show" class="col-12">
+      <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
+       'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
+        <strong>{{showMsg.Message}}</strong>
+        <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <hr/>
+    </div>
     <div class="row justify-content-center">
       <form [formGroup]="accTransFrm" class="col-12">
         <div class="form-row">
@@ -77,7 +79,7 @@
               <input type="text" disabled class="form-control form-control-sm" formControlName="acc_num" id="acc_num">
             </div>
             <div class="form-group col-3">
-              <small for="trans_type">Transaction Type</small>
+              <small for="trans_type">Transaction Type <span class="text-danger">*</span> </small>
               <input type="text" class="form-control form-control-sm" formControlName="trans_type_key" hidden
                 id="trans_type_key">
               <input type="text" class="form-control form-control-sm" formControlName="trans_type" disabled
@@ -215,7 +217,6 @@
                   <div class="form-group col-5">
                     <small>Rupees</small> <br>
                     <select
-                      style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
                       class="form-control form-control-sm" (change)="setDenomination($event.target.value, i)">
                       <option value="t1.value" disabled selected>{{t1.rupees_desc}}</option>
                       <option [value]="l.value" *ngFor="let l of denominationList">{{l.rupees}}</option>
@@ -225,14 +226,14 @@
 
                   <div class="form-group col-3">
                     <small for="deno_count">Count</small>
-                    <input [(ngModel)]="t1.count" type="text" style="height:25px"
+                    <input [(ngModel)]="t1.count" type="text"
                       class="form-control form-control-sm text-capitalize" (change)="calculateTotalDenomination(i)"
                       id="deno_count" placeholder="Count">
                   </div>
 
                   <div class="form-group col-4">
                     <small for="deno_total">Total</small>
-                    <input [(ngModel)]="t1.total" type="text" style="height:25px"
+                    <input [(ngModel)]="t1.total" type="text"
                       class="form-control form-control-sm text-capitalize" id="deno_total" placeholder="Total">
                   </div>
                 </div>
@@ -245,7 +246,7 @@
                 </div>
 
                 <div class="form-group col-4">
-                  <input [(ngModel)]='denominationGrandTotal' disabled type="text" style="height:25px"
+                  <input [(ngModel)]='denominationGrandTotal' disabled type="text"
                     class="form-control form-control-sm text-capitalize" id="total" placeholder="Total">
                 </div>
               </div>
@@ -271,32 +272,32 @@
                   <div class="form-group col-2">
                     <small for="debit_ac">Account Type</small>
                     <input type="text" [(ngModel)]="l.cust_acc_type"
-                      (focusout)="checkAndSetDebitAccType('cust_acc', l.cust_acc_type)" style="height:25px"
+                      (focusout)="checkAndSetDebitAccType('cust_acc', l.cust_acc_type)"
                       class="form-control form-control-sm text-capitalize" id="debit_ac">
                   </div>
 
                   <div class="form-group col-2">
                     <small for="debit_ac_dsc">Account Desc</small>
-                    <input type="text" [(ngModel)]="l.cust_acc_desc" style="height:25px" disabled
+                    <input type="text" [(ngModel)]="l.cust_acc_desc"  disabled
                       class="form-control form-control-sm text-capitalize" id="debit_ac_dsc">
                   </div>
 
                   <div class="form-group col-3">
                     <small for="debit_ac_no">Account Number</small>
-                    <input type="text" [(ngModel)]="l.cust_acc_number" style="height:25px"
+                    <input type="text" [(ngModel)]="l.cust_acc_number"
                       (focusout)="setDebitAccDtls( l.cust_acc_number)"
                       class="form-control form-control-sm text-capitalize" id="debit_ac_no">
                   </div>
 
                   <div class="form-group col-3">
                     <small for="debit_ac_name">Acc Holder Name</small>
-                    <input type="text" disabled [(ngModel)]="l.cust_name" style="height:25px"
+                    <input type="text" disabled [(ngModel)]="l.cust_name"
                       class="form-control form-control-sm text-capitalize" id="debit_ac_name">
                   </div>
 
                   <div class="form-group col-2">
                     <small for="debit_amount">Amount</small>
-                    <input type="text" [(ngModel)]="l.amount" style="height:25px"
+                    <input type="text" disabled [(ngModel)]="l.amount"
                       (focusout)="checkDebitBalance(l.amount)" class="form-control form-control-sm text-capitalize"
                       id="debit_amount">
                   </div>
@@ -309,19 +310,19 @@
                   <div class="form-group col-2">
                     <small for="debit_gl_ac">GL Code</small>
                     <input type="text" (focusout)="checkAndSetDebitAccType('gl_acc', l.gl_acc_code)"
-                      [(ngModel)]="l.gl_acc_code" style="height:25px"
+                      [(ngModel)]="l.gl_acc_code"
                       class="form-control form-control-sm text-capitalize" id="debit_gl_ac">
                   </div>
 
                   <div class="form-group col-4">
                     <small for="debit_gl_head">GL Head</small>
-                    <input type="text" disabled [(ngModel)]="l.gl_acc_desc" style="height:25px"
+                    <input type="text" disabled [(ngModel)]="l.gl_acc_desc"
                       class="form-control form-control-sm text-capitalize" id="debit_gl_head">
                   </div>
 
                   <div class="form-group col-3">
                     <small for="Inst_num">Instrument Num</small>
-                    <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                    <input type="text"  class="form-control form-control-sm text-capitalize"
                       id="Inst_num">
                   </div>
                 </div>

@@ -33,14 +33,27 @@
           <div class="col-12 ">
             <h6 style="background-color:lightskyblue">Unapproved Trasanction List</h6>
             <div class=" row">
-              <label for="colFormLabelSm" class="col-5 col-form-label col-form-label-sm">Filter Account Type</label>
-              <div class="col-6">
-                <select id="title" class="form-control form-control-sm"
+              <div class="form-row">
+                <div class="form-group col-3 offset-1">
+                  <small ><i class="fa fa-filter" aria-hidden="true"></i> Tran Cd </small>
+                  <input type="text" class="form-control form-control-sm" placeholder="Tran Cd"
+              (input)="tranCdFilter($event.target.value)">
+                </div>
+                <div class="form-group col-4">
+                  <small ><i class="fa fa-filter" aria-hidden="true"></i> Account No </small>
+                  <input type="text" class="form-control form-control-sm" placeholder="Account No"
+              (input)="acctNumberFilter($event.target.value)">
+                </div>
+                <div class="form-group col-3">
+                  <small ><i class="fa fa-filter" aria-hidden="true"></i> Account Type</small>
+                  <select id="title" class="form-control form-control-sm"
                   (change)="onChangeAcctType($event.target.value)">
                   <option *ngIf="uniqueAccTypes" selected value="-99">All</option>
                   <option *ngFor="let accType of uniqueAccTypes " [value]="accType.acc_type_cd">
                     {{accType.acc_type_cd +' ' +accType.acc_type_desc}}</option>
                 </select>
+                </div>
+
               </div>
             </div>
             <div class="table-responsive" class="scroll-when-long">
