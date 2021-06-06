@@ -19,6 +19,7 @@ import { mm_sector } from 'src/app/bank-resolver/Models/loan/mm_sector';
 import { mm_activity } from 'src/app/bank-resolver/Models/loan/mm_activity';
 import { mm_crop } from 'src/app/bank-resolver/Models/loan/mm_crop';
 import { p_loan_param } from 'src/app/bank-resolver/Models/loan/p_loan_param';
+import { sm_kcc_param } from 'src/app/bank-resolver/Models/loan/sm_kcc_param';
 
 
 @Component({
@@ -58,6 +59,7 @@ export class OpenLoanAccountComponent implements OnInit {
     sectorList: mm_sector[] = [];
     activityList: mm_activity[] = [];
     corpList : mm_crop[] = [];
+    smKccParamList: sm_kcc_param[] = [];
 
     selectedActivityList : mm_activity[] = [];
     selectedCorpList : mm_crop[] = [];
@@ -109,6 +111,7 @@ export class OpenLoanAccountComponent implements OnInit {
     this.getSectorList();
     this.getActivityList();
     this.getCorpList();
+    this.getSmKccParam();
 
     this.initializeModels();
 
@@ -195,7 +198,11 @@ export class OpenLoanAccountComponent implements OnInit {
   }
 
   associateChildRecordsWithHeader() {
+
+    if (this.masterModel.tdaccholder.length == 0)
+    {
     this.pushTdAccHolder();
+    }
 
     if (this.masterModel.tmlaonsanction.length == 0) {
       this.pushTmLoanSanction();
@@ -351,6 +358,28 @@ pushTmLoanSanctionDtls()
   }
 
 
+  getSmKccParam()
+  {
+
+    debugger;
+    if (this.smKccParamList.length > 0) {
+      return;
+    }
+    this.smKccParamList = [];
+
+    this.svc.addUpdDel<any>('Loan/GetSmKccParam', null).subscribe(
+      res => {
+        debugger;
+        this.smKccParamList = res;
+      },
+      err => {
+        debugger;
+      }
+    );
+
+  }
+
+
   public suggestCustomer(): void {
     this.suggestedCustomer = this.customerList
         .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_loan_all.cust_name.toLowerCase())
@@ -422,6 +451,19 @@ pushTmLoanSanctionDtls()
   public setLoanAccountType(accType: number): void {
     this.tm_loan_all.acc_cd = Number(accType);
     this.tm_loan_all.loan_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
+
+    if (this.tm_loan_all.acc_cd == 23103 && this.operationType == 'N')
+    {
+      debugger;
+      this.tm_loan_all.curr_intt = null;
+      this.tm_loan_all.ovd_intt = null;
+      this.tm_loan_all.instl_no = null;
+
+      this.tm_loan_all.curr_intt = Number(this.smKccParamList.filter( x => x.param_cd.toString() === 'curr_intt_rt')[0].param_value);
+      this.tm_loan_all.ovd_intt = Number(this.smKccParamList.filter( x => x.param_cd.toString() === 'ovd_intt_rt')[0].param_value);
+      this.tm_loan_all.instl_no = 1;
+    }
+
   }
 
   public setLoanType(accType: number): void {
@@ -483,35 +525,68 @@ pushTmLoanSanctionDtls()
     this.tm_loan_sanction_dtls[idx].crop_cd = corp;
     this.tm_loan_sanction_dtls[idx].crop_desc = this.corpList.filter(x => x.crop_cd.toString() === corp.toString())[0].crop_desc;
 
-    if(this.tm_loan_sanction_dtls[idx].crop_cd !== '00')
+    this.tm_loan_sanction_dtls[idx].sanc_amt = null;
+    this.tm_loan_sanction_dtls[idx].due_dt = null;
+
+    if(this.tm_loan_sanction_dtls[idx].crop_cd !== '00' && this.tm_loan_all.acc_cd==23103)
     {
       var temp_p_loan_param = new p_loan_param();
       temp_p_loan_param.cust_cd = this.masterModel.tmloanall.party_cd;
       temp_p_loan_param.crop_cd = this.tm_loan_sanction_dtls[idx].crop_cd;
-      temp_p_loan_param = this.setSanctionAmountAndValidity(temp_p_loan_param);
+      this.getSanctionAmountAndValidity(temp_p_loan_param, idx );
     }
   }
 
-  setSanctionAmountAndValidity(loan_param: p_loan_param): any {
+  getSanctionAmountAndValidity(loan_param: p_loan_param, idx: number): any {
     debugger;
     var temp_p_loan_param = new p_loan_param();
-
-    this.svc.addUpdDel<any>('Loan/PopulateCropAmtDueDt', temp_p_loan_param).subscribe(
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('Loan/PopulateCropAmtDueDt', loan_param).subscribe(
       res => {
         debugger;
         temp_p_loan_param = res;
+        this.isLoading = false;
+        this.setSanctionAmountAndValidity(temp_p_loan_param , idx);
       },
       err => {
+        this.isLoading = false;
         debugger;
       }
     );
     return temp_p_loan_param;
   }
 
+  setSanctionAmountAndValidity(loan_param: p_loan_param, idx: number) {
+    debugger;
+
+    if (loan_param.status == 0) {
+      this.tm_loan_sanction_dtls[idx].sanc_amt = loan_param.recov_amt;
+      this.tm_loan_sanction_dtls[idx].due_dt = loan_param.due_dt;
+    }
+
+    if (loan_param.status == 1) {
+      this.showAlertMsg('ERROR', 'Please Set The Disbursement Start & End Date For This Crop!!!');
+    }
+
+    if (loan_param.status == 2) {
+      this.showAlertMsg('ERROR', 'This is Not Disbursement Time For This Crop!!!');
+    }
+
+    if (loan_param.status == 3) {
+      this.showAlertMsg('ERROR', 'A loan for this crop is already sanctioned for this Member!!!');
+    }
+
+    if (loan_param.status == 4) {
+      this.showAlertMsg('ERROR', 'Loan for this Crop is not sanctioned in KCC Card for this Member!!!');
+    }
+
+  }
+
   newAccount() {    // document.getElementById('account_type').id = '';
     debugger;
     this.clearData();
     this.operationType = 'N';
+    this.disableAll = 'N';
     // this.disablePersonal = 'N';
     this.isLoading = true;
     debugger;
@@ -532,6 +607,7 @@ pushTmLoanSanctionDtls()
       debugger;
       this.clearData();
       this.operationType = 'R';
+      this.disableAll = 'N';
       // this.disablePersonal = 'Y';
 
       this.isLoading = true;
@@ -564,10 +640,10 @@ pushTmLoanSanctionDtls()
     this.masterModel.tmlaonsanction[idx].approved_dt = this.sys.CurrentDate;
     this.masterModel.tmlaonsanction[idx].approved_by = this.sys.UserId;
     this.masterModel.tmlaonsanctiondtls[idx].approval_status = 'A';
-    this.saveData();
+    this.saveData('A');
   }
 
-  saveData() {
+  saveData(saveType: string) {
     debugger;
 
     if (this.operationType !== 'N' && this.operationType !== 'U' )
@@ -588,7 +664,7 @@ pushTmLoanSanctionDtls()
     if (this.operationType === 'U') {
       this.tm_loan_all.modified_by = this.updateUser;
       this.tm_loan_all.created_dt = this.updateDate;
-      this.UpdateLoanAccountOpeningData();
+      this.UpdateLoanAccountOpeningData(saveType);
     }
   }
 
@@ -636,7 +712,7 @@ pushTmLoanSanctionDtls()
        // this.disablePersonal = 'Y';
         this.operationType = 'U';
         this.associateChildRecordsWithHeader();
-        this.showAlertMsg('INFORMATION', 'Loan Account Created Successfully. LoanId:' + this.tm_loan_all.loan_id );
+        this.showAlertMsg('INFORMATION', 'Loan Account Created Successfully. LoanId: ' + this.tm_loan_all.loan_id );
       },
       err => {
         debugger;
@@ -649,7 +725,7 @@ pushTmLoanSanctionDtls()
   }
 
 
-  UpdateLoanAccountOpeningData() {
+  UpdateLoanAccountOpeningData(saveType: string) {
     this.ValidateLoanUpdateData()
     debugger;
     this.isLoading = true;
@@ -658,7 +734,14 @@ pushTmLoanSanctionDtls()
         debugger;
         this.isLoading = false;
         this.operationType = 'U';
-        this.showAlertMsg('INFORMATION', 'Record Saved Successfully. LoanId:' + this.tm_loan_all.loan_id );
+
+        if (saveType == 'A') {
+          this.showAlertMsg('INFORMATION', 'LoanId: ' + this.tm_loan_all.loan_id + '  Approved Successfully.');
+        }
+        else {
+          this.showAlertMsg('INFORMATION', 'Record Saved Successfully for LoanId: ' + this.tm_loan_all.loan_id);
+        }
+        this.associateChildRecordsWithHeader();
       },
       err => {
         debugger;
@@ -806,12 +889,14 @@ pushTmLoanSanctionDtls()
   setValidityDate(idx: number)
   {
     debugger;
-    var dt =  this.sys.CurrentDate;
-    dt.setMonth(dt.getMonth() + 1);
-    // dt.setDate(0);
+    let dt =  this.sys.CurrentDate;
+    dt.setMonth(dt.getMonth() + 2);
+    dt.setDate(0);
+
+    // var dt= new Date( this.sys.CurrentDate.getFullYear() , this.sys.CurrentDate.getMonth() + 2 , 0);
+
     this.masterModel.tmlaonsanctiondtls[idx].due_dt = dt;
   }
-
 
   public showAlertMsg(msgTyp: string, msg: string) {
     this.alertMsgType = msgTyp;

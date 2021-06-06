@@ -6,7 +6,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="modifyData()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData('N')">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" >Delete</button>
     <button type="button" [disabled]="undefined === undefined" class="btn btn-primary btn-sm ml-1 mr-1"
@@ -152,8 +152,7 @@
   </div>
 
 
-  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3"
-  *ngIf="tm_loan_all.loan_id != undefined">
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3" *ngIf="tm_loan_all.loan_id != undefined">
     <h1></h1>
     <h6 style="background-color:lightskyblue">Guaranter Details</h6>
 
@@ -266,7 +265,7 @@
         </div>
         </section>
 
-        <div class="text-right mb-3">
+        <!-- <div class="text-right mb-3">
           <button type="button" style="height:22px; padding-top: 0px;"  class="btn btn-primary btn-sm" (click)="addJointHolder()">
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
            </button>
@@ -274,7 +273,7 @@
            <button type="button" style="height:22px; padding-top: 0px;"  class="btn btn-primary btn-sm" (click)="removeJointHolder()">
             <i class="fa fa-minus-circle" aria-hidden="true"></i>
            </button>
-          </div>
+          </div> -->
 
       </div>
       </div>
@@ -318,7 +317,7 @@
 
       <div class="form-group col-2">
         <small>Sanction Amount</small>
-        <input class="form-control form-control-sm text-capitalize" [disabled]="tm_loan_all.acc_cd==23103 || disableAll == 'Y'"
+        <input class="form-control form-control-sm text-capitalize" [disabled]="(tm_loan_all.acc_cd==23103 && ls.crop_cd !== '00')|| disableAll == 'Y'"
          (change)="setValidityDate(i)" [(ngModel)]="ls.sanc_amt"  style="height:25px; text-align: right;"
          id="sanc_amount" type="number" placeholder="Sanction Amount">
       </div>
@@ -334,12 +333,27 @@
       </div>
 
         <div class="form-group col-1">
-          <button type="button" class="btn btn-primary btn-sm ml-1 mr-1 mt-4"
+          <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm ml-1 mr-1 mt-4"
           [disabled]="ls.sanc_status == undefined || ls.sanc_status != 'C' "(click)="approveData(i)">APRV</button>
+
+
+
+          <!-- <button type="button" class=".mat-icon"
+          [disabled]="ls.sanc_status == undefined || ls.sanc_status != 'C' "(click)="approveData(i)">APRV</button> -->
+
         </div>
 
     </div>
     </section>
+
+    <div *ngIf="showAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>{{alertMsgType}}: </strong>
+      {{alertMsg}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlertMsg()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
   </div>
 
 
@@ -349,7 +363,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="modifyData()">Modify</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData('N')">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" >Delete</button>
     <button type="button" [disabled]="undefined === undefined" class="btn btn-primary btn-sm ml-1 mr-1"
