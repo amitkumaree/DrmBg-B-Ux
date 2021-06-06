@@ -41,7 +41,8 @@ export class OpenLoanAccountComponent implements OnInit {
     createUser = '';
     updateUser = '';
     operationType = '';
-    disablePersonal ='Y';
+    disableAll = 'N';
+    // disablePersonal ='Y';
 
     createDate: Date;
     updateDate: Date;
@@ -156,12 +157,54 @@ export class OpenLoanAccountComponent implements OnInit {
 
   }
 
-associateChildRecordsWithHeader()
-{
-  this.pushTdAccHolder();
-  this.pushTmLoanSanction();
-  this.pushTmLoanSanctionDtls();
-}
+
+  assignModelsFromMasterData()
+  {
+    debugger;
+    const loan = new tm_loan_all();
+    this.tm_loan_all = loan
+    this.tm_loan_all = this.masterModel.tmloanall;
+    this.setLoanAccountType(this.tm_loan_all.acc_cd);
+    this.setInstalPeriod(this.tm_loan_all.piriodicity);
+    this.setRepaymentFormula(this.tm_loan_all.emi_formula_no);
+
+
+    const guar = new tm_guaranter();
+    this.tm_guaranter = guar;
+    this.tm_guaranter = this.masterModel.tmguaranter ;
+
+    const acc : td_accholder[] = [];
+    this.td_accholder = acc;
+    this.td_accholder = this.masterModel.tdaccholder;
+    for (let i in this.masterModel.tdaccholder)
+    {
+    this.setJointHolderRelation(this.td_accholder[i].relation, Number(i));
+    }
+
+    const loansanc : tm_loan_sanction[] = [];
+    this.tm_loan_sanction = loansanc;
+    this.tm_loan_sanction = this.masterModel.tmlaonsanction;
+
+    const loansancdtl : tm_loan_sanction_dtls[] = [];
+    this.tm_loan_sanction_dtls = loansancdtl;
+    this.tm_loan_sanction_dtls = this.masterModel.tmlaonsanctiondtls;
+
+    // this.selectedActivityList = [];
+    // this.selectedCorpList = [];
+
+  }
+
+  associateChildRecordsWithHeader() {
+    this.pushTdAccHolder();
+
+    if (this.masterModel.tmlaonsanction.length == 0) {
+      this.pushTmLoanSanction();
+    }
+
+    if (this.masterModel.tmlaonsanctiondtls.length == 0) {
+      this.pushTmLoanSanctionDtls();
+    }
+  }
 
 pushTdAccHolder()
 {
@@ -179,6 +222,8 @@ pushTmLoanSanction()
 pushTmLoanSanctionDtls()
 {
   this.masterModel.tmlaonsanctiondtls.push(new tm_loan_sanction_dtls());
+  var cnt= this.masterModel.tmlaonsanctiondtls.length;
+  this.masterModel.tmlaonsanctiondtls[cnt-1].sanc_no = cnt;
 }
 
   getCustomerList() {
@@ -332,9 +377,9 @@ pushTmLoanSanctionDtls()
       debugger;
       this.suggestedCustomerJointHolderIdx =idx;
       this.suggestedJointCustomer = this.customerList
-          .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholder[idx].joint_cust_name.toLowerCase())
-            || c.cust_cd.toString().startsWith(this.td_accholder[idx].joint_cust_name)
-            || ( c.phone !== null && c.phone.startsWith(this.td_accholder[idx].joint_cust_name)))
+          .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholder[idx].acc_holder.toLowerCase())
+            || c.cust_cd.toString().startsWith(this.td_accholder[idx].acc_holder)
+            || ( c.phone !== null && c.phone.startsWith(this.td_accholder[idx].acc_holder)))
           .slice(0, 20);
       }
 
@@ -349,14 +394,16 @@ pushTmLoanSanctionDtls()
       debugger;
       var temp_mm_cust = new mm_customer();
       temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
-      this.td_accholder[idx].joint_cust_name = temp_mm_cust.cust_name;
+      this.td_accholder[idx].acc_holder = temp_mm_cust.cust_name;
     }
 
-    setRelationship(idx: number) {
+    setJointHolderRelation(relation: string , idx: number) {
       debugger;
-      this.td_accholder[idx].relationId = idx;
-      this.td_accholder[idx].relation = this.relationship.filter(x => x.val.toString() === idx.toString())[0].val;
+      this.td_accholder[idx].relation = relation;
+      this.td_accholder[idx].relationId = this.relationship.filter(x => x.val.toString() === relation)[0].id;
     }
+
+
 
     addJointHolder() {
       if (this.masterModel.tdaccholder != undefined)
@@ -465,7 +512,7 @@ pushTmLoanSanctionDtls()
     debugger;
     this.clearData();
     this.operationType = 'N';
-    this.disablePersonal = 'N';
+    // this.disablePersonal = 'N';
     this.isLoading = true;
     debugger;
     this.getCustomerList();
@@ -476,7 +523,7 @@ pushTmLoanSanctionDtls()
     clearData()
     {
       this.operationType = '';
-      this.disablePersonal = 'Y';
+      // this.disablePersonal = 'Y';
       this.initializeModels();
     }
 
@@ -484,8 +531,8 @@ pushTmLoanSanctionDtls()
     {
       debugger;
       this.clearData();
-      this.operationType = 'Q';
-      this.disablePersonal = 'Y';
+      this.operationType = 'R';
+      // this.disablePersonal = 'Y';
 
       this.isLoading = true;
       this.getCustomerList();
@@ -501,9 +548,24 @@ pushTmLoanSanctionDtls()
         return;
       }
       this.operationType = 'U';
+      this.disableAll = 'N';
 
     }
 
+  approveData(idx: number) {
+    debugger;
+    if (this.masterModel.tmlaonsanction[idx].approval_status != undefined &&
+      this.masterModel.tmlaonsanction[idx].approval_status == 'A') {
+      this.showAlertMsg('WARNING', 'Loan Already Approved !!');
+      return;
+    }
+
+    this.masterModel.tmlaonsanction[idx].approval_status = 'A';
+    this.masterModel.tmlaonsanction[idx].approved_dt = this.sys.CurrentDate;
+    this.masterModel.tmlaonsanction[idx].approved_by = this.sys.UserId;
+    this.masterModel.tmlaonsanctiondtls[idx].approval_status = 'A';
+    this.saveData();
+  }
 
   saveData() {
     debugger;
@@ -534,6 +596,7 @@ pushTmLoanSanctionDtls()
   {
     this.ValidatLoanOpenData();
     this.p_gen_param.brn_cd = this.branchCode;
+    this.isLoading = true;
     debugger;
     this.svc.addUpdDel<any>('Loan/PopulateLoanAccountNumber', this.p_gen_param).subscribe(
       res => {
@@ -570,10 +633,10 @@ pushTmLoanSanctionDtls()
       res => {
         debugger;
         this.isLoading = false;
-        this.disablePersonal = 'Y';
+       // this.disablePersonal = 'Y';
         this.operationType = 'U';
         this.associateChildRecordsWithHeader();
-        this.showAlertMsg('INFORMATION', 'Record Saved Successfully. LoanId:' + this.tm_loan_all.loan_id );
+        this.showAlertMsg('INFORMATION', 'Loan Account Created Successfully. LoanId:' + this.tm_loan_all.loan_id );
       },
       err => {
         debugger;
@@ -594,7 +657,7 @@ pushTmLoanSanctionDtls()
       res => {
         debugger;
         this.isLoading = false;
-        this.operationType = '';
+        this.operationType = 'U';
         this.showAlertMsg('INFORMATION', 'Record Saved Successfully. LoanId:' + this.tm_loan_all.loan_id );
       },
       err => {
@@ -607,11 +670,49 @@ pushTmLoanSanctionDtls()
     );
   }
 
+
+  getLoanAccountData() {
+    debugger;
+    this.isLoading = true;
+    this.tm_loan_all.brn_cd = this.branchCode;
+    this.svc.addUpdDel<any>('Loan/GetLoanData', this.tm_loan_all).subscribe(
+      res => {
+        debugger;
+        this.isLoading = false;
+        this.masterModel = res;
+
+        if (this.masterModel === undefined || this.masterModel === null) {
+          this.showAlertMsg('WARNING', 'No record found!!');
+        }
+        else {
+          if (this.masterModel.tmloanall.loan_id !== null) {
+            debugger;
+            this.assignModelsFromMasterData();
+            this.associateChildRecordsWithHeader();
+            this.operationType = 'Q';
+            this.disableAll = 'Y';
+          }
+          else {
+            this.showAlertMsg('WARNING', 'No record found!!!');
+          }
+
+        }
+
+      },
+      err => {
+        this.isLoading = false;
+        this.showAlertMsg('ERROR', 'Unable to find record!!');
+        debugger;
+      }
+
+    );
+  }
+
   ValidatLoanOpenData() {
     if (this.tm_loan_all.party_cd === null || this.tm_loan_all.party_cd === undefined ||
       this.tm_loan_all.cust_name === null || this.tm_loan_all.cust_name === undefined ||
       this.tm_loan_all.loan_acc_type === null || this.tm_loan_all.loan_acc_type === undefined ||
-      this.tm_loan_all.loan_acc_no === null || this.tm_loan_all.loan_acc_no === undefined ||
+      // this.tm_loan_all.loan_acc_no === null || this.tm_loan_all.loan_acc_no === undefined ||
       this.tm_loan_all.instl_start_dt === null || this.tm_loan_all.instl_start_dt === undefined ||
       this.tm_loan_all.curr_intt === null || this.tm_loan_all.curr_intt === undefined ||
       this.tm_loan_all.ovd_intt === null || this.tm_loan_all.ovd_intt === undefined ||
@@ -624,25 +725,110 @@ pushTmLoanSanctionDtls()
       }
   }
 
-  ValidateLoanUpdateData()
-  {
+  ValidateLoanUpdateData() {
+    debugger;
+    // Guaranter Validation
+    if (this.tm_guaranter.gua_name != undefined || this.tm_guaranter.gua_name != null) {
+      if (this.tm_guaranter.gua_name == '' ||
+          this.tm_guaranter.gua_add == undefined || this.tm_guaranter.gua_add == null || this.tm_guaranter.gua_add == '' ||
+          this.tm_guaranter.salary  == undefined || this.tm_guaranter.salary  == null ||
+          this.tm_guaranter.mobile  == undefined || this.tm_guaranter.mobile  == null)
+          {
+          this.showAlertMsg('WARNING', 'Please provide all the required data in Guaranter Details');
+          exit(0);
+          }
+
+      this.tm_guaranter.loan_id = this.tm_loan_all.loan_id;
+      this.tm_guaranter.acc_cd  = this.tm_loan_all.acc_cd;
+      this.tm_guaranter.srl_no = 1;
+    }
+
+    // Joint Holder Validation
+    for (let i in this.masterModel.tdaccholder) {
+      if (this.masterModel.tdaccholder[i].cust_cd == undefined || this.masterModel.tdaccholder[i].cust_cd == null) {
+        this.masterModel.tdaccholder.splice(0, 1);
+      }
+      else {
+        if (this.masterModel.tdaccholder[i].relation == undefined || this.masterModel.tdaccholder[i].relation == null) {
+          this.showAlertMsg('WARNING', 'Please provide all the required data for Joint Holder');
+          exit(0);
+        }
+        else {
+          this.masterModel.tdaccholder[i].acc_num = this.tm_loan_all.loan_id;
+          this.masterModel.tdaccholder[i].brn_cd = this.branchCode;
+          this.masterModel.tdaccholder[i].acc_type_cd = Number(this.tm_loan_all.acc_cd);
+        }
+      }
+    }
+
+    // All Sanction Validation
+    if (this.masterModel.tmlaonsanction[0].sanc_dt == undefined) {
+      this.showAlertMsg('WARNING', 'Please provide Sanction Date in All Sanction');
+      exit(0);
+    }
+    else {
+      if (this.masterModel.tmlaonsanction[0].loan_id === undefined) {
+        this.masterModel.tmlaonsanction[0].loan_id = this.tm_loan_all.loan_id;
+        this.masterModel.tmlaonsanction[0].created_by = this.createUser;
+        if (this.masterModel.tmlaonsanction[0].approval_status == undefined ||
+          this.masterModel.tmlaonsanction[0].approval_status == '') {
+          this.masterModel.tmlaonsanction[0].approval_status = 'U';
+        }
+      }
+      else {
+        this.masterModel.tmlaonsanction[0].modified_by = this.updateUser;
+      }
+    }
+
+
+    // Sanction Details Validation
+    if (this.masterModel.tmlaonsanctiondtls[0].sector_cd == undefined || this.masterModel.tmlaonsanctiondtls[0].sector_cd == null
+      || this.masterModel.tmlaonsanctiondtls[0].activity_cd == undefined || this.masterModel.tmlaonsanctiondtls[0].activity_cd == null
+      || this.masterModel.tmlaonsanctiondtls[0].crop_cd == undefined || this.masterModel.tmlaonsanctiondtls[0].crop_cd == null
+      || this.masterModel.tmlaonsanctiondtls[0].sanc_amt == undefined || this.masterModel.tmlaonsanctiondtls[0].sanc_amt == null
+      || this.masterModel.tmlaonsanctiondtls[0].due_dt == undefined
+    ) {
+      this.showAlertMsg('WARNING', 'Please provide all the required data for Sanction Details');
+      exit(0);
+    }
+    else {
+      this.masterModel.tmlaonsanctiondtls[0].loan_id = this.tm_loan_all.loan_id;
+      this.masterModel.tmlaonsanctiondtls[0].srl_no = this.masterModel.tmlaonsanctiondtls[0].sanc_no;
+      if (this.masterModel.tmlaonsanctiondtls[0].approval_status == undefined ||
+        this.masterModel.tmlaonsanctiondtls[0].approval_status == '') {
+        this.masterModel.tmlaonsanctiondtls[0].approval_status = 'U';
+      }
+      this.masterModel.tmlaonsanctiondtls[0].sanc_status = 'C';
+    }
 
   }
+
+  setValidityDate(idx: number)
+  {
+    debugger;
+    var dt =  this.sys.CurrentDate;
+    dt.setMonth(dt.getMonth() + 1);
+    // dt.setDate(0);
+    this.masterModel.tmlaonsanctiondtls[idx].due_dt = dt;
+  }
+
 
   public showAlertMsg(msgTyp: string, msg: string) {
     this.alertMsgType = msgTyp;
     this.alertMsg = msg;
     this.showAlert = true;
+    this.disableAll = 'Y';
 
-    this.disablePersonal = 'Y';
+    // this.disablePersonal = 'Y';
   }
 
   public closeAlertMsg() {
     this.showAlert = false;
-    if(this.operationType == 'N')
-    {
-      this.disablePersonal = 'N';
-    }
+    this.disableAll = 'N';
+    // if(this.operationType == 'N')
+    // {
+    //   this.disablePersonal = 'N';
+    // }
   }
 
   backScreen() {
