@@ -32,7 +32,24 @@
           <div class="col-12 ">
             <h6 style="background-color:lightskyblue">Unapproved Trasanction List</h6>
             <div class=" row">
-              <label for="colFormLabelSm" class="col-4 col-form-label col-form-label-sm">Filter Account Type</label>
+              <div class="form-row">
+                <div class="form-group col-5 offset-1">
+                  <small ><i class="fa fa-filter" aria-hidden="true"></i> Tran Cd OR Account No</small>
+                  <input type="text" class="form-control form-control-sm" placeholder="Tran Cd or Account No"
+                  (input)="acctNumberAndTrnCdFilter($event.target.value)">
+                </div>
+                <div class="form-group col-4">
+                  <small ><i class="fa fa-filter" aria-hidden="true"></i> Account Type</small>
+                  <select id="title" class="form-control form-control-sm"
+                  (change)="onChangeAcctType($event.target.value)">
+                  <option *ngIf="uniqueAccTypes" selected value="-99">All</option>
+                  <option *ngFor="let accType of uniqueAccTypes " [value]="accType.acc_type_cd">
+                    {{accType.acc_type_cd +' ' +accType.acc_type_desc}}</option>
+                </select>
+                </div>
+
+              </div>
+              <!-- <label for="colFormLabelSm" class="col-4 col-form-label col-form-label-sm">Filter Account Type</label>
               <div class="col-4">
                 <select id="title" class="form-control form-control-sm"
                   (change)="onChangeAcctType($event.target.value)">
@@ -44,7 +61,7 @@
               <div class="custom-control form-control-sm custom-switch">
                 <input type="checkbox" (change)="ShowOnlyRecovery($event)" class="custom-control-input" id="customSwitch1">
                 <label class="custom-control-label" for="customSwitch1">Recovery</label>
-              </div>
+              </div> -->
             </div>
             <div class="table-responsive" class="scroll-when-long">
               <table class="table table-sm table-hover">

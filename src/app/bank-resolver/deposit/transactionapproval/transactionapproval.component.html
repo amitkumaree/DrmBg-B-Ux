@@ -34,15 +34,10 @@
             <h6 style="background-color:lightskyblue">Unapproved Trasanction List</h6>
             <div class=" row">
               <div class="form-row">
-                <div class="form-group col-3 offset-1">
-                  <small ><i class="fa fa-filter" aria-hidden="true"></i> Tran Cd </small>
-                  <input type="text" class="form-control form-control-sm" placeholder="Tran Cd"
-              (input)="tranCdFilter($event.target.value)">
-                </div>
-                <div class="form-group col-4">
-                  <small ><i class="fa fa-filter" aria-hidden="true"></i> Account No </small>
-                  <input type="text" class="form-control form-control-sm" placeholder="Account No"
-              (input)="acctNumberFilter($event.target.value)">
+                <div class="form-group col-5 offset-1">
+                  <small ><i class="fa fa-filter" aria-hidden="true"></i> Tran Cd OR Account No</small>
+                  <input type="text" class="form-control form-control-sm" placeholder="Tran Cd or Account No"
+                  (input)="acctNumberAndTrnCdFilter($event.target.value)">
                 </div>
                 <div class="form-group col-3">
                   <small ><i class="fa fa-filter" aria-hidden="true"></i> Account Type</small>

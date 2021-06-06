@@ -77,6 +77,7 @@ const routes: Routes = [
       { path: 'LT_OpenLoanAcc', component: OpenLoanAccountComponent, canActivate: [ AuthGuard ] },
       { path: 'LT_LoanTrans', component: LoanaccountTransactionComponent, canActivate: [ AuthGuard ] },
       { path: 'LT_CalcIntt', component: LoanAccwiseinttcalcComponent, canActivate: [ AuthGuard ]},
+      { path: 'LT_LoanAprv', component: LoanTransactionApprovalComponent, canActivate: [ AuthGuard ]},
 
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
