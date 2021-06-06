@@ -304,6 +304,15 @@ export class LoanTransactionApprovalComponent implements OnInit {
     }
   }
 
+  public acctNumberAndTrnCdFilter(searchValue: string): void {
+    if (null !== searchValue && '' !== searchValue) {
+      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.acc_num.includes(searchValue) ||
+        e.td_def_trans_trf.trans_cd.toString().includes(searchValue));
+    } else {
+      this.filteredVm = this.vm;
+    }
+  }
+
   public ShowOnlyRecovery(e: any): void {
     debugger;
     if (e.target.checked) {

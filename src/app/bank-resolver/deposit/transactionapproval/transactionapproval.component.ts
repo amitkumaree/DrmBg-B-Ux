@@ -230,16 +230,10 @@ export class TransactionapprovalComponent implements OnInit {
       this.filteredVm = this.vm.filter(e => e.mm_acc_type.acc_type_cd === acctTypeCd);
     }
   }
-  public tranCdFilter(searchValue: string): void {
+  public acctNumberAndTrnCdFilter(searchValue: string): void {
     if (null !== searchValue && '' !== searchValue) {
-      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.trans_cd.toString().startsWith(searchValue));
-    } else {
-      this.filteredVm = this.vm;
-    }
-  }
-  public acctNumberFilter(searchValue: string): void {
-    if (null !== searchValue && '' !== searchValue) {
-      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.acc_num.startsWith(searchValue));
+      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.acc_num.includes(searchValue) ||
+        e.td_def_trans_trf.trans_cd.toString().includes(searchValue));
     } else {
       this.filteredVm = this.vm;
     }
