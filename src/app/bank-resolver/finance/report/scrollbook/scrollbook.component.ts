@@ -75,7 +75,7 @@ export class ScrollbookComponent implements OnInit {
       this.todate=this.reportcriteria.value['toDate'];
       this.UrlString=this.svc.getReportUrl()
       this.UrlString=this.UrlString+"WebForm/Fin/dayscrollbook?"+"as_brn_cd="+this.sys.BranchCode+"&adt_from_dt="+Utils.convertDtToString(this.fromdate)+"&adt_to_dt="+Utils.convertDtToString(this.todate)
-      debugger;
+      ;
       this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
@@ -93,7 +93,7 @@ export class ScrollbookComponent implements OnInit {
   }
 
   onReportComplete(): void {
-    debugger;
+    ;
     if (!this.isLoading)return ;
     this.prp.brn_cd=this.sys.BranchCode;
     this.prp.from_dt= this.fromdate;
@@ -110,7 +110,7 @@ export class ScrollbookComponent implements OnInit {
       (data: tt_scroll_book[]) => this.scrollbook = data,
       error => { console.log(error); },
       () => {
-          debugger;
+          ;
          let totalCr=0;
          let totalDr=0;
          let tmp_cash_account=new tt_scroll_book();
@@ -257,7 +257,7 @@ export class ScrollbookComponent implements OnInit {
             [option]: value
         }
     });
-    debugger;
+    ;
     this.child.webDataRocks.refresh();
 }
 exportPDFTitle() {

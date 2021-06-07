@@ -61,15 +61,15 @@ export class AdduserComponent implements OnInit {
   GetBranchMaster()
   {
     this.isLoading=true;
-    debugger;
+    ;
     this.svc.addUpdDel('Mst/GetBranchMaster', null).subscribe(
       res => {
-        debugger;
+        ;
         this.brnDtls=res;
         this.isLoading=false;
         
       },
-      err => {this.isLoading=false; debugger;}
+      err => {this.isLoading=false; ;}
     )
   }
   retrieve ()
@@ -80,13 +80,13 @@ export class AdduserComponent implements OnInit {
     }
     else
     {
-    debugger;
+    ;
     let login = new LOGIN_MASTER();
     login.user_id = this.f.userid.value;
     login.brn_cd = this.f.branch.value;
     this.svc.addUpdDel<any>('Sys/GetUserIDDtls', login).subscribe(
       res => {
-        debugger;
+        ;
         if (res.length==0)
         {
           this.HandleMessage(true, MessageType.Sucess,'User Not found !!!' );
@@ -106,7 +106,7 @@ export class AdduserComponent implements OnInit {
         }
         
       },
-      err => { debugger;  this.HandleMessage(true, MessageType.Error,'User Not found !!!' );
+      err => { ;  this.HandleMessage(true, MessageType.Error,'User Not found !!!' );
       this.initialize();
       this.isDel = false;
       this.isRetrieve = true;
@@ -132,10 +132,10 @@ export class AdduserComponent implements OnInit {
     login.user_type=this.f.utype.value;
     login.password=this.f.password.value;
     login.login_status='N';
-    debugger;
+    ;
     this.svc.addUpdDel('Sys/InsertUserMaster', login).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading=false;
         this.HandleMessage(true, MessageType.Sucess,'Sucessfully Saved the User Details' );
         this.initialize();
@@ -146,7 +146,7 @@ export class AdduserComponent implements OnInit {
         this.isSave = false;
         this.isClear = true;        
       },
-      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Insertion Failed!!' );
+      err => {this.isLoading=false; ; this.HandleMessage(true, MessageType.Error,'Insertion Failed!!' );
               this.isDel = false;
               this.isRetrieve = false;
               this.isNew = false;
@@ -170,10 +170,10 @@ export class AdduserComponent implements OnInit {
     login.user_type=this.f.utype.value;
     login.password=this.f.password.value;
     //login.login_status='N';
-    debugger;
+    ;
     this.svc.addUpdDel('Sys/UpdateUserMaster', login).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading=false;
         this.HandleMessage(true, MessageType.Sucess,'Sucessfully Updated the User Details' );
         this.initialize();
@@ -184,7 +184,7 @@ export class AdduserComponent implements OnInit {
         this.isSave = false;
         this.isClear = true;        
       },
-      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Updation Failed!!' );
+      err => {this.isLoading=false; ; this.HandleMessage(true, MessageType.Error,'Updation Failed!!' );
       this.isDel = false;
       this.isRetrieve = true;
       this.isNew = true;
@@ -202,10 +202,10 @@ export class AdduserComponent implements OnInit {
     let login = new LOGIN_MASTER();
     login.user_id = this.f.userid.value;
     login.brn_cd = this.f.branch.value;
-    debugger;
+    ;
     this.svc.addUpdDel('Sys/DeleteUserMaster', login).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading=false;
         this.HandleMessage(true, MessageType.Sucess,'User Details Deleted' );
         this.initialize();
@@ -216,7 +216,7 @@ export class AdduserComponent implements OnInit {
         this.isSave = false;
         this.isClear = true;
       },
-      err => {this.isLoading=false; debugger; this.HandleMessage(true, MessageType.Error,'Deletion Failed!!' );
+      err => {this.isLoading=false; ; this.HandleMessage(true, MessageType.Error,'Deletion Failed!!' );
       this.initialize();
       this.isDel = false;
       this.isRetrieve = true;

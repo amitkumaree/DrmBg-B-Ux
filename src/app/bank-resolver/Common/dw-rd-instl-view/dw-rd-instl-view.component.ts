@@ -14,7 +14,7 @@ export class DwRdInstlViewComponent implements OnInit, OnDestroy {
   constructor(private svc: RestService, private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonAccountNum().subscribe(
       res => {
-        debugger;
+        ;
         if (null !== res && undefined !== res &&
           +res !== 0) {
           this.accNum = res;
@@ -34,7 +34,7 @@ export class DwRdInstlViewComponent implements OnInit, OnDestroy {
   }
 
   private getRdIntallementDtls(): void {
-    debugger;
+    ;
     if (null !== this.accNum && '' !== this.accNum) {
       const rdInstallament = new td_rd_installment();
       rdInstallament.acc_num = this.accNum;

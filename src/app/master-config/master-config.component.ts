@@ -79,7 +79,7 @@ addModuleFlg = true;
           a => {
             return a.name !== 'MasterConfig';
           });
-        debugger;
+        ;
         this.getAllBankJsonConfigData(this.allBankConfig);
 
       },
@@ -89,11 +89,11 @@ addModuleFlg = true;
 
   private getMasterBankJsonConfigData(url: string) {
     url = url + 'api/BankConfigMst';
-    debugger;
+    ;
     this.spinner = true;
     this.rstSvc.getBankJsonConfig<any>(url).subscribe(
       res => {
-        debugger;
+        ;
         this.masterBankConfigMst = res;
         this.spinner = false;
       },
@@ -112,7 +112,7 @@ addModuleFlg = true;
           configRec.connstring = ur;
           configRec.BankConfigMst = res;
           this.tempAllBankNewConfigRecList.push(configRec);
-          debugger;
+          ;
         },
         err => { }
       );
@@ -150,7 +150,7 @@ addModuleFlg = true;
     this.createScreenFlg = false;
 
     this.postJsonConfigData(this.masterConfig[0].apiUrl, this.masterBankConfigMst, 'MASTER');
-    debugger;
+    ;
     this.populateAllBankJsonData();
     this.updateAllBankJsonData();
     this.addScreenFlg = true;
@@ -185,7 +185,7 @@ addModuleFlg = true;
   }
 
   acceptMenu() {
-    debugger;
+    ;
     if (this.tempMenu.name !== '') {
       this.masterBankConfigMst.menu.push(this.tempMenu);
       this.menuFlg = false;
@@ -219,7 +219,7 @@ addModuleFlg = true;
   }
 
   acceptSubMenu() {
-    debugger;
+    ;
     if (this.tempSubMenu.name !== '') {
       this.viewSubmenu.push(this.tempSubMenu);
       this.createSubMenuFlg = false;
@@ -298,7 +298,7 @@ addModuleFlg = true;
               const newScreen = new screenlist();
               newScreen.screen = this.tempMasterNewConfigRec.screen;
               newScreen.value = this.tempMasterNewConfigRec.value;
-              debugger;
+              ;
               newScreen.activeflag = this.tempAllBankNewConfigRecList[i].active;
 
               this.tempAllBankNewConfigRecList[i].BankConfigMst.menu[j].menu[k].menu.push(newScreen);
@@ -367,7 +367,7 @@ addModuleFlg = true;
     }
 
     showEvent(x: any) {
-      debugger;
+      ;
       console.log(x);
     }
 

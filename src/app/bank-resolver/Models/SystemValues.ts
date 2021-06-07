@@ -14,7 +14,7 @@ export class SystemValues {
   private __isLoggedIn: boolean;
 
   constructor() {
-    debugger;
+    ;
     this.__brnCd = localStorage.getItem('__brnCd');
     this.__brnName = localStorage.getItem('__brnName');
     this.__currentDate = localStorage.getItem('__currentDate');

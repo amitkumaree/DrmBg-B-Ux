@@ -42,7 +42,7 @@ export class VoucherprintComponent implements OnInit {
      private router: Router) { }
 
   ngOnInit(): void {
-    debugger;
+    ;
     this.fromdate=this.sys.CurrentDate;
     this.todate=this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
@@ -93,7 +93,7 @@ export class VoucherprintComponent implements OnInit {
     this.isLoading=true;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherDtlsForPrint', this.prp).subscribe(
       res => {
-        debugger;
+        ;
         this.tvn = res;
         for (let x = 0; x < this.tvn.length; x++) {
           this.tvn[x].voucher_dt= this.convertDate(this.tvn[x].voucher_dt.toString());
@@ -115,7 +115,7 @@ return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
 }
 
   //   public downloadPDF() {
-  //   debugger;
+  //   ;
   //   let content = this.reportcontent.nativeElement;
   //   let doc = new jsPDF();
   //   let _elementHandlers =
@@ -133,7 +133,7 @@ return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
   // }
 
   // public downloadPDF () {
-  //   debugger;
+  //   ;
   //   {
   //     // download the file using old school javascript method
   //     this.exportAsService.save(this.exportAsConfig, 'VoucherPrint').subscribe(() => {

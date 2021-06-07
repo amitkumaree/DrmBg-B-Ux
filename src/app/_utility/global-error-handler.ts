@@ -16,7 +16,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     const notifier = this.injector.get(NotificationService);
     let message;
     let stackTrace;
-    debugger;
+    ;
 
     if (error instanceof HttpErrorResponse) {
       // Server Error

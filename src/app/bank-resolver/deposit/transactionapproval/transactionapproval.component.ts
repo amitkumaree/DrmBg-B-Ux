@@ -43,7 +43,7 @@ export class TransactionapprovalComponent implements OnInit {
   // tdDepTransRet: td_def_trans_trf[] = [];
 
   ngOnInit(): void {
-    debugger;
+    ;
     this.getAcctTypeMaster();
 
   }
@@ -60,7 +60,7 @@ export class TransactionapprovalComponent implements OnInit {
   }
 
   private getAcctTypeMaster(): void {
-    debugger;
+    ;
     this.isLoading = true;
     if (undefined !== TransactionapprovalComponent.accType &&
       null !== TransactionapprovalComponent.accType &&
@@ -97,7 +97,7 @@ export class TransactionapprovalComponent implements OnInit {
     // defTransaction.brn_cd = localStorage.getItem('__brnCd');
     this.svc.addUpdDel<td_def_trans_trf>('Common/GetDepTrans', depTras).subscribe(
       res => {
-        debugger;
+        ;
         this.selectedVm.td_def_trans_trf = res[0];
         this.msg.sendCommonTransactionInfo(res[0]); // show transaction details
         this.isLoading = false;
@@ -128,7 +128,7 @@ export class TransactionapprovalComponent implements OnInit {
       res => {
         acc = res[0];
         this.selectedVm.tm_deposit = acc;
-        debugger;
+        ;
         this.msg.sendCommonAcctInfo(acc);
         this.msg.sendCommonAccountNum(acc.acc_num);
         this.isLoading = false;
@@ -189,7 +189,7 @@ export class TransactionapprovalComponent implements OnInit {
       }
     }
 
-    debugger;
+    ;
     this.isLoading = true;
     let param = new p_gen_param();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
@@ -240,7 +240,7 @@ export class TransactionapprovalComponent implements OnInit {
   }
 
   onDeleteClick(): void {
-    debugger;
+    ;
     if (!(confirm('Are you sure you want to Delete Transaction of Acc ' + this.selectedVm.tm_deposit.acc_num
       + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
       return;

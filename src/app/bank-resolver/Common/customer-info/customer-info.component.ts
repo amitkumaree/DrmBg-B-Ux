@@ -105,7 +105,7 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
   }
 
   private getCustomer(): void {
-    debugger;
+    ;
     const cust = this.cust;
     if (undefined !== cust && Object.keys(cust).length !== 0) {
       const category = CustomerInfoComponent.categories.

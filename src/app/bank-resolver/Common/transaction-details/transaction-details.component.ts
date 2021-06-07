@@ -103,7 +103,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
   }
 
   setTransactionDtl(): void {
-    debugger;
+    ;
     this.showDenominationDtl = false;
     this.totalOfDenomination = 0;
     if (undefined !== this.transactionDtl && Object.keys(this.transactionDtl).length !== 0) {

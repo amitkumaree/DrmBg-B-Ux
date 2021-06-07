@@ -84,7 +84,7 @@ export class GenLedger2Component implements OnInit {
       this.todate=this.reportcriteria.value['toDate'];
       this.UrlString=this.svc.getReportUrl()
       this.UrlString=this.UrlString+"WebForm/Fin/generalledgerdtls?"+"brn_cd="+this.sys.BranchCode+"&adt_from_dt="+Utils.convertDtToString(this.fromdate)+"&adt_to_dt="+Utils.convertDtToString(this.todate)+"&ad_from_acc_cd="+parseInt(this.reportcriteria.value['fromAcc'])+"&ad_to_acc_Cd="+parseInt (this.reportcriteria.value['toAcc'])
-      debugger;
+      ;
       this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
@@ -104,7 +104,7 @@ export class GenLedger2Component implements OnInit {
 
 
   onReportComplete(): void {
-    debugger;
+    ;
     if (!this.isLoading)return ;
     this.prp.brn_cd = this.sys.BranchCode;
     this.prp.from_dt = this.fromdate;
@@ -122,12 +122,12 @@ export class GenLedger2Component implements OnInit {
     this.svc.addUpdDel<any>('Report/GLTD2', this.prp).subscribe(
       (data: tt_gl_trans[]) => {
         this.genLdgerTrans = data;
-        debugger;
+        ;
       },
       error => { console.log(error); },
       () => {
         this.isLoading = false;
-        debugger;
+        ;
         this.child.webDataRocks.setReport({
           dataSource: {
             data: this.genLdgerTrans
@@ -256,7 +256,7 @@ export class GenLedger2Component implements OnInit {
         [option]: value
       }
     });
-    debugger;
+    ;
     this.child.webDataRocks.refresh();
   }
 

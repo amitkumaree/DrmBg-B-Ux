@@ -38,7 +38,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
     this.subscription = this.msg.getShdowBalance().subscribe(
       res => {
         if (null !== res) {
-          debugger;
+          ;
           res = +res;
           res += this.ShadowBalance;
           this.accDtlsFrm.patchValue({
@@ -76,10 +76,10 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
     this.constitutionList = [];
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
-        // debugger;
+        // ;
         this.constitutionList = res;
       },
-      err => { // debugger;
+      err => { // ;
       }
     );
   }
@@ -190,7 +190,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
   }
 
   setAcctDetails(): void {
-    debugger;
+    ;
     if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
       this.resetFormData();
       this.getShadowBalance();

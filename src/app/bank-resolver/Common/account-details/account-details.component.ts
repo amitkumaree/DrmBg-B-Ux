@@ -100,10 +100,10 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     this.constitutionList = [];
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
-        // debugger;
+        // ;
         this.constitutionList = res;
       },
-      err => { // debugger;
+      err => { // ;
       }
     );
   }

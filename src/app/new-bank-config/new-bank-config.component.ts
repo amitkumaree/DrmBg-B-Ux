@@ -37,11 +37,11 @@ export class NewBankConfigComponent implements OnInit {
     this.spinner = true;
     this.confSvc.getAllConfiguration().then(
       res => {
-        debugger;
+        ;
         this.bcUx = res;
         this.masterConfig = this.bcUx.filter(
           m => m.name === 'MasterConfig');
-           debugger;
+           ;
         this.getConfigData(this.masterConfig[0].apiUrl);
 
       },
@@ -52,11 +52,11 @@ export class NewBankConfigComponent implements OnInit {
 
   private getConfigData(url: string) {
     url = url + 'api/BankConfigUx';
-   debugger;
+   ;
     this.rstSvc.getBankJsonConfigUx<any>(url).subscribe(
       res => {
         this.bcMst = res;
-        debugger;
+        ;
         this.spinner = false;
       },
       err => { }
@@ -65,11 +65,11 @@ export class NewBankConfigComponent implements OnInit {
 
   private putConfigData(url: string) {
     url = url + 'api/BankConfigUx';
-   debugger;
+   ;
     this.rstSvc.postBankJsonConfigUx<any>(url , this.bcMst).subscribe(
       res => {
         this.getConfigData(this.masterConfig[0].apiUrl);
-        debugger;
+        ;
         this.spinner = false;
       },
       err => { }
@@ -88,7 +88,7 @@ saveData()
 
   // tslint:disable-next-line: max-line-length
   if ( this.tempBankConfiguration.name !== '' && this.tempBankConfiguration.description !== '' && this.tempBankConfiguration.apiUrl !== '') {
-  debugger;
+  ;
   this.spinner = true;
   this.bcMst.push(this.tempBankConfiguration);
   this.tempBankConfiguration = new BankConfiguration();
@@ -99,7 +99,7 @@ saveData()
   }
   else
   {
-    debugger;
+    ;
     this.showAlert = true;
     this.alertMsg = 'Can not be blank';
 

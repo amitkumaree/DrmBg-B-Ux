@@ -22,11 +22,11 @@ export class BankResolverComponent implements OnInit, OnDestroy {
     private msg: InAppMessageService, private router: Router, private titleService: Title) {
     this.subscription = this.msg.getisLoggedInShowHeader().subscribe(
       res => {
-        debugger;
+        ;
         if (res === null) {
           this.route.paramMap.subscribe(param => {
             // this.passedValue =
-            debugger;
+            ;
             const paramValue = param.get('bankName');
             if (null !== paramValue) {
               localStorage.setItem('__bName', paramValue);
@@ -55,13 +55,13 @@ export class BankResolverComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
       // this.passedValue =
-      debugger;
+      ;
       const paramValue = param.get('bankName');
       if (null !== paramValue) {
         localStorage.setItem('__bName', paramValue);
         this.confSvc.getConfigurationForName(paramValue).then(
           res => {
-            debugger;
+            ;
             if (undefined === res) {
               // need to block the user
 

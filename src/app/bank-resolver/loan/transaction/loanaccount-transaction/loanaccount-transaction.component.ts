@@ -189,7 +189,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   //   });
   // }
   processInterest(): void {
-    debugger;
+    ;
     let temp_gen_param = new p_gen_param();
 
     temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
@@ -222,7 +222,7 @@ export class LoanaccountTransactionComponent implements OnInit {
         return;
       }
 
-      debugger;
+      ;
       // this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
       // this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
       // this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
@@ -256,10 +256,10 @@ export class LoanaccountTransactionComponent implements OnInit {
 
   calCrdIntReg(tempGenParam: p_gen_param): void {
     this.isLoading = true;
-    debugger;
+    ;
     this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', tempGenParam).subscribe(
       res => {
-        debugger;
+        ;
         this.tm_deposit.intt_amt = res;
         this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
         this.isLoading = false;
@@ -267,7 +267,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       err => {
         this.tm_deposit.intt_amt = 0;
         this.isLoading = false;
-        debugger;
+        ;
       }
     );
   }
@@ -283,7 +283,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       },
       err => {
         this.isLoading = false;
-        debugger;
+        ;
       }
     );
   }
@@ -296,35 +296,35 @@ export class LoanaccountTransactionComponent implements OnInit {
   //   AccounTransactionsComponent.constitutionList = [];
   //   this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
   //     res => {
-  //       // debugger;
+  //       // ;
   //       AccounTransactionsComponent.constitutionList = res;
   //     },
-  //     err => { // debugger;
+  //     err => { // ;
   //     }
   //   );
   // }
 
   private getDenominationList(): void {
-    debugger;
+    ;
     let denoList: tt_denomination[] = [];
     this.svc.addUpdDel<any>('Common/GetDenomination', null).subscribe(
       res => {
-        debugger;
+        ;
         denoList = res;
         this.denominationList = denoList.sort((a, b) => (a.value < b.value) ? 1 : -1);
       },
-      err => { // debugger;
+      err => { // ;
       }
     );
   }
   private getInstallmentType(): void {
-    debugger;
+    ;
    this.svc.addUpdDel<any>('Mst/GetInstalmentTypeMaster', null).subscribe(
       res => {
-        debugger;
+        ;
         this.installmenttypeList = res;
       },
-      err => { // debugger;
+      err => { // ;
       }
     );
   }
@@ -345,7 +345,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   // getCustomerList() {
-  //   debugger;
+  //   ;
   //   const cust = new mm_customer();
   //   cust.cust_cd = 0;
   //   cust.brn_cd = this.sys.BranchCode;
@@ -353,13 +353,13 @@ export class LoanaccountTransactionComponent implements OnInit {
   //   if (this.customerList === undefined || this.customerList === null || this.customerList.length === 0) {
   //     this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
   //       res => {
-  //         debugger;
+  //         ;
   //         this.isLoading = false;
   //         this.customerList = res;
   //       },
   //       err => {
   //         this.isLoading = false;
-  //         debugger;
+  //         ;
   //       }
   //     );
   //   }
@@ -367,7 +367,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   // }
 
   private getOperationMaster(): void {
-    debugger;
+    ;
     this.isLoading = true;
     if (undefined !== AccounTransactionsComponent.operations &&
       null !== AccounTransactionsComponent.operations &&
@@ -381,7 +381,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     } else {
       this.svc.addUpdDel<mm_operation[]>('Mst/GetOperationDtls', null).subscribe(
         res => {
-          debugger;
+          ;
           AccounTransactionsComponent.operations = res;
           this.isLoading = false;
           this.AcctTypes = AccounTransactionsComponent.operations.filter(e => e.module_type === 'LOAN')
@@ -414,7 +414,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   public onAccountNumTabOff(): void {
-    debugger;
+    ;
     this.f.oprn_cd.disable();
     this.disableOperation = true;
     this.showTranferType = true;
@@ -429,7 +429,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     acc1.acc_cd=this.f.acc_type_cd.value;
     this.svc.addUpdDel<any>('Loan/GetLoanData', acc1).subscribe(
       res => {
-        debugger;
+        ;
         acc = res;
         if (undefined === acc || acc.tmloanall.loan_id==null) {
           this.accTransFrm.patchValue({
@@ -497,7 +497,7 @@ export class LoanaccountTransactionComponent implements OnInit {
         this.isLoading = false;
       },
       err => {
-        debugger;
+        ;
         this.f.oprn_cd.disable(); this.isLoading = false;
         console.log(err);
         this.msg.sendCommonTmLoanAll(null);
@@ -525,7 +525,7 @@ export class LoanaccountTransactionComponent implements OnInit {
        this.isRecovery=false;
        this.td.trf_type.value !== ''
      } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'recovery') {
-       debugger;
+       ;
        this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value) 
        this.transType.key = 'R';
        this.transType.Description = 'Recovery';
@@ -543,7 +543,7 @@ export class LoanaccountTransactionComponent implements OnInit {
 
 
   onRecovTypeChange(): void {
-    debugger;
+    ;
     const selectedRecovType = this.td.recov_type.value;
     if ('M'===selectedRecovType)
     {
@@ -572,7 +572,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
    onTransModeChange(): void {
-     debugger;
+     ;
      const selectedTransMode = this.td.trans_mode.value;
      if ('Q' === selectedTransMode) {
        // check if cheque facility is available or not
@@ -590,7 +590,7 @@ export class LoanaccountTransactionComponent implements OnInit {
 
 
   onTransTypeChange(): void {
-    debugger;
+    ;
     const accTypeCd = +this.f.acc_type_cd.value;
     if (accTypeCd !== 2
       && accTypeCd !== 3
@@ -643,7 +643,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
    onAmtChng(): void {
-     debugger;
+     ;
      this.HandleMessage(false);
     if ((+this.td.amount.value) < 0) {
        this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
@@ -674,7 +674,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     
   }
   onRecoveryTillDateChng(ev:any):void{
-    debugger;
+    ;
     if (this.td.trans_type_key.value === 'R')
       {
         if (+this.td.amount.value > 0)
@@ -708,7 +708,7 @@ export class LoanaccountTransactionComponent implements OnInit {
 
   dayDiff(d1:Date, d2:Date)
   {
-    debugger;
+    ;
     var diffDays =Math.floor((Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate()) - Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate()) ) /(1000 * 60 * 60 * 24)); 
     return diffDays;
   }
@@ -725,7 +725,7 @@ export class LoanaccountTransactionComponent implements OnInit {
        tmDep.intt_dt=this.td.intt_recov_dt.value;
        this.svc.addUpdDel<any>('Loan/CalculateLoanInterest', tmDep).subscribe(
          res => {
-           debugger;
+           ;
            if (undefined !== res ) {
             inttRet = res;
             this.tdDefTransFrm.patchValue({
@@ -751,7 +751,7 @@ export class LoanaccountTransactionComponent implements OnInit {
        tmDep.intt_dt=this.td.intt_recov_dt.value;
        this.svc.addUpdDel<any>('Loan/F_GET_EFF_INTT_RT', tmDep).subscribe(
          res => {
-           debugger;
+           ;
            if (undefined !== res ) {
             inttRet = res;
             this.tdDefTransFrm.patchValue({
@@ -768,7 +768,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   onSaveClick(): void {
-      debugger;
+      ;
 
       if ((+this.td.amount.value) <= 0) {
         this.HandleMessage(true, MessageType.Error, 'Amount can not be blank');
@@ -804,7 +804,7 @@ export class LoanaccountTransactionComponent implements OnInit {
      }
      this.svc.addUpdDel<LoanOpenDM>('Loan/InsertLoanTransactionData', saveTransaction).subscribe(
        res => {
-         debugger;
+         ;
          this.unApprovedTransactionLst.push(tdDefTrans);
          this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
          // this.tdDefTransFrm.reset();
@@ -813,12 +813,12 @@ export class LoanaccountTransactionComponent implements OnInit {
        },
        err => { this.isLoading = false; 
         this.HandleMessage(true, MessageType.Error, 'Save Failed !!!!');
-        console.error('Error on onSaveClick' + JSON.stringify(err)); debugger; }
+        console.error('Error on onSaveClick' + JSON.stringify(err)); ; }
      );
    }
 
    mappTddefTransFromFrm(): td_def_trans_trf {
-     debugger;
+     ;
      const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
      const toReturn = new td_def_trans_trf();
      const accTypeCd = +this.f.acc_type_cd.value;
@@ -913,7 +913,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   addDenomination() {
-    debugger;
+    ;
     let alreadyHasEmptyDenominationItem = false;
     if (this.tm_denominationList.length >= 1) {
       // check if tm_denominationList has any blank items
@@ -944,14 +944,14 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   setDenomination(val: number, idx: number) {
-    debugger;
+    ;
     this.tm_denominationList[idx].rupees = Number(val);
     this.tm_denominationList[idx].rupees_desc = this.denominationList.filter(x => x.rupees === val.toString())[0].rupees;
     this.calculateTotalDenomination(idx);
   }
 
   calculateTotalDenomination(idx: number) {
-    debugger;
+    ;
     let r = 0;
     let c = 0;
 
@@ -973,7 +973,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   getAccountTypeList() {
-    debugger;
+    ;
     if (this.accountTypeList.length > 0) {
       return;
     }
@@ -981,19 +981,19 @@ export class LoanaccountTransactionComponent implements OnInit {
 
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
-        debugger;
+        ;
         this.accountTypeList = res;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
       },
       err => {
-        debugger;
+        ;
       }
     );
   }
 
   setDebitAccDtls(acc_num: string) {
-    debugger;
+    ;
     if (this.td_deftranstrfList[0].cust_acc_type === undefined
       || this.td_deftranstrfList[0].cust_acc_type === null
       || this.td_deftranstrfList[0].cust_acc_type === '') {
@@ -1008,7 +1008,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       return;
     }
 
-    debugger;
+    ;
     let temp_deposit_list: tm_deposit[] = [];
     let temp_deposit = new tm_deposit();
 
@@ -1019,7 +1019,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
       res => {
-        debugger;
+        ;
         temp_deposit_list = res;
         this.isLoading = false;
 
@@ -1035,14 +1035,14 @@ export class LoanaccountTransactionComponent implements OnInit {
         this.td_deftranstrfList[0].clr_bal = temp_deposit_list[0].clr_bal;
       },
       err => {
-        debugger;
+        ;
         this.isLoading = false;
       }
     );
   }
 
   checkAndSetDebitAccType(tfrType: string, accType: string) {
-    debugger;
+    ;
     if (tfrType === 'cust_acc') {
       if (this.td_deftranstrfList[0].cust_acc_type === undefined
         || this.td_deftranstrfList[0].cust_acc_type === null
@@ -1093,7 +1093,7 @@ export class LoanaccountTransactionComponent implements OnInit {
           let temp_acc_master = new m_acc_master();
           this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
             res => {
-              debugger;
+              ;
               this.acc_master = res;
               this.isLoading = false;
               temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
@@ -1107,7 +1107,7 @@ export class LoanaccountTransactionComponent implements OnInit {
               }
             },
             err => {
-              debugger;
+              ;
               this.isLoading = false;
             }
           )
@@ -1134,7 +1134,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   checkDebitBalance(amount: number) {
-    debugger;
+    ;
 
     if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null) {
       return;

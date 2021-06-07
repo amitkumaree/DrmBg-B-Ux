@@ -10,7 +10,7 @@ export class FinanceComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    debugger;
+    ;
   }
 
 }

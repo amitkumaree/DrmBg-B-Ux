@@ -73,14 +73,14 @@ export class VoucherapprovalComponent implements OnInit {
         this.addVoucherFromGroup()
       ])
     });
-    debugger;
+    ;
     this.isRetrieve = false;
     this.isRetrieveBatch = false;
     this.isNew = false;
     this.getmAccMaster();
   }
   Initialize() {
-    debugger;
+    ;
     this.insertMode = false;
     this._voucherId = null;
     this._voucherDt = null;
@@ -165,7 +165,7 @@ export class VoucherapprovalComponent implements OnInit {
 
   }
   Submit() {
-    debugger;
+    ;
     if (this.reportcriteria.invalid) {
       this.showAlert = true;
       this.alertMsg = "Error : Invalid Input.";
@@ -191,7 +191,7 @@ export class VoucherapprovalComponent implements OnInit {
     this.isClear = false;
   }
   // Save() {
-  //   debugger;
+  //   ;
   //   this.showAlert = false;
   //   let isAccCDBlank = false;
   //   if (this._voucherNarration == null || this._voucherNarration == '') {
@@ -228,7 +228,7 @@ export class VoucherapprovalComponent implements OnInit {
   //   }
   // }
   OpenVoucher(item) {
-    debugger;
+    ;
     this.Initialize();
     this.getVoucherDtl(this.sys.BranchCode, item.voucher_dt, item.voucher_id, item.narrationdtl)
   }
@@ -268,7 +268,7 @@ export class VoucherapprovalComponent implements OnInit {
 
   selectEvent(item, i) {
     // do something with selected item
-    debugger;
+    ;
     try {
       this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
       this.VoucherF.controls[i].get('acc_cd').setValue(item.acc_cd);
@@ -280,7 +280,7 @@ export class VoucherapprovalComponent implements OnInit {
     // do something with selected item
   }
   onChange(event) {
-    debugger;
+    ;
 
     this._voucherTyp = event;
     if (this._voucherTyp=='T'){
@@ -298,7 +298,7 @@ export class VoucherapprovalComponent implements OnInit {
       this.maccmaster=this.maccmasterRet;}
   }
   changeAppFlg() {
-    debugger;
+    ;
     this.tvnRetFilter = [];
     //this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
     this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg).sort((a , b) => (a.voucher_id < b.voucher_id ? -1 : 1));;
@@ -316,10 +316,10 @@ export class VoucherapprovalComponent implements OnInit {
     //this.tvd.voucher_dt = new Date(Date.UTC(vDt.getFullYear(), vDt.getMonth(),vDt.getDate(),vDt.getHours(), vDt.getMinutes()));
     this.tvd.voucher_id = Number(vID);
     this.tvdRet = [];
-    debugger;
+    ;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherDtls', this.tvd).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading = false;
         this.tvdRet = res;
         this.tvdGroupRes = this.groupBy(this.tvdRet, function (item) {
@@ -355,10 +355,10 @@ export class VoucherapprovalComponent implements OnInit {
     //this.tvd.voucher_dt = new Date(Date.UTC(voudt.getFullYear(), voudt.getMonth(), voudt.getDate()));
     this.tvd.voucher_id = vouid;
     this.tvdRet = [];
-    debugger;
+    ;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherDtls', this.tvd).subscribe(
       res => {
-        debugger;
+        ;
         this.tvdRet = res;
         for (let x = 0; x < this.tvdRet.length; x++) {
           this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
@@ -388,10 +388,10 @@ export class VoucherapprovalComponent implements OnInit {
     this.tvn.voucher_dt = this.sys.CurrentDate;
     //tvdSave.voucher_dt = new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
    // this.tvn.voucher_dt = new Date(Date.UTC(this.tvn.voucher_dt.getFullYear(), this.tvn.voucher_dt.getMonth(), this.tvn.voucher_dt.getDate()));
-    debugger;
+    ;
     this.svc.addUpdDel<any>('Voucher/GetTVoucherNarration', this.tvn).subscribe(
       res => {
-        debugger;
+        ;
         this.tvnRet = res;
         //this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg);
         this.tvnRetFilter = this.tvnRet.filter(x => x.approval_status == this.app_flg).sort((a , b) => (a.voucher_id < b.voucher_id ? -1 : 1));;
@@ -425,10 +425,10 @@ export class VoucherapprovalComponent implements OnInit {
   //       tvdSave.amount = Number(tvdSave.cr_amount == 0 ? tvdSave.dr_amount : tvdSave.cr_amount);
   //       tvdSaveAll.push(tvdSave);
   //     }
-  //     debugger;
+  //     ;
   //     this.svc.addUpdDel<any>('Voucher/InsertTVoucherDtls', tvdSaveAll).subscribe(
   //       res => {
-  //         debugger;
+  //         ;
   //         this._voucherId = res;
   //         this._approvalSts = "Unapproved";
   //         this.insertMode = false;
@@ -466,10 +466,10 @@ export class VoucherapprovalComponent implements OnInit {
         tvdSave.narrationdtl = this._voucherNarration;
         tvdSaveAll.push(tvdSave);
       }
-      debugger;
+      ;
       this.svc.addUpdDel<any>('Voucher/UpdateTVoucherDtls', tvdSaveAll).subscribe(
         res => {
-          debugger;
+          ;
           let x = res;
           //this._voucherDt = this._voucherDt
           //this._voucherTyp = "C";
@@ -536,7 +536,7 @@ export class VoucherapprovalComponent implements OnInit {
       return;
     }
    try {
-      debugger;
+      ;
       if (this.VoucherF.controls[row].get('dr_amt').value > 0) {
         this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
         this.VoucherF.controls[row].get('dr_cr').setValue("Debit");
@@ -545,7 +545,7 @@ export class VoucherapprovalComponent implements OnInit {
         {
           this.VoucherF.controls[0].get('dr_amt').setValue(null);
           this.VoucherF.controls[0].get('dr_cr').setValue("Credit");
-          debugger;
+          ;
           this.VoucherF.controls[0].get('cr_amt').setValue(this.getTotalDr());
 
         }
@@ -563,7 +563,7 @@ export class VoucherapprovalComponent implements OnInit {
       return;
     }
     try {
-      debugger;
+      ;
       if (this.VoucherF.controls[row].get('cr_amt').value > 0) {
         this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
         this.VoucherF.controls[row].get('dr_cr').setValue("Credit");
@@ -572,7 +572,7 @@ export class VoucherapprovalComponent implements OnInit {
         {
           this.VoucherF.controls[0].get('cr_amt').setValue(null);
           this.VoucherF.controls[0].get('dr_cr').setValue("Debit");
-          debugger;
+          ;
           this.VoucherF.controls[0].get('dr_amt').setValue(this.getTotalCr());
 
         }
@@ -594,10 +594,10 @@ export class VoucherapprovalComponent implements OnInit {
   }
 
   private getmAccMaster(): void {
-    debugger;
+    ;
     this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
       res => {
-        debugger;
+        ;
         this.maccmasterRet = res;
         this.maccmaster=this.maccmasterRet;
       },

@@ -119,7 +119,7 @@ export class LoanTransactionDetailsComponent implements OnInit, OnDestroy {
   }
 
   setTransactionDtl(): void {
-    debugger;
+    ;
     this.showDenominationDtl = false;
     this.totalOfDenomination = 0;
     if (undefined !== this.loanOpenDm && Object.keys(this.loanOpenDm).length !== 0) {

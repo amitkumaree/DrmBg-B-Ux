@@ -71,7 +71,7 @@ export class MemberListComponent implements OnInit {
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.UrlString=this.svc.getReportUrl()
       this.UrlString=this.UrlString+"WebForm/UCIC/memberdetails?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+Utils.convertDtToString(this.fromdate)
-      debugger;
+      ;
       this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();

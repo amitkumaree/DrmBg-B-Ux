@@ -13,7 +13,7 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
   constructor(private svc: RestService, private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonAcctInfo().subscribe(
       res => {
-        debugger;
+        ;
         if (null !== res && undefined !== res &&
           res.cust_cd !== 0) {
           this.acctDtls = res;
@@ -34,7 +34,7 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
   }
 
   private getInterestList() {
-    debugger;
+    ;
     if (undefined !== this.acctDtls &&
       null !== this.acctDtls) {
       const tdIntDtl = new td_intt_dtls();

@@ -30,30 +30,30 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
   }
 
   getAccountTypeList() {
-    debugger;
+    ;
     
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
-        debugger;
+        ;
         this.accountTypeList = res;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'L');
         this.accountTypeList.forEach(x=>x.calc=false);
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
       },
       err => {
-        debugger;
+        ;
       }
     );
   }
   changeTradesByCategory(event) {
-    debugger;
+    ;
     if (this.accountTypeList[event].calc) 
       this.accountTypeList[event].calc=false;
     else
     this.accountTypeList[event].calc=true;
   }
   allTrades(event) {
-    debugger;
+    ;
     const checked = event.target.checked;
     if(checked)
     this.accountTypeList.forEach(item => item.calc = true);
@@ -62,7 +62,7 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
   }
   onApproveClick()
   {
-    debugger
+    
     this.param=[]
     for (let i=0;i<this.accountTypeList.length;i++)
     {
@@ -79,12 +79,12 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
       this.isLoading=true;
       this.svc.addUpdDel<any>('Loan/CalculateLoanAccWiseInterest', this.param).subscribe(
         res => {
-          debugger;
+          ;
           this.isLoading=false;
           this.HandleMessage(true, MessageType.Sucess, 'Interest Calculation Done!!!!!!!!!!');    
         },
         err => {
-          debugger;
+          ;
           this.isLoading=false;
           this.HandleMessage(true, MessageType.Error, 'Interest Calculation Failed!!!!!!!!!!');    
         }

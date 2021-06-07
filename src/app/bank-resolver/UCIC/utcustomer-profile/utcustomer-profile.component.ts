@@ -301,7 +301,7 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public onDobChange(value: Date): number {
-    // debugger;
+    // ;
     if (null !== value) {
       const timeDiff = Math.abs(Date.now() - value.getTime());
       const age = Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25)
@@ -317,7 +317,7 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public SelectCustomer(cust: mm_customer): void {
-    // debugger;
+    // ;
     const dob = (null !== cust.dt_of_birth && '01/01/0001 00:00' === cust.dt_of_birth.toString()) ? null
       : cust.dt_of_birth;
     this.selectedCustomer = cust;
@@ -384,7 +384,7 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public onSaveClick(): void {
-    // debugger;
+    // ;
     if (!this.validateControls()) { return; }
     this.isLoading = true;
     const cust = this.mapFormGrpToCustMaster();
@@ -458,7 +458,7 @@ export class UTCustomerProfileComponent implements OnInit {
         trReturn = false;
       }
     }
-    // // debugger;
+    // // ;
     if (null !== this.f.phone.value && this.f.phone.value.length > 0) {
       if (!Utils.ValidatePhone(this.f.phone.value)) {
         this.HandleMessage(true, MessageType.Error, 'Phone number is not valid');
@@ -658,7 +658,7 @@ export class UTCustomerProfileComponent implements OnInit {
         // const imgWidth = rs.currentTarget['width'];
 
         // console.log(imgHeight, imgWidth);
-        // debugger;
+        // ;
         // this.base64Image = e.target.result;
         let img = new kyc_sig();
         // console.log(this.base64Image);
@@ -668,7 +668,7 @@ export class UTCustomerProfileComponent implements OnInit {
         img.img_typ = imgType;
         img.created_by = this.sys.UserId;
         // img.img_cont_byte = null;
-        // debugger;
+        // ;
         switch (imgType) {
           case 'PHOTO':
             this.PHOTO = img;
@@ -698,7 +698,7 @@ export class UTCustomerProfileComponent implements OnInit {
     reader.readAsDataURL(this.fileToUpload);
   }
   onSaveImgClick(): void {
-    // debugger;
+    // ;
     if (this.PHOTO !== undefined && this.PHOTO !== null && this.PHOTO.img_cont.length > 1) {
       this.svc.addUpdDel('UCIC/WriteKycSig', this.PHOTO).subscribe(
         res => {

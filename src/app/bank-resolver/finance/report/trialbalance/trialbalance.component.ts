@@ -73,7 +73,7 @@ export class TrialbalanceComponent implements OnInit {
       this.fromdate=this.reportcriteria.value['fromDate'];
       this.UrlString=this.svc.getReportUrl()
       this.UrlString=this.UrlString+"WebForm/Fin/trialbalance?"+"brn_cd="+this.sys.BranchCode+"&trial_dt="+Utils.convertDtToString(this.fromdate)+"&pl_acc_cd=12302"+"&gp_acc_cd=50001"
-      debugger;
+      ;
       this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
       this.modalRef.hide();
@@ -93,7 +93,7 @@ export class TrialbalanceComponent implements OnInit {
 
 
   onReportComplete(): void {
-    debugger;
+    ;
     if(!this.isLoading) return;
     this.prp.brn_cd=this.sys.BranchCode;
     this.prp.trial_dt= this.fromdate;
@@ -110,7 +110,7 @@ export class TrialbalanceComponent implements OnInit {
       (data: tt_trial_balance[]) => this.trailbalance = data,
       error => { console.log(error); },
       () => {
-          debugger;
+          ;
           //this.showReport = true;
          // this.generatePdf();
          let totalCr=0;
@@ -216,7 +216,7 @@ export class TrialbalanceComponent implements OnInit {
             [option]: value
         }
     });
-    debugger;
+    ;
     this.child.webDataRocks.refresh();
 }
 

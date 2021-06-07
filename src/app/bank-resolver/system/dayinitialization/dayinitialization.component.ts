@@ -38,15 +38,15 @@ export class DayinitializationComponent implements OnInit {
   }
 private getDayOpertion ()
 {
-  debugger;
+  ;
   this.showMsg =null;
   var sdo = new sd_day_operation();
   //sdo.operation_dt =this.convertDate(localStorage.getItem('__currentDate'));// new Date();
   sdo.operation_dt =this.sys.CurrentDate;
-  debugger;
+  ;
   this.svc.addUpdDel<any>('Sys/GetDayOperation', sdo).subscribe(
     res => {
-      debugger;
+      ;
       this.isLoading = false;
       //var a=res.find(x=>x.cls_flg==="N").cls_flg ;
       if (res.findIndex(x=>x.cls_flg==='N')==0)
@@ -65,7 +65,7 @@ private getDayOpertion ()
       this.sdoRet.forEach(x=>x.operation_dt=this.convertDate(x.operation_dt.toString()))
       }
     },
-    err => { debugger;  this.isLoading = false;}
+    err => { ;  this.isLoading = false;}
   );
 }
 dayInitialize()
@@ -107,17 +107,17 @@ private dayInitiationCall (opnDt :any)
   pgp.adt_trans_dt = opnDt;
   pgp.gs_user_id= localStorage.getItem('__userId');
 
-  debugger;
+  ;
   this.svc.addUpdDel<any>('Sys/W_DAY_OPEN', pgp).subscribe(
     res => {
-      debugger;
+      ;
       this.isLoading = false;
       this.alertMsg = res.output;
       this.HandleMessage(true, MessageType.Sucess,this.alertMsg );
       this.isRetrieve=true;
       this.isOk=false;
     },
-    err => { debugger;  this.isLoading = false;
+    err => { ;  this.isLoading = false;
       this.isRetrieve=true;
       this.isOk=false;
     }
