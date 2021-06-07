@@ -58,7 +58,7 @@ export class CashcumtrialComponent implements OnInit {
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
   }
-  
+
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -82,7 +82,7 @@ export class CashcumtrialComponent implements OnInit {
       this.UrlString=this.UrlString+"WebForm/Fin/cashcumtrail?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+Utils.convertDtToString(this.fromdate)+"&to_dt="+Utils.convertDtToString(this.todate)
       ;
       this.isLoading = true;
-      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
       this.modalRef.hide();
       setTimeout(() => {
         this.isLoading = false;

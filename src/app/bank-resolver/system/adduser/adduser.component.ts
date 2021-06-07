@@ -12,7 +12,7 @@ import { m_branch } from '../../Models/m_branch';
 })
 export class AdduserComponent implements OnInit {
   brnDtls: m_branch[]=[];
-  
+
   isLoading=false;
   addUser: FormGroup;
   showMsg: ShowMessage;
@@ -67,7 +67,7 @@ export class AdduserComponent implements OnInit {
         ;
         this.brnDtls=res;
         this.isLoading=false;
-        
+
       },
       err => {this.isLoading=false; ;}
     )
@@ -104,7 +104,7 @@ export class AdduserComponent implements OnInit {
         this.isSave = false;
         this.isClear = true;
         }
-        
+
       },
       err => { ;  this.HandleMessage(true, MessageType.Error,'User Not found !!!' );
       this.initialize();
@@ -144,7 +144,7 @@ export class AdduserComponent implements OnInit {
         this.isNew = true;
         this.isModify = false;
         this.isSave = false;
-        this.isClear = true;        
+        this.isClear = true;
       },
       err => {this.isLoading=false; ; this.HandleMessage(true, MessageType.Error,'Insertion Failed!!' );
               this.isDel = false;
@@ -182,7 +182,7 @@ export class AdduserComponent implements OnInit {
         this.isNew = true;
         this.isModify = false;
         this.isSave = false;
-        this.isClear = true;        
+        this.isClear = true;
       },
       err => {this.isLoading=false; ; this.HandleMessage(true, MessageType.Error,'Updation Failed!!' );
       this.isDel = false;

@@ -59,7 +59,7 @@ export class TrialbalanceComponent implements OnInit {
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
   }
-  
+
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -75,7 +75,7 @@ export class TrialbalanceComponent implements OnInit {
       this.UrlString=this.UrlString+"WebForm/Fin/trialbalance?"+"brn_cd="+this.sys.BranchCode+"&trial_dt="+Utils.convertDtToString(this.fromdate)+"&pl_acc_cd=12302"+"&gp_acc_cd=50001"
       ;
       this.isLoading = true;
-      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
       this.modalRef.hide();
       setTimeout(() => {
         this.isLoading = false;

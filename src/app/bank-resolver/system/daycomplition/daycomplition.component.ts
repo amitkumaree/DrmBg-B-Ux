@@ -68,14 +68,14 @@ private dayCompletionCall (clsDt :any,clsamt:any)
       this.HandleMessage(true, MessageType.Error,this.alertMsg );
       else
       this.HandleMessage(true, MessageType.Error,this.alertMsg );
-      
+
     },
     err => { ;  this.isLoading = false;}
   );
 }
 
 private  convertDate(datestring:string):Date
-{  
+{
 var parts = datestring.match(/(\d+)/g);
 return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
 }

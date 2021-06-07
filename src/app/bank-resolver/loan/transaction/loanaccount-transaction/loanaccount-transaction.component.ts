@@ -45,7 +45,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   sys = new SystemValues();
   accTransFrm: FormGroup;
   tdDefTransFrm: FormGroup;
-  accDtlsFrm: FormGroup; 
+  accDtlsFrm: FormGroup;
   sancDetails:FormGroup;
   //sancdtls: FormArray;
   showTransMode = false;
@@ -169,7 +169,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       saleform:[''],
       insurence:['']
     });
-   
+
     const td_deftranstrf: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftranstrf;
     let temp_deftranstrf = new td_def_trans_trf()
@@ -328,7 +328,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       }
     );
   }
-  
+
   /** silently bring all the unapproved transaction
    * silently because it will be needed during save
    */
@@ -433,14 +433,14 @@ export class LoanaccountTransactionComponent implements OnInit {
         acc = res;
         if (undefined === acc || acc.tmloanall.loan_id==null) {
           this.accTransFrm.patchValue({
-            acct_num:''   
+            acct_num:''
                 });
           this.HandleMessage(true, MessageType.Error,
             'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
           this.msg.sendCommonTmLoanAll(null);
         } else {
           this.accTransFrm.patchValue({
-            oprn_cd:''   
+            oprn_cd:''
                 });
           const td_deftranstrf: td_def_trans_trf[] = [];
           this.td_deftranstrfList = td_deftranstrf;
@@ -526,20 +526,20 @@ export class LoanaccountTransactionComponent implements OnInit {
        this.td.trf_type.value !== ''
      } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'recovery') {
        ;
-       this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value) 
+       this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value)
        this.transType.key = 'R';
        this.transType.Description = 'Recovery';
        this.tdDefTransFrm.patchValue({
          trans_type: this.transType.Description,
          trans_type_key: this.transType.key,
-         no_of_day: this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value) 
+         no_of_day: this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value)
        });
        this.geteffectiveinttrt()
        this.isDisburs=false;
-       this.isRecovery=true; 
+       this.isRecovery=true;
        this.td.trf_type.value !== ''
-     }      
-   } 
+     }
+   }
 
 
   onRecovTypeChange(): void {
@@ -624,7 +624,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     }
     return true;
   }
-  
+
   onMiscChng() : void{
     if ((+this.td.amount.value) < 0) {
       this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
@@ -636,9 +636,9 @@ export class LoanaccountTransactionComponent implements OnInit {
       this.HandleMessage(true, MessageType.Error, 'Disbursement Amount can not be less than total  Misc. Charges.');
       this.td.amount.setValue('');
       return;
-    } 
-    this.tdDefTransFrm.patchValue({      
-      paid_amount:((+this.td.amount.value)-totmiscAmt)     
+    }
+    this.tdDefTransFrm.patchValue({
+      paid_amount:((+this.td.amount.value)-totmiscAmt)
     });
   }
 
@@ -656,7 +656,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       this.td.amount.setValue('');
       return;
     }
-    
+
     if (this.td.trans_type_key.value === 'B' &&  (+this.td.amount.value) > this.sancdtls.map(a => a.draw_limit).reduce(function(a, b){return a + b;})
       ) {
       this.HandleMessage(true, MessageType.Error, 'Amount Exceeds Drawal Limit.');
@@ -671,7 +671,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     {
       this.onMiscChng();
     }
-    
+
   }
   onRecoveryTillDateChng(ev:any):void{
     ;
@@ -687,14 +687,14 @@ export class LoanaccountTransactionComponent implements OnInit {
                   curr_prn_recov: ''     ,
                   curr_intt_recov: ''     ,
                   ovd_prn_recov: ''     ,
-                  ovd_intt_recov: ''       
+                  ovd_intt_recov: ''
              });
            }
            else{
           this.PopulateRecoveryDetails();
           this.geteffectiveinttrt();
           this.tdDefTransFrm.patchValue({
-                no_of_day: this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value)    
+                no_of_day: this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value)
                });
               }
           }
@@ -709,7 +709,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   dayDiff(d1:Date, d2:Date)
   {
     ;
-    var diffDays =Math.floor((Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate()) - Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate()) ) /(1000 * 60 * 60 * 24)); 
+    var diffDays =Math.floor((Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate()) - Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate()) ) /(1000 * 60 * 60 * 24));
     return diffDays;
   }
   PopulateRecoveryDetails()
@@ -732,9 +732,9 @@ export class LoanaccountTransactionComponent implements OnInit {
               curr_prn_recov: inttRet.curr_prn_recov      ,
               curr_intt_recov: inttRet.curr_intt_recov     ,
               ovd_prn_recov: inttRet.ovd_prn_recov      ,
-              ovd_intt_recov: inttRet.ovd_prn_recov      
+              ovd_intt_recov: inttRet.ovd_prn_recov
                   });
-             
+
           }
         },
         err => {
@@ -755,9 +755,9 @@ export class LoanaccountTransactionComponent implements OnInit {
            if (undefined !== res ) {
             inttRet = res;
             this.tdDefTransFrm.patchValue({
-              intt_rate: inttRet      
+              intt_rate: inttRet
                   });
-             
+
           }
         },
         err => {
@@ -811,7 +811,7 @@ export class LoanaccountTransactionComponent implements OnInit {
          // this.accTransFrm.reset();
          this.isLoading = false;
        },
-       err => { this.isLoading = false; 
+       err => { this.isLoading = false;
         this.HandleMessage(true, MessageType.Error, 'Save Failed !!!!');
         console.error('Error on onSaveClick' + JSON.stringify(err)); ; }
      );
@@ -836,7 +836,7 @@ export class LoanaccountTransactionComponent implements OnInit {
      toReturn.token_num = this.td.token_num.value;
      toReturn.created_by = this.sys.UserId;
      toReturn.modified_by = this.sys.UserId;
-     toReturn.approval_status = 'U';     
+     toReturn.approval_status = 'U';
      toReturn.particulars = 'S'
      if (this.td.trf_type.value === 'T') {
        toReturn.tr_acc_cd = 10000;
@@ -852,7 +852,7 @@ export class LoanaccountTransactionComponent implements OnInit {
      toReturn.ovd_prn_recov=this.td.ovd_prn_recov.value;
      toReturn.ovd_intt_recov=this.td.ovd_intt_recov.value;
      toReturn.intt_till_dt=this.td.intt_recov_dt.value;
-     toReturn.paid_amt=+this.td.amount.value; 
+     toReturn.paid_amt=+this.td.amount.value;
      toReturn.share_amt=0,
      toReturn.sum_assured=0,
      toReturn.voucher_id=0,
@@ -865,7 +865,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       toReturn.curr_intt_recov=0;
       toReturn.ovd_prn_recov=0;
       toReturn.ovd_intt_recov=0;
-      toReturn.intt_till_dt=Utils.convertStringToDt(this.td.instl_start_dt.value); 
+      toReturn.intt_till_dt=Utils.convertStringToDt(this.td.instl_start_dt.value);
      toReturn.paid_amt=+this.td.paid_amount.value;
      toReturn.share_amt=this.td.share.value,
      toReturn.sum_assured=this.td.comm.value,
@@ -1192,7 +1192,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   openModal(template: TemplateRef<any>) {
     this.msg.sendCommonAccountNum('9');
     this.modalRef = this.modalService.show(template);
-  }  
+  }
 }
 export class DynamicSelect {
   key: any;

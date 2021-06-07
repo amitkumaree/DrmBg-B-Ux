@@ -20,18 +20,18 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
     isTrade: boolean = false;
     isLoading = false;
     showMsg: ShowMessage;
-  
+
   ngOnInit(): void {
     this.getAccountTypeList();
   }
-  
+
   onBackClick() {
     this.router.navigate([this.sys.BankName + '/la']);
   }
 
   getAccountTypeList() {
     ;
-    
+
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
         ;
@@ -47,7 +47,7 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
   }
   changeTradesByCategory(event) {
     ;
-    if (this.accountTypeList[event].calc) 
+    if (this.accountTypeList[event].calc)
       this.accountTypeList[event].calc=false;
     else
     this.accountTypeList[event].calc=true;
@@ -62,7 +62,7 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
   }
   onApproveClick()
   {
-    
+
     this.param=[]
     for (let i=0;i<this.accountTypeList.length;i++)
     {
@@ -81,18 +81,18 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
         res => {
           ;
           this.isLoading=false;
-          this.HandleMessage(true, MessageType.Sucess, 'Interest Calculation Done!!!!!!!!!!');    
+          this.HandleMessage(true, MessageType.Sucess, 'Interest Calculation Done!!!!!!!!!!');
         },
         err => {
           ;
           this.isLoading=false;
-          this.HandleMessage(true, MessageType.Error, 'Interest Calculation Failed!!!!!!!!!!');    
+          this.HandleMessage(true, MessageType.Error, 'Interest Calculation Failed!!!!!!!!!!');
         }
       );
 
     }
     else
-    this.HandleMessage(true, MessageType.Warning, 'Please select at least one Account Type!!!!!!!!!!');    
+    this.HandleMessage(true, MessageType.Warning, 'Please select at least one Account Type!!!!!!!!!!');
   }
 
   /** Below method handles message show/hide */

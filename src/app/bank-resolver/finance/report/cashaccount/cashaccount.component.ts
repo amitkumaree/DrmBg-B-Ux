@@ -288,11 +288,11 @@ export class CashaccountComponent implements OnInit {
       this.child.webDataRocks.refresh();
     });
   }
- 
+
 
   closeScreen() {
     this.router.navigate([localStorage.getItem('__bName') + '/la']);
   }
- 
+
 
 }

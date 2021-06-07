@@ -489,7 +489,7 @@ export class VoucherapprovalComponent implements OnInit {
           this.showAlert = true;
           this.alertMsg = "INFORMATION : Voucher Approved Sucessfully.";
         },
-        err => {this.isLoading=false; 
+        err => {this.isLoading=false;
           this.showAlert = true;
           this.alertMsg = "ERROR : Approval Faild.";
         }

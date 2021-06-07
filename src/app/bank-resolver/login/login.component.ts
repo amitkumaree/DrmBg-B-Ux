@@ -126,7 +126,7 @@ export class LoginComponent implements OnInit {
         // this.genparam.gs_acc_type_cd=11;
         // this.genparam.ls_catg_cd=0;
         // this.genparam.ls_cons_cd=0;
-        // 
+        //
         // this.rstSvc.addUpdDel('Deposit/PopulateAccountNumber', this.genparam).subscribe(
         //   res => {
         //     ;

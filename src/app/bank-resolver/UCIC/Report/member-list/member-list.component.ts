@@ -57,7 +57,7 @@ export class MemberListComponent implements OnInit {
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
   }
-  
+
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -73,7 +73,7 @@ export class MemberListComponent implements OnInit {
       this.UrlString=this.UrlString+"WebForm/UCIC/memberdetails?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+Utils.convertDtToString(this.fromdate)
       ;
       this.isLoading = true;
-      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
       this.modalRef.hide();
       setTimeout(() => {
         this.isLoading = false;
@@ -84,7 +84,7 @@ export class MemberListComponent implements OnInit {
   public closeAlert() {
     this.showAlert = false;
   }
- 
+
 
 closeScreen()
 {

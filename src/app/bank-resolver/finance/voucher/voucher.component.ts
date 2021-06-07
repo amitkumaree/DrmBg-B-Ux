@@ -14,7 +14,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 })
 export class VoucherComponent implements OnInit {
 
-  tvd = new T_VOUCHER_DTLS(); 
+  tvd = new T_VOUCHER_DTLS();
   tvdRet: T_VOUCHER_DTLS[] = [];
   tvn = new T_VOUCHER_DTLS();
   tvnRet: T_VOUCHER_DTLS[] = [];
@@ -222,7 +222,7 @@ export class VoucherComponent implements OnInit {
         //this.showAlert = true;
         //this.alertMsg = "Account Code Can not be Blank !"
         this.HandleMessage(true, MessageType.Error, 'Account Code Can not be Blank !');
-        
+
       }
       else {
         this.InsertVoucher();
@@ -250,7 +250,7 @@ export class VoucherComponent implements OnInit {
   }
 
   editVoucherFromGroup(acc_cd: number, dr_cr: string, cr_amount: number, dr_amount: number): FormGroup {
-    
+
     let accNames = this.maccmaster.filter(function (el) { return (el.acc_cd === acc_cd); }).map(function (el) { return el.acc_name; }).sort().toString();
     return this.formBuilder.group({
       'dr_cr': [dr_cr, Validators.compose([Validators.required])],
@@ -372,7 +372,7 @@ export class VoucherComponent implements OnInit {
           this.VoucherF = this.onVoucherCreation.get('VoucherF') as FormArray;
           this.VoucherF.push(this.editVoucherFromGroup(this.tvdRet[x].acc_cd, this.tvdRet[x].debit_credit_flag=='D'?'Debit':'Credit', this.tvdRet[x].cr_amount, this.tvdRet[x].dr_amount));
         }
-       
+
         if (this.VoucherF.value.length > 0)
           if (this.VoucherF.value[0].acc_cd == null)
             this.RemoveItem(0);

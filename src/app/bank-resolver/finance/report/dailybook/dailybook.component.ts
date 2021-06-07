@@ -20,7 +20,7 @@ export class DailybookComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('DailyCashBook') child: WebDataRocksPivot;
   //ReportUrl :SafeResourceUrl;
-  //UrlString:string ="http://localhost:63011/" 
+  //UrlString:string ="http://localhost:63011/"
   modalRef: BsModalRef;
   isOpenFromDp = false;
   isOpenToDp = false;
@@ -111,7 +111,7 @@ export class DailybookComponent implements OnInit {
       this.UrlString=this.UrlString+"WebForm/Fin/DayBookViewer?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+Utils.convertDtToString(this.fromdate)+"&to_dt="+Utils.convertDtToString(this.todate)+"&acc_cd="+localStorage.getItem('__cashaccountCD')
       ;
       this.isLoading = true;
-      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
       this.modalRef.hide();
       setTimeout(() => {
         this.isLoading = false;
@@ -125,7 +125,7 @@ export class DailybookComponent implements OnInit {
   onPivotReady(DailyCashBook: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
   }
-   
+
   onReportComplete(): void {
     ;
     if (!this.isLoading) return;

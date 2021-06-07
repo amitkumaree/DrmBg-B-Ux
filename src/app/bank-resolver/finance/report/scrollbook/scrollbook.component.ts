@@ -57,7 +57,7 @@ export class ScrollbookComponent implements OnInit {
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
   }
- 
+
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -77,7 +77,7 @@ export class ScrollbookComponent implements OnInit {
       this.UrlString=this.UrlString+"WebForm/Fin/dayscrollbook?"+"as_brn_cd="+this.sys.BranchCode+"&adt_from_dt="+Utils.convertDtToString(this.fromdate)+"&adt_to_dt="+Utils.convertDtToString(this.todate)
       ;
       this.isLoading = true;
-      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
       this.modalRef.hide();
       setTimeout(() => {
         this.isLoading = false;
