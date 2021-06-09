@@ -39,6 +39,8 @@ export class TransactionapprovalComponent implements OnInit {
   uniqueAccTypes: mm_acc_type[] = [];
   modalRef: BsModalRef;
   sys = new SystemValues();
+  toFltrTrnCd = '';
+  toFltrAccountTyp = '';
   // cust: mm_customer;
   // tdDepTransRet: td_def_trans_trf[] = [];
 
@@ -55,6 +57,8 @@ export class TransactionapprovalComponent implements OnInit {
     this.msg.sendCommonCustInfo(null);
     this.msg.sendCommonAcctInfo(null);
     this.msg.sendCommonAccountNum(null);
+    this.toFltrAccountTyp = '';
+    this.toFltrTrnCd = '';
 
     this.getAcctTypeMaster();
   }
@@ -81,6 +85,7 @@ export class TransactionapprovalComponent implements OnInit {
     }
   }
   public selectTransaction(vm: TranApprovalVM): void {
+    this.HandleMessage(false);
     this.selectedVm = vm;
     this.selectedTransactionCd = vm.td_def_trans_trf.trans_cd;
     this.selectedAccountType = vm.td_def_trans_trf.acc_type_cd;
@@ -188,8 +193,6 @@ export class TransactionapprovalComponent implements OnInit {
         }
       }
     }
-
-    ;
     this.isLoading = true;
     let param = new p_gen_param();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
@@ -240,14 +243,13 @@ export class TransactionapprovalComponent implements OnInit {
   }
 
   onDeleteClick(): void {
-    ;
     if (!(confirm('Are you sure you want to Delete Transaction of Acc ' + this.selectedVm.tm_deposit.acc_num
       + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
       return;
     }
 
     this.isLoading = true;
-    let param = new td_def_trans_trf();
+    const param = new td_def_trans_trf();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     param.trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
     // const dt = this.sys.CurrentDate;

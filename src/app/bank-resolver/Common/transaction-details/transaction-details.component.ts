@@ -19,6 +19,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
     this.subscription = this.msg.getCommonTransactionInfo().subscribe(
       res => {
         this.showDenominationDtl = false;
+        this.showTransferDtl = false;
         this.totalOfDenomination = 0;
         if (null !== res) {
           this.transactionDtl = res;
@@ -38,9 +39,11 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
   isLoading = false;
   show = false;
   showDenominationDtl = false;
+  showTransferDtl = false;
   transactionDtl: td_def_trans_trf;
   transactionDtlsFrm: FormGroup;
   tmDenominationTransLst: tm_denomination_trans[] = [];
+  tranferDetails: td_def_trans_trf[] = [];
   totalOfDenomination = 0;
   sys = new SystemValues();
 
@@ -105,6 +108,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
   setTransactionDtl(): void {
     ;
     this.showDenominationDtl = false;
+    this.showTransferDtl = false;
     this.totalOfDenomination = 0;
     if (undefined !== this.transactionDtl && Object.keys(this.transactionDtl).length !== 0) {
       this.svc.addUpdDel<mm_acc_type[]>('Mst/GetAccountTypeMaster', null).subscribe(
@@ -195,6 +199,26 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
             this.tmDenominationTransLst.forEach(element => {
               this.totalOfDenomination += element.total;
             });
+          }
+        },
+        err => { }
+      );
+    } else {
+      let tdDefTranTransfr = new td_def_trans_trf();
+      tdDefTranTransfr.brn_cd = this.sys.BranchCode;
+      tdDefTranTransfr.trans_cd = this.transactionDtl.trans_cd;
+      tdDefTranTransfr.trans_dt = Utils.convertStringToDt(this.transactionDtl.trans_dt.toString());
+      tdDefTranTransfr.trans_type = this.transactionDtl.trans_type;
+      this.svc.addUpdDel<any>('Common/GetDepTransTrf', tdDefTranTransfr).subscribe(
+        res => {
+          debugger;
+          if (null !== res && Object.keys(res).length !== 0) {
+            this.tranferDetails = res;
+            this.showTransferDtl = true;
+            // this.tmDenominationTransLst = res;
+            // this.tmDenominationTransLst.forEach(element => {
+            //   this.totalOfDenomination += element.total;
+            // });
           }
         },
         err => { }

@@ -190,7 +190,6 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
   }
 
   setAcctDetails(): void {
-    ;
     if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
       this.resetFormData();
       this.getShadowBalance();
@@ -230,9 +229,11 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
         cust_name: this.acctDtls.cust_name,
         intt_trf_type: intrestType,
         constitution_cd: this.acctDtls.constitution_cd,
-        constitution_cd_desc: constitution.constitution_desc,
+        constitution_cd_desc: (undefined !== constitution || null !== constitution) ?
+          constitution.constitution_desc : null,
         oprn_instr_cd: this.acctDtls.oprn_instr_cd,
-        oprn_instr_cd_desc: OprnInstrDesc.oprn_desc,
+        oprn_instr_cd_desc: (undefined !== OprnInstrDesc || null !== OprnInstrDesc) ?
+          OprnInstrDesc.oprn_desc : null,
         opening_dt: this.acctDtls.opening_dt.toString().substr(0, 10),
         prn_amt: this.acctDtls.prn_amt,
         intt_amt: this.acctDtls.intt_amt,
