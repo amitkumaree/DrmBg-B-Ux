@@ -208,7 +208,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
       tdDefTranTransfr.brn_cd = this.sys.BranchCode;
       tdDefTranTransfr.trans_cd = this.transactionDtl.trans_cd;
       tdDefTranTransfr.trans_dt = Utils.convertStringToDt(this.transactionDtl.trans_dt.toString());
-      tdDefTranTransfr.trans_type = this.transactionDtl.trans_type;
+      // tdDefTranTransfr.trans_type = this.transactionDtl.trans_type;
       this.svc.addUpdDel<any>('Common/GetDepTransTrf', tdDefTranTransfr).subscribe(
         res => {
           debugger;
