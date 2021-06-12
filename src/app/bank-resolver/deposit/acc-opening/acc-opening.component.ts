@@ -1002,7 +1002,7 @@ saveData()
           this.isLoading = false;
           this.disableCustomerName = true;
           this.operationType = '';
-          this.showAlertMsg('INFORMATION' , 'Account Record Created Successfully [Account Number:'+this.masterModel.tmdeposit.acc_num +'] , [Trans Code: ' + this.td_deftrans.trans_cd+']');
+          this.showAlertMsg('INFORMATION' , 'Account Record Created Successfully [Account Number:'+this.masterModel.tmdeposit.acc_num +'] [Trans Code: ' + this.td_deftrans.trans_cd+']');
         },
         err => {
           ;
