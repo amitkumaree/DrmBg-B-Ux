@@ -47,6 +47,7 @@ export class AccOpeningComponent implements OnInit {
   branchCode = '0';
   savingsDepoSpclPeriod = 0;
   openDate: Date;
+  cashAccountCode = -1;
 
   suspanceAccCd: number;
   cashAccCd: number;
@@ -185,6 +186,7 @@ export class AccOpeningComponent implements OnInit {
     this.updateUser = this.sys.UserId;
     this.createDate = this.sys.CurrentDate;
     this.updateDate = this.sys.CurrentDate;
+    this.cashAccountCode = this.sys.CashAccCode;
 
     this.suspanceAccCd = this.sys.SuspanceAccCode;
     this.cashAccCd = this.sys.CashAccCode;
@@ -1000,7 +1002,7 @@ saveData()
           this.isLoading = false;
           this.disableCustomerName = true;
           this.operationType = '';
-          this.showAlertMsg('INFORMATION' , 'Record Saved Successfully');
+          this.showAlertMsg('INFORMATION' , 'Account Record Created Successfully [Account Number:'+this.masterModel.tmdeposit.acc_num +'] , [Trans Code: ' + this.td_deftrans.trans_cd+']');
         },
         err => {
           ;
@@ -1604,6 +1606,13 @@ removeSignatory()
         this.td_deftranstrfList[0].gl_acc_desc = null;
         return;
       }
+
+      if(this.td_deftranstrfList[0].gl_acc_code === this.cashAccCd.toString())
+      {
+        this.showAlertMsg('WARNING', 'GL Code can not be Cash Account Code');
+        return;
+      }
+
 
       this.td_deftranstrfList[0].acc_cd = Number(this.td_deftranstrfList[0].gl_acc_code) ;
 
