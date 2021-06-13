@@ -38,7 +38,6 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
     this.subscription = this.msg.getShdowBalance().subscribe(
       res => {
         if (null !== res) {
-          ;
           res = +res;
           res += this.ShadowBalance;
           this.accDtlsFrm.patchValue({
@@ -76,8 +75,7 @@ export class AccountDetailsForAcctTransComponent implements OnInit, OnDestroy {
     this.constitutionList = [];
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
-        // ;
-        this.constitutionList = res;
+        this.constitutionList = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
       },
       err => { // ;
       }

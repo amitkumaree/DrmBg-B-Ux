@@ -462,6 +462,8 @@ export class AccounTransactionsComponent implements OnInit {
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key,
         trans_mode: 'C',
+        amount: this.accNoEnteredForTransaction.prn_amt
+          + this.accNoEnteredForTransaction.intt_amt
       });
       this.hideOnClose = true;
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
@@ -518,7 +520,10 @@ export class AccounTransactionsComponent implements OnInit {
         trans_type_key: this.transType.key,
         trans_mode: 'V',
         paid_to: 'SELF',
-        particulars: 'BY INTEREST ' + this.td.acc_type_desc.value + ' A/C :' + this.f.acct_num.value
+        particulars: 'BY INTEREST ' + this.td.acc_type_desc.value + ' A/C :'
+          + this.f.acct_num.value,
+        amount: this.accNoEnteredForTransaction.prn_amt
+          + this.accNoEnteredForTransaction.intt_amt
       });
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'rd installment') {
       this.transType.key = 'D';
@@ -600,7 +605,6 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   onTransTypeChange(): void {
-    ;
     const accTypeCd = +this.f.acc_type_cd.value;
     if (accTypeCd !== 2
       && accTypeCd !== 3
@@ -695,6 +699,7 @@ export class AccounTransactionsComponent implements OnInit {
         this.msg.sendShdowBalance((+this.td.amount.value));
       }
     } else {
+      /** if amount is debited less than the min balance then a confirmation need to be shown */
       let minBal = 0;
       if (this.accNoEnteredForTransaction.cheque_facility_flag === 'Y') { minBal = +this.sys.MinBalanceWithCheque; }
       else { minBal = +this.sys.MinBalanceWithOutCheque; }
@@ -713,9 +718,27 @@ export class AccounTransactionsComponent implements OnInit {
           return;
         }
       }
+      this.checkEnteredAmt();
     }
 
     this.td_deftranstrfList[0].amount = this.td.amount.value;
+  }
+
+  checkEnteredAmt(): void {
+    const accTypeCd = +this.f.acc_type_cd.value;
+    // For Term Deposit operation close
+    // check amount can not be greater than maturity amount.
+    if ((accTypeCd === 4 || accTypeCd === 2 || accTypeCd === 7)
+      && this.td.trans_type_key.value === 'W') {
+      const matAmt = this.accNoEnteredForTransaction.prn_amt
+        + this.accNoEnteredForTransaction.intt_amt;
+      if ((+this.td.amount.value) > matAmt) {
+        this.HandleMessage(true, MessageType.Error,
+          'Amount can not be greater than maturity amount.');
+        this.td.amount.setValue('');
+        return;
+      }
+    }
   }
 
   onAmtChngDuringRenewal(): void {
@@ -766,7 +789,7 @@ export class AccounTransactionsComponent implements OnInit {
     if (this.td.trf_type.value === 'C') {
       saveTransaction.tmdenominationtrans = this.tm_denominationList;
     } else if (this.td.trf_type.value === 'T') {
-      const tdDefTransAndTranfer = this.mappTddefTransFromFrm();
+      const tdDefTransAndTranfer = this.mappTddefTransAndTransFrFromFrm();
       if (this.td_deftranstrfList[0].trans_type === 'cust_acc') {
         tdDefTransAndTranfer.acc_type_cd = +this.td_deftranstrfList[0].cust_acc_type;
         tdDefTransAndTranfer.acc_num = this.td_deftranstrfList[0].cust_acc_number;
@@ -788,7 +811,6 @@ export class AccounTransactionsComponent implements OnInit {
     }
     this.svc.addUpdDel<AccOpenDM>('Deposit/InsertAccountOpeningData', saveTransaction).subscribe(
       res => {
-        ;
         this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
         // this.tdDefTransFrm.reset();
         // this.accTransFrm.reset();
@@ -799,6 +821,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   mappTddefTransFromFrm(): td_def_trans_trf {
+    debugger;
     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     const toReturn = new td_def_trans_trf();
     const accTypeCd = +this.f.acc_type_cd.value;
@@ -812,7 +835,106 @@ export class AccounTransactionsComponent implements OnInit {
     toReturn.token_num = this.td.token_num.value;
     toReturn.trf_type = this.td.trf_type.value;
 
-    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close') {
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close'
+      && (accTypeCd === 2
+        || accTypeCd === 3
+        || accTypeCd === 4
+        || accTypeCd === 5
+        || accTypeCd === 6)) {
+      toReturn.amount = this.accNoEnteredForTransaction.prn_amt;
+      toReturn.curr_intt_recov = this.accNoEnteredForTransaction.intt_amt;
+    } else {
+      if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
+        toReturn.amount = +this.td.interest.value;
+      } else {
+        toReturn.amount = +this.td.amount.value;
+      }
+    }
+    toReturn.instrument_num = this.td.instrument_num.value === '' ? 0 : +this.td.instrument_num.value;
+    toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close') {
+      if (accTypeCd === 2
+        || accTypeCd === 3
+        || accTypeCd === 4
+        || accTypeCd === 5) {
+        toReturn.particulars = this.td.particulars.value;
+      } else {
+        if (this.td.trf_type.value === 'T') {
+          toReturn.particulars = 'BY TRANSFER TO ' + this.td.particulars.value + ':' + this.td.acc_num.value;
+        } else if (this.td.trf_type.value === 'C') {
+          toReturn.particulars = 'BY CASH';
+        }
+      }
+    } else {
+      if (this.td.trf_type.value === 'T') {
+        toReturn.particulars = 'BY TRANSFER TO ' + this.td.particulars.value + ':' + this.td.acc_num.value;
+      } else if (this.td.trf_type.value === 'C') {
+        toReturn.particulars = 'BY CASH';
+      }
+    }
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'
+      && this.td.trf_type.value === '') {
+      toReturn.trans_type = 'T';
+    }
+    toReturn.approval_status = 'U';
+    toReturn.brn_cd = this.sys.BranchCode;
+
+    if (this.td.trf_type.value === 'T') {
+      toReturn.tr_acc_cd = 10000;
+    } else if (this.td.trf_type.value === 'C') {
+      toReturn.tr_acc_cd = 28101;
+    }
+    // if ((+this.f.acc_type_cd.value) === 2) {
+    //   toReturn.acc_cd = 14301;
+    // }
+    // if ((+this.f.acc_type_cd.value) === 6) {
+    //   toReturn.acc_cd = 14302;
+    // }
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
+      toReturn.curr_prn_recov = ((+this.td.amount.value) + (+this.td.interest.value));
+      toReturn.ovd_prn_recov = this.accNoEnteredForTransaction.prn_amt;
+      toReturn.curr_intt_recov = this.accNoEnteredForTransaction.intt_amt;
+      toReturn.ovd_intt_recov = 0;
+    }
+
+    toReturn.acc_cd = this.accNoEnteredForTransaction.acc_cd;
+    toReturn.disb_id = 1;
+    toReturn.created_by = this.sys.UserId;
+
+    return toReturn;
+  }
+
+  mappTddefTransAndTransFrFromFrm(): td_def_trans_trf {
+    const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
+    const toReturn = new td_def_trans_trf();
+    const accTypeCd = +this.f.acc_type_cd.value;
+    // toReturn.trans_dt = new Date(this.convertDate(localStorage.getItem('__currentDate')) + ' UTC');
+    toReturn.trans_dt = this.sys.CurrentDate;
+    toReturn.acc_type_cd = this.td.acc_type_cd.value;
+    toReturn.acc_num = this.td.acc_num.value;
+    toReturn.trans_mode = this.td.trans_mode.value;
+    toReturn.paid_to = this.td.paid_to.value;
+    toReturn.token_num = this.td.token_num.value;
+    toReturn.trf_type = this.td.trf_type.value;
+
+    /*Logic to populate transation type of td_def_trans_Trf */
+    switch (selectedOperation.oprn_desc.toLocaleLowerCase()) {
+      case 'close':
+      case 'withdraw':
+        toReturn.trans_type = 'D';
+        break;
+      case 'renewal':
+      case 'deposit':
+        toReturn.trans_type = 'W';
+        break;
+    }
+
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close'
+      && (accTypeCd === 2
+        || accTypeCd === 3
+        || accTypeCd === 4
+        || accTypeCd === 5
+        || accTypeCd === 6)) {
       toReturn.amount = this.accNoEnteredForTransaction.prn_amt;
       toReturn.curr_intt_recov = this.accNoEnteredForTransaction.intt_amt;
     } else {

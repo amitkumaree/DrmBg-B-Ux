@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RestService, InAppMessageService } from 'src/app/_service';
+import Utils from 'src/app/_utility/utils';
 import { td_intt_dtls, tm_deposit } from '../../Models';
 
 @Component({
@@ -13,7 +14,6 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
   constructor(private svc: RestService, private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonAcctInfo().subscribe(
       res => {
-        ;
         if (null !== res && undefined !== res &&
           res.cust_cd !== 0) {
           this.acctDtls = res;
@@ -34,7 +34,6 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
   }
 
   private getInterestList() {
-    ;
     if (undefined !== this.acctDtls &&
       null !== this.acctDtls) {
       const tdIntDtl = new td_intt_dtls();
@@ -42,7 +41,7 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
       tdIntDtl.acc_num = this.acctDtls.acc_num;
       this.svc.addUpdDel<any>('Deposit/GetInttDetails', tdIntDtl).subscribe(
         res => {
-          this.interestDetails = res[0];
+          this.interestDetails = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
         },
         err => { }
       );

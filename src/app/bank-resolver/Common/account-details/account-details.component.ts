@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
+import Utils from 'src/app/_utility/utils';
 import { tm_deposit } from '../../Models';
 import { mm_constitution } from '../../Models/deposit/mm_constitution';
 import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
@@ -93,15 +94,16 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     });
   }
   getConstitutionList() {
-    if (this.constitutionList.length > 0) {
+    if (undefined !== this.constitutionList &&
+        null !== this.constitutionList &&
+        this.constitutionList.length > 0) {
       return;
     }
 
     this.constitutionList = [];
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
-        // ;
-        this.constitutionList = res;
+        this.constitutionList = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
       },
       err => { // ;
       }
@@ -116,7 +118,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     this.operationalInstrList = [];
     this.svc.addUpdDel<any>('Mst/GetOprationalInstr', null).subscribe(
       res => {
-        this.operationalInstrList = res;
+        this.operationalInstrList = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
       },
       err => { }
     );
@@ -139,9 +141,11 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
         cust_cd: this.acctDtls.cust_cd,
         intt_trf_type: this.acctDtls.intt_trf_type,
         constitution_cd: this.acctDtls.constitution_cd,
-        constitution_cd_desc: constitution.constitution_desc,
+        constitution_cd_desc:  (undefined !== constitution || null !== constitution) ?
+        constitution.constitution_desc : null,
         oprn_instr_cd: this.acctDtls.oprn_instr_cd,
-        oprn_instr_cd_desc: OprnInstrDesc.oprn_desc,
+        oprn_instr_cd_desc: (undefined !== OprnInstrDesc || null !== OprnInstrDesc) ?
+        OprnInstrDesc.oprn_desc : null,
         opening_dt: this.acctDtls.opening_dt.toString().substr(0, 10),
         prn_amt: this.acctDtls.prn_amt,
         intt_amt: this.acctDtls.intt_amt,
