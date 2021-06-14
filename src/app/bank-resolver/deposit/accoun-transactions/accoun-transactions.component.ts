@@ -152,13 +152,6 @@ export class AccounTransactionsComponent implements OnInit {
     this.getConstitutionList();
   }
 
-  private resetTransfer() {
-    const td_deftranstrf: td_def_trans_trf[] = [];
-    this.td_deftranstrfList = td_deftranstrf;
-    let temp_deftranstrf = new td_def_trans_trf()
-    this.td_deftranstrfList.push(temp_deftranstrf);
-  }
-
   processInterest(): void {
     let temp_gen_param = new p_gen_param();
 
@@ -789,18 +782,22 @@ export class AccounTransactionsComponent implements OnInit {
     if (this.td.trf_type.value === 'C') {
       saveTransaction.tmdenominationtrans = this.tm_denominationList;
     } else if (this.td.trf_type.value === 'T') {
-      const tdDefTransAndTranfer = this.mappTddefTransAndTransFrFromFrm();
-      if (this.td_deftranstrfList[0].trans_type === 'cust_acc') {
-        tdDefTransAndTranfer.acc_type_cd = +this.td_deftranstrfList[0].cust_acc_type;
-        tdDefTransAndTranfer.acc_num = this.td_deftranstrfList[0].cust_acc_number;
-        tdDefTransAndTranfer.acc_name = this.td_deftranstrfList[0].cust_name;
-      } else {
-        tdDefTransAndTranfer.gl_acc_code = this.td_deftranstrfList[0].gl_acc_code;
-        tdDefTransAndTranfer.gl_acc_desc = this.td_deftranstrfList[0].gl_acc_desc;
-      }
-      tdDefTransAndTranfer.amount = this.td_deftranstrfList[0].amount;
-      saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
 
+      this.td_deftranstrfList.forEach(e => {
+        const tdDefTransAndTranfer = this.mappTddefTransAndTransFrFromFrm();
+        if (e.trans_type === 'cust_acc') {
+          tdDefTransAndTranfer.acc_type_cd = +e.cust_acc_type;
+          tdDefTransAndTranfer.acc_num = e.cust_acc_number;
+          tdDefTransAndTranfer.acc_name = e.cust_name;
+        } else {
+          tdDefTransAndTranfer.gl_acc_code = e.gl_acc_code;
+          tdDefTransAndTranfer.gl_acc_desc = e.gl_acc_desc;
+        }
+        tdDefTransAndTranfer.amount = e.amount;
+        saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
+      });
+
+      // TODO ask Abhi da if we need to create mutiple transfer
       const tmTrnsfr = new tm_transfer();
       tmTrnsfr.brn_cd = this.sys.BranchCode;
       tmTrnsfr.trf_dt = this.sys.CurrentDate;
@@ -1078,7 +1075,6 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   addDenomination() {
-    ;
     let alreadyHasEmptyDenominationItem = false;
     if (this.tm_denominationList.length >= 1) {
       // check if tm_denominationList has any blank items
@@ -1159,19 +1155,21 @@ export class AccounTransactionsComponent implements OnInit {
     );
   }
 
-  setDebitAccDtls(acc_num: string) {
+  setDebitAccDtls(tdDefTransTrnsfr: td_def_trans_trf) {
     ;
-    if (this.td_deftranstrfList[0].cust_acc_type === undefined
-      || this.td_deftranstrfList[0].cust_acc_type === null
-      || this.td_deftranstrfList[0].cust_acc_type === '') {
+    if (tdDefTransTrnsfr.cust_acc_type === undefined
+      || tdDefTransTrnsfr.cust_acc_type === null
+      || tdDefTransTrnsfr.cust_acc_type === '') {
       this.HandleMessage(true, MessageType.Warning, 'Account Type in Transfer Details can not be blank');
-      this.td_deftranstrfList[0].cust_acc_number = null;
+      tdDefTransTrnsfr.cust_acc_number = null;
       return;
     }
 
-    if (this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === '') {
-      this.td_deftranstrfList[0].cust_name = null;
-      this.td_deftranstrfList[0].clr_bal = null;
+    if (tdDefTransTrnsfr.cust_acc_number === undefined ||
+      tdDefTransTrnsfr.cust_acc_number === null ||
+      tdDefTransTrnsfr.cust_acc_number === '') {
+      tdDefTransTrnsfr.cust_name = null;
+      tdDefTransTrnsfr.clr_bal = null;
       return;
     }
 
@@ -1180,8 +1178,8 @@ export class AccounTransactionsComponent implements OnInit {
     let temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.sys.BranchCode;
-    temp_deposit.acc_num = this.td_deftranstrfList[0].cust_acc_number;
-    temp_deposit.acc_type_cd = parseInt(this.td_deftranstrfList[0].cust_acc_type);
+    temp_deposit.acc_num = tdDefTransTrnsfr.cust_acc_number;
+    temp_deposit.acc_type_cd = parseInt(tdDefTransTrnsfr.cust_acc_type);
 
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
@@ -1192,14 +1190,14 @@ export class AccounTransactionsComponent implements OnInit {
 
         if (temp_deposit_list.length === 0) {
           this.HandleMessage(true, MessageType.Warning, 'Invalid Account Number in Transfer Details');
-          this.td_deftranstrfList[0].cust_acc_number = null;
+          tdDefTransTrnsfr.cust_acc_number = null;
           return;
         }
 
         let temp_mm_cust = new mm_customer();
         temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
-        this.td_deftranstrfList[0].cust_name = temp_mm_cust.cust_name;
-        this.td_deftranstrfList[0].clr_bal = temp_deposit_list[0].clr_bal;
+        tdDefTransTrnsfr.cust_name = temp_mm_cust.cust_name;
+        tdDefTransTrnsfr.clr_bal = temp_deposit_list[0].clr_bal;
       },
       err => {
         ;
@@ -1208,63 +1206,62 @@ export class AccounTransactionsComponent implements OnInit {
     );
   }
 
-  checkAndSetDebitAccType(tfrType: string, accType: string) {
+  checkAndSetDebitAccType(tfrType: string, tdDefTransTrnsfr: td_def_trans_trf) {
     this.HandleMessage(false);
-    ;
     if (tfrType === 'cust_acc') {
-      if (this.td_deftranstrfList[0].cust_acc_type === undefined
-        || this.td_deftranstrfList[0].cust_acc_type === null
-        || this.td_deftranstrfList[0].cust_acc_type === '') {
-        this.td_deftranstrfList[0].cust_name = null;
-        this.td_deftranstrfList[0].clr_bal = null;
-        this.td_deftranstrfList[0].cust_acc_desc = null;
-        this.td_deftranstrfList[0].cust_acc_number = null;
+      if (tdDefTransTrnsfr.cust_acc_type === undefined
+        || tdDefTransTrnsfr.cust_acc_type === null
+        || tdDefTransTrnsfr.cust_acc_type === '') {
+        tdDefTransTrnsfr.cust_name = null;
+        tdDefTransTrnsfr.clr_bal = null;
+        tdDefTransTrnsfr.cust_acc_desc = null;
+        tdDefTransTrnsfr.cust_acc_number = null;
         return;
       }
 
-      if (this.td_deftranstrfList[0].gl_acc_code === undefined
-        || this.td_deftranstrfList[0].gl_acc_code === null
-        || this.td_deftranstrfList[0].gl_acc_code === '') {
+      if (tdDefTransTrnsfr.gl_acc_code === undefined
+        || tdDefTransTrnsfr.gl_acc_code === null
+        || tdDefTransTrnsfr.gl_acc_code === '') {
         let temp_acc_type = new mm_acc_type();
         temp_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString()
-          === accType.toString())[0];
+          === tdDefTransTrnsfr.cust_acc_type.toString())[0];
 
         if (temp_acc_type === undefined || temp_acc_type === null) {
-          this.td_deftranstrfList[0].cust_acc_type = null;
+          tdDefTransTrnsfr.cust_acc_type = null;
           this.HandleMessage(true, MessageType.Error, 'Invalid Account Type');
           return;
         }
         else {
-          this.td_deftranstrfList[0].cust_acc_desc = temp_acc_type.acc_type_desc;
-          this.td_deftranstrfList[0].trans_type = tfrType;
+          tdDefTransTrnsfr.cust_acc_desc = temp_acc_type.acc_type_desc;
+          tdDefTransTrnsfr.trans_type = tfrType;
         }
       }
       else {
         this.HandleMessage(true, MessageType.Error, 'GL Code in Transfer Details is not Blank');
-        this.td_deftranstrfList[0].cust_acc_type = null;
+        tdDefTransTrnsfr.cust_acc_type = null;
         return;
       }
     }
 
     if (tfrType === 'gl_acc') {
-      if (this.td_deftranstrfList[0].gl_acc_code === undefined
-        || this.td_deftranstrfList[0].gl_acc_code === null
-        || this.td_deftranstrfList[0].gl_acc_code === '') {
-        this.td_deftranstrfList[0].gl_acc_desc = null;
+      if (tdDefTransTrnsfr.gl_acc_code === undefined
+        || tdDefTransTrnsfr.gl_acc_code === null
+        || tdDefTransTrnsfr.gl_acc_code === '') {
+        tdDefTransTrnsfr.gl_acc_desc = null;
         return;
       }
       ;
-      if (this.td_deftranstrfList[0].gl_acc_code === this.sys.CashAccCode.toString()) {
+      if (tdDefTransTrnsfr.gl_acc_code === this.sys.CashAccCode.toString()) {
         this.HandleMessage(true, MessageType.Error, this.sys.CashAccCode.toString() +
           ' cash acount code is not permissible.');
-        this.td_deftranstrfList[0].gl_acc_desc = null;
-        this.td_deftranstrfList[0].gl_acc_code = '';
+        tdDefTransTrnsfr.gl_acc_desc = null;
+        tdDefTransTrnsfr.gl_acc_code = '';
         return;
       }
 
-      if (this.td_deftranstrfList[0].cust_acc_type === undefined
-        || this.td_deftranstrfList[0].cust_acc_type === null
-        || this.td_deftranstrfList[0].cust_acc_type === '') {
+      if (tdDefTransTrnsfr.cust_acc_type === undefined
+        || tdDefTransTrnsfr.cust_acc_type === null
+        || tdDefTransTrnsfr.cust_acc_type === '') {
         if (this.acc_master === undefined || this.acc_master === null || this.acc_master.length === 0) {
           this.isLoading = true;
           let temp_acc_master = new m_acc_master();
@@ -1273,15 +1270,15 @@ export class AccounTransactionsComponent implements OnInit {
               ;
               this.acc_master = res;
               this.isLoading = false;
-              temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
+              temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === tdDefTransTrnsfr.gl_acc_code)[0];
               if (temp_acc_master === undefined || temp_acc_master === null) {
-                this.td_deftranstrfList[0].gl_acc_desc = null;
+                tdDefTransTrnsfr.gl_acc_desc = null;
                 this.HandleMessage(true, MessageType.Error, 'Invalid GL Code');
                 return;
               }
               else {
-                this.td_deftranstrfList[0].gl_acc_desc = temp_acc_master.acc_name;
-                this.td_deftranstrfList[0].trans_type = tfrType;
+                tdDefTransTrnsfr.gl_acc_desc = temp_acc_master.acc_name;
+                tdDefTransTrnsfr.trans_type = tfrType;
               }
             },
             err => {
@@ -1292,42 +1289,43 @@ export class AccounTransactionsComponent implements OnInit {
         }
         else {
           let temp_acc_master = new m_acc_master();
-          temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
+          temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === tdDefTransTrnsfr.gl_acc_code)[0];
           if (temp_acc_master === undefined || temp_acc_master === null) {
-            this.td_deftranstrfList[0].gl_acc_desc = null;
+            tdDefTransTrnsfr.gl_acc_desc = null;
             this.HandleMessage(true, MessageType.Error, 'Invalid GL Code');
             return;
           }
           else {
-            this.td_deftranstrfList[0].gl_acc_desc = temp_acc_master.acc_name;
-            this.td_deftranstrfList[0].trans_type = tfrType;
+            tdDefTransTrnsfr.gl_acc_desc = temp_acc_master.acc_name;
+            tdDefTransTrnsfr.trans_type = tfrType;
           }
         }
       }
       else {
         this.HandleMessage(true, MessageType.Error, 'Account Type in Transfer Details is not blank');
-        this.td_deftranstrfList[0].gl_acc_code = null;
+        tdDefTransTrnsfr.gl_acc_code = null;
         return;
       }
     }
-    this.td_deftranstrfList[0].amount = this.td.amount.value;
+    // tdDefTransTrnsfr.amount = this.td.amount.value;
   }
 
-  checkDebitBalance(amount: number) {
+  checkDebitBalance(tdDefTransTrnsfr: td_def_trans_trf) {
     ;
 
-    if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null) {
+    if (tdDefTransTrnsfr.amount === undefined
+      || tdDefTransTrnsfr.amount === null) {
       return;
     }
 
-    if ((this.td_deftranstrfList[0].cust_acc_number === undefined
-      || this.td_deftranstrfList[0].cust_acc_number === null
-      || this.td_deftranstrfList[0].cust_acc_number === '')
-      && (this.td_deftranstrfList[0].gl_acc_code === undefined
-        || this.td_deftranstrfList[0].gl_acc_code === null
-        || this.td_deftranstrfList[0].gl_acc_code === '')) {
+    if ((tdDefTransTrnsfr.cust_acc_number === undefined
+      || tdDefTransTrnsfr.cust_acc_number === null
+      || tdDefTransTrnsfr.cust_acc_number === '')
+      && (tdDefTransTrnsfr.gl_acc_code === undefined
+        || tdDefTransTrnsfr.gl_acc_code === null
+        || tdDefTransTrnsfr.gl_acc_code === '')) {
       this.HandleMessage(true, MessageType.Warning, 'Please enter Account Number or GL Code');
-      this.td_deftranstrfList[0].amount = null;
+      tdDefTransTrnsfr.amount = null;
       return;
     }
 
@@ -1343,9 +1341,9 @@ export class AccounTransactionsComponent implements OnInit {
     //   return;
     // }
 
-    if (this.td_deftranstrfList[0].clr_bal === undefined
-      || this.td_deftranstrfList[0].clr_bal === null) {
-      this.td_deftranstrfList[0].clr_bal = 0;
+    if (tdDefTransTrnsfr.clr_bal === undefined
+      || tdDefTransTrnsfr.clr_bal === null) {
+      tdDefTransTrnsfr.clr_bal = 0;
     }
     ;
     // if (parseInt(this.td_deftranstrfList[0].clr_bal.toString()) < parseInt(amount.toString())) {
@@ -1354,6 +1352,39 @@ export class AccounTransactionsComponent implements OnInit {
     //   return;
     // }
 
+  }
+
+  public addTransfer(): void {
+    debugger;
+    let emptyTranTranferExist = false;
+    this.td_deftranstrfList.forEach(e => {
+      if (undefined !== e && null !== e
+        && (undefined === e.cust_acc_type && undefined === e.gl_acc_code)) {
+        emptyTranTranferExist = true;
+      }
+    });
+    if (!emptyTranTranferExist) {
+      this.td_deftranstrfList.push(new td_def_trans_trf());
+    }
+  }
+
+  public removeTransfer(tdDefTransTrnsfr: td_def_trans_trf): void {
+    this.td_deftranstrfList.forEach((e, i) => {
+      if (undefined !== e.cust_acc_type
+        && e.cust_acc_type === tdDefTransTrnsfr.cust_acc_type
+        && e.cust_acc_number === tdDefTransTrnsfr.cust_acc_number) {
+        this.td_deftranstrfList.splice(i, 1);
+      } else if (undefined !== e.gl_acc_code
+        && e.gl_acc_code === tdDefTransTrnsfr.gl_acc_code) {
+        this.td_deftranstrfList.splice(i, 1);
+      }
+    });
+  }
+  private resetTransfer() {
+    const td_deftranstrf: td_def_trans_trf[] = [];
+    this.td_deftranstrfList = td_deftranstrf;
+    let temp_deftranstrf = new td_def_trans_trf()
+    this.td_deftranstrfList.push(temp_deftranstrf);
   }
 
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {

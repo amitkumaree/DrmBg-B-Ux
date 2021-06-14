@@ -252,7 +252,7 @@
               </div>
 
               <div class="text-right mb-3">
-                <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm"
+                <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm  mr-1"
                   (click)="addDenomination()">
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
@@ -272,7 +272,7 @@
                   <div class="form-group col-2">
                     <small for="debit_ac">Account Type</small>
                     <input type="text" [(ngModel)]="l.cust_acc_type"
-                      (focusout)="checkAndSetDebitAccType('cust_acc', l.cust_acc_type)"
+                      (focusout)="checkAndSetDebitAccType('cust_acc', l)"
                       class="form-control form-control-sm text-capitalize" id="debit_ac">
                   </div>
 
@@ -285,7 +285,7 @@
                   <div class="form-group col-3">
                     <small for="debit_ac_no">Account Number</small>
                     <input type="text" [(ngModel)]="l.cust_acc_number"
-                      (focusout)="setDebitAccDtls( l.cust_acc_number)"
+                      (focusout)="setDebitAccDtls( l)"
                       class="form-control form-control-sm text-capitalize" id="debit_ac_no">
                   </div>
 
@@ -297,15 +297,12 @@
 
                   <div class="form-group col-2">
                     <small for="debit_amount">Amount</small>
-                    <input type="text" disabled [(ngModel)]="l.amount"
-                      (focusout)="checkDebitBalance(l.amount)" class="form-control form-control-sm text-capitalize"
+                    <input type="text" [(ngModel)]="l.amount"
+                      (focusout)="checkDebitBalance(l)" class="form-control form-control-sm text-capitalize"
                       id="debit_amount">
                   </div>
 
                 </div>
-              </section>
-
-              <section *ngFor="let l of td_deftranstrfList; let i=index">
                 <div class="form-row">
                   <div class="form-group col-2">
                     <small for="debit_gl_ac">GL Code</small>
@@ -325,8 +322,20 @@
                     <input type="text"  class="form-control form-control-sm text-capitalize"
                       id="Inst_num">
                   </div>
+                  <button *ngIf="td_deftranstrfList.length > 1 && (undefined !== l.cust_acc_type || undefined !== l.gl_acc_code  )"
+                    type="button" style="height:22px; padding-top: 0px;" class="btn btn-danger btn-sm mt-4"
+                  (click)="removeTransfer(l)">
+                  <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                  </button>
                 </div>
+
               </section>
+              <div class="text-right mb-3">
+                <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm mr-1"
+                  (click)="addTransfer()" title="Add transfer">
+                  <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
