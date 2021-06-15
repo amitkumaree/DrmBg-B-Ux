@@ -41,25 +41,27 @@ export class TransactionapprovalComponent implements OnInit {
   sys = new SystemValues();
   toFltrTrnCd = '';
   toFltrAccountTyp = '';
+  refresh = false;
   // cust: mm_customer;
   // tdDepTransRet: td_def_trans_trf[] = [];
 
   ngOnInit(): void {
-    ;
     this.getAcctTypeMaster();
-
+    this.refresh = true;
   }
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
   public onClickRefreshList() {
+    this.HandleMessage(false);
+    this.refresh = false;
     this.msg.sendCommonTransactionInfo(null);
     this.msg.sendCommonCustInfo(null);
     this.msg.sendCommonAcctInfo(null);
     this.msg.sendCommonAccountNum(null);
     this.toFltrAccountTyp = '';
     this.toFltrTrnCd = '';
-
+    this.refresh = true;
     this.getAcctTypeMaster();
   }
 
@@ -104,8 +106,10 @@ export class TransactionapprovalComponent implements OnInit {
       res => {
         ;
         this.selectedVm.td_def_trans_trf = res[0];
+        this.refresh = false;
         this.msg.sendCommonTransactionInfo(res[0]); // show transaction details
         this.isLoading = false;
+        this.refresh = true;
       },
       err => { this.isLoading = false; }
     );
@@ -134,8 +138,10 @@ export class TransactionapprovalComponent implements OnInit {
         acc = res[0];
         this.selectedVm.tm_deposit = acc;
         ;
+        this.refresh = false;
         this.msg.sendCommonAcctInfo(acc);
         this.msg.sendCommonAccountNum(acc.acc_num);
+        this.refresh = true;
         this.isLoading = false;
         this.getCustInfo(acc.cust_cd);
       },
