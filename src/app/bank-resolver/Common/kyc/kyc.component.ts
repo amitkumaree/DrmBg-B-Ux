@@ -41,14 +41,14 @@ export class KycComponent implements OnInit, OnDestroy {
     this.kycSig.img_typ = 'SIGNATURE';//'SIGNATURE';
     this.svc.addUpdDel<any>('UCIC/ReadKycSig', this.kycSig).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading = false;
         if (null !== res && null !== res.img_cont) {
           this.SIGNATURE = 'data:image/jpeg;base64,' + res.img_cont;
         }
       },
       err => {
-        debugger;
+        ;
         this.isLoading = false;
         this.HandleMessage(true, MessageType.Error, err.error.text);
       }
@@ -57,14 +57,14 @@ export class KycComponent implements OnInit, OnDestroy {
     this.kycSig.img_typ = 'PHOTO';//'SIGNATURE';
     this.svc.addUpdDel<any>('UCIC/ReadKycSig', this.kycSig).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading = false;
         if (null !== res && null !== res.img_cont) {
           this.PHOTO = 'data:image/jpeg;base64,' + res.img_cont;
         }
       },
       err => {
-        debugger;
+        ;
         this.isLoading = false;
         this.HandleMessage(true, MessageType.Error, err.error.text);
       }
@@ -73,14 +73,14 @@ export class KycComponent implements OnInit, OnDestroy {
     this.kycSig.img_typ = 'ADDRESS';//'SIGNATURE';
     this.svc.addUpdDel<any>('UCIC/ReadKycSig', this.kycSig).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading = false;
         if (null !== res && null !== res.img_cont) {
         this.ADDRESS = 'data:image/jpeg;base64,' + res.img_cont;
         }
       },
       err => {
-        debugger;
+        ;
         this.isLoading = false;
         this.HandleMessage(true, MessageType.Error, err.error.text);
       }
@@ -89,14 +89,14 @@ export class KycComponent implements OnInit, OnDestroy {
     this.kycSig.img_typ = 'KYC';//'SIGNATURE';
     this.svc.addUpdDel<any>('UCIC/ReadKycSig', this.kycSig).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading = false;
         if (null !== res && null !== res.img_cont) {
         this.KYC = 'data:image/jpeg;base64,' + res.img_cont;
         }
       },
       err => {
-        debugger;
+        ;
         this.isLoading = false;
         this.HandleMessage(true, MessageType.Error, err.error.text);
       }

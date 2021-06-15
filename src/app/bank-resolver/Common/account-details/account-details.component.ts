@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
+import Utils from 'src/app/_utility/utils';
 import { tm_deposit } from '../../Models';
 import { mm_constitution } from '../../Models/deposit/mm_constitution';
 import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
@@ -11,7 +12,7 @@ import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.css']
 })
-export class AccountDetailsComponent implements OnInit, OnDestroy  {
+export class AccountDetailsComponent implements OnInit, OnDestroy {
 
   constructor(private frmBldr: FormBuilder, private svc: RestService,
     private msg: InAppMessageService) {
@@ -93,17 +94,18 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
     });
   }
   getConstitutionList() {
-    if (this.constitutionList.length > 0) {
+    if (undefined !== this.constitutionList &&
+        null !== this.constitutionList &&
+        this.constitutionList.length > 0) {
       return;
     }
 
     this.constitutionList = [];
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
-        // debugger;
-        this.constitutionList = res;
+        this.constitutionList = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
       },
-      err => { // debugger;
+      err => { // ;
       }
     );
   }
@@ -116,14 +118,16 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
     this.operationalInstrList = [];
     this.svc.addUpdDel<any>('Mst/GetOprationalInstr', null).subscribe(
       res => {
-        this.operationalInstrList = res;
+        this.operationalInstrList = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
       },
       err => { }
     );
   }
 
   setAcctDetails(): void {
-    if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0) {
+    if (undefined !== this.acctDtls && Object.keys(this.acctDtls).length !== 0
+      && (this.acctDtls !== null && this.acctDtls.constitution_cd !== null
+        && this.acctDtls.constitution_cd > 0)) {
       const constitution = this.constitutionList.filter(e => e.constitution_cd
         === this.acctDtls.constitution_cd)[0];
       const OprnInstrDesc = this.operationalInstrList.filter(e => e.oprn_cd
@@ -137,9 +141,11 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
         cust_cd: this.acctDtls.cust_cd,
         intt_trf_type: this.acctDtls.intt_trf_type,
         constitution_cd: this.acctDtls.constitution_cd,
-        constitution_cd_desc: constitution.constitution_desc,
+        constitution_cd_desc:  (undefined !== constitution || null !== constitution) ?
+        constitution.constitution_desc : null,
         oprn_instr_cd: this.acctDtls.oprn_instr_cd,
-        oprn_instr_cd_desc: OprnInstrDesc.oprn_desc,
+        oprn_instr_cd_desc: (undefined !== OprnInstrDesc || null !== OprnInstrDesc) ?
+        OprnInstrDesc.oprn_desc : null,
         opening_dt: this.acctDtls.opening_dt.toString().substr(0, 10),
         prn_amt: this.acctDtls.prn_amt,
         intt_amt: this.acctDtls.intt_amt,
@@ -175,7 +181,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy  {
         transfer_dt: this.acctDtls.transfer_dt.toString().substr(0, 10),
         agent_cd: this.acctDtls.agent_cd,
       });
-    }  else { this.accDtlsFrm.reset(); }
+    } else { this.accDtlsFrm.reset(); }
   }
 
   ngOnDestroy(): void {

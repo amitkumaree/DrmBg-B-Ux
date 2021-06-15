@@ -3,6 +3,7 @@ import { OnDestroy } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
+import Utils from 'src/app/_utility/utils';
 
 @Component({
   selector: 'app-dw-rd-instl-view',
@@ -14,7 +15,6 @@ export class DwRdInstlViewComponent implements OnInit, OnDestroy {
   constructor(private svc: RestService, private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonAccountNum().subscribe(
       res => {
-        debugger;
         if (null !== res && undefined !== res &&
           +res !== 0) {
           this.accNum = res;
@@ -34,13 +34,12 @@ export class DwRdInstlViewComponent implements OnInit, OnDestroy {
   }
 
   private getRdIntallementDtls(): void {
-    debugger;
     if (null !== this.accNum && '' !== this.accNum) {
       const rdInstallament = new td_rd_installment();
       rdInstallament.acc_num = this.accNum;
       this.svc.addUpdDel<any>('Deposit/GetRDInstallment', rdInstallament).subscribe(
         res => {
-          this.installemnts = res;
+          this.installemnts = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
         },
         err => { }
       );

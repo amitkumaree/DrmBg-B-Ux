@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
+import Utils from 'src/app/_utility/utils';
 import { mm_category, mm_customer } from '../../Models';
 
 @Component({
@@ -96,8 +97,10 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
     } else {
       this.svc.addUpdDel<mm_category[]>('Mst/GetCategoryMaster', null).subscribe(
         res => {
-          CustomerInfoComponent.categories = res;
-          this.getCustomer();
+          if (Utils.ChkArrNotEmpty(res)) {
+            CustomerInfoComponent.categories = res;
+            this.getCustomer();
+          }
         },
         err => { }
       );
@@ -105,7 +108,6 @@ export class CustomerInfoComponent implements OnInit, OnDestroy {
   }
 
   private getCustomer(): void {
-    debugger;
     const cust = this.cust;
     if (undefined !== cust && Object.keys(cust).length !== 0) {
       const category = CustomerInfoComponent.categories.

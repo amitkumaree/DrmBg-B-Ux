@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
     private msg: InAppMessageService) { }
 
   ngOnInit(): void {
-    debugger;
+    ;
     this.GetBranchMaster();
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
@@ -42,12 +42,12 @@ export class LoginComponent implements OnInit {
   get f() { return this.loginForm.controls; }
 
   onSubmit(): void {
-    debugger;
+    ;
     // this.submitted = true;
     if (this.loginForm.invalid) {
       return;
     }
-    debugger;
+    ;
     this.isLoading = true;
     const __bName = localStorage.getItem('__bName');
     // this.router.navigate([__bName + '/la']); // TODO remove this it will be after login
@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
     login.brn_cd = this.f.branch.value;
     this.rstSvc.addUpdDel<any>('Mst/GetUserDtls', login).subscribe(
       res => {
-        debugger;
+        ;
         if (res.length == 0) {
           this.isLoading = false;
           this.showAlert = true;
@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
           // console.log('Login Sucess');
           this.rstSvc.addUpdDel('Mst/GetSystemParameter', null).subscribe(
             res => {
-              debugger;
+              ;
               try {
                 this.systemParam = res;
                 console.log('ParameterList Sucess');
@@ -117,26 +117,26 @@ export class LoginComponent implements OnInit {
   }
 
   GetBranchMaster() {
-    debugger;
+    ;
     this.rstSvc.addUpdDel('Mst/GetBranchMaster', null).subscribe(
       res => {
-        debugger;
+        ;
         this.brnDtls = res;
         // this.genparam.brn_cd="101";
         // this.genparam.gs_acc_type_cd=11;
         // this.genparam.ls_catg_cd=0;
         // this.genparam.ls_cons_cd=0;
-        // debugger
+        //
         // this.rstSvc.addUpdDel('Deposit/PopulateAccountNumber', this.genparam).subscribe(
         //   res => {
-        //     debugger;
+        //     ;
         //     res;
-        //     debugger;
+        //     ;
         //   },
-        //   err => { debugger;}
+        //   err => { ;}
         // )
       },
-      err => { debugger; }
+      err => { ; }
     )
   }
 }

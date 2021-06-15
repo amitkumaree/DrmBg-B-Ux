@@ -133,7 +133,7 @@ export class TestComponent implements OnInit {
 
   ngOnInit(): void {
 
-    debugger;
+    ;
     this.branchCode = localStorage.getItem('__brnCd');
     // this.openDate = this.convertDate( localStorage.getItem('__currentDate'));
     this.openDate = new Date(localStorage.getItem('__currentDate'));
@@ -147,7 +147,7 @@ export class TestComponent implements OnInit {
 
     this.suggestedCustomer = null;
 
-    debugger;
+    ;
 
     this.getCustomerList();
     this.getCategoryList();
@@ -157,7 +157,7 @@ export class TestComponent implements OnInit {
     this.initializeMasterDataAndFlags();
     this.initializeModels();
 
-    debugger;
+    ;
     this.getAccountTypeList();
     this.getConstitutionList();
     this.getOperationalInstr();
@@ -196,7 +196,7 @@ export class TestComponent implements OnInit {
     this.denominationGrandTotal = 0;
     this.masterModel = new AccOpenDM();
 
-    debugger;
+    ;
 
   }
 
@@ -204,7 +204,7 @@ export class TestComponent implements OnInit {
 
   initializeModels()
   {
-    debugger;
+    ;
     this.tm_deposit = new tm_deposit();
     this.tm_deposit.opening_dt = this.DateFormatting(this.openDate);
     this.tm_deposit.acc_num = null;
@@ -234,7 +234,7 @@ export class TestComponent implements OnInit {
 
     const tm_trns: tm_transfer[] = [];
     this.tm_transferList = tm_trns;
-    debugger;
+    ;
     const td_deftrans: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftrans;
     // this.selectedTransType = '';
@@ -314,7 +314,7 @@ export class TestComponent implements OnInit {
       this.setIntroducerAccountType(this.td_introducerlist[idx].introducer_acc_type, Number(idx));
     }
 
-    debugger;
+    ;
     this.td_nomineeList = this.masterModel.tdnominee;
     this.td_signatoryList = this.masterModel.tdsignatory;
 
@@ -334,7 +334,7 @@ export class TestComponent implements OnInit {
 
 
   getCustomerList() {
-    debugger;
+    ;
     const cust = new mm_customer();
     cust.cust_cd = 0;
     cust.brn_cd = this.branchCode;
@@ -342,13 +342,13 @@ export class TestComponent implements OnInit {
     if (this.customerList === undefined || this.customerList === null || this.customerList.length === 0) {
       this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
         res => {
-          debugger;
+          ;
           this.isLoading = false;
           this.customerList = res;
         },
         err => {
           this.isLoading = false;
-          debugger;
+          ;
         }
       );
     }
@@ -366,16 +366,16 @@ export class TestComponent implements OnInit {
     this.constitutionList = [];
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
-        // debugger;
+        // ;
         this.constitutionList = res;
       },
-      err => { // debugger;
+      err => { // ;
       }
     );
   }
 
   getAccountTypeList() {
-    debugger;
+    ;
     if (this.accountTypeList.length > 0) {
       return;
     }
@@ -383,13 +383,13 @@ export class TestComponent implements OnInit {
 
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
-        debugger;
+        ;
         this.accountTypeList = res;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
       },
       err => {
-        debugger;
+        ;
       }
     );
   }
@@ -404,12 +404,12 @@ export class TestComponent implements OnInit {
     this.operationalInstrList = [];
     this.svc.addUpdDel<any>('Mst/GetOprationalInstr', null).subscribe(
       res => {
-        // debugger;
+        // ;
         this.operationalInstrList = res;
         this.operationalInstrList = this.operationalInstrList.sort((a, b) => (a.oprn_cd > b.oprn_cd) ? 1 : -1);
       },
       err => {
-        // debugger;
+        // ;
       }
     );
   }
@@ -423,7 +423,7 @@ export class TestComponent implements OnInit {
 
   retrieveData()
   {
-    debugger;
+    ;
     this.clearData();
 
     this.operationType = 'Q';
@@ -445,11 +445,11 @@ export class TestComponent implements OnInit {
       exit(0);
     }
 
-    debugger;
+    ;
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetAccountOpeningTempData', this.tm_deposit).subscribe(
       res => {
-        debugger;
+        ;
         this.isLoading = false;
         this.masterModel = res;
 
@@ -457,7 +457,7 @@ export class TestComponent implements OnInit {
         {
         this.disableAccountTypeAndNo = true;
         this.assignModelsFromMasterData();
-        debugger;
+        ;
         }
         else
         {
@@ -467,7 +467,7 @@ export class TestComponent implements OnInit {
       },
       err => { this.isLoading = false;
         this.showAlertMsg('ERROR' , 'Unable to find record!!' );
-        debugger;}
+        ;}
 
     );
   }
@@ -490,7 +490,7 @@ export class TestComponent implements OnInit {
     this.operationType = 'I';
     this.disableAll = true;
     this.isLoading = true;
-    debugger;
+    ;
     this.getCustomerList();
     // this.disableCustNameFlg = false;
     this.disableCustomerName = false;
@@ -502,7 +502,7 @@ export class TestComponent implements OnInit {
 
 saveData()
   {
-    debugger;
+    ;
 
     this.validateData();
 
@@ -528,7 +528,7 @@ saveData()
 
   validateData()
   {
-   // debugger;
+   // ;
     let nomPercent = 0;
 
     if (this.tm_deposit.year === null || this.tm_deposit.year === undefined )
@@ -584,7 +584,7 @@ saveData()
       this.td_signatoryList[l].upd_ins_flag = this.operationType;
     }
 
-    // debugger;
+    // ;
     // tslint:disable-next-line: forin
     for (let l in this.td_accholderList) {
       if (this.td_accholderList[l].acc_holder === null || this.td_accholderList[l].acc_holder === undefined) {
@@ -661,7 +661,7 @@ saveData()
       exit(0);
     }
 
-    debugger;
+    ;
 
 
     if ((this.operationType === 'I') && ( this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null) &&
@@ -699,7 +699,7 @@ saveData()
   }
 
   getNewAccountNoAndSaveData() {
-    debugger;
+    ;
     this.isLoading = true;
 
     this.p_gen_param.brn_cd = this.branchCode; // String
@@ -709,18 +709,18 @@ saveData()
 
     this.svc.addUpdDel<any>('Deposit/PopulateAccountNumber', this.p_gen_param).subscribe(
       res => {
-        debugger;
+        ;
         let val = '0';
         this.isLoading = false;
         val = res;
         this.masterModel.tmdeposit.acc_num = val.toString();
         this.masterModel.tmdeposit.brn_cd = this.branchCode;
 
-        debugger;
+        ;
         this.InsertAccountOpenData();
       },
       err => { this.isLoading = false;
-        debugger;}
+        ;}
 
     );
 
@@ -734,18 +734,18 @@ saveData()
 
     this.td_deftrans.acc_num = this.masterModel.tmdeposit.acc_num;
     this.td_deftrans.brn_cd = this.branchCode;
-    // debugger;
+    // ;
     this.td_deftrans.trans_dt = this.DateFormatting(this.openDate);
     this.td_deftrans.approval_status = 'U';
     this.td_deftrans.acc_type_cd = this.tm_deposit.acc_type_cd;
 
-    debugger;
+    ;
     this.isLoading = true;
     if (this.operationType === 'I') // For New Account
     {
       this.svc.addUpdDel<any>('Deposit/InsertAccountOpeningData', this.masterModel).subscribe(
         res => {
-          debugger;
+          ;
           this.td_deftrans.trans_cd = Number(res);
           this.isLoading = false;
           this.disableAccountTypeAndNo = true;
@@ -757,7 +757,7 @@ saveData()
           if (this.operationType === 'I') {
             this.masterModel.tmdeposit.acc_num = null;
           }
-          debugger;
+          ;
         }
       );
     }
@@ -765,14 +765,14 @@ saveData()
     {
       this.svc.addUpdDel<any>('Deposit/UpdateAccountOpeningData', this.masterModel).subscribe(
         res => {
-          debugger;
+          ;
           ret = Number(res);
           this.isLoading = false;
         },
         err => {
           this.isLoading = false;
           this.showAlertMsg('ERROR' , 'Unable to Create Account Number');
-          debugger;
+          ;
         }
       );
     }
@@ -801,7 +801,7 @@ saveData()
 
 
   setAccountType(accType: number) {
-    debugger;
+    ;
     if (accType === 0) {
       accType = 1;
     }
@@ -821,7 +821,7 @@ saveData()
 
     // this.selectedConstitutionList = null;
     this.selectedConstitutionList = this.constitutionList.filter(x => x.acc_type_cd.toString() === accType.toString());
-    debugger;
+    ;
 
     if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 11 )
     {
@@ -851,7 +851,7 @@ saveData()
 
   setTransType(tt: any) {
     // this.transTypeFlg = val;
-    debugger;
+    ;
     this.td_deftrans.trf_type = tt;
     this.td_deftrans.trf_type_desc = this.transferTypeList.filter( x => x.trf_type.toString() === tt)[0].trf_type_desc;
 
@@ -859,15 +859,15 @@ saveData()
 
 
   setRelationship(relation: string, idx: number) {
-    debugger;
+    ;
     this.td_accholderList[idx].cust_cd = Number(this.td_accholderList[idx].cust_cd);
     this.td_accholderList[idx].relation = relation;
     this.td_accholderList[idx].relationId = this.relationship.filter(x => x.val.toString() === relation)[0].id;
-    debugger;
+    ;
   }
 
   setIntTfrType(tfr_type: string) {
-    debugger;
+    ;
 
     if (tfr_type == null) {
     return;
@@ -878,7 +878,7 @@ saveData()
   }
 
   setConstitutionType(val: number) {
-    debugger;
+    ;
     this.tm_deposit.constitution_cd = Number(val);
     this.tm_deposit.constitution_desc = this.constitutionList.filter(x => x.constitution_cd.toString() === val.toString())[0].constitution_desc;
   }
@@ -892,11 +892,11 @@ saveData()
   getCategoryList() {
     this.svc.addUpdDel<any>('Mst/GetCategoryMaster', null).subscribe(
       res => {
-        // debugger;
+        // ;
         this.categoryList = res;
       },
       err => {
-        // debugger;
+        // ;
       }
     );
   }
@@ -915,7 +915,7 @@ saveData()
   }
 
   populateCustDtls(cust_cd: number) {
-    debugger;
+    ;
     var temp_mm_cust = new mm_customer();
     var temp_tm_deposit = new tm_deposit();
 
@@ -944,17 +944,17 @@ saveData()
       this.td_signatoryList[0].brn_cd = this.branchCode;
     }
 
-    debugger;
+    ;
 
     if (this.operationType === 'I') {
       this.svc.addUpdDel<any>('Deposit/GetCustMinSavingsAccNo', temp_tm_deposit).subscribe(
         res => {
-          debugger;
+          ;
           this.tm_deposit.user_acc_num = res;
           this.tm_deposit.user_acc_num = this.tm_deposit.user_acc_num.toString();
         },
         err => {
-          debugger;
+          ;
           this.tm_deposit.user_acc_num = null;
         }
       );
@@ -992,7 +992,7 @@ removeSignatory()
   {
     var x = this.td_accholderList.filter(c => c.acc_holder.toString() === name.toString())[0].cust_cd;
 
-    debugger;
+    ;
     if (!x)
     {
       this.td_signatoryList[idx].signatory_name = null;
@@ -1042,7 +1042,7 @@ removeSignatory()
   }
 
   setIntroducerAccountType(intro_acc_typ_cd: number, idx: number) {
-    debugger;
+    ;
     if (intro_acc_typ_cd != null && intro_acc_typ_cd > 0) {
       this.td_introducerlist[idx].introducer_acc_type = Number(intro_acc_typ_cd);
       this.td_introducerlist[idx].introducer_acc_type_desc = this.introducerAccTypeList.filter(x => x.acc_type_cd.toString() === intro_acc_typ_cd.toString())[0].acc_type_desc;
@@ -1051,7 +1051,7 @@ removeSignatory()
 
 
   setIntroducerName(idx: number) {
-    debugger;
+    ;
 
     if (this.td_introducerlist[idx].acc_type_cd === null || this.td_introducerlist[idx].acc_type_cd === undefined)
     {
@@ -1071,7 +1071,7 @@ removeSignatory()
 
     this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
       res => {
-        debugger;
+        ;
         temp_deposit_list = res;
         this.isLoading = false;
 
@@ -1120,7 +1120,7 @@ removeSignatory()
 
   setDenomination(val: number, idx: number)
   {
-    debugger;
+    ;
     this.tm_denominationList[idx].rupees = Number(val);
     this.tm_denominationList[idx].rupees_desc = this.denominations.filter( x => x.rupees === val.toString() )[0].desc;
     this.calculateTotalDenomination(idx);
@@ -1128,7 +1128,7 @@ removeSignatory()
 
 
   calculateTotalDenomination(idx: number) {
-    debugger;
+    ;
     let r = 0;
     let c = 0;
 
@@ -1150,7 +1150,7 @@ removeSignatory()
   }
 
   checkNomineePercentage(idx: number) {
-    debugger;
+    ;
     let tot = 0;
 
     for (let l of this.td_nomineeList) {
@@ -1196,7 +1196,7 @@ removeSignatory()
 
 
 processInstallmentNo() {
-    debugger;
+    ;
     var temp_gen_param1 = new p_gen_param();
     var temp_gen_param2 = new p_gen_param();
 
@@ -1222,7 +1222,7 @@ processInstallmentNo() {
     temp_gen_param2.acc_cd = this.tm_deposit.acc_type_cd;
     temp_gen_param2.from_dt = this.DateFormatting(this.openDate);
     temp_gen_param2.ls_catg_cd = this.tm_deposit.category_cd;
-    debugger;
+    ;
     // tslint:disable-next-line: max-line-length
     //temp_gen_param2.ai_period = Math.floor(Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()) ) / (1000 * 60 * 60 * 24));
     temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
@@ -1235,13 +1235,13 @@ processInstallmentNo() {
       //                               uf_GetInttRate
       this.svc.addUpdDel<any>('Deposit/GET_INT_RATE', temp_gen_param2).subscribe(
         res => {
-          debugger;
+          ;
           this.tm_deposit.intt_rt = Number(res);
           temp_gen_param1.an_intt_rate = this.tm_deposit.intt_rt;
           this.calCrdIntReg(temp_gen_param1);
         },
         err => {
-          debugger;
+          ;
         }
       );
     }
@@ -1250,7 +1250,7 @@ processInstallmentNo() {
 
   processInstallmentAmount( )
   {
-    debugger;
+    ;
     var temp_gen_param = new p_gen_param();
 
     this.tm_deposit.prn_amt = Number(this.tm_deposit.instl_no) * Number(this.tm_deposit.instl_amt);
@@ -1267,7 +1267,7 @@ processInstallmentNo() {
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', tempGenParam).subscribe(
       res => {
-        debugger;
+        ;
         this.tm_deposit.intt_amt = res;
         this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
         this.isLoading = false;
@@ -1275,7 +1275,7 @@ processInstallmentNo() {
       err => {
         this.tm_deposit.intt_amt = 0;
         this.isLoading = false;
-        debugger;
+        ;
       }
     );
   }
@@ -1294,7 +1294,7 @@ processInstallmentNo() {
 
   processPrincipal( )
   {
-    debugger;
+    ;
     if ((this.tm_deposit.acc_type_cd !== 1) && (this.tm_deposit.acc_type_cd !== 7) && (this.tm_deposit.acc_type_cd !== 13)) {
 
       if (this.tm_deposit.year === undefined || this.tm_deposit.year === null) {
@@ -1345,7 +1345,7 @@ processInstallmentNo() {
       }
 
 
-      debugger;
+      ;
       this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
       this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
       this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
@@ -1366,15 +1366,15 @@ processInstallmentNo() {
 
       // this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
       //   res => {
-      //     debugger;
+      //     ;
       //     this.tm_deposit.intt_amt = res;
       //     this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
-      //     debugger;
+      //     ;
       //     this.isLoading = false;
       //   },
       //   err => {
       //     this.isLoading = false;
-      //     debugger;
+      //     ;
       //   }
       // );
     }
@@ -1385,15 +1385,15 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
   this.isLoading = true;
   this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
     res => {
-      debugger;
+      ;
       this.tm_deposit.intt_amt = res;
       this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
-      debugger;
+      ;
       this.isLoading = false;
     },
     err => {
       this.isLoading = false;
-      debugger;
+      ;
     }
   );
 }
@@ -1429,7 +1429,7 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
         return;
       }
 
-      debugger;
+      ;
       this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
       this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
       this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
@@ -1462,7 +1462,7 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
         return;
       }
 
-    debugger;
+    ;
     this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
     this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
     this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);

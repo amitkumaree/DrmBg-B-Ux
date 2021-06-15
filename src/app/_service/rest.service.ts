@@ -21,27 +21,27 @@ export class RestService {
   }
 
   private getUrl(): string {
-    // debugger;
+    // ;
     let url = '';
     const __bName = localStorage.getItem('__bName');
     if (null !== RestService.configuration
       && RestService.configuration.length > 0) {
-        url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
-      }
+      url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
+    }
     url += 'api/';
     // console.log(url);
     // url = 'https://localhost:5001/api/';
     return url;
   }
   public getReportUrl(): string {
-     debugger;
+    // ;
     let url = '';
     const __bName = localStorage.getItem('__bName');
     if (null !== RestService.configuration
       && RestService.configuration.length > 0) {
-        url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
-      }
-    url = url.substr(0,url.length-1)+"Rpt/"
+      url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
+    }
+    url = url.substr(0, url.length - 1) + 'Rpt/'
     return url;
   }
 
@@ -57,12 +57,12 @@ export class RestService {
     return this.http.post<T>(url, data);
   }
 
-// This to get Ux configuration data from Master folder
+  // This to get Ux configuration data from Master folder
   public getBankJsonConfigUx<T>(url: string): Observable<T> {
     return this.http.get<T>(url);
   }
 
-// This to put Ux configuration data to Master and UX folder
+  // This to put Ux configuration data to Master and UX folder
   public postBankJsonConfigUx<T>(url: string, data: T): Observable<T> {
     return this.http.post<T>(url, data);
   }
@@ -77,7 +77,7 @@ export class RestService {
   }
 
   public addUpdDel<T>(ofwhat: string, data: T): Observable<T> {
-    debugger;
+    // ;
     return this.http.post<T>((this.getUrl() + ofwhat), data);
   }
 
@@ -92,12 +92,12 @@ export class RestService {
     private generic2<T>(method: string, ofwhat: string, data: T = null,
                         id: number = 0): Observable<T> {
       const __bName = localStorage.getItem('__bName');
-      debugger;
+      ;
       this.confSvc.getConfigurationForName(__bName).then(
         res => {
           const url = res.server + 'api/';
           console.log('URL - ' + url);
-          debugger;
+          ;
           switch (method) {
             case 'get':
               return this.http.get<T>(url + ofwhat);

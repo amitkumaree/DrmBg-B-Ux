@@ -20,16 +20,19 @@
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center"
   style="background-color: #78c2ad21; min-height: 90vh;">
-  <div *ngIf="showMsg && showMsg.Show" class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
-    <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
-     'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
-      <strong>{{showMsg.Message}}</strong>
-      <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  </div>
+
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+    <div *ngIf="showMsgs && showMsgs.length > 0" class="col-12">
+      <div *ngFor="let showMsg of showMsgs">
+        <div *ngIf="showMsg.Show" class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
+        'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
+         <strong >{{showMsg.Message}}</strong>
+         <button type="button" class="close" data-dismiss="alert" (click)="RemoveMessage(showMsg)" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+      </div>
+    </div>
     <h6 style="background-color:lightskyblue">Customer Personal Detils:</h6>
     <form [formGroup]="custMstrFrm">
       <div class="form-row">
@@ -50,6 +53,10 @@
               (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + ' / '
               + ((null === cust.phone) ? '' : cust.phone) +'] '
               + cust.cust_name}}</p>
+          </div>
+          <div class="suggestions border p-2" style="width: 200%; font-size: small;"
+          *ngIf="suggestedCustomer && !(suggestedCustomer.length > 0)">
+          <strong class="text-danger">" {{this.f.cust_name.value}} " does not match with any customer</strong>
           </div>
         </div>
         <div class="form-group col-2">
@@ -79,7 +86,7 @@
             id="middle_name" placeholder="Middle Name" (input)="onNameChange()" autocomplete="chrome-off">
         </div>
         <div class="form-group col-2">
-          <small for="last_name">Last Name</small>
+          <small for="last_name">Last Name <span class="text-danger">*</span></small>
           <input type="text" class="form-control form-control-sm text-capitalize" formControlName="last_name"
             id="last_name" placeholder="Last Name" (input)="onNameChange()" autocomplete="chrome-off">
         </div>
@@ -111,7 +118,7 @@
             placeholder="Age">
         </div>
         <div class="form-group col-1">
-          <small for="sex">Sex</small>
+          <small for="sex">Sex <span class="text-danger">*</span></small>
           <select id="sex" class="form-control form-control-sm" formControlName="sex">
             <option selected disabled>Choose...</option>
             <option value="M">Male</option>
@@ -129,14 +136,14 @@
           </select>
         </div>
         <div class="form-group col-2">
-          <small for="catg_cd">Category</small>
+          <small for="catg_cd">Category <span class="text-danger">*</span></small>
           <select id="catg_cd" class="form-control form-control-sm" formControlName="catg_cd">
             <option *ngIf="categories" disabled>Choose</option>
             <option *ngFor="let category of categories" [value]="category.catg_cd">{{category.catg_desc}}</option>
           </select>
         </div>
         <div class="form-group col-1">
-          <small for="community">Community</small>
+          <small for="community">Community <span class="text-danger">*</span></small>
           <select id="community" class="form-control form-control-sm" formControlName="community">
             <option selected disabled>Choose...</option>
             <option value="1">Hindu</option>
@@ -145,7 +152,7 @@
           </select>
         </div>
         <div class="form-group col-1">
-          <small for="caste">Caste</small>
+          <small for="caste">Caste <span class="text-danger">*</span></small>
           <select id="caste" class="form-control form-control-sm" formControlName="caste">
             <option selected disabled>Choose...</option>
             <option value="1">General</option>
@@ -174,11 +181,11 @@
         </div>
         <div class="form-group col-1">
           <small for="pin">Pin Code</small>
-          <input type="number" class="form-control form-control-sm" formControlName="pin" id="pin"
-            placeholder="Pin code">
+          <input type="text" class="form-control form-control-sm"
+          formControlName="pin" id="pin" maxlength="6" (input)="onPininput($event)" placeholder="Pin code">
         </div>
         <div class="form-group col-2">
-          <small for="vill_cd">Village</small>
+          <small for="vill_cd">Village <span class="text-danger">*</span> </small>
           <select id="vill_cd" class="form-control form-control-sm" formControlName="vill_cd"
             (change)="onVillageChnage($event.target.value)">
             <option *ngIf="villages" disabled>Choose</option>
@@ -186,7 +193,7 @@
           </select>
         </div>
         <div class="form-group col-2">
-          <small for="service_area_cd">G.P</small>
+          <small for="service_area_cd">G.P <span class="text-danger">*</span> </small>
           <!-- <select id="service_area_cd" class="form-control form-control-sm" formControlName="service_area_cd" >
           </select> -->
           <input type="text" class="form-control form-control-sm d-none" formControlName="service_area_cd"
@@ -195,7 +202,7 @@
             id="service_area_cd_desc">
         </div>
         <div class="form-group col-2">
-          <small for="block_cd">Block</small>
+          <small for="block_cd">Block <span class="text-danger">*</span> </small>
           <!-- <select id="block_cd" class="form-control form-control-sm" formControlName="block_cd" disabled>
           </select> -->
           <input type="text" class="form-control form-control-sm d-none" formControlName="block_cd" id="block_cd">
@@ -213,7 +220,7 @@
       </div> <!-- form group row end -->
       <div class="form-row">
         <div class="form-group col-12">
-          <small for="present_address">Address</small>
+          <small for="present_address">Address <span class="text-danger">*</span> </small>
           <input type="text" class="form-control form-control-sm" id="present_address" formControlName="present_address"
             placeholder="Address">
         </div>
@@ -242,7 +249,7 @@
             placeholder="Monthly income">
         </div>
         <div class="form-group col-2">
-          <small for="phone">Phone Number</small>
+          <small for="phone">Phone Number <span class="text-danger">*</span> </small>
           <input type="tel" class="form-control form-control-sm" formControlName="phone" id="phone"
             placeholder="Phone Number" maxlength="12">
         </div>
@@ -270,7 +277,7 @@
         <div class="form-group col-2">
           <small for="status">Customer Status</small>
           <select id="status" class="form-control form-control-sm" formControlName="status">
-            <option value="A" selected>Active</option>
+            <option value="A">Active</option>
             <option value="D">Death</option>
           </select>
         </div>

@@ -8,6 +8,18 @@ export default class Utils {
     return new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
   }
 
+  public static ChkArrNotEmpty(arrToChk: any): boolean {
+    return (undefined !== arrToChk && null !== arrToChk && arrToChk.length > 0);
+  }
+
+  public static ChkArrNotEmptyRetrnEmptyArr(arrToChk: any): any {
+    if (undefined !== arrToChk && null !== arrToChk && arrToChk.length > 0) {
+      return arrToChk;
+    } else {
+      return [];
+    }
+  }
+
   /** Use this method to get todays dt and put in textbox */
   public static getTodaysDtInCorrectFormat(): string {
     const today = new Date();

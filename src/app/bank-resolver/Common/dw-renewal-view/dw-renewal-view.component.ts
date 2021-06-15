@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { InAppMessageService, RestService } from 'src/app/_service';
+import Utils from 'src/app/_utility/utils';
 import { tm_deposit } from '../../Models';
 
 @Component({
@@ -82,7 +83,7 @@ export class DwRenewalViewComponent implements OnInit, OnDestroy {
   }
 
   setAcctDetails(): void {
-    if (undefined !== this.acctDtls && null !== this.acctDtls) {
+    if (Utils.ChkArrNotEmpty(this.acctDtls)) {
       this.accDtlsFrm.patchValue({
         brn_cd: this.acctDtls.brn_cd,
         acc_type_cd: this.acctDtls.acc_type_cd,

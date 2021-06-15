@@ -23,7 +23,7 @@ export class TransactionapprovalComponent implements OnInit {
   @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
   constructor(private svc: RestService, private elementRef: ElementRef,
     private msg: InAppMessageService, private modalService: BsModalService
-    ,private router: Router) { }
+    , private router: Router) { }
   static accType: mm_acc_type[] = [];
   selectedAccountType: number;
   selectedTransactionMode: string;
@@ -39,28 +39,32 @@ export class TransactionapprovalComponent implements OnInit {
   uniqueAccTypes: mm_acc_type[] = [];
   modalRef: BsModalRef;
   sys = new SystemValues();
+  toFltrTrnCd = '';
+  toFltrAccountTyp = '';
   // cust: mm_customer;
   // tdDepTransRet: td_def_trans_trf[] = [];
 
   ngOnInit(): void {
-    debugger;
+    ;
     this.getAcctTypeMaster();
 
   }
   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template , {class: 'modal-lg'});
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
   public onClickRefreshList() {
     this.msg.sendCommonTransactionInfo(null);
     this.msg.sendCommonCustInfo(null);
     this.msg.sendCommonAcctInfo(null);
     this.msg.sendCommonAccountNum(null);
+    this.toFltrAccountTyp = '';
+    this.toFltrTrnCd = '';
 
     this.getAcctTypeMaster();
   }
 
   private getAcctTypeMaster(): void {
-    debugger;
+    ;
     this.isLoading = true;
     if (undefined !== TransactionapprovalComponent.accType &&
       null !== TransactionapprovalComponent.accType &&
@@ -81,6 +85,7 @@ export class TransactionapprovalComponent implements OnInit {
     }
   }
   public selectTransaction(vm: TranApprovalVM): void {
+    this.HandleMessage(false);
     this.selectedVm = vm;
     this.selectedTransactionCd = vm.td_def_trans_trf.trans_cd;
     this.selectedAccountType = vm.td_def_trans_trf.acc_type_cd;
@@ -97,7 +102,7 @@ export class TransactionapprovalComponent implements OnInit {
     // defTransaction.brn_cd = localStorage.getItem('__brnCd');
     this.svc.addUpdDel<td_def_trans_trf>('Common/GetDepTrans', depTras).subscribe(
       res => {
-        debugger;
+        ;
         this.selectedVm.td_def_trans_trf = res[0];
         this.msg.sendCommonTransactionInfo(res[0]); // show transaction details
         this.isLoading = false;
@@ -128,7 +133,7 @@ export class TransactionapprovalComponent implements OnInit {
       res => {
         acc = res[0];
         this.selectedVm.tm_deposit = acc;
-        debugger;
+        ;
         this.msg.sendCommonAcctInfo(acc);
         this.msg.sendCommonAccountNum(acc.acc_num);
         this.isLoading = false;
@@ -167,9 +172,9 @@ export class TransactionapprovalComponent implements OnInit {
 
         });
 
-        this.uniqueAccTypes = this.uniqueAccTypes.sort((a , b) => (a.acc_type_cd < b.acc_type_cd ? -1 : 1));
+        this.uniqueAccTypes = this.uniqueAccTypes.sort((a, b) => (a.acc_type_cd < b.acc_type_cd ? -1 : 1));
         this.filteredVm = this.vm;
-        this.filteredVm = this.filteredVm.sort((a , b) => (a.td_def_trans_trf.trans_cd < b.td_def_trans_trf.trans_cd ? -1 : 1));
+        this.filteredVm = this.filteredVm.sort((a, b) => (a.td_def_trans_trf.trans_cd < b.td_def_trans_trf.trans_cd ? -1 : 1));
         // this.tdDepTransGroup = this.groupBy(this.tdDepTransRet, (c) => c.acc_type_cd);
         this.isLoading = false;
       },
@@ -188,8 +193,6 @@ export class TransactionapprovalComponent implements OnInit {
         }
       }
     }
-
-    debugger;
     this.isLoading = true;
     let param = new p_gen_param();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
@@ -230,16 +233,23 @@ export class TransactionapprovalComponent implements OnInit {
       this.filteredVm = this.vm.filter(e => e.mm_acc_type.acc_type_cd === acctTypeCd);
     }
   }
+  public acctNumberAndTrnCdFilter(searchValue: string): void {
+    if (null !== searchValue && '' !== searchValue) {
+      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.acc_num.includes(searchValue) ||
+        e.td_def_trans_trf.trans_cd.toString().includes(searchValue));
+    } else {
+      this.filteredVm = this.vm;
+    }
+  }
 
   onDeleteClick(): void {
-    debugger;
     if (!(confirm('Are you sure you want to Delete Transaction of Acc ' + this.selectedVm.tm_deposit.acc_num
-    + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
+      + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
       return;
     }
 
     this.isLoading = true;
-    let param = new td_def_trans_trf();
+    const param = new td_def_trans_trf();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     param.trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
     // const dt = this.sys.CurrentDate;

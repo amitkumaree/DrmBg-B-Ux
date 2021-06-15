@@ -3,7 +3,7 @@ import {
   mm_kyc, mm_service_area, mm_block, mm_customer, ShowMessage, MessageType, SystemValues, kyc_sig
 } from './../../Models';
 import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import { formatDate } from '@angular/common';
 import { Router } from '@angular/router';
@@ -27,7 +27,8 @@ export class UTCustomerProfileComponent implements OnInit {
   retrieveClicked = false;
   selectedCustomer: mm_customer;
   enableModifyAndDel = false;
-  showMsg: ShowMessage;
+  showMsgs: ShowMessage[] = [];
+  // showMsg: ShowMessage;
   isLoading = false;
   suggestedCustomer: mm_customer[];
   titles: mm_title[] = [];
@@ -104,39 +105,39 @@ export class UTCustomerProfileComponent implements OnInit {
       cust_cd: [{ value: '', disabled: true }],
       cust_type: ['', Validators.required],
       title: [''],
-      first_name: ['', Validators.required],
-      middle_name: [''],
-      last_name: [''],
-      cust_name: ['', { disabled: true }],
-      guardian_name: ['', Validators.required],
-      cust_dt: [''],
-      old_cust_cd: [''],
-      dt_of_birth: [''],
-      age: [{ value: '', disabled: true }],
-      sex: [''],
-      marital_status: [''],
-      catg_cd: [''],
-      community: [''],
-      caste: [''],
-      permanent_address: [''],
-      ward_no: [''],
-      state: [''],
-      dist: [''],
-      pin: [''],
-      vill_cd: [''],
-      block_cd: ['', { disabled: true }],
-      block_cd_desc: ['', { disabled: true }],
-      service_area_cd: ['', { disabled: true }],
-      service_area_cd_desc: ['', { disabled: true }],
-      occupation: [''],
-      phone: [null, [Validators.pattern('[0-9 ]{12}'), Validators.maxLength(12)]],
-      present_address: [''],
-      farmer_type: [''],
+      first_name: [null, Validators.required],
+      middle_name: [null],
+      last_name: [null, Validators.required],
+      cust_name: [null, { disabled: true }],
+      guardian_name: [null, Validators.required],
+      cust_dt: [null],
+      old_cust_cd: [null],
+      dt_of_birth: [null, Validators.required],
+      age: [{ value: null, disabled: true }],
+      sex: [null, Validators.required],
+      marital_status: [null],
+      catg_cd: [null, Validators.required],
+      community: [null, Validators.required],
+      caste: [null, Validators.required],
+      permanent_address: [null],
+      ward_no: [null],
+      state: [null],
+      dist: [null],
+      pin: [null, [Validators.maxLength(6)]],
+      vill_cd: [null, Validators.required],
+      block_cd: [null, { disabled: true }, Validators.required],
+      block_cd_desc: [null, { disabled: true }],
+      service_area_cd: [null, { disabled: true }, Validators.required],
+      service_area_cd_desc: [null, { disabled: true }],
+      occupation: [null],
+      phone: [null, [Validators.pattern('[0-9 ]{12}'), Validators.maxLength(12), Validators.required]],
+      present_address: [null, Validators.required],
+      farmer_type: [null],
       email: [''],
       monthly_income: [''],
       date_of_death: [''],
       sms_flag: [''],
-      status: [''],
+      status: [{ value: 'A' }],
       pan: [''],
       nominee: [''],
       nom_relation: [''],
@@ -156,6 +157,7 @@ export class UTCustomerProfileComponent implements OnInit {
     this.getBlockMster();
     this.getServiceAreaMaster();
     this.onRetrieveClick();
+    this.f.status.setValue('A');
   }
 
   openModal(template: TemplateRef<any>) {
@@ -299,7 +301,7 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   public onDobChange(value: Date): number {
-    debugger;
+    // ;
     if (null !== value) {
       const timeDiff = Math.abs(Date.now() - value.getTime());
       const age = Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25)
@@ -308,8 +310,16 @@ export class UTCustomerProfileComponent implements OnInit {
     }
   }
 
+  public onPininput(event: any): void {
+    if (isNaN(event.target.value)) {
+      this.f.pin.setValue('');
+    }
+  }
+
   public SelectCustomer(cust: mm_customer): void {
-    debugger;
+    // ;
+    const dob = (null !== cust.dt_of_birth && '01/01/0001 00:00' === cust.dt_of_birth.toString()) ? null
+      : cust.dt_of_birth;
     this.selectedCustomer = cust;
     this.msg.sendcustomerCodeForKyc(this.selectedCustomer.cust_cd);
     this.onClearClick();
@@ -329,7 +339,7 @@ export class UTCustomerProfileComponent implements OnInit {
       guardian_name: cust.guardian_name,
       cust_dt: cust.cust_dt,
       old_cust_cd: cust.old_cust_cd,
-      dt_of_birth: cust.dt_of_birth, //formatDate(new Date(cust.dt_of_birth), 'yyyy-MM-dd', 'en'),
+      dt_of_birth: dob, // formatDate(new Date(cust.dt_of_birth), 'yyyy-MM-dd', 'en'),
       age: cust.age,
       sex: cust.sex,
       marital_status: cust.marital_status,
@@ -370,10 +380,11 @@ export class UTCustomerProfileComponent implements OnInit {
 
   public onNewClick(): void {
     this.onClearClick();
+    this.f.status.setValue('A');
   }
 
   public onSaveClick(): void {
-    debugger;
+    // ;
     if (!this.validateControls()) { return; }
     this.isLoading = true;
     const cust = this.mapFormGrpToCustMaster();
@@ -388,16 +399,21 @@ export class UTCustomerProfileComponent implements OnInit {
       cust.modified_by = this.sys.UserId;
       this.svc.addUpdDel<any>('UCIC/InsertCustomerDtls', cust).subscribe(
         res => {
-          this.custMstrFrm.patchValue({
-            cust_cd: res
-          });
-          cust.cust_cd = res;
-          this.selectedCustomer = cust;
-          UTCustomerProfileComponent.existingCustomers.push(cust);
-          this.HandleMessage(true, MessageType.Sucess,
-            cust.cust_cd + ', Customer created sucessfully');
-          this.msg.sendcustomerCodeForKyc(cust.cust_cd);
           this.isLoading = false;
+          if ((+res) > 0) {
+            this.custMstrFrm.patchValue({
+              cust_cd: res
+            });
+            cust.cust_cd = res;
+            this.selectedCustomer = cust;
+            UTCustomerProfileComponent.existingCustomers.push(cust);
+            this.HandleMessage(true, MessageType.Sucess,
+              cust.cust_cd + ', Customer created sucessfully');
+            this.msg.sendcustomerCodeForKyc(cust.cust_cd);
+          } else {
+            this.HandleMessage(true, MessageType.Error,
+              'Got ' + cust.cust_cd + 'customer code, Customer creation failed');
+          }
         },
         err => { this.isLoading = false; }
       );
@@ -409,12 +425,12 @@ export class UTCustomerProfileComponent implements OnInit {
             if (undefined !== UTCustomerProfileComponent.existingCustomers ||
               null !== UTCustomerProfileComponent.existingCustomers ||
               UTCustomerProfileComponent.existingCustomers.length > 0) {
-                const pos = UTCustomerProfileComponent.existingCustomers
+              const pos = UTCustomerProfileComponent.existingCustomers
                 .findIndex(e => e.cust_cd === cust.cust_cd);
-                if (pos >= 0){
-                  UTCustomerProfileComponent.existingCustomers.splice(pos, 1);
-                  UTCustomerProfileComponent.existingCustomers.push(cust);
-                }
+              if (pos >= 0) {
+                UTCustomerProfileComponent.existingCustomers.splice(pos, 1);
+                UTCustomerProfileComponent.existingCustomers.push(cust);
+              }
 
             } else {
               UTCustomerProfileComponent.existingCustomers.push(cust);
@@ -424,7 +440,7 @@ export class UTCustomerProfileComponent implements OnInit {
             this.msg.sendcustomerCodeForKyc(cust.cust_cd);
           } else {
             this.HandleMessage(true, MessageType.Warning,
-              cust.cust_cd + ', Could not update Customer');
+              cust.cust_cd + ', Could not update Customer, response recieved ' + res);
           }
           this.isLoading = false;
         },
@@ -434,24 +450,88 @@ export class UTCustomerProfileComponent implements OnInit {
   }
 
   validateControls(): boolean {
-    if (!Utils.ValidatePAN(this.f.pan.value)) {
-      this.HandleMessage(true, MessageType.Error, 'PAN is not valid');
-      return false;
+    this.showMsgs = [];
+    let trReturn = true;
+    if (null !== this.f.pan.value && this.f.pan.value.length > 0) {
+      if (!Utils.ValidatePAN(this.f.pan.value)) {
+        this.HandleMessage(true, MessageType.Error, 'PAN is not valid');
+        trReturn = false;
+      }
     }
-    debugger;
-    if (!Utils.ValidatePhone(this.f.phone.value)) {
-      this.HandleMessage(true, MessageType.Error, 'Phone number is not valid');
-      return false;
+    // // ;
+    if (null !== this.f.phone.value && this.f.phone.value.length > 0) {
+      if (!Utils.ValidatePhone(this.f.phone.value)) {
+        this.HandleMessage(true, MessageType.Error, 'Phone number is not valid');
+        trReturn = false;
+      }
+    } else {
+      this.HandleMessage(true, MessageType.Error, 'Phone number is mandatory');
+      trReturn = false;
     }
-    return true;
+
+    for (const name in this.custMstrFrm.controls) {
+      if (this.custMstrFrm.controls[name].invalid) {
+        switch (name) {
+          case 'dt_of_birth':
+            this.HandleMessage(true, MessageType.Error, 'Date of Birth is Mandatory');
+            break;
+          case 'cust_type':
+            this.HandleMessage(true, MessageType.Error, 'Customer Type is Mandatory');
+            break;
+          case 'first_name':
+            this.HandleMessage(true, MessageType.Error, 'First Name is Mandatory');
+            break;
+          case 'last_name':
+            this.HandleMessage(true, MessageType.Error, 'Last Name is Mandatory');
+            break;
+          case 'guardian_name':
+            this.HandleMessage(true, MessageType.Error, 'Guardian\'s Name is Mandatory');
+            break;
+          case 'sex':
+            this.HandleMessage(true, MessageType.Error, 'Sex of customer is Mandatory');
+            break;
+          case ' catg_cd':
+            this.HandleMessage(true, MessageType.Error, 'Category of customer is Mandatory');
+            break;
+          case 'community':
+            this.HandleMessage(true, MessageType.Error, 'Community of customer is Mandatory');
+            break;
+          case 'caste':
+            this.HandleMessage(true, MessageType.Error, 'Caste of customer is Mandatory');
+            break;
+          case 'block_cd':
+            this.HandleMessage(true, MessageType.Error, 'Block of customer Mandatory');
+            break;
+          case 'service_area_cd':
+            this.HandleMessage(true, MessageType.Error, 'Srvice are of customer is Mandatory');
+            break;
+          // case 'phone':
+          //   this.HandleMessage(true, MessageType.Error, 'Phone number is mandatory in correct format');
+          //   break;
+          case 'present_address':
+            this.HandleMessage(true, MessageType.Error, 'present address is Mandatory');
+            break;
+        }
+      }
+    }
+    if (this.showMsgs.length > 0) {
+      trReturn = false;
+    }
+
+    return trReturn;
+  }
+  private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
+    const showMsg = new ShowMessage();
+    showMsg.Show = show;
+    showMsg.Type = type;
+    showMsg.Message = message;
+    this.showMsgs.push(showMsg);
+  }
+  public RemoveMessage(rmMsg: ShowMessage) {
+    rmMsg.Show = false;
+    this.showMsgs.splice(this.showMsgs.indexOf(rmMsg), 1);
   }
 
-  private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
-    this.showMsg = new ShowMessage();
-    this.showMsg.Show = show;
-    this.showMsg.Type = type;
-    this.showMsg.Message = message;
-  }
   public onDelClick(): void {
     // delete the selected customer
     this.isLoading = true;
@@ -474,7 +554,7 @@ export class UTCustomerProfileComponent implements OnInit {
 
   public onClearClick(): void {
     this.custMstrFrm.reset();
-    this.showMsg = null;
+    this.showMsgs = []
     this.enableModifyAndDel = false;
     this.custMstrFrm.enable();
     this.f.cust_cd.disable();
@@ -559,7 +639,7 @@ export class UTCustomerProfileComponent implements OnInit {
     const name = this.fileToUpload.name; const size = this.fileToUpload.size;
     const extension = name.split('.').pop().toLowerCase();
 
-    if (extension.toUpperCase() !== 'JPG'){
+    if (extension.toUpperCase() !== 'JPG') {
       this.errMessage = 'Images with JPG file types allowed.';
       return;
     }
@@ -578,7 +658,7 @@ export class UTCustomerProfileComponent implements OnInit {
         // const imgWidth = rs.currentTarget['width'];
 
         // console.log(imgHeight, imgWidth);
-        debugger;
+        // ;
         // this.base64Image = e.target.result;
         let img = new kyc_sig();
         // console.log(this.base64Image);
@@ -588,7 +668,7 @@ export class UTCustomerProfileComponent implements OnInit {
         img.img_typ = imgType;
         img.created_by = this.sys.UserId;
         // img.img_cont_byte = null;
-        debugger;
+        // ;
         switch (imgType) {
           case 'PHOTO':
             this.PHOTO = img;
@@ -618,7 +698,7 @@ export class UTCustomerProfileComponent implements OnInit {
     reader.readAsDataURL(this.fileToUpload);
   }
   onSaveImgClick(): void {
-    debugger;
+    // ;
     if (this.PHOTO !== undefined && this.PHOTO !== null && this.PHOTO.img_cont.length > 1) {
       this.svc.addUpdDel('UCIC/WriteKycSig', this.PHOTO).subscribe(
         res => {

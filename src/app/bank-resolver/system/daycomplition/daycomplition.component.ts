@@ -34,7 +34,7 @@ export class DaycomplitionComponent implements OnInit {
 }
 
 dayComplete() {
-  debugger;
+  ;
   if (this.closingdata.invalid) {
     this.alertMsg = "Invalid Input.";
     return false;
@@ -57,10 +57,10 @@ private dayCompletionCall (clsDt :any,clsamt:any)
   pgp.gs_user_type = 'A';//TDB
   pgp.gs_user_id= localStorage.getItem('__userId');
   pgp.ad_prn_amt=parseFloat(clsamt);
-  debugger;
+  ;
   this.svc.addUpdDel<any>('Sys/W_DAY_CLOSE', pgp).subscribe(
     res => {
-      debugger;
+      ;
       this.isLoading = false;
       this.alertMsg = res.output;
       this.closingdata.setValue['closingbal']=0;
@@ -68,14 +68,14 @@ private dayCompletionCall (clsDt :any,clsamt:any)
       this.HandleMessage(true, MessageType.Error,this.alertMsg );
       else
       this.HandleMessage(true, MessageType.Error,this.alertMsg );
-      
+
     },
-    err => { debugger;  this.isLoading = false;}
+    err => { ;  this.isLoading = false;}
   );
 }
 
 private  convertDate(datestring:string):Date
-{  
+{
 var parts = datestring.match(/(\d+)/g);
 return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
 }

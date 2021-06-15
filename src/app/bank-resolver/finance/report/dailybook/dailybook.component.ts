@@ -20,7 +20,7 @@ export class DailybookComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('DailyCashBook') child: WebDataRocksPivot;
   //ReportUrl :SafeResourceUrl;
-  //UrlString:string ="http://localhost:63011/" 
+  //UrlString:string ="http://localhost:63011/"
   modalRef: BsModalRef;
   isOpenFromDp = false;
   isOpenToDp = false;
@@ -55,7 +55,7 @@ export class DailybookComponent implements OnInit {
     // private modalService: NgbModal,
     , private router: Router) {  }
   ngOnInit(): void {
-    debugger;
+    ;
     this.fromdate = this.sys.CurrentDate; // new Date(localStorage.getItem('__currentDate'));
     this.todate = this.sys.CurrentDate; // new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
@@ -109,9 +109,9 @@ export class DailybookComponent implements OnInit {
       // this.modalService.dismissAll(this.content);
       this.UrlString=this.svc.getReportUrl()
       this.UrlString=this.UrlString+"WebForm/Fin/DayBookViewer?"+"brn_cd="+this.sys.BranchCode+"&from_dt="+Utils.convertDtToString(this.fromdate)+"&to_dt="+Utils.convertDtToString(this.todate)+"&acc_cd="+localStorage.getItem('__cashaccountCD')
-      debugger;
+      ;
       this.isLoading = true;
-      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) 
+      this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
       this.modalRef.hide();
       setTimeout(() => {
         this.isLoading = false;
@@ -125,9 +125,9 @@ export class DailybookComponent implements OnInit {
   onPivotReady(DailyCashBook: WebDataRocksPivot): void {
     console.log("[ready] WebDataRocksPivot", this.child);
   }
-   
+
   onReportComplete(): void {
-    debugger;
+    ;
     if (!this.isLoading) return;
     this.prp.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     this.prp.from_dt = this.fromdate;
@@ -145,7 +145,7 @@ export class DailybookComponent implements OnInit {
     //   (data: tt_cash_account[]) => this.dailyCash = data,
     //   error => { console.log(error); },
     //   () => {
-    //     debugger;
+    //     ;
     //     let totalCr = 0;
     //     let totalDr = 0;
     //     let tmp_cash_account = new tt_cash_account();
@@ -287,7 +287,7 @@ export class DailybookComponent implements OnInit {
         [option]: value
       }
     });
-    debugger;
+    ;
     this.child.webDataRocks.refresh();
   }
   closeScreen() {

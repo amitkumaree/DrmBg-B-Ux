@@ -87,7 +87,7 @@ export class CashaccountComponent implements OnInit {
       // this.modalService.dismissAll(this.content);
       this.UrlString = this.svc.getReportUrl();
       this.UrlString = this.UrlString + 'WebForm/Fin/cashaccount?' + 'brn_cd=' + this.sys.BranchCode + '&from_dt=' +Utils.convertDtToString(this.fromdate) + '&to_dt=' + Utils.convertDtToString(this.todate) + '&acc_cd=' + localStorage.getItem('__cashaccountCD')
-      debugger;
+      ;
       this.isLoading = true;
       this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) // 20/01/2019
       this.modalRef.hide();
@@ -109,7 +109,7 @@ export class CashaccountComponent implements OnInit {
 
 
   // onReportComplete(): void {
-  //   debugger;
+  //   ;
   //   if (!this.isLoading) { return; }
   //   this.prp.brn_cd = this.sys.BranchCode;
   //   this.prp.from_dt = this.fromdate;
@@ -126,7 +126,7 @@ export class CashaccountComponent implements OnInit {
   //     (data: tt_cash_account[]) => this.dailyCash = data,
   //     error => { console.log(error); },
   //     () => {
-  //       debugger;
+  //       ;
   //       this.isLoading = false;
   //       let totalCr = 0;
   //       let totalDr = 0;
@@ -267,7 +267,7 @@ export class CashaccountComponent implements OnInit {
         [option]: value
       }
     });
-    debugger;
+    ;
     this.child.webDataRocks.refresh();
   }
 
@@ -288,11 +288,11 @@ export class CashaccountComponent implements OnInit {
       this.child.webDataRocks.refresh();
     });
   }
- 
+
 
   closeScreen() {
     this.router.navigate([localStorage.getItem('__bName') + '/la']);
   }
- 
+
 
 }

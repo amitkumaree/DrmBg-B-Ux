@@ -44,6 +44,7 @@ export class tm_loan_all extends baseModel {
   public comp_unit_no: number;
   public cust_name: string; // Extra
   public loan_acc_type: string; // Extra
+  public tot_share_holding: number;
 
 
 

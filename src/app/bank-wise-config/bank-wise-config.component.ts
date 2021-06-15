@@ -28,7 +28,7 @@ export class BankWiseConfigComponent implements OnInit {
   private getAllConfiguration() {
     this.confSvc.getAllConfiguration().then(
       res => {
-        debugger;
+        ;
         this.BC = res;
         // this.masterConfig = this.BC.filter(
         //   m => m.name === 'MasterConfig');
@@ -46,7 +46,7 @@ export class BankWiseConfigComponent implements OnInit {
   }
 
   navBankConfig(data1: string, data2: string, data3: string) {
-    debugger;
+    ;
     this.router.navigate(['/BankConfig'], {
       queryParams: { bankName: data1, bankUrl: data2 , bankDesc: data3}
     });

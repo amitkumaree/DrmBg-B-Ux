@@ -52,7 +52,7 @@ showPass = false;
         this.bankUrl = params['bankUrl'];
         this.bankDescUx = params['bankDesc'];
 
-        debugger;
+        ;
         this.getBankJsonConfigData(this.bankUrl);
 
 
@@ -64,10 +64,10 @@ showPass = false;
     {
       url = url + 'api/BankConfigMst';
 
-      debugger;
+      ;
       this.rstSvc.getBankJsonConfig<any>(url).subscribe(
         res => {
-          debugger;
+          ;
           this.bankConfigMst = res;
           // tslint:disable-next-line: triple-equals
           if ( this.bankConfigMst.bankname != this.bankDescUx)
@@ -86,7 +86,7 @@ showPass = false;
       this.spinner = true;
 
       let url = this.bankUrl + 'api/BankConfigMst';
-      debugger;
+      ;
       this.rstSvc.postBankJsonConfig<any>(url, this.bankConfigMst).subscribe(res => {
         this.getBankJsonConfigData(this.bankUrl);
              },
@@ -190,7 +190,7 @@ showPassword()
 
 showEvent(x: any)
 {
-  debugger;
+  ;
   console.log(x);
 }
 

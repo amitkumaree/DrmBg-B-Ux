@@ -15,7 +15,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private msg: InAppMessageService) {
       this.subscription = this.msg.gethideTitleOnHeader().subscribe(
         res => {
-          debugger;
+          ;
           if (res){
             this.hideScreenTitle();
           }
@@ -50,7 +50,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   getBankConfigMaster() {
     this.rstSvc.getAll<BankConfigMst>('BankConfigMst').subscribe(
       res => {
-        debugger;
+        ;
         console.log(res);
         this.bankConfig = res;
         this.showMenu = true;
@@ -83,7 +83,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   showChildMenuFor(menu: mainmenu): void {
-    debugger;
+    ;
     this.childMenu = menu;
     this.subMenu = null;
     this.showMenu = false;
@@ -93,7 +93,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   showSubChildMenuFor(submenu: submenu): void {
-    debugger;
+    ;
     this.subMenu = submenu;
     this.showMenu = false;
     this.showChildMenu = false;

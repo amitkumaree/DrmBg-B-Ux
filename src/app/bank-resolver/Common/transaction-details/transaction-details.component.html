@@ -63,6 +63,9 @@
     <button type="button" class="btn btn-link" *ngIf="showDenominationDtl" (click)="openModal(content)">
       Denomination Details
     </button>
+    <button type="button" class="btn btn-link" *ngIf="showTransferDtl" (click)="openModal(trfcontent)">
+      Transfer Details
+    </button>
     <ng-template #content>
       <div class="modal-header">
         <h4 class="modal-title pull-left">Denomination Details
@@ -85,6 +88,40 @@
               <td>&#8377;{{denomination.rupees}}</td>
               <td>{{denomination.count}}</td>
               <td>&#8377;{{denomination.total}}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><strong>Total</strong></td>
+              <td><strong>&#8377;{{totalOfDenomination}}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+    <ng-template #trfcontent>
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Transfer Details
+        </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Acc Typ & Acc No</th>
+              <th scope="col">GL Head</th>
+              <th scope="col">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let transfer of tranferDetails">
+              <td *ngIf="transfer.acc_type_cd > 0">{{transfer.acc_type_cd +' & ' + transfer.acc_num}}</td>
+              <td *ngIf="transfer.acc_type_cd === 0"></td>
+              <td *ngIf="transfer.acc_type_cd > 0"></td>
+              <td *ngIf="transfer.acc_type_cd === 0">{{transfer.acc_num}}</td>
+              <td>&#8377;{{transfer.amount}}</td>
             </tr>
             <tr>
               <td></td>

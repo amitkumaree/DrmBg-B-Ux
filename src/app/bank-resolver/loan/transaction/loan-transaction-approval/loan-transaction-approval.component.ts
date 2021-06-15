@@ -46,7 +46,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
   // tdDepTransRet: td_def_trans_trf[] = [];
 
   ngOnInit(): void {
-    debugger;
+    ;
     this.getAcctTypeMaster();
 
   }
@@ -63,7 +63,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
   }
 
   private getAcctTypeMaster(): void {
-    debugger;
+    ;
     this.isLoading = true;
     if (undefined !== LoanTransactionApprovalComponent.accType &&
       null !== LoanTransactionApprovalComponent.accType &&
@@ -104,7 +104,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
 
     this.svc.addUpdDel<any>('Loan/GetLoanData', tmLoanAll).subscribe(
       res => {
-        debugger;
+        ;
         loanOpnDm = res;
         this.selectedVm.loan = loanOpnDm;
         this.msg.sendCommonLoanTransactionInfo(res); // show transaction details
@@ -136,7 +136,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
       res => {
         acc = res[0];
         this.selectedVm.tm_deposit = acc;
-        debugger;
+        ;
         this.msg.sendCommonAcctInfo(acc);
         this.msg.sendCommonAccountNum(acc.acc_num);
         this.isLoading = false;
@@ -155,13 +155,13 @@ export class LoanTransactionApprovalComponent implements OnInit {
   }
 
   private GetUnapprovedDepTrans(): void {
-    debugger;
+    ;
     this.isLoading = true;
     this.tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     this.tdDepTrans.trans_type = 'L';
     this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', this.tdDepTrans).subscribe(
       res => {
-        debugger;
+        ;
         const tdDepTransRet = res as td_def_trans_trf[];
         this.vm = [];
         tdDepTransRet.forEach(element => {
@@ -200,7 +200,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
     //   }
     // }
 
-    debugger;
+    ;
     this.isLoading = true;
     let param = new p_loan_param();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
@@ -304,8 +304,17 @@ export class LoanTransactionApprovalComponent implements OnInit {
     }
   }
 
+  public acctNumberAndTrnCdFilter(searchValue: string): void {
+    if (null !== searchValue && '' !== searchValue) {
+      this.filteredVm = this.vm.filter(e => e.td_def_trans_trf.acc_num.includes(searchValue) ||
+        e.td_def_trans_trf.trans_cd.toString().includes(searchValue));
+    } else {
+      this.filteredVm = this.vm;
+    }
+  }
+
   public ShowOnlyRecovery(e: any): void {
-    debugger;
+    ;
     if (e.target.checked) {
       this.filteredVm = this.vm.filter(f => f.td_def_trans_trf.trans_type === 'R');
     } else {
@@ -314,7 +323,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
   }
 
   onDeleteClick(): void {
-    debugger;
+    ;
     if (!(confirm('Are you sure you want to Delete Transaction of Acc ' + this.selectedVm.tm_deposit.acc_num
       + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
       return;
@@ -359,7 +368,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
   //   this.tdDepTransGroup[i].open = !this.tdDepTransGroup[i].open;
   // }
   // OnSelectTransaction(ev: any) {
-  //   debugger;
+  //   ;
   //   this.elementRef.nativeElement.style.setProperty('--bkcolor', 'red');
   // }
 
