@@ -96,7 +96,7 @@
           </div>
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-4" *ngIf="refresh">
         <div class="12">
           <app-customer-info [mode1]="true" [mode2]="true" [title]="custTitle"></app-customer-info>
           <hr>
@@ -107,7 +107,7 @@
         </div>
 
       </div>
-      <div class="col-4">
+      <div class="col-4" *ngIf="refresh">
         <div class="12">
           <app-transaction-details></app-transaction-details>
           <hr>

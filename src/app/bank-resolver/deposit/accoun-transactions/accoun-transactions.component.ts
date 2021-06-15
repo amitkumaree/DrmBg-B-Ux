@@ -41,6 +41,7 @@ export class AccounTransactionsComponent implements OnInit {
   hideOnClose = false;
   disableSave = true;
   TrfTotAmt = 0;
+  refresh = false;
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
 
@@ -151,6 +152,7 @@ export class AccounTransactionsComponent implements OnInit {
     this.GetUnapprovedDepTrans();
     this.getDenominationList();
     this.getConstitutionList();
+    this.refresh = true;
   }
 
   processInterest(): void {
@@ -361,7 +363,9 @@ export class AccounTransactionsComponent implements OnInit {
     // this.f.oprn_cd.enable();
     this.f.acct_num.enable();
     this.f.oprn_cd.disable();
+    this.refresh = false;
     this.msg.sendCommonTmDepositAll(null);
+    this.refresh = true;
   }
 
   public onAccountNumTabOff(): void {
@@ -395,7 +399,9 @@ export class AccounTransactionsComponent implements OnInit {
           } else {
             this.disableOperation = false;
             this.accNoEnteredForTransaction = acc;
+            this.refresh = false;
             this.msg.sendCommonTmDepositAll(acc);
+            this.refresh = true;
             this.tdDefTransFrm.patchValue({
               acc_num: acc.acc_num,
             });
@@ -407,7 +413,9 @@ export class AccounTransactionsComponent implements OnInit {
       err => {
         this.f.oprn_cd.disable(); this.isLoading = false;
         console.log(err);
+        this.refresh = false;
         this.msg.sendCommonTmDepositAll(null);
+        this.refresh = true;
       }
     );
   }
@@ -424,7 +432,9 @@ export class AccounTransactionsComponent implements OnInit {
     this.showTransactionDtl = true;
     this.showTransMode = false;
     this.accNoEnteredForTransaction.ShowClose = false;
+    this.refresh = false;
     this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
+    this.refresh = true;
     // this.msg.sendShdowBalance(0);
     this.td.amount.setValue(null);
 
@@ -451,7 +461,9 @@ export class AccounTransactionsComponent implements OnInit {
       this.transType.Description = 'Close';
       this.accNoEnteredForTransaction.ShowClose = true;
       // this.accNoEnteredForTransaction.acc_close_dt = new Date();
+      this.refresh = false;
       this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
+      this.refresh = true;
       this.tdDefTransFrm.patchValue({
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key,
@@ -484,7 +496,9 @@ export class AccounTransactionsComponent implements OnInit {
       this.hideOnClose = true;
       // this.accNoEnteredForTransaction.acc_close_dt = new Date();
       // console.log(this.accNoEnteredForTransaction);
+      this.refresh = false;
       this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
+      this.refresh = true;
       this.tdDefTransFrm.patchValue({
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key,
@@ -715,7 +729,7 @@ export class AccounTransactionsComponent implements OnInit {
       this.checkEnteredAmt();
     }
 
-    this.td_deftranstrfList[0].amount = this.td.amount.value;
+    // this.td_deftranstrfList[0].amount = this.td.amount.value;
   }
 
   checkEnteredAmt(): void {
@@ -757,7 +771,7 @@ export class AccounTransactionsComponent implements OnInit {
         return;
       }
     }
-    this.td_deftranstrfList[0].amount = this.td.amount.value;
+    // this.td_deftranstrfList[0].amount = this.td.amount.value;
   }
 
   onSaveClick(): void {
@@ -772,6 +786,20 @@ export class AccounTransactionsComponent implements OnInit {
       return;
     }
 
+    if (this.td.trf_type.value === 'C' && this.denominationGrandTotal !== (+this.td.amount.value)) {
+      this.HandleMessage(true, MessageType.Error,
+        `Denomination total amount ₹${this.denominationGrandTotal}, ` +
+        ` do not match with transaction amount ₹${this.td.amount.value}`);
+      return;
+    }
+
+    if (this.td.trf_type.value === 'T' && this.TrfTotAmt !== (+this.td.amount.value)) {
+      this.HandleMessage(true, MessageType.Error,
+        `Transfer total amount ₹${this.TrfTotAmt}, ` +
+        ` do not match with transaction amount ₹${this.td.amount.value}`);
+      return;
+    }
+
     this.isLoading = true;
     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     const saveTransaction = new AccOpenDM();
@@ -783,17 +811,25 @@ export class AccounTransactionsComponent implements OnInit {
     if (this.td.trf_type.value === 'C') {
       saveTransaction.tmdenominationtrans = this.tm_denominationList;
     } else if (this.td.trf_type.value === 'T') {
-
+      let i = 0;
       this.td_deftranstrfList.forEach(e => {
         const tdDefTransAndTranfer = this.mappTddefTransAndTransFrFromFrm();
         if (e.trans_type === 'cust_acc') {
           tdDefTransAndTranfer.acc_type_cd = +e.cust_acc_type;
           tdDefTransAndTranfer.acc_num = e.cust_acc_number;
           tdDefTransAndTranfer.acc_name = e.cust_name;
+          tdDefTransAndTranfer.instrument_num = e.instrument_num;
+          tdDefTransAndTranfer.acc_cd = e.acc_cd;
+          tdDefTransAndTranfer.remarks = 'D';
+          tdDefTransAndTranfer.disb_id = ++i;
         } else {
-          tdDefTransAndTranfer.acc_type_cd = 0;
-          tdDefTransAndTranfer.acc_num = e.gl_acc_code;
+          tdDefTransAndTranfer.acc_type_cd = +e.gl_acc_code;
+          tdDefTransAndTranfer.acc_num = '0000';
           tdDefTransAndTranfer.acc_name = e.gl_acc_desc;
+          tdDefTransAndTranfer.instrument_num = e.instrument_num;
+          tdDefTransAndTranfer.acc_cd = +e.gl_acc_code;
+          tdDefTransAndTranfer.remarks = 'X';
+          tdDefTransAndTranfer.disb_id = ++i;
         }
         tdDefTransAndTranfer.amount = e.amount;
         saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
@@ -1064,6 +1100,7 @@ export class AccounTransactionsComponent implements OnInit {
   // }
 
   onResetClick(): void {
+    this.refresh = false;
     this.accTransFrm.reset();
     this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
     // this.getOperationMaster();
@@ -1072,7 +1109,7 @@ export class AccounTransactionsComponent implements OnInit {
     this.msg.sendCommonTmDepositAll(null);
     this.tm_denominationList = [];
     this.td_deftranstrfList = [];
-
+    this.refresh = true;
   }
 
   addDenomination() {
@@ -1157,11 +1194,10 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   setDebitAccDtls(tdDefTransTrnsfr: td_def_trans_trf) {
-    ;
     if (tdDefTransTrnsfr.cust_acc_type === undefined
       || tdDefTransTrnsfr.cust_acc_type === null
       || tdDefTransTrnsfr.cust_acc_type === '') {
-      this.HandleMessage(true, MessageType.Warning, 'Account Type in Transfer Details can not be blank');
+      this.HandleMessage(true, MessageType.Error, 'Account Type in Transfer Details can not be blank');
       tdDefTransTrnsfr.cust_acc_number = null;
       return;
     }
@@ -1190,7 +1226,7 @@ export class AccounTransactionsComponent implements OnInit {
         this.isLoading = false;
 
         if (temp_deposit_list.length === 0) {
-          this.HandleMessage(true, MessageType.Warning, 'Invalid Account Number in Transfer Details');
+          this.HandleMessage(true, MessageType.Error, 'Invalid Account Number in Transfer Details');
           tdDefTransTrnsfr.cust_acc_number = null;
           return;
         }
