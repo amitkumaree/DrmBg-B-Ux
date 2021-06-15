@@ -76,6 +76,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   sancdtls : tm_loan_sanction_dtls[] =[];
   installmenttypeList : mm_installment_type[]=[];
   denominationGrandTotal = 0;
+  transferGrandTotal =0;
 
   ngOnInit(): void {
     this.isLoading = false;
@@ -448,6 +449,7 @@ export class LoanaccountTransactionComponent implements OnInit {
           this.td_deftranstrfList.push(temp_deftranstrf);
           this.tm_denominationList =[];
           this.denominationGrandTotal=0
+          this.transferGrandTotal=0
           // const temp_denomination = new tm_denomination_trans();
           // temp_denomination.brn_cd = localStorage.getItem('__brnCd');
           // temp_denomination.trans_dt = this.sys.CurrentDate;
@@ -1192,7 +1194,41 @@ export class LoanaccountTransactionComponent implements OnInit {
   openModal(template: TemplateRef<any>) {
     this.msg.sendCommonAccountNum('9');
     this.modalRef = this.modalService.show(template);
-  }  
+  } 
+  
+  
+  addTransfer() {
+    debugger;
+    let alreadyHasEmptyTransferItem = false;
+    if (this.td_deftranstrfList.length >= 1) {
+      // check if tm_denominationList has any blank items
+      this.td_deftranstrfList.forEach(element => {
+        if (!alreadyHasEmptyTransferItem) {
+          if ((undefined === element.cust_acc_type
+            && undefined === element.cust_acc_number
+            && undefined === element.amount) 
+            || (undefined === element.gl_acc_code && undefined === element.amount)) { alreadyHasEmptyTransferItem = true; }
+            }
+      });
+    }
+    if (alreadyHasEmptyTransferItem) { return; }
+
+    const temp_transfertrf = new td_def_trans_trf();
+    temp_transfertrf.brn_cd = localStorage.getItem('__brnCd');
+    temp_transfertrf.trans_dt = this.sys.CurrentDate;
+    this.td_deftranstrfList.push(temp_transfertrf);
+  }
+
+  removeTransfer() {
+    if (this.td_deftranstrfList.length >= 1) {
+      this.td_deftranstrfList.pop();
+      this.transferGrandTotal = 0;
+      for (let l of this.td_deftranstrfList) {
+        this.transferGrandTotal = this.transferGrandTotal + l.amount;
+      }
+    }
+  }
+
 }
 export class DynamicSelect {
   key: any;

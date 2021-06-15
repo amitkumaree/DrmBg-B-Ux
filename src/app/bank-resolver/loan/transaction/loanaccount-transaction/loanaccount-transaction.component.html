@@ -334,8 +334,6 @@
                       <option [value]="l.value" *ngFor="let l of denominationList">{{l.rupees}}</option>
                     </select>
                   </div>
-
-
                   <div class="form-group col-3">
                     <small for="deno_count">Count</small>
                     <input [(ngModel)]="t1.count" type="text" style="height:25px"
@@ -415,9 +413,6 @@
                   </div>
 
                 </div>
-              </section>
-
-              <section *ngFor="let l of td_deftranstrfList; let i=index">
                 <div class="form-row">
                   <div class="form-group col-2">
                     <small for="debit_gl_ac">GL Code</small>
@@ -439,6 +434,54 @@
                   </div>
                 </div>
               </section>
+
+              <!-- <section *ngFor="let l of td_deftranstrfList; let i=index">
+                <div class="form-row">
+                  <div class="form-group col-2">
+                    <small for="debit_gl_ac">GL Code</small>
+                    <input type="text" (focusout)="checkAndSetDebitAccType('gl_acc', l.gl_acc_code)"
+                      [(ngModel)]="l.gl_acc_code" style="height:25px"
+                      class="form-control form-control-sm text-capitalize" id="debit_gl_ac">
+                  </div>
+
+                  <div class="form-group col-4">
+                    <small for="debit_gl_head">GL Head</small>
+                    <input type="text" disabled [(ngModel)]="l.gl_acc_desc" style="height:25px"
+                      class="form-control form-control-sm text-capitalize" id="debit_gl_head">
+                  </div>
+
+                  <div class="form-group col-3">
+                    <small for="Inst_num">Instrument Num</small>
+                    <input type="text" style="height:25px" class="form-control form-control-sm text-capitalize"
+                      id="Inst_num">
+                  </div>
+                </div>
+              </section> -->
+
+              <div class="form-row">
+                <div class="form-group col-8" style="text-align: right;">
+                  <label class="form-check-label"> <small> Total</small> </label>
+                </div>
+
+                <div class="form-group col-4">
+                  <input [(ngModel)]='transferGrandTotal' disabled type="text" style="height:25px"
+                    class="form-control form-control-sm text-capitalize" id="total" placeholder="Total">
+                </div>
+              </div>
+
+              <div class="text-right mb-3">
+                <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm"
+                  (click)="addTransfer()">
+                  <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                </button>
+
+                <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm"
+                  (click)="removeTransfer()">
+                  <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                </button>
+              </div>
+
+
             </div>
           </div>
         </div>
