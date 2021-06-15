@@ -215,6 +215,10 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
           if (null !== res && Object.keys(res).length !== 0) {
             this.tranferDetails = res;
             this.showTransferDtl = true;
+            this.totalOfDenomination = 0;
+            this.tranferDetails.forEach(e => {
+              this.totalOfDenomination += (+e.amount);
+            });
             // this.tmDenominationTransLst = res;
             // this.tmDenominationTransLst.forEach(element => {
             //   this.totalOfDenomination += element.total;

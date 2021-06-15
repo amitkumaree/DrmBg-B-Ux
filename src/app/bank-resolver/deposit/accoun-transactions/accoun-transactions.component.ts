@@ -40,6 +40,7 @@ export class AccounTransactionsComponent implements OnInit {
   showTransactionDtl = false;
   hideOnClose = false;
   disableSave = true;
+  TrfTotAmt = 0;
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
 
@@ -790,14 +791,14 @@ export class AccounTransactionsComponent implements OnInit {
           tdDefTransAndTranfer.acc_num = e.cust_acc_number;
           tdDefTransAndTranfer.acc_name = e.cust_name;
         } else {
-          tdDefTransAndTranfer.gl_acc_code = e.gl_acc_code;
-          tdDefTransAndTranfer.gl_acc_desc = e.gl_acc_desc;
+          tdDefTransAndTranfer.acc_type_cd = 0;
+          tdDefTransAndTranfer.acc_num = e.gl_acc_code;
+          tdDefTransAndTranfer.acc_name = e.gl_acc_desc;
         }
         tdDefTransAndTranfer.amount = e.amount;
         saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
       });
 
-      // TODO ask Abhi da if we need to create mutiple transfer
       const tmTrnsfr = new tm_transfer();
       tmTrnsfr.brn_cd = this.sys.BranchCode;
       tmTrnsfr.trf_dt = this.sys.CurrentDate;
@@ -1311,10 +1312,15 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   checkDebitBalance(tdDefTransTrnsfr: td_def_trans_trf) {
-    ;
-
+    this.HandleMessage(false);
     if (tdDefTransTrnsfr.amount === undefined
       || tdDefTransTrnsfr.amount === null) {
+      return;
+    }
+
+    if ((+tdDefTransTrnsfr.amount) < 0) {
+      this.HandleMessage(true, MessageType.Error, 'Negative amount can not be entered.');
+      tdDefTransTrnsfr.amount = 0;
       return;
     }
 
@@ -1329,33 +1335,15 @@ export class AccounTransactionsComponent implements OnInit {
       return;
     }
 
-    // if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null) {
-    //   this.HandleMessage(true, MessageType.Warning, 'Principal Amount is blank');
-    //   this.td_deftranstrfList[0].amount = null;
-    //   return;
-    // }
-
-    // if (this.tm_deposit.prn_amt.toString() !== amount.toString()) {
-    //   this.HandleMessage(true, MessageType.Warning, 'Debit Amount is not matching with Principal Amount');
-    //   this.td_deftranstrfList[0].amount = null;
-    //   return;
-    // }
 
     if (tdDefTransTrnsfr.clr_bal === undefined
       || tdDefTransTrnsfr.clr_bal === null) {
       tdDefTransTrnsfr.clr_bal = 0;
     }
-    ;
-    // if (parseInt(this.td_deftranstrfList[0].clr_bal.toString()) < parseInt(amount.toString())) {
-    //   this.HandleMessage(true, MessageType.Warning, 'Insufficient Balance');
-    //   this.td_deftranstrfList[0].amount = null;
-    //   return;
-    // }
-
+    this.sumTransfer();
   }
 
   public addTransfer(): void {
-    debugger;
     let emptyTranTranferExist = false;
     this.td_deftranstrfList.forEach(e => {
       if (undefined !== e && null !== e
@@ -1365,6 +1353,18 @@ export class AccounTransactionsComponent implements OnInit {
     });
     if (!emptyTranTranferExist) {
       this.td_deftranstrfList.push(new td_def_trans_trf());
+    }
+  }
+
+  private sumTransfer(): void {
+    this.TrfTotAmt = 0;
+    this.td_deftranstrfList.forEach(e => {
+      this.TrfTotAmt += (+e.amount);
+    });
+
+    if ((+this.td.amount.value) < this.TrfTotAmt) {
+      this.HandleMessage(true, MessageType.Error, 'Total Amount can not be more than Transaction amount');
+      this.td_deftranstrfList[(this.td_deftranstrfList.length - 1)].amount = 0;
     }
   }
 
@@ -1379,6 +1379,7 @@ export class AccounTransactionsComponent implements OnInit {
         this.td_deftranstrfList.splice(i, 1);
       }
     });
+    this.sumTransfer();
   }
   private resetTransfer() {
     const td_deftranstrf: td_def_trans_trf[] = [];

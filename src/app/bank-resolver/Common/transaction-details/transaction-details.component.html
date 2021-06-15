@@ -117,15 +117,17 @@
           </thead>
           <tbody>
             <tr *ngFor="let transfer of tranferDetails">
-              <td>{{transfer.acc_type_cd +' & ' + transfer.acc_num}}</td>
-              <td>{{transfer.count}}</td>
+              <td *ngIf="transfer.acc_type_cd > 0">{{transfer.acc_type_cd +' & ' + transfer.acc_num}}</td>
+              <td *ngIf="transfer.acc_type_cd === 0"></td>
+              <td *ngIf="transfer.acc_type_cd > 0"></td>
+              <td *ngIf="transfer.acc_type_cd === 0">{{transfer.acc_num}}</td>
               <td>&#8377;{{transfer.amount}}</td>
             </tr>
-            <!-- <tr>
+            <tr>
               <td></td>
               <td><strong>Total</strong></td>
               <td><strong>&#8377;{{totalOfDenomination}}</strong></td>
-            </tr> -->
+            </tr>
           </tbody>
         </table>
       </div>
