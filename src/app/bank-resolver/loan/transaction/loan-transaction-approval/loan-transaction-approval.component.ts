@@ -54,6 +54,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
   public onClickRefreshList() {
+    this.HandleMessage(false);
     this.msg.sendCommonTransactionInfo(null);
     this.msg.sendCommonCustInfo(null);
     this.msg.sendCommonAcctInfo(null);
@@ -189,6 +190,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
   }
 
   public onApproveClick(): void {
+    debugger;
     // if (this.selectedVm.td_def_trans_trf.trans_type.toLocaleLowerCase() === 'W') {
     //   if (this.selectedVm.tm_deposit.acc_type_cd === 1 ||
     //     this.selectedVm.tm_deposit.acc_type_cd === 7) {
@@ -234,23 +236,22 @@ export class LoanTransactionApprovalComponent implements OnInit {
 
         // ON SUCCESS
         this.isLoading = true;
-        let trnParam = new p_gen_param();
+        const trnParam = new p_gen_param();
         trnParam.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
         trnParam.ad_trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
         // const dt = this.sys.CurrentDate;
         trnParam.adt_trans_dt = this.sys.CurrentDate;
-        trnParam.ad_acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
-        trnParam.as_acc_num = this.selectedVm.td_def_trans_trf.acc_num;
-        trnParam.flag = this.selectedVm.td_def_trans_trf.trans_type === 'D' ? 'D' : 'W';
+        // trnParam.ad_acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
+        // trnParam.as_acc_num = this.selectedVm.td_def_trans_trf.acc_num;
+        trnParam.flag = this.selectedVm.td_def_trans_trf.trans_type === 'R' ? 'D' : 'W';
         trnParam.gs_user_id = this.sys.UserId;
-        this.svc.addUpdDel<any>('Deposit/ApproveAccountTranaction', trnParam).subscribe(
+        this.svc.addUpdDel<any>('Loan/ApproveLoanAccountTranaction', trnParam).subscribe(
           res => {
             this.isLoading = false;
             if (res === 0) {
               this.selectedVm.td_def_trans_trf.approval_status = 'A';
-              this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
-                + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
-                + ' is approved.');
+              this.HandleMessage(true, MessageType.Sucess,
+                `Transaction with Transancation Cd ${this.selectedVm.td_def_trans_trf.trans_cd} is approved.`);
               setTimeout(() => {
                 this.onClickRefreshList();
               }, 3000);

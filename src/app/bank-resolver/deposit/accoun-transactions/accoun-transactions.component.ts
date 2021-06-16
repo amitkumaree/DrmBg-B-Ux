@@ -385,12 +385,19 @@ export class AccounTransactionsComponent implements OnInit {
     acc.brn_cd = this.sys.BranchCode;
     this.svc.addUpdDel<tm_depositall>('Deposit/GetDepositWithChild', acc).subscribe(
       res => {
+        debugger;
         acc = res[0];
         if (undefined === acc) {
           this.HandleMessage(true, MessageType.Error,
             'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
           this.onResetClick();
         } else {
+          if (this.checkUnaprovedTransactionExixts()) {
+            this.HandleMessage(true, MessageType.Error,
+              `Un-approved Transaction already exists for the Account ${this.f.acct_num.value}`);
+            this.onResetClick();
+            return;
+          }
           /* check if account is not closed */
           if (acc.acc_status.toUpperCase() === 'C') {
             this.HandleMessage(true, MessageType.Error,
@@ -481,7 +488,7 @@ export class AccounTransactionsComponent implements OnInit {
         const chDt = Utils.convertStringToDt(this.accNoEnteredForTransaction.mat_dt.toString()).getTime()
         if (chDt > cDt) {
           this.HandleMessage(true, MessageType.Error,
-            'Can not re-new, account number ' + this.f.acct_num.value + ' it\'s not matured yet.');
+            `Can not re-new, account number ${this.f.acct_num.value} it\'s not matured yet.`);
           this.onResetClick();
           return;
         }
@@ -639,7 +646,7 @@ export class AccounTransactionsComponent implements OnInit {
   private checkUnaprovedTransactionExixts(): boolean {
     this.GetUnapprovedDepTrans();
     const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
-      === this.td.acc_num.value)[0];
+      === this.f.acct_num.value.toString())[0];
 
     if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
       return false;
