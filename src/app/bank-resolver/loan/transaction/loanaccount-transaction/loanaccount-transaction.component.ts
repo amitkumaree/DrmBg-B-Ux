@@ -416,7 +416,24 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   public onAccountNumTabOff(): void {
-    ;
+    debugger;
+    if (this.checkUnaprovedTransactionExixts( this.f.acct_num.value)) {
+      this.HandleMessage(true, MessageType.Error,
+        'Un-approved Transaction already exists for the Account ' + this.f.acct_num.value);
+        const td_deftranstrf: td_def_trans_trf[] = [];
+        this.td_deftranstrfList = td_deftranstrf;
+        let temp_deftranstrf = new td_def_trans_trf()
+        this.td_deftranstrfList.push(temp_deftranstrf);
+        this.tm_denominationList =[];
+        this.denominationGrandTotal=0
+        this.transferGrandTotal=0
+        this.TrfTotAmt=0
+        this.tdDefTransFrm.reset();
+        this.accDtlsFrm.reset();
+        this.showTransactionDtl=false;
+        this.disableOperation = true;
+      return;
+   }
     this.f.oprn_cd.disable();
     this.disableOperation = true;
     this.showTranferType = true;
@@ -451,6 +468,7 @@ export class LoanaccountTransactionComponent implements OnInit {
           this.tm_denominationList =[];
           this.denominationGrandTotal=0
           this.transferGrandTotal=0
+          this.TrfTotAmt=0
           // const temp_denomination = new tm_denomination_trans();
           // temp_denomination.brn_cd = localStorage.getItem('__brnCd');
           // temp_denomination.trans_dt = this.sys.CurrentDate;
@@ -521,7 +539,12 @@ export class LoanaccountTransactionComponent implements OnInit {
        this.transType.Description = 'Disbursement';
        this.tdDefTransFrm.patchValue({
          trans_type: this.transType.Description,
-         trans_type_key: this.transType.key
+         trans_type_key: this.transType.key,
+         share : 0,
+         comm:0,
+         svcchrg:0,
+         saleform:0,
+         insurence:0    
        });
        this.showTransMode = true;
        this.isDisburs=true;
@@ -617,10 +640,10 @@ export class LoanaccountTransactionComponent implements OnInit {
     }
   }
 
-  private checkUnaprovedTransactionExixts(): boolean {
+  private checkUnaprovedTransactionExixts(acc_num :string): boolean {
     this.GetUnapprovedDepTrans();
     const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
-      === this.td.acc_num.value)[0];
+      === acc_num.toString())[0];
 
     if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
       return false;
@@ -778,7 +801,7 @@ export class LoanaccountTransactionComponent implements OnInit {
        return;
      }
 
-     if (this.checkUnaprovedTransactionExixts()) {
+     if (this.checkUnaprovedTransactionExixts(this.td.acc_num.value)) {
         this.HandleMessage(true, MessageType.Error,
           'Un-approved Transaction already exists for the Account ' + this.td.acc_num.value);
         return;
@@ -791,11 +814,6 @@ export class LoanaccountTransactionComponent implements OnInit {
      if (this.td.trf_type.value === 'C') {
        saveTransaction.tmdenominationtrans = this.tm_denominationList;
      } else if (this.td.trf_type.value === 'T') {
-      // const tdDefTransAndTranfer = this.mappTddefTransFromFrm();
-      // tdDefTransAndTranfer.acc_num = this.td_deftranstrfList[0].cust_acc_number;
-      // tdDefTransAndTranfer.acc_name = this.td_deftranstrfList[0].cust_name;
-      // tdDefTransAndTranfer.amount = this.td_deftranstrfList[0].amount;
-      // saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
        let i=0
        this.td_deftranstrfList.forEach(e => {
         const tdDefTransAndTranfer = this.mappTddefTransAndTransFrFromFrm();
