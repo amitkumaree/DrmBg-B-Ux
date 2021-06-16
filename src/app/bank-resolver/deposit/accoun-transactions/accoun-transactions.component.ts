@@ -385,7 +385,7 @@ export class AccounTransactionsComponent implements OnInit {
     acc.brn_cd = this.sys.BranchCode;
     this.svc.addUpdDel<tm_depositall>('Deposit/GetDepositWithChild', acc).subscribe(
       res => {
-        debugger;
+        this.isLoading = false;
         acc = res[0];
         if (undefined === acc) {
           this.HandleMessage(true, MessageType.Error,
@@ -415,7 +415,6 @@ export class AccounTransactionsComponent implements OnInit {
             this.f.oprn_cd.enable();
           }
         }
-        this.isLoading = false;
       },
       err => {
         this.f.oprn_cd.disable(); this.isLoading = false;
