@@ -110,17 +110,18 @@
         <table class="table table-sm table-hover">
           <thead>
             <tr>
-              <th scope="col">Acc Typ & Acc No</th>
+              <th scope="col">Acc Typ / Acc No</th>
               <th scope="col">GL Head</th>
               <th scope="col">Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let transfer of tranferDetails">
-              <td *ngIf="transfer.acc_num !== '0000'">{{transfer.acc_type_cd +' & ' + transfer.acc_num}}</td>
+              <td *ngIf="transfer.acc_num !== '0000'">{{transfer.acc_type_cd +' - ' +
+                transfer.remarks +' / ' +transfer.created_by + '(' +transfer.acc_num + ')'}}</td>
               <td *ngIf="transfer.acc_num === '0000'"></td>
               <td *ngIf="transfer.acc_num !== '0000'"></td>
-              <td *ngIf="transfer.acc_num === '0000'">{{transfer.acc_type_cd}}</td>
+              <td *ngIf="transfer.acc_num === '0000'">{{transfer.acc_type_cd + ' - ' + transfer.acc_name}}</td>
               <td>&#8377;{{transfer.amount}}</td>
             </tr>
             <tr>

@@ -97,8 +97,8 @@
                 <option value="Q">Cheque/Draft</option>
               </select>
             </div>
-            <div class="form-group col-2" *ngIf="showTranferType">
-              <small for="trf_type">Transfer Type</small>
+            <div class="form-group col-2">
+              <small for="trf_type">Transfer Type <span class="text-danger">*</span></small>
               <select id="trf_type" class="form-control form-control-sm" formControlName="trf_type"
                 (change)="onTransTypeChange()">
                 <option *ngIf="operations" disabled>Choose</option>
@@ -106,18 +106,38 @@
                 <option *ngIf="operations" value="T">Transfer</option>
               </select>
             </div>
-            <div class="form-group col-2" *ngIf="!hideOnRenewal">
+            <div class="form-group col-2" *ngIf="!showOnRenewal && !showOnClose">
               <small for="amount">Amount <span class="text-danger">*</span> </small>
               <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
                 (change)="onAmtChng()">
             </div>
-            <div class="form-group col-2" *ngIf="hideOnRenewal">
-              <small for="amount" *ngIf="hideOnRenewal">Principal Amt <span class="text-danger">*</span> </small>
+            <div class="form-group col-3" *ngIf="showOnRenewal || showOnClose">
+              <small for="amount">Principal Amt <span class="text-danger">*</span> </small>
               <input type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
                 (focusout)="onAmtChngDuringRenewal()">
             </div>
+            <div class="form-group col-2" *ngIf="showOnClose">
+              <small for="curr_intt_recov">Interest</small>
+              <input type="text" (change)="inttCalOnClose()" class="form-control form-control-sm"
+              formControlName="curr_intt_recov" id="curr_intt_recov">
+            </div>
+            <div class="form-group col-2" *ngIf="showOnClose">
+              <small for="ovd_intt_recov">Default Penalty</small>
+              <input type="text" (change)="inttCalOnClose()" class="form-control form-control-sm"
+              formControlName="ovd_intt_recov" id="ovd_intt_recov">
+            </div>
+            <div class="form-group col-2" *ngIf="showOnClose">
+              <small for="curr_prn_recov">Bonus</small>
+              <input type="text" (change)="inttCalOnClose()" class="form-control form-control-sm"
+              formControlName="curr_prn_recov" id="curr_prn_recov">
+            </div>
+            <div class="form-group col-2" *ngIf="showOnClose">
+              <small for="td_def_mat_amt">Maturity Value</small>
+              <input type="text" disabled class="form-control form-control-sm"
+              formControlName="td_def_mat_amt" id="td_def_mat_amt">
+            </div>
           </div>
-          <div class="form-row" *ngIf="hideOnRenewal">
+          <div class="form-row" *ngIf="showOnRenewal">
             <div class="form-group col-3">
               <small for="constitution_cd">Constitution</small>
               <input type="text" class="form-control form-control-sm" formControlName="constitution_cd"
@@ -286,7 +306,7 @@
                   <div class="form-group col-3">
                     <small for="debit_ac_no">Account Number</small>
                     <input type="text" [(ngModel)]="l.cust_acc_number"
-                      (focusout)="setDebitAccDtls( l)" [disabled]="undefined !== l.gl_acc_code && l.gl_acc_code.length > 0"
+                      (focusout)="setDebitAccDtls(l)" [disabled]="undefined !== l.gl_acc_code && l.gl_acc_code.length > 0"
                       class="form-control form-control-sm text-capitalize" id="debit_ac_no">
                   </div>
 

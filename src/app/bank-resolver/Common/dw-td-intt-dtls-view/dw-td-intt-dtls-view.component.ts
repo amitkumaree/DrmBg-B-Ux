@@ -14,6 +14,7 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
   constructor(private svc: RestService, private msg: InAppMessageService) {
     this.subscription = this.msg.getCommonAcctInfo().subscribe(
       res => {
+        debugger;
         if (null !== res && undefined !== res &&
           res.cust_cd !== 0) {
           this.acctDtls = res;
@@ -41,6 +42,7 @@ export class DwTdInttDtlsViewComponent implements OnInit, OnDestroy {
       tdIntDtl.acc_num = this.acctDtls.acc_num;
       this.svc.addUpdDel<any>('Deposit/GetInttDetails', tdIntDtl).subscribe(
         res => {
+          debugger;
           this.interestDetails = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
         },
         err => { }

@@ -56,6 +56,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.showMenu = true;
         this.showChildMenu = false;
         this.showSubMenu = false;
+        // TODO roles if required.
       },
       err => { }
     )
