@@ -154,7 +154,6 @@ export class AccounTransactionsComponent implements OnInit {
     this.resetTransfer();
     this.getAccountTypeList();
     this.getCustomerList();
-    this.GetUnapprovedDepTrans();
     this.getDenominationList();
     this.getConstitutionList();
     this.resetAccDtlsFrmFormData();
@@ -499,19 +498,6 @@ export class AccounTransactionsComponent implements OnInit {
       }
     );
   }
-  /** silently bring all the unapproved transaction
-   * silently because it will be needed during save
-   */
-  private GetUnapprovedDepTrans(): void {
-    const tdDepTrans = new td_def_trans_trf();
-    tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
-    this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', tdDepTrans).subscribe(
-      res => {
-        this.unApprovedTransactionLst = res;
-      },
-      err => { this.isLoading = false; }
-    );
-  }
 
   getCustomerList() {
     const cust = new mm_customer();
@@ -647,13 +633,6 @@ export class AccounTransactionsComponent implements OnInit {
       this.onResetClick();
       return false;
     }
-    /* check if there any unapproved transaction exixits already */
-    if (this.checkUnaprovedTransactionExixts()) {
-      this.HandleMessage(true, MessageType.Error,
-        `Un-approved Transaction already exists for the Account ${this.f.acct_num.value}`);
-      this.onResetClick();
-      return false;
-    }
     /* check if account is not closed */
     if (acc.acc_status.toUpperCase() === 'C') {
       this.HandleMessage(true, MessageType.Error,
@@ -711,13 +690,39 @@ export class AccounTransactionsComponent implements OnInit {
     this.showTransMode = false;
     this.accNoEnteredForTransaction.ShowClose = false;
     this.td.amount.enable();
-    // this.refresh = false;
-    // this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
-    // this.refresh = true;
-    // this.msg.sendShdowBalance(0);
     this.td.amount.setValue(null);
 
-    const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
+    /* check if there any unapproved transaction
+    exixits already for non saving accounts*/
+    const accTypCode = +this.f.acc_type_cd.value;
+    const selectedOperation = this.operations.filter
+      (e => e.oprn_cd === +this.f.oprn_cd.value)[0];
+    if (accTypCode === 1 &&
+      selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') { } else {
+      const tdDepTrans = new td_def_trans_trf();
+      tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
+      this.isLoading = true;
+      this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', tdDepTrans).subscribe(
+        res => {
+          if (res.length > 0) {
+            this.isLoading = false;
+            this.unApprovedTransactionLst = res;
+            const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
+              === this.f.acct_num.value.toString())[0];
+
+            if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) { } else {
+              this.HandleMessage(true, MessageType.Error,
+                `Un-approved Transaction already exists for the Account ${this.f.acct_num.value}`);
+              this.onResetClick();
+              return;
+            }
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    }
+
+
     this.transType = new DynamicSelect();
     if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
       this.transType.key = 'W';
@@ -736,7 +741,6 @@ export class AccounTransactionsComponent implements OnInit {
       });
 
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'rd installment') {
-      const accTypCode = +this.f.acc_type_cd.value;
       this.transType.key = 'D';
       this.transType.Description = 'Deposit';
       this.tdDefTransFrm.patchValue({
@@ -748,7 +752,6 @@ export class AccounTransactionsComponent implements OnInit {
       this.hideOnClose = true;
       this.showAmtDrpDn = true;
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close') {
-      const accTypCode = +this.f.acc_type_cd.value;
       this.transType.key = 'W';
       this.transType.Description = 'Close';
       this.accNoEnteredForTransaction.ShowClose = true;
@@ -782,7 +785,7 @@ export class AccounTransactionsComponent implements OnInit {
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
       /* check if for acct_type 2,4,5 mat is past today date
              pre mature acctype shpuld not be shown */
-      const accTypCode = +this.f.acc_type_cd.value;
+
       if ((accTypCode === 2 || accTypCode === 4 || accTypCode === 5)) {
         const cDt = this.sys.CurrentDate.getTime();
         const chDt = Utils.convertStringToDt(this.accNoEnteredForTransaction.mat_dt.toString()).getTime()
@@ -951,16 +954,16 @@ export class AccounTransactionsComponent implements OnInit {
     }
   }
 
-  private checkUnaprovedTransactionExixts(): boolean {
-    this.GetUnapprovedDepTrans();
-    const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
-      === this.f.acct_num.value.toString())[0];
+  // private checkUnaprovedTransactionExixts(): boolean {
+  //   this.GetUnapprovedDepTrans();
+  //   const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
+  //     === this.f.acct_num.value.toString())[0];
 
-    if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
-      return false;
-    }
-    return true;
-  }
+  //   if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   onAmtChng(): void {
     this.HandleMessage(false);
@@ -1100,12 +1103,6 @@ export class AccounTransactionsComponent implements OnInit {
       this.HandleMessage(true, MessageType.Error, 'Amount can not be blank');
       return;
     }
-
-    if (this.checkUnaprovedTransactionExixts()) {
-      this.HandleMessage(true, MessageType.Error,
-        'Un-approved Transaction already exists for the Account ' + this.td.acc_num.value);
-      return;
-    }
     if (undefined === this.td.trf_type.value
       || null === this.td.trf_type.value
       || this.td.trf_type.value === '') {
@@ -1173,8 +1170,8 @@ export class AccounTransactionsComponent implements OnInit {
     this.svc.addUpdDel<AccOpenDM>('Deposit/InsertAccountOpeningData', saveTransaction).subscribe(
       res => {
         this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
-        // this.tdDefTransFrm.reset();
-        // this.accTransFrm.reset();
+        this.tdDefTransFrm.reset(); this.f.oprn_cd.reset();
+        this.getShadowBalance();
         this.isLoading = false;
       },
       err => { this.isLoading = false; console.error('Error on onSaveClick' + JSON.stringify(err));; }

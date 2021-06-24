@@ -9,8 +9,8 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
     <button type="button" [disabled]="undefined === accNoEnteredForTransaction"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button>
-    <button type="button" [disabled]="!(preTransactionDtlForSelectedAcc.length > 0)"
-    class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(PreContent)" >Previous Transaction</button>
+    <!-- <button type="button" [disabled]="!(preTransactionDtlForSelectedAcc.length > 0)"
+    class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(PreContent)" >Previous Transaction</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
   </div>
@@ -218,7 +218,7 @@
               <input *ngIf="!showAmtDrpDn" type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
                 (change)="onAmtChng()">
               <select *ngIf="showAmtDrpDn" id="amount" class="form-control form-control-sm" formControlName="amount">
-                <option *ngFor="let amt of rdInstallamentOption" value="amt">{{amt}}</option>
+                <option *ngFor="let amt of rdInstallamentOption" [value]="amt">{{amt}}</option>
               </select>
             </div>
             <div class="form-group col-3" *ngIf="showOnRenewal || showOnClose">
@@ -336,6 +336,9 @@
               </textarea>
             </div>
           </div>
+          <button type="button" class="btn btn-link" *ngIf="preTransactionDtlForSelectedAcc.length > 0"
+            (click)="openModal(PreContent)">Previous Transaction
+          </button>
         </form>
         <div class="row" *ngIf="td.trf_type.value !== ''">
           <div class="col-12 col-sm-6 col-md-12 mt-2">
@@ -491,8 +494,8 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
     <button type="button" [disabled]="undefined === accNoEnteredForTransaction"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button>
-    <button type="button" [disabled]="!(preTransactionDtlForSelectedAcc.length > 0)"
-    class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(PreContent)" >Previous Transaction</button>
+    <!-- <button type="button" [disabled]="!(preTransactionDtlForSelectedAcc.length > 0)"
+    class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(PreContent)" >Previous Transaction</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
   </div>
