@@ -43,6 +43,7 @@ import { LoanaccountTransactionComponent } from './loan/transaction/loanaccount-
 import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transaction-approval/loan-transaction-approval.component';
 import { LoanTransactionDetailsComponent } from './Common/loan-transaction-details/loan-transaction-details.component';
 import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseinttcalc/loan-accwiseinttcalc.component';
+import { INRCurrencyPipe } from '../_utility/filter';
 
 
 @NgModule({
@@ -67,7 +68,7 @@ import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseint
     MemberListComponent,
     OpenLoanAccountComponent,
     LoanaccountTransactionComponent,
-    LoanTransactionApprovalComponent, 
+    LoanTransactionApprovalComponent, INRCurrencyPipe,
     LoanTransactionDetailsComponent,
     LoanAccwiseinttcalcComponent
   ],
