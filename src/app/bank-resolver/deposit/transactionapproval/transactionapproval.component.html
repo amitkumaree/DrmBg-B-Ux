@@ -75,25 +75,9 @@
               <hr>
             </div>
           </div>
-          <div class="col-12">
-            <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 6"
-              (click)="openModal(content)">Show RD Installaments</button>
-            <ng-template #content>
-              <div class="modal-header">
-                <h4 class="modal-title pull-left">RD Installments Details for Acc# {{selectedVm.tm_deposit.acc_num}}
-                </h4>
-                <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <app-dw-rd-instl-view></app-dw-rd-instl-view>
-              </div>
-            </ng-template>
-            <app-dw-td-intt-dtls-view *ngIf="selectedAccountType === 2 || selectedAccountType === 5">
-            </app-dw-td-intt-dtls-view>
-            <app-dw-renewal-view *ngIf="selectedTransactionMode === 'R'"></app-dw-renewal-view>
-          </div>
+          <!-- <div class="col-12">
+
+          </div> -->
         </div>
       </div>
       <div class="col-4" *ngIf="refresh">
@@ -103,6 +87,36 @@
         </div>
         <div class="12">
           <app-account-details></app-account-details>
+          <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 6"
+          (click)="openModal(content)">Show Installaments</button>
+          <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 2 || selectedAccountType === 5"
+          (click)="openModal(tdfdcontent)">Show Installaments</button>
+        <ng-template #content>
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">RD Installments Details for Acc# {{selectedVm.tm_deposit.acc_num}}
+            </h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <app-dw-rd-instl-view></app-dw-rd-instl-view>
+          </div>
+        </ng-template>
+        <ng-template #tdfdcontent>
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">Installments Details for Acc# {{selectedVm.tm_deposit.acc_num}}
+            </h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <app-dw-td-intt-dtls-view> </app-dw-td-intt-dtls-view>
+          </div>
+        </ng-template>
+
+        <app-dw-renewal-view *ngIf="selectedTransactionMode === 'R'"></app-dw-renewal-view>
           <hr>
         </div>
 

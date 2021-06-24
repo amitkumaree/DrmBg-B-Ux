@@ -141,10 +141,12 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
         cust_cd: this.acctDtls.cust_cd,
         intt_trf_type: this.acctDtls.intt_trf_type,
         constitution_cd: this.acctDtls.constitution_cd,
-        constitution_cd_desc:  (undefined !== constitution || null !== constitution) ?
+        constitution_cd_desc:  (undefined !== constitution && null !== constitution
+          && undefined !== constitution.constitution_desc && null !== constitution.constitution_desc) ?
         constitution.constitution_desc : null,
         oprn_instr_cd: this.acctDtls.oprn_instr_cd,
-        oprn_instr_cd_desc: (undefined !== OprnInstrDesc || null !== OprnInstrDesc) ?
+        oprn_instr_cd_desc: (undefined !== OprnInstrDesc && null !== OprnInstrDesc
+          && undefined !== OprnInstrDesc.oprn_desc && null !== OprnInstrDesc.oprn_desc) ?
         OprnInstrDesc.oprn_desc : null,
         opening_dt: this.acctDtls.opening_dt.toString().substr(0, 10),
         prn_amt: this.acctDtls.prn_amt,

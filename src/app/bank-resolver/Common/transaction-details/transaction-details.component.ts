@@ -106,7 +106,6 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
   }
 
   setTransactionDtl(): void {
-    ;
     this.showDenominationDtl = false;
     this.showTransferDtl = false;
     this.totalOfDenomination = 0;
@@ -209,7 +208,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
       tdDefTranTransfr.trans_cd = this.transactionDtl.trans_cd;
       tdDefTranTransfr.trans_dt = Utils.convertStringToDt(this.transactionDtl.trans_dt.toString());
       // tdDefTranTransfr.trans_type = this.transactionDtl.trans_type;
-      this.svc.addUpdDel<any>('Common/GetDepTransTrf', tdDefTranTransfr).subscribe(
+      this.svc.addUpdDel<any>('Common/GetDepTransTrfwithChild', tdDefTranTransfr).subscribe(
         res => {
           debugger;
           if (null !== res && Object.keys(res).length !== 0) {
@@ -231,7 +230,7 @@ export class TransactionDetailsComponent implements OnInit, OnDestroy {
   }
 
   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
 
   ngOnDestroy(): void {
