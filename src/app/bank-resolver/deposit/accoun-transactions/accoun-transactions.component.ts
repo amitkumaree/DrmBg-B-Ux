@@ -281,6 +281,7 @@ export class AccounTransactionsComponent implements OnInit {
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
         // ;
+        debugger;
         AccounTransactionsComponent.constitutionList = res;
       },
       err => { // ;
@@ -620,6 +621,7 @@ export class AccounTransactionsComponent implements OnInit {
     this.svc.addUpdDel<any>('Deposit/GetPrevTransaction', t).subscribe(
       res => {
         this.preTransactionDtlForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
+        // this.preTransactionDtlForSelectedAcc = this.preTransactionDtlForSelectedAcc.((a, b) => (a.trans_dt < b.trans_dt ? -1 : 1));
       },
       err => { console.log(err); }
     );
@@ -641,8 +643,52 @@ export class AccounTransactionsComponent implements OnInit {
       return false;
     }
 
+    if (acc.acc_type_cd === 1 ||
+      acc.acc_type_cd === 2 ||
+      acc.acc_type_cd === 3 ||
+      acc.acc_type_cd === 4 ||
+      acc.acc_type_cd === 5 ||
+      acc.acc_type_cd === 6) {
+      /* check if account is not Locked */
+      if (null !== acc.lock_mode
+        && acc.lock_mode.toUpperCase() === 'L') {
+        this.HandleMessage(true, MessageType.Error,
+          `Account number ${this.f.acct_num.value} is locked.`);
+        this.onResetClick();
+        return false;
+      }
+    }
+
     /** Account type wise validation if any */
     switch (acc.acc_type_cd) {
+      case 1: // SB
+        /* check if constituion is set for No transaction is dormant */
+        const constitution = AccounTransactionsComponent.constitutionList.filter
+          (e => e.constitution_cd === acc.constitution_cd)[0];
+        if (undefined !== constitution && null !== constitution
+          && null !== constitution.allow_trans
+          && constitution.allow_trans.toUpperCase() === 'N') {
+            this.HandleMessage(true, MessageType.Error,
+              `No transaction allowed for this constituion ${constitution.constitution_desc}.`);
+            this.onResetClick();
+            return false;
+        }
+        /* check if account is dormant */
+        const temp = new tm_deposit()
+        temp.brn_cd = this.sys.BranchCode;
+        temp.acc_num = acc.acc_num;
+        this.svc.addUpdDel<any>('Deposit/isDormantAccount', temp).subscribe(
+          res => {
+            if (undefined !== res && null !== res && res === 0) {
+              this.HandleMessage(true, MessageType.Error,
+                `Account number ${this.f.acct_num.value} is dormant.`);
+              this.onResetClick();
+              return false;
+            }
+          },
+          err => { console.log(err); }
+        );
+        break;
       case 6: // RD
         const cDt = this.sys.CurrentDate.getTime();
         const chDt = Utils.convertStringToDt(acc.mat_dt.toString()).getTime();
@@ -697,19 +743,18 @@ export class AccounTransactionsComponent implements OnInit {
     const accTypCode = +this.f.acc_type_cd.value;
     const selectedOperation = this.operations.filter
       (e => e.oprn_cd === +this.f.oprn_cd.value)[0];
-    if (accTypCode === 1 &&
-      selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') { } else {
-      const tdDepTrans = new td_def_trans_trf();
-      tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
-      this.isLoading = true;
-      this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', tdDepTrans).subscribe(
-        res => {
-          if (res.length > 0) {
-            this.isLoading = false;
-            this.unApprovedTransactionLst = res;
-            const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
-              === this.f.acct_num.value.toString())[0];
-
+    this.isLoading = true;
+    const tdDepTrans = new td_def_trans_trf();
+    tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
+    this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', tdDepTrans).subscribe(
+      res => {
+        this.isLoading = false;
+        if (res.length > 0) {
+          this.unApprovedTransactionLst = res;
+          const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
+            === this.f.acct_num.value.toString())[0];
+          if (accTypCode === 1 &&
+            selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') { } else {
             if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) { } else {
               this.HandleMessage(true, MessageType.Error,
                 `Un-approved Transaction already exists for the Account ${this.f.acct_num.value}`);
@@ -717,10 +762,18 @@ export class AccounTransactionsComponent implements OnInit {
               return;
             }
           }
-        },
-        err => { this.isLoading = false; }
-      );
-    }
+          const unapprovedTransForTdy = this.unApprovedTransactionLst.filter(e => e.trans_dt
+            === this.sys.CurrentDate)[0];
+          if (undefined !== unapprovedTrans && Object.keys(unapprovedTrans).length > 0) {
+            this.HandleMessage(true, MessageType.Warning,
+              `Today few transaction has been done for Acc# ${this.f.acct_num.value}.`);
+          }
+        }
+      },
+      err => { this.isLoading = false; }
+    );
+
+
 
 
     this.transType = new DynamicSelect();

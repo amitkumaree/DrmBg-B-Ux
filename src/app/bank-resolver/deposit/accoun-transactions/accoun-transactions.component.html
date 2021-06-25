@@ -570,18 +570,25 @@
           <table class="table table-sm table-hover">
             <thead>
               <tr>
-                <th scope="col">Tran Cd</th>
-                <th scope="col">Date</th>
-                <th scope="col">Type</th>
+                <th scope="col">Trans Dt</th>
+                <th scope="col">Praticulars</th>
+                <th scope="col">Chq No</th>
+                <th scope="col">Dr/Cr</th>
                 <th scope="col">Amount</th>
+                <th scope="col">Balance</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let tran of preTransactionDtlForSelectedAcc" >
-                <td>{{tran.trans_cd}}</td>
+              <tr *ngFor="let tran of preTransactionDtlForSelectedAcc,let i=index" >
                 <td>{{tran.trans_dt}}</td>
-                <td>{{tran.trans_type}}</td>
-                <td>{{tran.amount}}</td>
+                <td>{{tran.remarks}}</td>
+                <td>{{tran.instrument_num}}</td>
+                <td *ngIf="tran.trans_type === 'D'">Cr</td>
+                <td *ngIf="tran.trans_type !== 'D'">Dr</td>
+                <td>{{tran.amount | INRCurrency}}</td>
+                <td *ngIf="i === 0">{{tran.amount | INRCurrency}}</td>
+                <td *ngIf="i !== 0 && tran.trans_type === 'D'">{{(tran.amount + preTransactionDtlForSelectedAcc[i-1].amount) | INRCurrency}}</td>
+                <td *ngIf="i !== 0 && tran.trans_type !== 'D'">{{(preTransactionDtlForSelectedAcc[i-1].amount) - tran.amount | INRCurrency}}</td>
               </tr>
             </tbody>
           </table>
