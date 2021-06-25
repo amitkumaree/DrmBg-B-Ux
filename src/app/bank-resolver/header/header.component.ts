@@ -4,6 +4,7 @@ import { InAppMessageService, RestService } from 'src/app/_service';
 import { BankConfigMst, mainmenu, submenu, screenlist, SystemValues } from '../Models';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -38,9 +39,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   sys = new SystemValues();
 
   ngOnInit(): void {
-    this.bankName = localStorage.getItem('__bName');
+    //this.bankName = localStorage.getItem('__bName');
     this.getBankConfigMaster();
-
+    //this.bankName=this.titleService.getTitle()
   }
 
   toggleCollapsed(): void {
@@ -53,6 +54,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         ;
         console.log(res);
         this.bankConfig = res;
+        this.bankName=this.bankConfig.bankname;
         this.showMenu = true;
         this.showChildMenu = false;
         this.showSubMenu = false;

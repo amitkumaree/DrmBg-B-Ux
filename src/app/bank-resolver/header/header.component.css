@@ -6,7 +6,7 @@ a:hover{
 }
 .header_class{background-color: #0167a8; border:none; padding:5px 0; border-radius: 0; color: #fff; width: 100%; border-bottom: #6dacca solid 1px;}
 ul.header_top{margin:0; padding:4px 15px; list-style-type: none;}
-ul.header_top li{display: inline-block; font-size: 12px; margin-right: 15px; line-height:16px; color: #fff;}
+ul.header_top li{display: inline-block; font-size: medium; margin-right: 15px; line-height:16px; color: #fff;}
 ul.header_top li.date{float: right; margin: 0;}
 .logo_sec_main{position: relative;}
 .logo_sec{padding:4px 15px 2px 15px;
