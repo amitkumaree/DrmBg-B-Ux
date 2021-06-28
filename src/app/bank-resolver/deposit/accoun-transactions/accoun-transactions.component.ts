@@ -1,12 +1,12 @@
 import { Router } from '@angular/router';
 import { AccOpenDM } from './../../Models/deposit/AccOpenDM';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { RestService, InAppMessageService } from 'src/app/_service';
 import {
   MessageType, mm_acc_type, mm_customer,
   mm_operation, m_acc_master, ShowMessage, SystemValues,
-  td_def_trans_trf, tm_deposit, tm_depositall
+  td_def_trans_trf, td_rd_installment, tm_deposit, tm_depositall
 } from '../../Models';
 import { tm_denomination_trans } from '../../Models/deposit/tm_denomination_trans';
 import { DatePipe } from '@angular/common';
@@ -15,6 +15,8 @@ import { tt_denomination } from '../../Models/deposit/tt_denomination';
 import { mm_constitution } from '../../Models/deposit/mm_constitution';
 import Utils from 'src/app/_utility/utils';
 import { p_gen_param } from '../../Models/p_gen_param';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
 
 @Component({
   selector: 'app-accoun-transactions',
@@ -23,10 +25,15 @@ import { p_gen_param } from '../../Models/p_gen_param';
   providers: [DatePipe]
 })
 export class AccounTransactionsComponent implements OnInit {
-  static constitutionList: mm_constitution[] = [];
   constructor(private svc: RestService, private msg: InAppMessageService,
-    private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router) { }
+    private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
+    private modalService: BsModalService) { }
+  get f() { return this.accTransFrm.controls; }
+  get td() { return this.tdDefTransFrm.controls; }
+  static constitutionList: mm_constitution[] = [];
+  static operationalInstrList: mm_oprational_intr[] = [];
   public static operations: mm_operation[] = [];
+  @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
   operations: mm_operation[];
   unApprovedTransactionLst: td_def_trans_trf[] = [];
   disableOperation = true;
@@ -39,11 +46,13 @@ export class AccounTransactionsComponent implements OnInit {
   showTransMode = false;
   showTransactionDtl = false;
   hideOnClose = false;
+  showAmtDrpDn = false;
   disableSave = true;
   TrfTotAmt = 0;
-  refresh = false;
-  get f() { return this.accTransFrm.controls; }
-  get td() { return this.tdDefTransFrm.controls; }
+  showInterestDtls = false;
+  showInterestForRd = false;
+  accDtlsFrm: FormGroup;
+  ShadowBalance: number;
 
   customerList: mm_customer[] = [];
   td_deftrans = new td_def_trans_trf();
@@ -54,6 +63,9 @@ export class AccounTransactionsComponent implements OnInit {
   tm_deposit = new tm_deposit();
 
   accNoEnteredForTransaction: tm_depositall;
+  rdInstallemntsForSelectedAcc: td_rd_installment[] = [];
+  preTransactionDtlForSelectedAcc: td_def_trans_trf[] = [];
+  rdInstallamentOption: number[] = [];
   showOnRenewal = false;
   showOnClose = false;
   // showTranferType = true;
@@ -61,13 +73,11 @@ export class AccounTransactionsComponent implements OnInit {
   showInstrumentDtl = false;
   tm_denominationList: tm_denomination_trans[] = [];
   denominationList: tt_denomination[] = [];
-  // denominations = [
-  //   { rupees: '2000', desc: 'Two Thousand (Rs.2000)' },
-  //   { rupees: '500', desc: 'Five Hundred (Rs.500)' },
-  //   { rupees: '100', desc: 'Hundred (Rs.100)' },
-  //   { rupees: '50', desc: 'Fifty (Rs.50)' }];
   denominationGrandTotal = 0;
-
+  modalRef: BsModalRef;
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
+  }
   ngOnInit(): void {
     this.isLoading = false;
     this.getOperationMaster();
@@ -141,20 +151,12 @@ export class AccounTransactionsComponent implements OnInit {
       interest: [''],
       td_def_mat_amt: ['']
     });
-
-
-    /**
-     * TODO Create form for getting account type and Account number
-     * TODO Show Account info (tm_deposit)
-     * TODO bind td_dep_trans to a form which will be active
-     **/
     this.resetTransfer();
     this.getAccountTypeList();
     this.getCustomerList();
-    this.GetUnapprovedDepTrans();
     this.getDenominationList();
     this.getConstitutionList();
-    this.refresh = true;
+    this.resetAccDtlsFrmFormData();
   }
 
   processInterest(): void {
@@ -256,6 +258,20 @@ export class AccounTransactionsComponent implements OnInit {
     );
   }
 
+  getOperationalInstr() {
+    if (AccounTransactionsComponent.operationalInstrList.length > 0) {
+      return;
+    }
+
+    AccounTransactionsComponent.operationalInstrList = [];
+    this.svc.addUpdDel<any>('Mst/GetOprationalInstr', null).subscribe(
+      res => {
+        AccounTransactionsComponent.operationalInstrList = res;
+      },
+      err => { }
+    );
+  }
+
   getConstitutionList() {
     if (AccounTransactionsComponent.constitutionList.length > 0) {
       return;
@@ -265,10 +281,210 @@ export class AccounTransactionsComponent implements OnInit {
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
         // ;
+        debugger;
         AccounTransactionsComponent.constitutionList = res;
       },
       err => { // ;
       }
+    );
+  }
+
+  private resetAccDtlsFrmFormData(): void {
+    this.showInterestForRd = false;
+    this.accDtlsFrm = this.frmBldr.group({
+      brn_cd: [''],
+      acc_type_cd: [''],
+      acc_num: [''],
+      renew_id: [''],
+      cust_cd: [''],
+      intt_trf_type: [''],
+      constitution_cd: [''],
+      constitution_cd_desc: [''],
+      oprn_instr_cd: [''],
+      oprn_instr_cd_desc: [''],
+      opening_dt: [''],
+      prn_amt: [''],
+      intt_amt: [''],
+      mat_amt: [''],
+      dep_period: [''],
+      instl_amt: [''],
+      instl_no: [''],
+      mat_dt: [''],
+      intt_rt: [''],
+      tds_applicable: [''],
+      last_intt_calc_dt: [''],
+      acc_close_dt: [''],
+      closing_prn_amt: [''],
+      closing_intt_amt: [''],
+      penal_amt: [''],
+      ext_instl_tot: [''],
+      mat_status: [''],
+      acc_status: [''],
+      curr_bal: [''],
+      clr_bal: [''],
+      standing_instr_flag: [''],
+      cheque_facility_flag: [''],
+      created_by: [''],
+      created_dt: [''],
+      modified_by: [''],
+      modified_dt: [''],
+      approval_status: [''],
+      approved_by: [''],
+      approved_dt: [''],
+      user_acc_num: [''],
+      lock_mode: [''],
+      loan_id: [''],
+      cert_no: [''],
+      bonus_amt: [''],
+      penal_intt_rt: [''],
+      bonus_intt_rt: [''],
+      transfer_flag: [''],
+      transfer_dt: [''],
+      agent_cd: [''],
+      cust_type: [''],
+      title: [''],
+      first_name: [''],
+      middle_name: [''],
+      last_name: [''],
+      cust_name: [''],
+      guardian_name: [''],
+      cust_dt: [''],
+      dt_of_birth: [''],
+      age: [''],
+      sex: [''],
+      marital_status: [''],
+      catg_cd: [''],
+      community: [''],
+      caste: [''],
+      permanent_address: [''],
+      ward_no: [''],
+      state: [''],
+      dist: [''],
+      pin: [''],
+      vill_cd: [''],
+      block_cd: [''],
+      service_area_cd: [''],
+      occupation: [''],
+      phone: [''],
+      present_address: [''],
+      constitution_desc: [''],
+      shadow_bal: [''],
+      dep_period_y: [''],
+      dep_period_m: [''],
+      dep_period_d: [''],
+    });
+  }
+
+  private setAccDtlsFrmForm(): void {
+    if (undefined !== this.accNoEnteredForTransaction && Object.keys(this.accNoEnteredForTransaction).length !== 0) {
+      this.resetAccDtlsFrmFormData();
+      this.getShadowBalance();
+      if (this.accNoEnteredForTransaction.acc_type_cd === 2
+        || this.accNoEnteredForTransaction.acc_type_cd === 3
+        || this.accNoEnteredForTransaction.acc_type_cd === 4
+        || this.accNoEnteredForTransaction.acc_type_cd === 5) {
+        this.showInterestDtls = true;
+        this.accNoEnteredForTransaction.ShowClose = true;
+      }
+      if (this.accNoEnteredForTransaction.acc_type_cd === 6) {
+        this.showInterestForRd = true;
+        this.accNoEnteredForTransaction.ShowClose = true;
+      }
+      const constitution = AccounTransactionsComponent.constitutionList.filter(e => e.constitution_cd
+        === this.accNoEnteredForTransaction.constitution_cd)[0];
+      const OprnInstrDesc = AccounTransactionsComponent.operationalInstrList.filter(e => e.oprn_cd
+        === this.accNoEnteredForTransaction.oprn_instr_cd)[0];
+
+      let intrestType = '';
+      if (this.accNoEnteredForTransaction.intt_trf_type === 'O') {
+        intrestType = 'On Maturity';
+      } else if (this.accNoEnteredForTransaction.intt_trf_type === 'H') {
+        intrestType = 'Half Yearly';
+      } else if (this.accNoEnteredForTransaction.intt_trf_type === 'Q') {
+        intrestType = 'Quarterly';
+      } else if (this.accNoEnteredForTransaction.intt_trf_type === 'M') {
+        intrestType = 'Monthly';
+      }
+
+      this.accDtlsFrm.patchValue({
+        brn_cd: this.accNoEnteredForTransaction.brn_cd,
+        acc_type_cd: this.accNoEnteredForTransaction.acc_type_cd,
+        acc_num: this.accNoEnteredForTransaction.acc_num,
+        renew_id: this.accNoEnteredForTransaction.renew_id,
+        cust_cd: this.accNoEnteredForTransaction.cust_cd,
+        cust_name: this.accNoEnteredForTransaction.cust_name,
+        intt_trf_type: intrestType,
+        constitution_cd: this.accNoEnteredForTransaction.constitution_cd,
+        constitution_cd_desc: (undefined !== constitution && null !== constitution
+          && undefined !== constitution.constitution_desc && null !== constitution.constitution_desc) ?
+          constitution.constitution_desc : null,
+        oprn_instr_cd: this.accNoEnteredForTransaction.oprn_instr_cd,
+        oprn_instr_cd_desc: (undefined !== OprnInstrDesc && null !== OprnInstrDesc
+          && undefined !== OprnInstrDesc.oprn_desc && null !== OprnInstrDesc.oprn_desc) ?
+          OprnInstrDesc.oprn_desc : null,
+        opening_dt: this.accNoEnteredForTransaction.opening_dt.toString().substr(0, 10),
+        prn_amt: this.accNoEnteredForTransaction.prn_amt,
+        intt_amt: this.accNoEnteredForTransaction.intt_amt,
+        mat_amt: this.accNoEnteredForTransaction.prn_amt + this.accNoEnteredForTransaction.intt_amt,
+        dep_period_y: null === this.accNoEnteredForTransaction.dep_period ? ''
+          : (this.accNoEnteredForTransaction.dep_period.split(';')[0].split('=')[1]),
+        dep_period_m: null === this.accNoEnteredForTransaction.dep_period ? ''
+          : (this.accNoEnteredForTransaction.dep_period.split(';')[1].split('=')[1]),
+        dep_period_d: null === this.accNoEnteredForTransaction.dep_period ? ''
+          : (this.accNoEnteredForTransaction.dep_period.split(';')[2].split('=')[1]),
+        instl_amt: this.accNoEnteredForTransaction.instl_amt,
+        instl_no: this.accNoEnteredForTransaction.instl_no,
+        mat_dt: this.accNoEnteredForTransaction.mat_dt.toString().substr(0, 10),
+        intt_rt: this.accNoEnteredForTransaction.intt_rt,
+        tds_applicable: this.accNoEnteredForTransaction.tds_applicable,
+        last_intt_calc_dt: this.accNoEnteredForTransaction.last_intt_calc_dt.toString().substr(0, 10),
+        acc_close_dt: this.accNoEnteredForTransaction.ShowClose ? Utils.getTodaysDtInCorrectFormat() : null,
+        closing_prn_amt: this.accNoEnteredForTransaction.closing_prn_amt,
+        closing_intt_amt: this.accNoEnteredForTransaction.closing_intt_amt,
+        penal_amt: this.accNoEnteredForTransaction.penal_amt,
+        ext_instl_tot: this.accNoEnteredForTransaction.ext_instl_tot,
+        mat_status: this.accNoEnteredForTransaction.mat_status,
+        acc_status: this.accNoEnteredForTransaction.acc_status,
+        curr_bal: this.accNoEnteredForTransaction.curr_bal,
+        clr_bal: this.accNoEnteredForTransaction.clr_bal,
+        standing_instr_flag: this.accNoEnteredForTransaction.standing_instr_flag,
+        cheque_facility_flag: this.accNoEnteredForTransaction.cheque_facility_flag,
+        approval_status: this.accNoEnteredForTransaction.approval_status,
+        approved_by: this.accNoEnteredForTransaction.approved_by,
+        approved_dt: this.accNoEnteredForTransaction.approved_dt,
+        user_acc_num: this.accNoEnteredForTransaction.user_acc_num,
+        lock_mode: this.accNoEnteredForTransaction.lock_mode,
+        loan_id: this.accNoEnteredForTransaction.loan_id,
+        cert_no: this.accNoEnteredForTransaction.cert_no,
+        bonus_amt: this.accNoEnteredForTransaction.bonus_amt,
+        penal_intt_rt: this.accNoEnteredForTransaction.penal_intt_rt,
+        bonus_intt_rt: this.accNoEnteredForTransaction.bonus_intt_rt,
+        transfer_flag: this.accNoEnteredForTransaction.transfer_flag,
+        transfer_dt: this.accNoEnteredForTransaction.transfer_dt,
+        agent_cd: this.accNoEnteredForTransaction.agent_cd,
+      });
+    } else {
+      this.accDtlsFrm.reset();
+      this.showInterestForRd = false;
+    }
+  }
+
+  private getShadowBalance(): void {
+    const tmDep = new tm_deposit();
+    this.ShadowBalance = 0;
+    tmDep.acc_type_cd = this.accNoEnteredForTransaction.acc_type_cd;
+    tmDep.brn_cd = this.accNoEnteredForTransaction.brn_cd;
+    tmDep.acc_num = this.accNoEnteredForTransaction.acc_num;
+    this.svc.addUpdDel<any>('Deposit/GetShadowBalance', tmDep).subscribe(
+      res => {
+        if (undefined !== res && null !== res && !isNaN(+res)) {
+          this.ShadowBalance = res;
+          this.accDtlsFrm.patchValue({
+            shadow_bal: res
+          });
+        }
+      },
+      err => { this.isLoading = false; console.log(err); }
     );
   }
 
@@ -281,19 +497,6 @@ export class AccounTransactionsComponent implements OnInit {
       },
       err => { // ;
       }
-    );
-  }
-  /** silently bring all the unapproved transaction
-   * silently because it will be needed during save
-   */
-  private GetUnapprovedDepTrans(): void {
-    const tdDepTrans = new td_def_trans_trf();
-    tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
-    this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', tdDepTrans).subscribe(
-      res => {
-        this.unApprovedTransactionLst = res;
-      },
-      err => { this.isLoading = false; }
     );
   }
 
@@ -349,6 +552,7 @@ export class AccounTransactionsComponent implements OnInit {
   /** method fires on account type change */
   public onAcctTypeChange(): void {
     this.tm_denominationList = [];
+    this.accNoEnteredForTransaction = undefined;
     this.resetTransfer();
     this.f.acct_num.reset(); this.f.oprn_cd.reset();
     this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
@@ -365,9 +569,9 @@ export class AccounTransactionsComponent implements OnInit {
     // this.f.oprn_cd.enable();
     this.f.acct_num.enable();
     this.f.oprn_cd.disable();
-    this.refresh = false;
-    this.msg.sendCommonTmDepositAll(null);
-    this.refresh = true;
+    // this.refresh = false;
+    // this.msg.sendCommonTmDepositAll(null);
+    // this.refresh = true;
   }
 
   public onAccountNumTabOff(): void {
@@ -389,42 +593,11 @@ export class AccounTransactionsComponent implements OnInit {
       res => {
         this.isLoading = false;
         acc = res[0];
-        if (undefined === acc) {
-          this.HandleMessage(true, MessageType.Error,
-            'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
-          this.onResetClick();
-        } else {
-          if (this.checkUnaprovedTransactionExixts()) {
-            this.HandleMessage(true, MessageType.Error,
-              `Un-approved Transaction already exists for the Account ${this.f.acct_num.value}`);
-            this.onResetClick();
-            return;
-          }
-          /* check if account is not closed */
-          if (acc.acc_status.toUpperCase() === 'C') {
-            this.HandleMessage(true, MessageType.Error,
-              'Account number ' + this.f.acct_num.value + ' is closed.');
-            this.onResetClick();
-            return;
-          }
-          /* For RD check maturity date is not passed banks date */
-          if (acc.acc_type_cd === 6) {
-            const cDt = this.sys.CurrentDate.getTime();
-            const chDt = Utils.convertStringToDt(this.accNoEnteredForTransaction.mat_dt.toString()).getTime()
-            if (chDt > cDt) {
-              this.HandleMessage(true, MessageType.Error,
-                `Maturity date of account number ${this.f.acct_num.value} has crossed ${Utils.convertDtToString(this.sys.CurrentDate)}`);
-              this.onResetClick();
-              return;
-            }
-          }
-
-          // All ok then below code will fire
+        if (this.validationOnAcctTabOff(acc)) {
           this.disableOperation = false;
           this.accNoEnteredForTransaction = acc;
-          this.refresh = false;
-          this.msg.sendCommonTmDepositAll(acc);
-          this.refresh = true;
+          this.setAccDtlsFrmForm();
+          this.getPreviousTransactionDtl(acc);
           this.tdDefTransFrm.patchValue({
             acc_num: acc.acc_num,
           });
@@ -434,11 +607,118 @@ export class AccounTransactionsComponent implements OnInit {
       err => {
         this.f.oprn_cd.disable(); this.isLoading = false;
         console.log(err);
-        this.refresh = false;
-        this.msg.sendCommonTmDepositAll(null);
-        this.refresh = true;
+        this.resetAccDtlsFrmFormData();
       }
     );
+  }
+
+  private getPreviousTransactionDtl(acc: tm_depositall): void {
+    this.preTransactionDtlForSelectedAcc = [];
+    const t = new td_def_trans_trf();
+    t.brn_cd = this.sys.BranchCode;
+    t.acc_num = acc.acc_num;
+    t.acc_type_cd = acc.acc_type_cd;
+    this.svc.addUpdDel<any>('Deposit/GetPrevTransaction', t).subscribe(
+      res => {
+        this.preTransactionDtlForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
+        // this.preTransactionDtlForSelectedAcc = this.preTransactionDtlForSelectedAcc.((a, b) => (a.trans_dt < b.trans_dt ? -1 : 1));
+      },
+      err => { console.log(err); }
+    );
+  }
+
+  private validationOnAcctTabOff(acc: tm_depositall): boolean {
+    debugger;
+    if (undefined === acc) {
+      this.HandleMessage(true, MessageType.Error,
+        'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
+      this.onResetClick();
+      return false;
+    }
+    /* check if account is not closed */
+    if (acc.acc_status.toUpperCase() === 'C') {
+      this.HandleMessage(true, MessageType.Error,
+        'Account number ' + this.f.acct_num.value + ' is closed.');
+      this.onResetClick();
+      return false;
+    }
+
+    if (acc.acc_type_cd === 1 ||
+      acc.acc_type_cd === 2 ||
+      acc.acc_type_cd === 3 ||
+      acc.acc_type_cd === 4 ||
+      acc.acc_type_cd === 5 ||
+      acc.acc_type_cd === 6) {
+      /* check if account is not Locked */
+      if (null !== acc.lock_mode
+        && acc.lock_mode.toUpperCase() === 'L') {
+        this.HandleMessage(true, MessageType.Error,
+          `Account number ${this.f.acct_num.value} is locked.`);
+        this.onResetClick();
+        return false;
+      }
+    }
+
+    /** Account type wise validation if any */
+    switch (acc.acc_type_cd) {
+      case 1: // SB
+        /* check if constituion is set for No transaction is dormant */
+        const constitution = AccounTransactionsComponent.constitutionList.filter
+          (e => e.constitution_cd === acc.constitution_cd)[0];
+        if (undefined !== constitution && null !== constitution
+          && null !== constitution.allow_trans
+          && constitution.allow_trans.toUpperCase() === 'N') {
+            this.HandleMessage(true, MessageType.Error,
+              `No transaction allowed for this constituion ${constitution.constitution_desc}.`);
+            this.onResetClick();
+            return false;
+        }
+        /* check if account is dormant */
+        const temp = new tm_deposit()
+        temp.brn_cd = this.sys.BranchCode;
+        temp.acc_num = acc.acc_num;
+        this.svc.addUpdDel<any>('Deposit/isDormantAccount', temp).subscribe(
+          res => {
+            if (undefined !== res && null !== res && res === 0) {
+              this.HandleMessage(true, MessageType.Error,
+                `Account number ${this.f.acct_num.value} is dormant.`);
+              this.onResetClick();
+              return false;
+            }
+          },
+          err => { console.log(err); }
+        );
+        break;
+      case 6: // RD
+        const cDt = this.sys.CurrentDate.getTime();
+        const chDt = Utils.convertStringToDt(acc.mat_dt.toString()).getTime();
+        if (cDt > chDt) {
+          this.HandleMessage(true, MessageType.Error,
+            `Maturity date of account number ${this.f.acct_num.value} has crossed ${Utils.convertDtToString(this.sys.CurrentDate)}`);
+          this.onResetClick();
+          return false;
+        }
+        /** For RD get the RD installament */
+        const rdInstallament = new td_rd_installment();
+        rdInstallament.acc_num = acc.acc_num;
+        this.svc.addUpdDel<any>('Deposit/GetRDInstallment', rdInstallament).subscribe(
+          rdInstallamentRes => {
+            this.rdInstallemntsForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(rdInstallamentRes);
+            let i = 1;
+            this.rdInstallemntsForSelectedAcc.forEach(e => {
+              if (e.status.toLocaleLowerCase() === 'p') {
+                this.rdInstallamentOption.push(acc.instl_amt * i);
+                i = i + 1;
+              }
+            });
+          },
+          rdInstallamentErr => { console.log(rdInstallamentErr); }
+        );
+        break;
+
+    }
+
+    return true;
   }
 
   /* method fires on operation type change */
@@ -449,19 +729,53 @@ export class AccounTransactionsComponent implements OnInit {
     this.HandleMessage(false);
     // this.showTranferType = true;
     this.hideOnClose = false;
+    this.showAmtDrpDn = false;
     this.showOnClose = false;
     this.showOnRenewal = false;
     this.showTransactionDtl = true;
     this.showTransMode = false;
     this.accNoEnteredForTransaction.ShowClose = false;
     this.td.amount.enable();
-    this.refresh = false;
-    this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
-    this.refresh = true;
-    // this.msg.sendShdowBalance(0);
     this.td.amount.setValue(null);
 
-    const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
+    /* check if there any unapproved transaction
+    exixits already for non saving accounts*/
+    const accTypCode = +this.f.acc_type_cd.value;
+    const selectedOperation = this.operations.filter
+      (e => e.oprn_cd === +this.f.oprn_cd.value)[0];
+    this.isLoading = true;
+    const tdDepTrans = new td_def_trans_trf();
+    tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
+    this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', tdDepTrans).subscribe(
+      res => {
+        this.isLoading = false;
+        if (res.length > 0) {
+          this.unApprovedTransactionLst = res;
+          const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
+            === this.f.acct_num.value.toString())[0];
+          if (accTypCode === 1 &&
+            selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') { } else {
+            if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) { } else {
+              this.HandleMessage(true, MessageType.Error,
+                `Un-approved Transaction already exists for the Account ${this.f.acct_num.value}`);
+              this.onResetClick();
+              return;
+            }
+          }
+          const unapprovedTransForTdy = this.unApprovedTransactionLst.filter(e => e.trans_dt
+            === this.sys.CurrentDate)[0];
+          if (undefined !== unapprovedTrans && Object.keys(unapprovedTrans).length > 0) {
+            this.HandleMessage(true, MessageType.Warning,
+              `Today few transaction has been done for Acc# ${this.f.acct_num.value}.`);
+          }
+        }
+      },
+      err => { this.isLoading = false; }
+    );
+
+
+
+
     this.transType = new DynamicSelect();
     if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
       this.transType.key = 'W';
@@ -480,7 +794,6 @@ export class AccounTransactionsComponent implements OnInit {
       });
 
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'rd installment') {
-      const accTypCode = +this.f.acc_type_cd.value;
       this.transType.key = 'D';
       this.transType.Description = 'Deposit';
       this.tdDefTransFrm.patchValue({
@@ -490,16 +803,15 @@ export class AccounTransactionsComponent implements OnInit {
         amount: this.accNoEnteredForTransaction.instl_amt
       });
       this.hideOnClose = true;
-      if (accTypCode === 6) { this.td.amount.disable(); }
+      this.showAmtDrpDn = true;
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close') {
-      const accTypCode = +this.f.acc_type_cd.value;
       this.transType.key = 'W';
       this.transType.Description = 'Close';
       this.accNoEnteredForTransaction.ShowClose = true;
       // this.accNoEnteredForTransaction.acc_close_dt = new Date();
-      this.refresh = false;
-      this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
-      this.refresh = true;
+      // this.refresh = false;
+      // this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
+      // this.refresh = true;
       this.tdDefTransFrm.patchValue({
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key,
@@ -526,7 +838,7 @@ export class AccounTransactionsComponent implements OnInit {
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
       /* check if for acct_type 2,4,5 mat is past today date
              pre mature acctype shpuld not be shown */
-      const accTypCode = +this.f.acc_type_cd.value;
+
       if ((accTypCode === 2 || accTypCode === 4 || accTypCode === 5)) {
         const cDt = this.sys.CurrentDate.getTime();
         const chDt = Utils.convertStringToDt(this.accNoEnteredForTransaction.mat_dt.toString()).getTime()
@@ -547,9 +859,9 @@ export class AccounTransactionsComponent implements OnInit {
       this.hideOnClose = true;
       // this.accNoEnteredForTransaction.acc_close_dt = new Date();
       // console.log(this.accNoEnteredForTransaction);
-      this.refresh = false;
-      this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
-      this.refresh = true;
+      // this.refresh = false;
+      // this.msg.sendCommonTmDepositAll(this.accNoEnteredForTransaction);
+      // this.refresh = true;
       this.tdDefTransFrm.patchValue({
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key,
@@ -695,16 +1007,16 @@ export class AccounTransactionsComponent implements OnInit {
     }
   }
 
-  private checkUnaprovedTransactionExixts(): boolean {
-    this.GetUnapprovedDepTrans();
-    const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
-      === this.f.acct_num.value.toString())[0];
+  // private checkUnaprovedTransactionExixts(): boolean {
+  //   this.GetUnapprovedDepTrans();
+  //   const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
+  //     === this.f.acct_num.value.toString())[0];
 
-    if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
-      return false;
-    }
-    return true;
-  }
+  //   if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   onAmtChng(): void {
     this.HandleMessage(false);
@@ -737,8 +1049,10 @@ export class AccounTransactionsComponent implements OnInit {
                   const cnfrm = confirm('Amount is less than minimum balance ' + minBal + '. Press Ok to continue, else Cancel');
                   if (cnfrm) {
                     if (this.td.trans_type_key.value === 'W') {
+                      // todo need to change
                       this.msg.sendShdowBalance(-(+this.td.amount.value));
                     } else if (this.td.trans_type_key.value === 'D') {
+                      // todo need to change
                       this.msg.sendShdowBalance((+this.td.amount.value));
                     }
                   } else {
@@ -747,6 +1061,7 @@ export class AccounTransactionsComponent implements OnInit {
                   return;
                 } else {
                   // check this.td.trans_type_key === 'W' / 'D'
+                  // todo need to change
                   this.msg.sendShdowBalance(-(+this.td.amount.value));
                   // if (this.td.trans_type_key.value === 'W') {
 
@@ -763,6 +1078,7 @@ export class AccounTransactionsComponent implements OnInit {
           }
         );
       } else {
+        // todo need to change
         this.msg.sendShdowBalance((+this.td.amount.value));
       }
     } else {
@@ -775,8 +1091,10 @@ export class AccounTransactionsComponent implements OnInit {
           const cnfrm = confirm('Amount is less than minimum balance ' + minBal + '. Press Ok to continue, else Cancel');
           if (cnfrm) {
             if (this.td.trans_type_key.value === 'W') {
+              // todo need to change
               this.msg.sendShdowBalance(-(+this.td.amount.value));
             } else if (this.td.trans_type_key.value === 'D') {
+              // todo need to change
               this.msg.sendShdowBalance((+this.td.amount.value));
             }
           } else {
@@ -836,12 +1154,6 @@ export class AccounTransactionsComponent implements OnInit {
   onSaveClick(): void {
     if ((+this.td.amount.value) <= 0) {
       this.HandleMessage(true, MessageType.Error, 'Amount can not be blank');
-      return;
-    }
-
-    if (this.checkUnaprovedTransactionExixts()) {
-      this.HandleMessage(true, MessageType.Error,
-        'Un-approved Transaction already exists for the Account ' + this.td.acc_num.value);
       return;
     }
     if (undefined === this.td.trf_type.value
@@ -911,8 +1223,8 @@ export class AccounTransactionsComponent implements OnInit {
     this.svc.addUpdDel<AccOpenDM>('Deposit/InsertAccountOpeningData', saveTransaction).subscribe(
       res => {
         this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
-        // this.tdDefTransFrm.reset();
-        // this.accTransFrm.reset();
+        this.tdDefTransFrm.reset(); this.f.oprn_cd.reset();
+        this.getShadowBalance();
         this.isLoading = false;
       },
       err => { this.isLoading = false; console.error('Error on onSaveClick' + JSON.stringify(err));; }
@@ -1167,16 +1479,15 @@ export class AccounTransactionsComponent implements OnInit {
   // }
 
   onResetClick(): void {
-    this.refresh = false;
     this.accTransFrm.reset();
     this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
     // this.getOperationMaster();
     this.f.oprn_cd.disable();
     this.f.acct_num.disable();
-    this.msg.sendCommonTmDepositAll(null);
+    this.accNoEnteredForTransaction = undefined;
+    // this.msg.sendCommonTmDepositAll(null);
     this.tm_denominationList = [];
     this.td_deftranstrfList = [];
-    this.refresh = true;
   }
 
   addDenomination() {

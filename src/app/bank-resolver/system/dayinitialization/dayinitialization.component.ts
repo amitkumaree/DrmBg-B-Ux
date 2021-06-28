@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 // import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from 'src/app/_service';
 import { MessageType, ShowMessage, SystemValues } from '../../Models';
@@ -14,8 +15,9 @@ import { sd_day_operation } from '../../Models/sd_day_operation';
 })
 export class DayinitializationComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
+  modalRef: BsModalRef;
   constructor(private router: Router,private formBuilder: FormBuilder,private svc: RestService,
-    // private modalService: NgbModal,
+    private modalService: BsModalService,
     ) { }
   isLoading = false;
   sys = new SystemValues();
@@ -28,6 +30,11 @@ export class DayinitializationComponent implements OnInit {
   showAlert = false;
   isRetrieve=false;
   isOk=false;
+  config = {
+    keyboard: false, // ensure esc press doesnt close the modal
+    backdrop: true, // enable backdrop shaded color
+    ignoreBackdropClick: true // disable backdrop click to close the modal
+  };
   ngOnInit(): void {
     //this.fromdate=this.convertDate(localStorage.getItem('__currentDate'));
     this.initcriteria = this.formBuilder.group({
@@ -74,21 +81,9 @@ dayInitialize()
 }
 
 private onLoadScreen(content) {
-  // this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-  // },
-  //   (reason) => {
-  //     this.closeResult = 'Dismissed ${this.getDismissReason(reason)}';
-  //   });
+  this.modalRef = this.modalService.show(content, this.config);
 }
-// private getDismissReason(reason: any): string {
-//   if (reason === ModalDismissReasons.ESC) {
-//     return 'by pressing ESC';
-//   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-//     return 'by clicking on a backdrop';
-//   } else {
-//     return `with: ${reason}`;
-//   }
-// }
+
 public SubmitInit() {
   if (this.initcriteria.invalid) {
     this.HandleMessage(true, MessageType.Error,'Invalid Input.' );
@@ -110,16 +105,18 @@ private dayInitiationCall (opnDt :any)
   ;
   this.svc.addUpdDel<any>('Sys/W_DAY_OPEN', pgp).subscribe(
     res => {
-      ;
+      debugger;
       this.isLoading = false;
       this.alertMsg = res.output;
-      this.HandleMessage(true, MessageType.Sucess,this.alertMsg );
+      this.HandleMessage(true, MessageType.Sucess,this.alertMsg===null?"Day Initialization is Successfull." :this.alertMsg);
       this.isRetrieve=true;
       this.isOk=false;
+      this.modalRef.hide();
     },
-    err => { ;  this.isLoading = false;
+    err => { debugger;  this.isLoading = false;
       this.isRetrieve=true;
       this.isOk=false;
+      this.modalRef.hide();
     }
   );
 }
