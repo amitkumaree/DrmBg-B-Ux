@@ -34,6 +34,7 @@ import { AuthenticationService as AuthGuard } from '../_service/authentication.s
 import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transaction-approval/loan-transaction-approval.component';
 import { LoanaccountTransactionComponent } from './loan/transaction/loanaccount-transaction/loanaccount-transaction.component';
 import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseinttcalc/loan-accwiseinttcalc.component';
+import { LienAccLockUnlockComponent } from './deposit/acc-lock-unlock/lien-acc-lock-unlock/lien-acc-lock-unlock.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -79,6 +80,7 @@ const routes: Routes = [
       { path: 'LT_LoanTrans', component: LoanaccountTransactionComponent, canActivate: [ AuthGuard ] },
       { path: 'LT_CalcIntt', component: LoanAccwiseinttcalcComponent, canActivate: [ AuthGuard ]},
       { path: 'LT_LoanAprv', component: LoanTransactionApprovalComponent, canActivate: [ AuthGuard ]},
+      { path: 'DT_AccLockUnlock', component: LienAccLockUnlockComponent, canActivate: [ AuthGuard ]},
 
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },

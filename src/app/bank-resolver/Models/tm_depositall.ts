@@ -86,5 +86,7 @@ export class tm_depositall extends baseModel {
   /** Below prop is used for by common view please do not delete */
   public ShowClose: boolean;
   // public ShowIntrestDtls: boolean;
+  public acc_type_desc: string;
+  public lock_mode_desc: string;
 
 }

@@ -43,6 +43,7 @@ import { LoanaccountTransactionComponent } from './loan/transaction/loanaccount-
 import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transaction-approval/loan-transaction-approval.component';
 import { LoanTransactionDetailsComponent } from './Common/loan-transaction-details/loan-transaction-details.component';
 import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseinttcalc/loan-accwiseinttcalc.component';
+import { LienAccLockUnlockComponent } from './deposit/acc-lock-unlock/lien-acc-lock-unlock/lien-acc-lock-unlock.component';
 
 
 @NgModule({
@@ -69,7 +70,8 @@ import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseint
     LoanaccountTransactionComponent,
     LoanTransactionApprovalComponent, 
     LoanTransactionDetailsComponent,
-    LoanAccwiseinttcalcComponent
+    LoanAccwiseinttcalcComponent,
+    LienAccLockUnlockComponent
   ],
   imports: [
     CommonModule,
