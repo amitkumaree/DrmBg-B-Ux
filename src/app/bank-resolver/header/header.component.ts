@@ -29,6 +29,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   collapsed = true;
   bankConfig: BankConfigMst;
   bankName: string;
+  bankFullName: string;
   childMenu: mainmenu;
   subMenu: submenu;
   showMenu = false;
@@ -39,7 +40,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   sys = new SystemValues();
 
   ngOnInit(): void {
-    //this.bankName = localStorage.getItem('__bName');
+    this.bankName = localStorage.getItem('__bName');
     this.getBankConfigMaster();
     //this.bankName=this.titleService.getTitle()
   }
@@ -54,7 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         ;
         console.log(res);
         this.bankConfig = res;
-        this.bankName=this.bankConfig.bankname;
+        this.bankFullName = this.bankConfig.bankname;
         this.showMenu = true;
         this.showChildMenu = false;
         this.showSubMenu = false;
