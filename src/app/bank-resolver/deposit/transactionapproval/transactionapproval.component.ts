@@ -1,16 +1,20 @@
 import { p_gen_param } from './../../Models/p_gen_param';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 // import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsService } from 'ngx-export-as';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import {
   MessageType, mm_customer, ShowMessage, td_def_trans_trf,
-  mm_acc_type, tm_deposit, SystemValues
+  mm_acc_type, tm_deposit, SystemValues, mm_category
 } from '../../Models';
 import { TranApprovalVM } from '../../Models/TranApprovalVM';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
+import Utils from 'src/app/_utility/utils';
+import { mm_constitution } from '../../Models/deposit/mm_constitution';
+import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
+import { tm_denomination_trans } from '../../Models/deposit/tm_denomination_trans';
 
 @Component({
   selector: 'app-transactionapproval',
@@ -19,12 +23,13 @@ import { Router } from '@angular/router';
 
 })
 export class TransactionapprovalComponent implements OnInit {
+  constructor(private svc: RestService, private elementRef: ElementRef,
+    private msg: InAppMessageService, private modalService: BsModalService,
+    private router: Router, private frmBldr: FormBuilder) { }
+  static accType: mm_acc_type[] = [];
+  static categories: mm_category[] = [];
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
-  constructor(private svc: RestService, private elementRef: ElementRef,
-    private msg: InAppMessageService, private modalService: BsModalService
-    , private router: Router) { }
-  static accType: mm_acc_type[] = [];
   selectedAccountType: number;
   selectedTransactionMode: string;
   vm: TranApprovalVM[] = [];
@@ -42,27 +47,492 @@ export class TransactionapprovalComponent implements OnInit {
   toFltrTrnCd = '';
   toFltrAccountTyp = '';
   refresh = false;
+  custMstrFrm: FormGroup;
+  accDtlsFrm: FormGroup;
+  constitutionList: mm_constitution[] = [];
+  operationalInstrList: mm_oprational_intr[] = [];
+  selectedAcctDtls: tm_deposit;
+  transactionDtlsFrm: FormGroup;
+  showDenominationDtl = false;
+  // showTransferDtl = false;
+  totalOfDenomination = 0;
+  tranferDetails: td_def_trans_trf[] = [];
+  tmDenominationTransLst: tm_denomination_trans[] = [];
   // cust: mm_customer;
   // tdDepTransRet: td_def_trans_trf[] = [];
 
   ngOnInit(): void {
     this.getAcctTypeMaster();
-    this.refresh = true;
+    this.resetCustFrom();
+    this.getCategoryMaster();
+    this.resetAccDtlsFrmData();
+    this.resetTransactionDtlsFrm();
+    this.getConstitutionList();
+    this.getOperationalInstr();
   }
+
+  private resetCustFrom(): void {
+    this.custMstrFrm = this.frmBldr.group({
+      brn_cd: [''],
+      cust_cd: [''],
+      cust_type: [''],
+      title: [''],
+      first_name: [''],
+      middle_name: [''],
+      last_name: [''],
+      cust_name: [''],
+      guardian_name: [''],
+      cust_dt: [''],
+      old_cust_cd: [''],
+      dt_of_birth: [''],
+      age: [''],
+      sex: [''],
+      marital_status: [''],
+      catg_cd: [''],
+      community: [''],
+      caste: [''],
+      permanent_address: [''],
+      ward_no: [''],
+      state: [''],
+      dist: [''],
+      pin: [''],
+      vill_cd: [''],
+      block_cd: ['', { disabled: true }],
+      service_area_cd: [''],
+      occupation: [''],
+      phone: [''],
+      present_address: [''],
+      farmer_type: [''],
+      email: [''],
+      monthly_income: [''],
+      date_of_death: [''],
+      sms_flag: [''],
+      status: [''],
+      pan: ['',],
+      nominee: [''],
+      nom_relation: [''],
+      kyc_photo_type: [''],
+      kyc_photo_no: [''],
+      kyc_address_type: [''],
+      kyc_address_no: [''],
+      org_status: [''],
+      org_reg_no: [''],
+      catg_desc: ['']
+    });
+  }
+
+  private resetTransactionDtlsFrm(): void {
+    this.transactionDtlsFrm = this.frmBldr.group({
+      trans_dt: [''],
+      trans_cd: [''],
+      acc_type_cd: [''],
+      acc_num: [''],
+      trans_type: [''],
+      trans_mode: [''],
+      amount: [''],
+      instrument_dt: [''],
+      instrument_num: [''],
+      paid_to: [''],
+      token_num: [''],
+      created_by: [''],
+      created_dt: [''],
+      modified_by: [''],
+      modified_dt: [''],
+      approval_status: [''],
+      approved_by: [''],
+      approved_dt: [''],
+      particulars: [''],
+      tr_acc_type_cd: [''],
+      tr_acc_num: [''],
+      voucher_dt: [''],
+      voucher_id: [''],
+      trf_type: [''],
+      tr_acc_cd: [''],
+      acc_cd: [''],
+      share_amt: [''],
+      sum_assured: [''],
+      paid_amt: [''],
+      curr_prn_recov: [''],
+      ovd_prn_recov: [''],
+      curr_intt_recov: [''],
+      ovd_intt_recov: [''],
+      remarks: [''],
+      crop_cd: [''],
+      activity_cd: [''],
+      curr_intt_rate: [''],
+      ovd_intt_rate: [''],
+      instl_no: [''],
+      instl_start_dt: [''],
+      periodicity: [''],
+      disb_id: [''],
+      comp_unit_no: [''],
+      ongoing_unit_no: [''],
+      mis_advance_recov: [''],
+      audit_fees_recov: [''],
+      sector_cd: [''],
+      spl_prog_cd: [''],
+      borrower_cr_cd: [''],
+      numbert_till_dt: [''],
+      acc_name: [''],
+      brn_cd: [''],
+    });
+  }
+
+  private resetAccDtlsFrmData(): void {
+    this.accDtlsFrm = this.frmBldr.group({
+      brn_cd: [''],
+      acc_type_cd: [''],
+      acc_num: [''],
+      renew_id: [''],
+      cust_cd: [''],
+      intt_trf_type: [''],
+      constitution_cd: [''],
+      constitution_cd_desc: [''],
+      oprn_instr_cd: [''],
+      oprn_instr_cd_desc: [''],
+      opening_dt: [''],
+      prn_amt: [''],
+      intt_amt: [''],
+      dep_period: [''],
+      instl_amt: [''],
+      instl_no: [''],
+      mat_dt: [''],
+      intt_rt: [''],
+      tds_applicable: [''],
+      last_intt_calc_dt: [''],
+      acc_close_dt: [''],
+      closing_prn_amt: [''],
+      closing_intt_amt: [''],
+      penal_amt: [''],
+      ext_instl_tot: [''],
+      mat_status: [''],
+      acc_status: [''],
+      curr_bal: [''],
+      clr_bal: [''],
+      standing_instr_flag: [''],
+      cheque_facility_flag: [''],
+      approval_status: [''],
+      approved_by: [''],
+      approved_dt: [''],
+      user_acc_num: [''],
+      lock_mode: [''],
+      loan_id: [''],
+      cert_no: [''],
+      bonus_amt: [''],
+      penal_intt_rt: [''],
+      bonus_intt_rt: [''],
+      transfer_flag: [''],
+      transfer_dt: [''],
+      agent_cd: [''],
+    });
+  }
+
+  private setTransactionDtl(transactionDtl: td_def_trans_trf): void {
+    this.showDenominationDtl = false;
+    // this.showTransferDtl = false;
+    this.totalOfDenomination = 0;
+    if (undefined !== transactionDtl && Object.keys(transactionDtl).length !== 0) {
+      this.svc.addUpdDel<mm_acc_type[]>('Mst/GetAccountTypeMaster', null).subscribe(
+        res => {
+          const accType = res.filter(e => e.acc_type_cd === transactionDtl.acc_type_cd)[0];
+
+          this.transactionDtlsFrm.patchValue({
+            trans_dt: transactionDtl.trans_dt.toString().substr(0, 10),
+            trans_cd: transactionDtl.trans_cd,
+            acc_type_cd: accType.acc_type_desc,
+            acc_num: transactionDtl.acc_num,
+            trans_type: transactionDtl.trans_type === 'D' ? 'Deposit' :
+              transactionDtl.trans_type === 'W' ? 'Withdrawal' :
+                transactionDtl.trans_type === 'I' ? 'Interest Payment' : null,
+            trans_mode: transactionDtl.trans_mode === 'R' ? 'Renewal' :
+              transactionDtl.trans_mode === 'C' ? 'Close' :
+                transactionDtl.trans_mode === 'I' ? 'Interest Payment' :
+                  transactionDtl.trans_mode === 'W' ? 'Withdrawal Slip' :
+                    transactionDtl.trans_mode === 'V' ? 'Voucher' :
+                      transactionDtl.trans_mode === 'O' ? 'Open' :
+                        transactionDtl.trans_mode === 'Q' ? 'Cheque' : null,
+            amount: transactionDtl.amount,
+            instrument_dt: transactionDtl.instrument_dt.toString() === '0001-01-01T00:00:00' ? null :
+              transactionDtl.instrument_dt.toString().substr(0, 10),
+            instrument_num: transactionDtl.instrument_num === 0 ? null :
+              transactionDtl.instrument_num,
+            paid_to: transactionDtl.paid_to,
+            token_num: transactionDtl.token_num,
+            approval_status: transactionDtl.approval_status === 'U' ? 'Un Approved' :
+              transactionDtl.approval_status === 'A' ? 'Approved' : '',
+            approved_by: transactionDtl.approved_by,
+            approved_dt: transactionDtl.approved_dt.toString().substr(0, 10),
+            particulars: transactionDtl.particulars,
+            tr_acc_type_cd: transactionDtl.tr_acc_type_cd,
+            tr_acc_num: transactionDtl.tr_acc_num,
+            voucher_dt: transactionDtl.voucher_dt.toString().substr(0, 10),
+            voucher_id: transactionDtl.voucher_id,
+            trf_type: transactionDtl.trf_type === 'C' ? 'Cash' :
+              transactionDtl.trf_type === 'T' ? 'Tranfer' : '',
+            tr_acc_cd: transactionDtl.tr_acc_cd,
+            acc_cd: transactionDtl.acc_cd,
+            share_amt: transactionDtl.share_amt,
+            sum_assured: transactionDtl.sum_assured,
+            paid_amt: transactionDtl.paid_amt,
+            curr_prn_recov: transactionDtl.curr_prn_recov,
+            ovd_prn_recov: transactionDtl.ovd_prn_recov,
+            curr_numbert_recov: transactionDtl.curr_intt_recov,
+            ovd_numbert_recov: transactionDtl.ovd_intt_recov,
+            remarks: transactionDtl.remarks,
+            crop_cd: transactionDtl.crop_cd,
+            activity_cd: transactionDtl.activity_cd,
+            curr_numbert_rate: transactionDtl.curr_intt_rate,
+            ovd_numbert_rate: transactionDtl.ovd_intt_rate,
+            instl_no: transactionDtl.instl_no,
+            instl_start_dt: transactionDtl.instl_start_dt.toString().substr(0, 10),
+            periodicity: transactionDtl.periodicity,
+            disb_id: transactionDtl.disb_id,
+            comp_unit_no: transactionDtl.comp_unit_no,
+            ongoing_unit_no: transactionDtl.ongoing_unit_no,
+            mis_advance_recov: transactionDtl.mis_advance_recov,
+            audit_fees_recov: transactionDtl.audit_fees_recov,
+            sector_cd: transactionDtl.sector_cd,
+            spl_prog_cd: transactionDtl.spl_prog_cd,
+            borrower_cr_cd: transactionDtl.borrower_cr_cd,
+            numbert_till_dt: transactionDtl.intt_till_dt,
+            acc_name: transactionDtl.acc_name,
+            brn_cd: transactionDtl.brn_cd,
+          });
+          this.getDenominationDtl(transactionDtl);
+        },
+        err => { this.isLoading = false; }
+      );
+    } else { this.transactionDtlsFrm.reset(); }
+
+  }
+
+  private getDenominationDtl(transactionDtl: td_def_trans_trf): void {
+    if (transactionDtl.trf_type === 'C') {
+      let tmDenoTrf = new tm_denomination_trans();
+      tmDenoTrf.brn_cd = this.sys.BranchCode;
+      tmDenoTrf.trans_cd = transactionDtl.trans_cd;
+      tmDenoTrf.trans_dt = Utils.convertStringToDt(transactionDtl.trans_dt.toString());
+      this.svc.addUpdDel<any>('Common/GetDenominationDtls', tmDenoTrf).subscribe(
+        res => {
+          if (null !== res && Object.keys(res).length !== 0) {
+            this.showDenominationDtl = true;
+            this.tmDenominationTransLst = res;
+            this.tmDenominationTransLst.forEach(element => {
+              this.totalOfDenomination += element.total;
+            });
+          }
+        },
+        err => { }
+      );
+    } else {
+      let tdDefTranTransfr = new td_def_trans_trf();
+      tdDefTranTransfr.brn_cd = this.sys.BranchCode;
+      tdDefTranTransfr.trans_cd = transactionDtl.trans_cd;
+      tdDefTranTransfr.trans_dt = Utils.convertStringToDt(transactionDtl.trans_dt.toString());
+      // tdDefTranTransfr.trans_type = transactionDtl.trans_type;
+      this.svc.addUpdDel<any>('Common/GetDepTransTrfwithChild', tdDefTranTransfr).subscribe(
+        res => {
+          debugger;
+          if (null !== res && Object.keys(res).length !== 0) {
+            this.tranferDetails = res;
+            // this.showTransferDtl = true;
+            this.totalOfDenomination = 0;
+            this.tranferDetails.forEach(e => {
+              this.totalOfDenomination += (+e.amount);
+            });
+            // this.tmDenominationTransLst = res;
+            // this.tmDenominationTransLst.forEach(element => {
+            //   this.totalOfDenomination += element.total;
+            // });
+          }
+        },
+        err => { }
+      );
+    }
+  }
+
+  private setAccDtlsFrmData(acctDtls: tm_deposit): void {
+    if (undefined !== acctDtls && Object.keys(acctDtls).length !== 0
+      && (acctDtls !== null && acctDtls.constitution_cd !== null
+        && acctDtls.constitution_cd > 0)) {
+      debugger;
+      const constitution = this.constitutionList.filter(e => e.constitution_cd
+        === acctDtls.constitution_cd)[0];
+      const OprnInstrDesc = this.operationalInstrList.filter(e => e.oprn_cd
+        === acctDtls.oprn_instr_cd)[0];
+
+      this.accDtlsFrm.patchValue({
+        brn_cd: acctDtls.brn_cd,
+        acc_type_cd: acctDtls.acc_type_cd,
+        acc_num: acctDtls.acc_num,
+        renew_id: acctDtls.renew_id,
+        cust_cd: acctDtls.cust_cd,
+        intt_trf_type: acctDtls.intt_trf_type,
+        constitution_cd: acctDtls.constitution_cd,
+        constitution_cd_desc: (undefined !== constitution && null !== constitution
+          && undefined !== constitution.constitution_desc && null !== constitution.constitution_desc) ?
+          constitution.constitution_desc : null,
+        oprn_instr_cd: acctDtls.oprn_instr_cd,
+        oprn_instr_cd_desc: (undefined !== OprnInstrDesc && null !== OprnInstrDesc
+          && undefined !== OprnInstrDesc.oprn_desc && null !== OprnInstrDesc.oprn_desc) ?
+          OprnInstrDesc.oprn_desc : null,
+        opening_dt: acctDtls.opening_dt.toString().substr(0, 10),
+        prn_amt: acctDtls.prn_amt,
+        intt_amt: acctDtls.intt_amt,
+        dep_period: acctDtls.dep_period,
+        instl_amt: acctDtls.instl_amt,
+        instl_no: acctDtls.instl_no,
+        mat_dt: acctDtls.mat_dt.toString().substr(0, 10),
+        intt_rt: acctDtls.intt_rt,
+        tds_applicable: acctDtls.tds_applicable,
+        last_intt_calc_dt: acctDtls.last_intt_calc_dt.toString().substr(0, 10),
+        acc_close_dt: acctDtls.acc_close_dt.toString().substr(0, 10),
+        closing_prn_amt: acctDtls.closing_prn_amt,
+        closing_intt_amt: acctDtls.closing_intt_amt,
+        penal_amt: acctDtls.penal_amt,
+        ext_instl_tot: acctDtls.ext_instl_tot,
+        mat_status: acctDtls.mat_status,
+        acc_status: acctDtls.acc_status,
+        curr_bal: acctDtls.curr_bal,
+        clr_bal: acctDtls.clr_bal,
+        standing_instr_flag: acctDtls.standing_instr_flag,
+        cheque_facility_flag: acctDtls.cheque_facility_flag,
+        approval_status: acctDtls.approval_status,
+        approved_by: acctDtls.approved_by,
+        approved_dt: acctDtls.approved_dt.toString().substr(0, 10),
+        user_acc_num: acctDtls.user_acc_num,
+        lock_mode: acctDtls.lock_mode,
+        loan_id: acctDtls.loan_id,
+        cert_no: acctDtls.cert_no,
+        bonus_amt: acctDtls.bonus_amt,
+        penal_intt_rt: acctDtls.penal_intt_rt,
+        bonus_intt_rt: acctDtls.bonus_intt_rt,
+        transfer_flag: acctDtls.transfer_flag,
+        transfer_dt: acctDtls.transfer_dt.toString().substr(0, 10),
+        agent_cd: acctDtls.agent_cd,
+      });
+    } else { this.accDtlsFrm.reset(); }
+  }
+
+  private setCustFrm(cust: mm_customer): void {
+    if (undefined !== cust && Object.keys(cust).length !== 0) {
+      const category = TransactionapprovalComponent.categories.
+        filter(e => e.catg_cd === cust.catg_cd)[0];
+      this.custMstrFrm.patchValue({
+        brn_cd: cust.brn_cd,
+        cust_cd: cust.cust_cd,
+        cust_type: cust.cust_type,
+        title: cust.title,
+        first_name: cust.first_name,
+        middle_name: cust.middle_name,
+        last_name: cust.last_name,
+        cust_name: cust.cust_name,
+        guardian_name: cust.guardian_name,
+        cust_dt: cust.cust_dt,
+        old_cust_cd: cust.old_cust_cd,
+        dt_of_birth: cust.dt_of_birth.toString().substr(0, 10),
+        age: cust.age,
+        sex: cust.sex,
+        marital_status: cust.marital_status,
+        catg_cd: cust.catg_cd,
+        community: cust.community,
+        caste: cust.caste,
+        permanent_address: cust.permanent_address,
+        ward_no: cust.ward_no,
+        state: cust.state,
+        dist: cust.dist,
+        pin: cust.pin,
+        vill_cd: cust.vill_cd,
+        block_cd: cust.block_cd,
+        service_area_cd: cust.service_area_cd,
+        occupation: cust.occupation,
+        phone: cust.phone,
+        present_address: cust.present_address,
+        farmer_type: cust.farmer_type,
+        email: cust.email,
+        monthly_income: cust.monthly_income,
+        date_of_death: cust.date_of_death,
+        sms_flag: cust.sms_flag,
+        status: cust.status,
+        pan: cust.pan,
+        nominee: cust.nominee,
+        nom_relation: cust.nom_relation,
+        kyc_photo_type: cust.kyc_photo_type,
+        kyc_photo_no: cust.kyc_photo_no,
+        kyc_address_type: cust.kyc_address_type,
+        kyc_address_no: cust.kyc_address_no,
+        org_status: cust.org_status,
+        org_reg_no: cust.org_reg_no,
+        catg_desc: category.catg_desc
+      });
+    } else { this.custMstrFrm.reset(); }
+
+  }
+
+  getConstitutionList() {
+    if (undefined !== this.constitutionList &&
+      null !== this.constitutionList &&
+      this.constitutionList.length > 0) {
+      return;
+    }
+
+    this.constitutionList = [];
+    this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
+      res => {
+        this.constitutionList = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
+      },
+      err => { // ;
+      }
+    );
+  }
+
+  getOperationalInstr() {
+    if (this.operationalInstrList.length > 0) {
+      return;
+    }
+
+    this.operationalInstrList = [];
+    this.svc.addUpdDel<any>('Mst/GetOprationalInstr', null).subscribe(
+      res => {
+        this.operationalInstrList = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
+      },
+      err => { }
+    );
+  }
+
+  private getCategoryMaster(): void {
+    if (undefined !== TransactionapprovalComponent.categories &&
+      null !== TransactionapprovalComponent.categories &&
+      TransactionapprovalComponent.categories.length > 0) {
+    } else {
+      this.svc.addUpdDel<mm_category[]>('Mst/GetCategoryMaster', null).subscribe(
+        res => {
+          if (Utils.ChkArrNotEmpty(res)) {
+            TransactionapprovalComponent.categories = res;
+          }
+        },
+        err => { }
+      );
+    }
+  }
+
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
   public onClickRefreshList() {
     this.HandleMessage(false);
     this.refresh = false;
-    this.msg.sendCommonTransactionInfo(null);
-    this.msg.sendCommonCustInfo(null);
-    this.msg.sendCommonAcctInfo(null);
+    // this.msg.sendCommonTransactionInfo(null);
+    this.resetTransactionDtlsFrm();
+    this.custMstrFrm.reset();
+    // this.msg.sendCommonAcctInfo(null);
+    this.resetAccDtlsFrmData();
     this.msg.sendCommonAccountNum(null);
     this.toFltrAccountTyp = '';
     this.toFltrTrnCd = '';
     this.refresh = true;
     this.getAcctTypeMaster();
+    this.tranferDetails = [];
   }
 
   private getAcctTypeMaster(): void {
@@ -107,7 +577,8 @@ export class TransactionapprovalComponent implements OnInit {
         ;
         this.selectedVm.td_def_trans_trf = res[0];
         this.refresh = false;
-        this.msg.sendCommonTransactionInfo(res[0]); // show transaction details
+        // this.msg.sendCommonTransactionInfo(res[0]); // show transaction details
+        this.setTransactionDtl(res[0]);
         this.isLoading = false;
         this.refresh = true;
       },
@@ -121,7 +592,7 @@ export class TransactionapprovalComponent implements OnInit {
     this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
       res => {
         this.selectedVm.mm_customer = res[0];
-        this.msg.sendCommonCustInfo(res[0]);
+        this.setCustFrm(res[0])
         this.msg.sendcustomerCodeForKyc(this.selectedVm.mm_customer.cust_cd);
         this.isLoading = false;
       },
@@ -139,7 +610,8 @@ export class TransactionapprovalComponent implements OnInit {
         this.selectedVm.tm_deposit = acc;
         ;
         this.refresh = false;
-        this.msg.sendCommonAcctInfo(acc);
+        // this.msg.sendCommonAcctInfo(acc);
+        this.setAccDtlsFrmData(acc);
         this.msg.sendCommonAccountNum(acc.acc_num);
         this.refresh = true;
         this.isLoading = false;

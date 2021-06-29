@@ -146,6 +146,7 @@ export class LienAccLockUnlockComponent implements OnInit {
     {
       this.operationType = '';
       this.initializeModels();
+      this.closeAlertMsg();
     }
 
     retrieveData()
