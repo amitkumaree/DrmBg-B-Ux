@@ -34,12 +34,12 @@
             <h6 style="background-color:lightskyblue">Unapproved Trasanction List</h6>
             <div class=" row">
               <div class="form-row">
-                <div class="form-group col-5 offset-1">
+                <div class="form-group col-6 offset-1">
                   <small ><i class="fa fa-filter" aria-hidden="true"></i> Tran Cd OR Account No</small>
                   <input type="text" class="form-control form-control-sm" [(ngModel)]="toFltrTrnCd" placeholder="Tran Cd or Account No"
                   (input)="acctNumberAndTrnCdFilter($event.target.value)">
                 </div>
-                <div class="form-group col-3">
+                <div class="form-group col-5">
                   <small ><i class="fa fa-filter" aria-hidden="true"></i> Account Type</small>
                   <select id="title" class="form-control form-control-sm"
                   (change)="onChangeAcctType($event.target.value)" [(ngModel)]="toFltrAccountTyp">
@@ -187,10 +187,10 @@
             </div>
           </form>
           <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 6"
-          (click)="openModal(content)">Show Installaments</button>
+          (click)="openModal(rdinstcontent)">Show Installaments</button>
           <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 2 || selectedAccountType === 5"
           (click)="openModal(tdfdcontent)">Show Installaments</button>
-        <ng-template #content>
+        <ng-template #rdinstcontent>
           <div class="modal-header">
             <h4 class="modal-title pull-left">RD Installments Details for Acc# {{selectedVm.tm_deposit.acc_num}}
             </h4>
@@ -283,16 +283,18 @@
                   disabled>
               </div>
             </div>
-            <button type="button" class="btn btn-link" *ngIf="showDenominationDtl" (click)="openModal(content)">
+            <button type="button" class="btn btn-link" *ngIf="undefined !== tmDenominationTransLst && tmDenominationTransLst.length > 0" (click)="openModal(content)">
               Denomination Details
             </button>
             <button type="button" class="btn btn-link" *ngIf="undefined !== tranferDetails && tranferDetails.length > 0" (click)="openModal(trfcontent)">
               Transfer Details
             </button>
             <ng-template #content>
-              <div class="modal-header">
-                <h4 class="modal-title pull-left">Denomination Details
-                </h4>
+              <div class="modal-header text-center">
+                <h5 class="modal-title">Denomination Details for Acc#
+                  <strong>{{selectedVm.tm_deposit.acc_num}}</strong> and Tran Cd
+                  <strong>{{selectedVm.td_def_trans_trf.trans_cd}}</strong>
+                </h5>
                 <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -322,9 +324,11 @@
               </div>
             </ng-template>
             <ng-template #trfcontent>
-              <div class="modal-header">
-                <h4 class="modal-title pull-left">Transfer Details
-                </h4>
+              <div class="modal-header text-center">
+                <h5 class="modal-title pull-left">Transfer Details for Acc#
+                 <strong>{{selectedVm.tm_deposit.acc_num}}</strong> and Tran Cd
+                 <strong>{{selectedVm.td_def_trans_trf.trans_cd}}</strong>
+                </h5>
                 <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
                   <span aria-hidden="true">&times;</span>
                 </button>

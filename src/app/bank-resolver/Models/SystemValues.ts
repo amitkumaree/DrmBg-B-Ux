@@ -12,9 +12,10 @@ export class SystemValues {
   private __minBalWdChq: string;
   private __minBalNoChq: string;
   private __isLoggedIn: boolean;
+  private __dpstBnsRt: string;
+  private __pnlIntRtFrAccPreMatClos: string;
 
   constructor() {
-    ;
     this.__brnCd = localStorage.getItem('__brnCd');
     this.__brnName = localStorage.getItem('__brnName');
     this.__currentDate = localStorage.getItem('__currentDate');
@@ -29,6 +30,8 @@ export class SystemValues {
     this.__bName = localStorage.getItem('__bName');
     this.__minBalWdChq = localStorage.getItem('__minBalWdChq');
     this.__minBalNoChq = localStorage.getItem('__minBalNoChq');
+    this.__dpstBnsRt = localStorage.getItem('__dpstBnsRt');
+    this.__pnlIntRtFrAccPreMatClos = localStorage.getItem('__pnlIntRtFrAccPreMatClos');
   }
 
   get IsUsrLoggedIn(): boolean {
@@ -68,7 +71,12 @@ export class SystemValues {
   get MinBalanceWithOutCheque(): string {
     return this.__minBalNoChq;
   }
-
+  get DepositBonusRate(): number {
+    return +this.__dpstBnsRt;
+  }
+  get PenalInttRtFrAccPreMatureClosing(): number {
+    return +this.__pnlIntRtFrAccPreMatClos;
+  }
 
   /** expected format of the string is dd/mm/yyyy */
   // private convertStringToDt(str: string): Date {

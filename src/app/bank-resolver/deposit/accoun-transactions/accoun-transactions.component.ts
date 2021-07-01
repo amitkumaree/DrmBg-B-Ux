@@ -668,10 +668,10 @@ export class AccounTransactionsComponent implements OnInit {
         if (undefined !== constitution && null !== constitution
           && null !== constitution.allow_trans
           && constitution.allow_trans.toUpperCase() === 'N') {
-            this.HandleMessage(true, MessageType.Error,
-              `No transaction allowed for this constituion ${constitution.constitution_desc}.`);
-            this.onResetClick();
-            return false;
+          this.HandleMessage(true, MessageType.Error,
+            `No transaction allowed for this constituion ${constitution.constitution_desc}.`);
+          this.onResetClick();
+          return false;
         }
         /* check if account is dormant */
         const temp = new tm_deposit()
@@ -805,6 +805,14 @@ export class AccounTransactionsComponent implements OnInit {
       this.hideOnClose = true;
       this.showAmtDrpDn = true;
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close') {
+      // check maturity of account
+      let isMatured = false;
+      const cDt = this.sys.CurrentDate.getTime();
+      const matDt = Utils.convertStringToDt(this.accNoEnteredForTransaction.mat_dt.toString()).getTime();
+      if (cDt > matDt) {
+        isMatured = true;
+      }
+
       this.transType.key = 'W';
       this.transType.Description = 'Close';
       this.accNoEnteredForTransaction.ShowClose = true;
@@ -829,10 +837,70 @@ export class AccounTransactionsComponent implements OnInit {
           amount: this.accNoEnteredForTransaction.prn_amt,
           curr_intt_recov: (0.015 * this.accNoEnteredForTransaction.prn_amt).toFixed(2),
           ovd_intt_recov: '',
-          curr_prn_recov: '',
+          curr_prn_recov: isMatured ? (this.sys.DepositBonusRate *
+            this.accNoEnteredForTransaction.prn_amt).toFixed(2) : '',
           td_def_mat_amt: (this.accNoEnteredForTransaction.prn_amt +
             (0.015 * this.accNoEnteredForTransaction.prn_amt)).toFixed(2)
         });
+      }
+      if (accTypCode === 6) { // Special logic for RD on close
+        let param = new p_gen_param();
+        param.as_acc_num = this.accNoEnteredForTransaction.acc_num;
+        param.ad_instl_amt = this.accNoEnteredForTransaction.instl_amt;
+        param.an_instl_no = this.accNoEnteredForTransaction.instl_no;
+        param.an_intt_rate = isMatured ? this.accNoEnteredForTransaction.intt_rt :
+        (this.accNoEnteredForTransaction.intt_rt - this.sys.PenalInttRtFrAccPreMatureClosing);
+
+        this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', param).subscribe(
+          res => {
+            if (undefined !== res
+              && null !== res
+              && res > 0) {
+              this.tdDefTransFrm.patchValue({
+                curr_intt_recov: res.toFixed(2)
+              });
+            }
+          },
+          err => { console.log(err); }
+        );
+        param = new p_gen_param();
+        param.as_acc_num = this.accNoEnteredForTransaction.acc_num;
+        this.svc.addUpdDel<any>('Deposit/F_CAL_RD_PENALTY', param).subscribe(
+          res => {
+            if (undefined !== res
+              && null !== res
+              && res > 0) {
+              this.tdDefTransFrm.patchValue({
+                ovd_intt_recov: res.toFixed(2)
+              });
+            }
+          },
+          err => { console.log(err); }
+        );
+        // if premature closing show warning of how many days month and yr left
+        if (!isMatured) {
+          const crDt = this.sys.CurrentDate;
+          const matuDt = Utils.convertStringToDt(this.accNoEnteredForTransaction.mat_dt.toString());
+
+          let diff = Math.abs(crDt.getTime() - matuDt.getTime());
+          let diffYear = diff / 1000;
+          diffYear /= (60 * 60 * 24);
+          diffYear = Math.abs(Math.round(diffYear / 365.25));
+
+          if (diffYear > 0) { crDt.setFullYear(crDt.getFullYear() + diffYear); }
+          diff = Math.abs(crDt.getTime() - matuDt.getTime());
+          let diffMonth = diff / 1000;
+          diffMonth /= (60 * 60 * 24 * 7 * 4);
+          diffMonth = Math.abs(Math.round(diffMonth));
+
+          if (diffMonth > 0) { crDt.setMonth(diffMonth); }
+          diff = Math.abs(crDt.getTime() - matuDt.getTime());
+          const daysDiff = diff / (1000 * 3600 * 24);
+          const msg = `Account# ${this.accNoEnteredForTransaction.acc_num}, will mature in ${diffYear} year(s), ${diffMonth} month(s) and ${daysDiff} day(s) .`;
+          this.HandleMessage(true, MessageType.Warning, msg);
+          alert(msg);
+        }
+
       }
       this.hideOnClose = true;
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {

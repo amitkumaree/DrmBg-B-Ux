@@ -79,6 +79,10 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem('__userId', this.f.username.value); // feather
                 localStorage.setItem('__minBalWdChq', this.systemParam.find(x => x.param_cd === '301').param_value);
                 localStorage.setItem('__minBalNoChq', this.systemParam.find(x => x.param_cd === '302').param_value);
+                localStorage.setItem('__dpstBnsRt', this.systemParam.find(x => x.param_cd === '805').param_value);
+                localStorage.setItem('__pnlIntRtFrAccPreMatClos', this.systemParam.find(x => x.param_cd === '802').param_value);
+
+                // Penal Intt Rate For Acc Pre Mature Clossing
                 this.isLoading = false;
                 this.msg.sendisLoggedInShowHeader(true);
                 this.router.navigate([__bName + '/la']);

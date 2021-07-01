@@ -298,7 +298,7 @@ export class TransactionapprovalComponent implements OnInit {
             acc_name: transactionDtl.acc_name,
             brn_cd: transactionDtl.brn_cd,
           });
-          this.getDenominationDtl(transactionDtl);
+          this.getDenominationOrTransferDtl(transactionDtl);
         },
         err => { this.isLoading = false; }
       );
@@ -306,7 +306,9 @@ export class TransactionapprovalComponent implements OnInit {
 
   }
 
-  private getDenominationDtl(transactionDtl: td_def_trans_trf): void {
+  private getDenominationOrTransferDtl(transactionDtl: td_def_trans_trf): void {
+    this.tmDenominationTransLst = [];
+    this.tranferDetails = [];
     if (transactionDtl.trf_type === 'C') {
       let tmDenoTrf = new tm_denomination_trans();
       tmDenoTrf.brn_cd = this.sys.BranchCode;
