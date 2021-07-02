@@ -2,7 +2,7 @@ import { RestService } from './../../_service/rest.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LOGIN_MASTER } from '../Models';
+import { LOGIN_MASTER, SystemValues } from '../Models';
 import { InAppMessageService } from 'src/app/_service';
 import { m_branch } from '../Models/m_branch';
 import { sm_parameter } from '../Models/sm_parameter';
@@ -29,13 +29,7 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private rstSvc: RestService,
     private msg: InAppMessageService,
-    private http: HttpClient) {
-    this.http.get<{ ip: string }>('https://jsonip.com')
-      .subscribe(data => {
-        // console.log('th data', data);
-        this.ipAddress = data;
-      })
-  }
+    private http: HttpClient) { }
 
   ngOnInit(): void {
     this.GetBranchMaster();
@@ -45,6 +39,16 @@ export class LoginComponent implements OnInit {
       branch: ['', Validators.required]
     });
     this.loginForm.enable();
+    this.msg.sendisLoggedInShowHeader(false);
+    const sys = new SystemValues();
+    if (null !== sys.UserId && sys.UserId.length > 0) {
+      const usr = new LOGIN_MASTER();
+      usr.brn_cd = sys.BranchCode;
+      usr.user_id = sys.UserId;
+      usr.login_status = 'N';
+      this.updateUsrStatus(usr);
+    }
+    localStorage.removeItem('__userId');
   }
   get f() { return this.loginForm.controls; }
 
@@ -76,33 +80,9 @@ export class LoginComponent implements OnInit {
             return;
           }
           // console.log('Login Sucess');
-          this.rstSvc.addUpdDel('Mst/GetSystemParameter', null).subscribe(
-            sysRes => {
-              try {
-                this.systemParam = sysRes;
-                console.log('ParameterList Sucess');
-                localStorage.setItem('__brnCd', this.f.branch.value); // "101"
-                localStorage.setItem('__brnName', this.brnDtls.find(x => x.brn_cd === this.f.branch.value).brn_name);//"101"
-                localStorage.setItem('__currentDate', this.systemParam.find(x => x.param_cd === '206').param_value);//Day initilaze
-                localStorage.setItem('__cashaccountCD', this.systemParam.find(x => x.param_cd === '213').param_value);//28101
-                localStorage.setItem('__ddsPeriod', this.systemParam.find(x => x.param_cd === '220').param_value); // 12
-                localStorage.setItem('__userId', this.f.username.value); // feather
-                localStorage.setItem('__minBalWdChq', this.systemParam.find(x => x.param_cd === '301').param_value);
-                localStorage.setItem('__minBalNoChq', this.systemParam.find(x => x.param_cd === '302').param_value);
-                localStorage.setItem('__dpstBnsRt', this.systemParam.find(x => x.param_cd === '805').param_value);
-                localStorage.setItem('__pnlIntRtFrAccPreMatClos', this.systemParam.find(x => x.param_cd === '802').param_value);
-
-                this.msg.sendisLoggedInShowHeader(true);
-                this.router.navigate([__bName + '/la']);
-              }
-              catch (exception) {
-                this.isLoading = false;
-                this.showAlert = true;
-                this.alertMsg = 'Initialization Failed. Contact Administrator !';
-              }
-            },
-            sysErr => { }
-          );
+          this.getSystemParam();
+          res[0].login_status = 'Y';
+          this.updateUsrStatus(res[0]);
         }
       },
       err => {
@@ -112,9 +92,53 @@ export class LoginComponent implements OnInit {
       }
     )
   }
+
   closeAlert() {
     this.showAlert = false;
   }
+
+  private updateUsrStatus(usr: any): void {
+    this.rstSvc.addUpdDel('Mst/Updateuserstatus', usr).subscribe(
+      res => {
+        debugger;
+      },
+      err => { }
+    );
+  }
+
+  private getSystemParam(): void {
+    this.rstSvc.addUpdDel('Mst/GetSystemParameter', null).subscribe(
+      sysRes => {
+        try {
+          const __bName = localStorage.getItem('__bName');
+          this.systemParam = sysRes;
+          console.log('ParameterList Sucess');
+          localStorage.setItem('__brnCd', this.f.branch.value); // "101"
+          localStorage.setItem('__brnName', this.brnDtls.find(x => x.brn_cd === this.f.branch.value).brn_name);//"101"
+          localStorage.setItem('__currentDate', this.systemParam.find(x => x.param_cd === '206').param_value);//Day initilaze
+          localStorage.setItem('__cashaccountCD', this.systemParam.find(x => x.param_cd === '213').param_value);//28101
+          localStorage.setItem('__ddsPeriod', this.systemParam.find(x => x.param_cd === '220').param_value); // 12
+          localStorage.setItem('__userId', this.f.username.value); // feather
+          localStorage.setItem('__minBalWdChq', this.systemParam.find(x => x.param_cd === '301').param_value);
+          localStorage.setItem('__minBalNoChq', this.systemParam.find(x => x.param_cd === '302').param_value);
+          localStorage.setItem('__dpstBnsRt', this.systemParam.find(x => x.param_cd === '805').param_value);
+          localStorage.setItem('__pnlIntRtFrAccPreMatClos', this.systemParam.find(x => x.param_cd === '802').param_value);
+          localStorage.setItem('__curFinyr', this.systemParam.find(x => x.param_cd === '207').param_value);
+
+          this.msg.sendisLoggedInShowHeader(true);
+          this.router.navigate([__bName + '/la']);
+
+        }
+        catch (exception) {
+          this.isLoading = false;
+          this.showAlert = true;
+          this.alertMsg = 'Initialization Failed. Contact Administrator !';
+        }
+      },
+      sysErr => { }
+    );
+  }
+
   cancel() {
     localStorage.clear();
     localStorage.removeItem('__bName');
@@ -132,20 +156,28 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.rstSvc.addUpdDel('Mst/GetBranchMaster', null).subscribe(
       res => {
-        this.isLoading = false;
-        let ipMatched = false;
-        this.brnDtls = res;
-        this.brnDtls.forEach(e => {
-          if (e.ip_address === this.ipAddress) { ipMatched = true; }
-        });
-        if (!ipMatched) {
-          this.showAlert = true;
-          this.alertMsg = 'Can not access, contact support.';
-          this.loginForm.disable();
-          return;
-        } else {
-          this.loginForm.enable();
-        }
+        this.loginForm.disable();
+        debugger;
+        this.http.get<{ ip: string }>('https://jsonip.com')
+          .subscribe(data => {
+            debugger;
+            // console.log('th data', data);
+            this.ipAddress = data;
+            this.isLoading = false;
+            let ipMatched = false;
+            this.brnDtls = res;
+            this.brnDtls.forEach(e => {
+              if (e.ip_address === this.ipAddress.ip) { ipMatched = true; }
+            });
+            if (!ipMatched) {
+              this.showAlert = true;
+              this.alertMsg = 'Can not access, contact support.';
+              this.loginForm.disable();
+              return;
+            } else {
+              this.loginForm.enable();
+            }
+          });
       },
       err => { this.isLoading = false; }
     )

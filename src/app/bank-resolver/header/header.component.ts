@@ -1,7 +1,7 @@
 import { BankConfiguration } from './../Models/bankConfiguration';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InAppMessageService, RestService } from 'src/app/_service';
-import { BankConfigMst, mainmenu, submenu, screenlist, SystemValues } from '../Models';
+import { BankConfigMst, mainmenu, submenu, screenlist, SystemValues, LOGIN_MASTER } from '../Models';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
@@ -68,6 +68,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout() {
     // localStorage.removeItem('__bName');
     // this.router.navigate(['/']);
+    this.updateUsrStatus();
     localStorage.removeItem('__brnName');
     localStorage.removeItem('__brnCd');
     localStorage.removeItem('__currentDate');
@@ -76,6 +77,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     localStorage.removeItem('__userId');
     this.msg.sendisLoggedInShowHeader(false);
     this.router.navigate([this.bankName + '/login']);
+  }
+
+  private updateUsrStatus(): void {
+    const usr = new LOGIN_MASTER();
+    usr.brn_cd = this.sys.BranchCode;
+    usr.user_id = this.sys.UserId;
+    usr.login_status = 'N';
+    this.rstSvc.addUpdDel('Mst/Updateuserstatus', usr).subscribe(
+      res => {
+        debugger;
+      },
+      err => { }
+    );
   }
 
   goToHome() {

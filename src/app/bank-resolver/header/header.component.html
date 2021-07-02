@@ -4,7 +4,7 @@
       <ul class="header_top">
         <li><strong>Bank/Society: </strong>{{bankFullName}}</li>
         <li><strong>Branch: </strong>{{sys.BranchName}}</li>
-        <li><strong>Financial Year: </strong>2018-19</li>
+        <li><strong>Financial Year: </strong>{{sys.CurrentFinancialYr}}</li>
         <li><strong>User: </strong>{{sys.UserId}}</li>
         <li class="date"><strong>Current Dt: </strong> {{sys.CurrentDate | date:'dd-MM-yyyy'}}</li>
       </ul>

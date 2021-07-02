@@ -18,15 +18,15 @@ export class BankResolverComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   showHeader = false;
   showTitle = true;
-  constructor(private route: ActivatedRoute, private confSvc: ConfigurationService,
-    private msg: InAppMessageService, private router: Router, private titleService: Title) {
+  constructor(private route: ActivatedRoute,
+              private confSvc: ConfigurationService,
+              private msg: InAppMessageService,
+              private router: Router,
+              private titleService: Title) {
     this.subscription = this.msg.getisLoggedInShowHeader().subscribe(
       res => {
-        ;
         if (res === null) {
           this.route.paramMap.subscribe(param => {
-            // this.passedValue =
-            ;
             const paramValue = param.get('bankName');
             if (null !== paramValue) {
               localStorage.setItem('__bName', paramValue);
@@ -34,8 +34,6 @@ export class BankResolverComponent implements OnInit, OnDestroy {
               if (__bName !== null) {
                 this.router.navigate([__bName]);
               }
-              // localStorage.removeItem('__bName');
-              // this.router.navigate(['/']);
             } else {
               // TODO need to think what we will do if the bank name doesnt come
             }
@@ -44,7 +42,7 @@ export class BankResolverComponent implements OnInit, OnDestroy {
         } else {
           this.showHeader = res;
           this.showTitle = false;
-          this.titleService.setTitle('Welcome to ' + this.passedValue.description);
+          this.getBankName();
         }
       },
       err => { }
@@ -53,18 +51,18 @@ export class BankResolverComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getBankName();
+  }
+
+  private getBankName(): void {
     this.route.paramMap.subscribe(param => {
-      // this.passedValue =
-      ;
       const paramValue = param.get('bankName');
       if (null !== paramValue) {
         localStorage.setItem('__bName', paramValue);
         this.confSvc.getConfigurationForName(paramValue).then(
           res => {
-            ;
             if (undefined === res) {
-              // need to block the user
-
+              // todo need to block the user
             }
             this.passedValue = res;
             this.titleService.setTitle('Welcome to ' + this.passedValue.description);
@@ -74,12 +72,10 @@ export class BankResolverComponent implements OnInit, OnDestroy {
       } else {
         // TODO need to think what we will do if the bank name doesnt come
       }
-      // console.log(param);
     });
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    // this.getSubDomain(1);
   }
 }

@@ -14,6 +14,7 @@ export class SystemValues {
   private __isLoggedIn: boolean;
   private __dpstBnsRt: string;
   private __pnlIntRtFrAccPreMatClos: string;
+  private __curFinyr: string;
 
   constructor() {
     this.__brnCd = localStorage.getItem('__brnCd');
@@ -32,6 +33,7 @@ export class SystemValues {
     this.__minBalNoChq = localStorage.getItem('__minBalNoChq');
     this.__dpstBnsRt = localStorage.getItem('__dpstBnsRt');
     this.__pnlIntRtFrAccPreMatClos = localStorage.getItem('__pnlIntRtFrAccPreMatClos');
+    this.__curFinyr = localStorage.getItem('__curFinyr');
   }
 
   get IsUsrLoggedIn(): boolean {
@@ -76,6 +78,9 @@ export class SystemValues {
   }
   get PenalInttRtFrAccPreMatureClosing(): number {
     return +this.__pnlIntRtFrAccPreMatClos;
+  }
+  get CurrentFinancialYr(): number {
+    return +this.__curFinyr;
   }
 
   /** expected format of the string is dd/mm/yyyy */
