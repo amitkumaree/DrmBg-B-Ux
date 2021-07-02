@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
           this.alertMsg = 'Invalid Credential !!!!!';
         }
         else {
-          if (res[0].login_status === 'N') {
+          if (res[0].login_status === 'Y') {
             this.showAlert = true;
             this.alertMsg = 'User id already logged in another machine;';
             return;
@@ -143,6 +143,8 @@ export class LoginComponent implements OnInit {
           this.alertMsg = 'Can not access, contact support.';
           this.loginForm.disable();
           return;
+        } else {
+          this.loginForm.enable();
         }
       },
       err => { this.isLoading = false; }

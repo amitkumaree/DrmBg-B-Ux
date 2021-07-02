@@ -6,13 +6,16 @@ import { SystemValues } from '../bank-resolver/Models';
   providedIn: 'root'
 })
 export class AuthenticationService implements CanActivate {
-  sys = new SystemValues();
   constructor(private router: Router) { }
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    ;
-    if (this.sys.IsUsrLoggedIn) { return true; }
+    debugger;
+    const sys = new SystemValues();
+    if (sys.IsUsrLoggedIn) { return true; }
+
 
     const bankName = localStorage.getItem('__bName');
+    localStorage.clear();
+    localStorage.setItem('__bName', bankName);
     this.router.navigate([bankName + '/login']);
     return false;
   }
