@@ -6,19 +6,19 @@ import { BankConfiguration } from '../bank-resolver/Models';
   providedIn: 'root'
 })
 export class ConfigurationService {
-  static configuration: BankConfiguration[] = [];
+  configuration: BankConfiguration[] = [];
 
   constructor() { }
 
   getAllConfiguration(): Promise<BankConfiguration[]> {
     const p = new Promise<BankConfiguration[]>((resolve, reject) => {
-      if (null !== ConfigurationService.configuration
-          && ConfigurationService.configuration.length > 0) { } else {
-          ConfigurationService.configuration = (configuration  as  any).default;
+      if (null !== this.configuration
+          && this.configuration.length > 0) { } else {
+          this.configuration = (configuration  as  any).default;
         }
 
-      resolve(ConfigurationService.configuration);
-      // even here if the ConfigurationService.configuration is null
+      resolve(this.configuration);
+      // even here if the this.configuration is null
       // then we should reject with error
     });
 
@@ -27,14 +27,14 @@ export class ConfigurationService {
 
   getConfigurationForName(findConf: string): Promise<BankConfiguration> {
     const p = new Promise<BankConfiguration>((resolve, reject) => {
-      if (null !== ConfigurationService.configuration
-          && ConfigurationService.configuration.length > 0) { } else {
-          ConfigurationService.configuration = (configuration  as  any).default;
+      if (null !== this.configuration
+          && this.configuration.length > 0) { } else {
+          this.configuration = (configuration  as  any).default;
         }
 
-      resolve(ConfigurationService.configuration.
+      resolve(this.configuration.
         filter(e => e.name.toLowerCase() === findConf.toLowerCase())[0]);
-      // even here if the ConfigurationService.configuration is null
+      // even here if the this.configuration is null
       // then we should reject with error
     });
 

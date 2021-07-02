@@ -38,6 +38,11 @@ npm i webdatarocks --save
 ## important commands
 1. ng g c bank-resolver\finance\report\dailybook --skipTests=true  to create diailybook inside Finance/report
 2. ng build --base-href "/SynergicBanking/" --prod --build-optimizer  --aot --output-hashing=all
+3. ng build --base-href "/dev.SynergicBanking/" --prod --build-optimizer  --aot --output-hashing=all
+
+## While new deployment
+1. change index.html's base url
+2. change webconfig action type="Rewrite" url=
 
 ## install ngx export
 npm i ngx-export-as
@@ -53,3 +58,4 @@ npm prune ## removes all unused pacakages
 2G2d5abS
 Synergic#AM@2906
 1013605
+
