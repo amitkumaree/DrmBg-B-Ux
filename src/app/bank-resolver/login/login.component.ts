@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
     private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.GetBranchMaster();
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -49,6 +48,10 @@ export class LoginComponent implements OnInit {
       this.updateUsrStatus(usr);
     }
     localStorage.removeItem('__userId');
+
+    setTimeout(() => {
+      this.GetBranchMaster();
+    }, 150);
   }
   get f() { return this.loginForm.controls; }
 
@@ -152,7 +155,8 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  GetBranchMaster() {
+  private GetBranchMaster() {
+    debugger;
     this.isLoading = true;
     this.rstSvc.addUpdDel('Mst/GetBranchMaster', null).subscribe(
       res => {

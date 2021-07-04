@@ -12,12 +12,17 @@ export class RestService {
   static configuration: BankConfiguration[] = [];
 
   constructor(private http: HttpClient, private confSvc: ConfigurationService) {
-    this.confSvc.getAllConfiguration().then(
-      res => {
-        RestService.configuration = res;
-      },
-      err => { }
-    );
+    this.getConfiginSysn();
+    // this.confSvc.getAllConfiguration().then(
+    //   res => {
+    //     RestService.configuration = res;
+    //   },
+    //   err => { }
+    // );
+  }
+
+  async getConfiginSysn() {
+    RestService.configuration = (await this.confSvc.getAllConfiguration() as BankConfiguration[]);
   }
 
   private getUrl(): string {
