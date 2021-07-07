@@ -22,7 +22,7 @@ export class RestService {
   }
 
   async getConfiginSysn() {
-    RestService.configuration = (await this.confSvc.getAllConfiguration() as BankConfiguration[]);
+    RestService.configuration = (await this.confSvc.getAllConfiguration() as BankConfiguration[])
   }
 
   private getUrl(): string {

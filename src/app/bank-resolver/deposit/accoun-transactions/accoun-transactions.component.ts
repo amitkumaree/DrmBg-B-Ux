@@ -80,7 +80,14 @@ export class AccounTransactionsComponent implements OnInit {
   }
   ngOnInit(): void {
     this.isLoading = false;
-    this.getOperationMaster();
+    setTimeout(() => {
+      this.getOperationMaster();
+      this.getAccountTypeList();
+      this.getCustomerList();
+      this.getDenominationList();
+      this.getConstitutionList();
+    }, 150);
+
     this.accTransFrm = this.frmBldr.group({
       acc_type_cd: [''],
       oprn_cd: [''],
@@ -152,10 +159,6 @@ export class AccounTransactionsComponent implements OnInit {
       td_def_mat_amt: ['']
     });
     this.resetTransfer();
-    this.getAccountTypeList();
-    this.getCustomerList();
-    this.getDenominationList();
-    this.getConstitutionList();
     this.resetAccDtlsFrmFormData();
   }
 
@@ -849,7 +852,7 @@ export class AccounTransactionsComponent implements OnInit {
         param.ad_instl_amt = this.accNoEnteredForTransaction.instl_amt;
         param.an_instl_no = this.accNoEnteredForTransaction.instl_no;
         param.an_intt_rate = isMatured ? this.accNoEnteredForTransaction.intt_rt :
-        (this.accNoEnteredForTransaction.intt_rt - this.sys.PenalInttRtFrAccPreMatureClosing);
+          (this.accNoEnteredForTransaction.intt_rt - this.sys.PenalInttRtFrAccPreMatureClosing);
 
         this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', param).subscribe(
           res => {

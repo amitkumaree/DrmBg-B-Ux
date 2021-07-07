@@ -185,11 +185,12 @@
                    disabled>
               </div>
             </div>
+            <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 6"
+            (click)="openModal(rdinstcontent)">Show Installaments</button>
+            <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 2 || selectedAccountType === 5"
+            (click)="openModal(tdfdcontent)">Show Installaments</button>
           </form>
-          <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 6"
-          (click)="openModal(rdinstcontent)">Show Installaments</button>
-          <button type="button" class="btn btn-link" *ngIf="selectedAccountType === 2 || selectedAccountType === 5"
-          (click)="openModal(tdfdcontent)">Show Installaments</button>
+
         <ng-template #rdinstcontent>
           <div class="modal-header">
             <h4 class="modal-title pull-left">RD Installments Details for Acc# {{selectedVm.tm_deposit.acc_num}}

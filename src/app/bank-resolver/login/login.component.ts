@@ -171,7 +171,7 @@ export class LoginComponent implements OnInit {
             let ipMatched = false;
             this.brnDtls = res;
             this.brnDtls.forEach(e => {
-              if (e.ip_address === this.ipAddress.ip) { ipMatched = true; }
+              if (e.ip_address.indexOf(this.ipAddress.ip) !== -1) { ipMatched = true; }
             });
             if (!ipMatched) {
               this.showAlert = true;

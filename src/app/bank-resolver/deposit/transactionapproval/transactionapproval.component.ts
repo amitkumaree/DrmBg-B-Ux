@@ -62,13 +62,15 @@ export class TransactionapprovalComponent implements OnInit {
   // tdDepTransRet: td_def_trans_trf[] = [];
 
   ngOnInit(): void {
-    this.getAcctTypeMaster();
+    setTimeout(() => {
+      this.getAcctTypeMaster();
+      this.getCategoryMaster();
+      this.getConstitutionList();
+      this.getOperationalInstr();
+    }, 150);
     this.resetCustFrom();
-    this.getCategoryMaster();
     this.resetAccDtlsFrmData();
     this.resetTransactionDtlsFrm();
-    this.getConstitutionList();
-    this.getOperationalInstr();
   }
 
   private resetCustFrom(): void {
