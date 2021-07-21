@@ -588,23 +588,37 @@ export class AccounTransactionsComponent implements OnInit {
     this.isLoading = true;
     this.showMsg = null;
     let acc = new tm_depositall();
-
+    debugger;
     acc.acc_num = '' + this.f.acct_num.value;
     acc.acc_type_cd = +this.f.acc_type_cd.value;
     acc.brn_cd = this.sys.BranchCode;
-    this.svc.addUpdDel<tm_depositall>('Deposit/GetDepositWithChild', acc).subscribe(
+    this.svc.addUpdDel<any>('Deposit/GetDepositWithChild', acc).subscribe(
       res => {
         this.isLoading = false;
-        acc = res[0];
-        if (this.validationOnAcctTabOff(acc)) {
-          this.disableOperation = false;
-          this.accNoEnteredForTransaction = acc;
-          this.setAccDtlsFrmForm();
-          this.getPreviousTransactionDtl(acc);
-          this.tdDefTransFrm.patchValue({
-            acc_num: acc.acc_num,
+        let foundOneUnclosed = false;
+        if (undefined !== res && null !== res && res.length > 0) {
+          res.forEach(element => {
+            if (element.acc_status === null || element.acc_status.toUpperCase() !== 'C') {
+              foundOneUnclosed = true;
+              acc = element;
+              if (this.validationOnAcctTabOff(acc)) {
+                this.disableOperation = false;
+                this.accNoEnteredForTransaction = acc;
+                this.setAccDtlsFrmForm();
+                this.getPreviousTransactionDtl(acc);
+                this.tdDefTransFrm.patchValue({
+                  acc_num: acc.acc_num,
+                });
+                this.f.oprn_cd.enable();
+              }
+            }
           });
-          this.f.oprn_cd.enable();
+          if (!foundOneUnclosed) {
+            this.HandleMessage(true, MessageType.Error,
+              'Account number ' + this.f.acct_num.value + ' is closed.');
+            this.onResetClick();
+            return;
+          }
         }
       },
       err => {
@@ -638,13 +652,13 @@ export class AccounTransactionsComponent implements OnInit {
       this.onResetClick();
       return false;
     }
-    /* check if account is not closed */
-    if (acc.acc_status.toUpperCase() === 'C') {
-      this.HandleMessage(true, MessageType.Error,
-        'Account number ' + this.f.acct_num.value + ' is closed.');
-      this.onResetClick();
-      return false;
-    }
+    // /* check if account is not closed */
+    // if (acc.acc_status.toUpperCase() === 'C') {
+    //   this.HandleMessage(true, MessageType.Error,
+    //     'Account number ' + this.f.acct_num.value + ' is closed.');
+    //   this.onResetClick();
+    //   return false;
+    // }
 
     if (acc.acc_type_cd === 1 ||
       acc.acc_type_cd === 2 ||
@@ -683,10 +697,8 @@ export class AccounTransactionsComponent implements OnInit {
         this.svc.addUpdDel<any>('Deposit/isDormantAccount', temp).subscribe(
           res => {
             if (undefined !== res && null !== res && res === 0) {
-              this.HandleMessage(true, MessageType.Error,
+              this.HandleMessage(true, MessageType.Warning,
                 `Account number ${this.f.acct_num.value} is dormant.`);
-              this.onResetClick();
-              return false;
             }
           },
           err => { console.log(err); }
@@ -827,9 +839,7 @@ export class AccounTransactionsComponent implements OnInit {
         trans_type: this.transType.Description,
         trans_type_key: this.transType.key,
         trans_mode: 'C',
-        amount: accTypCode === 6 ? this.accNoEnteredForTransaction.instl_amt :
-          (this.accNoEnteredForTransaction.prn_amt
-            + this.accNoEnteredForTransaction.intt_amt)
+        amount: accTypCode === 6 ? this.accNoEnteredForTransaction.instl_amt : 0
       });
       if (accTypCode === 2 || accTypCode === 3 ||
         accTypCode === 4 || accTypCode === 5 ||
@@ -837,13 +847,32 @@ export class AccounTransactionsComponent implements OnInit {
         this.showOnClose = true;
         this.td.amount.disable();
         this.tdDefTransFrm.patchValue({
-          amount: this.accNoEnteredForTransaction.prn_amt,
-          curr_intt_recov: (0.015 * this.accNoEnteredForTransaction.prn_amt).toFixed(2),
+          amount: (this.accNoEnteredForTransaction.prn_amt +
+            (this.accNoEnteredForTransaction.intt_amt > 0 ?
+            this.accNoEnteredForTransaction.intt_amt :
+            (0.015 * this.accNoEnteredForTransaction.prn_amt))).toFixed(2),
+          curr_intt_recov: (this.accNoEnteredForTransaction.intt_amt > 0 ?
+            this.accNoEnteredForTransaction.intt_amt :
+            (0.015 * this.accNoEnteredForTransaction.prn_amt)).toFixed(2),
           ovd_intt_recov: '',
           curr_prn_recov: isMatured ? (this.sys.DepositBonusRate *
             this.accNoEnteredForTransaction.prn_amt).toFixed(2) : '',
           td_def_mat_amt: (this.accNoEnteredForTransaction.prn_amt +
             (0.015 * this.accNoEnteredForTransaction.prn_amt)).toFixed(2)
+        });
+      }
+      if (accTypCode === 5) { // Special logic for MIS on close
+        this.showOnClose = true;
+        this.td.amount.disable();
+        this.tdDefTransFrm.patchValue({
+          amount: this.accNoEnteredForTransaction.prn_amt
+          + this.accNoEnteredForTransaction.intt_amt,
+          curr_intt_recov: this.accNoEnteredForTransaction.intt_amt,
+          ovd_intt_recov: '',
+          curr_prn_recov: isMatured ? (this.sys.DepositBonusRate *
+            this.accNoEnteredForTransaction.prn_amt).toFixed(2) : '',
+          td_def_mat_amt: (this.accNoEnteredForTransaction.prn_amt
+            + this.accNoEnteredForTransaction.intt_amt)
         });
       }
       if (accTypCode === 6) { // Special logic for RD on close
@@ -906,6 +935,11 @@ export class AccounTransactionsComponent implements OnInit {
 
       }
       this.hideOnClose = true;
+      if (accTypCode === 1) { // Special logic for Saving on close
+        this.tdDefTransFrm.patchValue({
+          amount: this.accNoEnteredForTransaction.curr_bal
+        });
+      }
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
       /* check if for acct_type 2,4,5 mat is past today date
              pre mature acctype shpuld not be shown */
@@ -966,8 +1000,7 @@ export class AccounTransactionsComponent implements OnInit {
         paid_to: 'SELF',
         particulars: 'BY INTEREST ' + this.td.acc_type_desc.value + ' A/C :'
           + this.f.acct_num.value,
-        amount: this.accNoEnteredForTransaction.prn_amt
-          + this.accNoEnteredForTransaction.intt_amt
+        amount: this.accNoEnteredForTransaction.intt_amt
       });
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'rd installment') {
       this.transType.key = 'D';
@@ -987,6 +1020,9 @@ export class AccounTransactionsComponent implements OnInit {
 
   public inttCalOnClose(): void {
     this.td.td_def_mat_amt.setValue((this.accNoEnteredForTransaction.prn_amt +
+      (+this.td.curr_intt_recov.value) + (+this.td.ovd_intt_recov.value)
+      + (+this.td.curr_prn_recov.value)).toFixed(2));
+    this.td.amount.setValue((this.accNoEnteredForTransaction.prn_amt +
       (+this.td.curr_intt_recov.value) + (+this.td.ovd_intt_recov.value)
       + (+this.td.curr_prn_recov.value)).toFixed(2));
   }
@@ -1325,7 +1361,7 @@ export class AccounTransactionsComponent implements OnInit {
         || accTypeCd === 6)) {
       toReturn.amount = this.accNoEnteredForTransaction.prn_amt;
       toReturn.curr_intt_recov = +this.td.curr_intt_recov.value;
-      toReturn.ovd_intt_recov = +this.td.ovd_intt_recov.value;
+      toReturn.ovd_intt_recov = (accTypeCd === 5) ? 0 : +this.td.ovd_intt_recov.value;
       toReturn.curr_prn_recov = +this.td.curr_prn_recov.value;
     } else {
       if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
@@ -1550,6 +1586,7 @@ export class AccounTransactionsComponent implements OnInit {
   // }
 
   onResetClick(): void {
+    // this.HandleMessage(false);
     this.accTransFrm.reset();
     this.tdDefTransFrm.reset(); this.showTransactionDtl = false;
     // this.getOperationMaster();
@@ -1643,6 +1680,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   setDebitAccDtls(tdDefTransTrnsfr: td_def_trans_trf) {
+    this.HandleMessage(false);
     if (tdDefTransTrnsfr.cust_acc_type === undefined
       || tdDefTransTrnsfr.cust_acc_type === null
       || tdDefTransTrnsfr.cust_acc_type === '') {
@@ -1670,18 +1708,32 @@ export class AccounTransactionsComponent implements OnInit {
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetDepositWithChild', temp_deposit).subscribe(
       res => {
-        ;
-        temp_deposit_list = res;
         this.isLoading = false;
 
-        if (temp_deposit_list.length === 0) {
-          this.HandleMessage(true, MessageType.Error, 'Invalid Account Number in Transfer Details');
-          tdDefTransTrnsfr.cust_acc_number = null;
-          return;
+        let foundOneUnclosed = false;
+        if (undefined !== res && null !== res && res.length > 0) {
+          temp_deposit_list = res;
+          temp_deposit_list.forEach(element => {
+            if (element.acc_status === null || element.acc_status.toUpperCase() !== 'C') {
+              foundOneUnclosed = true;
+              tdDefTransTrnsfr.cust_name = element.cust_name;
+              tdDefTransTrnsfr.acc_cd = element.acc_cd;
+              tdDefTransTrnsfr.clr_bal = element.clr_bal;
+            }
+          });
+          if (temp_deposit_list.length === 0) {
+            this.HandleMessage(true, MessageType.Error, 'Invalid Account Number in Transfer Details');
+            tdDefTransTrnsfr.cust_acc_number = null;
+            return;
+          }
+          if (!foundOneUnclosed) {
+            this.HandleMessage(true, MessageType.Error,
+              `Transfer details account number ${this.f.acct_num.value} is closed.`);
+            tdDefTransTrnsfr.cust_acc_number = null;
+            return;
+          }
         }
-        tdDefTransTrnsfr.cust_name = temp_deposit_list[0].cust_name;
-        tdDefTransTrnsfr.acc_cd = temp_deposit_list[0].acc_cd;
-        tdDefTransTrnsfr.clr_bal = temp_deposit_list[0].clr_bal;
+
       },
       err => {
         this.isLoading = false;

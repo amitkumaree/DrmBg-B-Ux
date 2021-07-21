@@ -15,6 +15,7 @@ import Utils from 'src/app/_utility/utils';
 import { mm_constitution } from '../../Models/deposit/mm_constitution';
 import { mm_oprational_intr } from '../../Models/deposit/mm_oprational_intr';
 import { tm_denomination_trans } from '../../Models/deposit/tm_denomination_trans';
+import { AccOpenDM } from '../../Models/deposit/AccOpenDM';
 
 @Component({
   selector: 'app-transactionapproval',
@@ -58,6 +59,8 @@ export class TransactionapprovalComponent implements OnInit {
   totalOfDenomination = 0;
   tranferDetails: td_def_trans_trf[] = [];
   tmDenominationTransLst: tm_denomination_trans[] = [];
+  additionalInformation: AccOpenDM;
+  fetchingAddInf = false;
   // cust: mm_customer;
   // tdDepTransRet: td_def_trans_trf[] = [];
 
@@ -540,7 +543,6 @@ export class TransactionapprovalComponent implements OnInit {
   }
 
   private getAcctTypeMaster(): void {
-    ;
     this.isLoading = true;
     if (undefined !== TransactionapprovalComponent.accType &&
       null !== TransactionapprovalComponent.accType &&
@@ -562,12 +564,38 @@ export class TransactionapprovalComponent implements OnInit {
   }
   public selectTransaction(vm: TranApprovalVM): void {
     this.HandleMessage(false);
+    this.additionalInformation = new AccOpenDM();
     this.selectedVm = vm;
     this.selectedTransactionCd = vm.td_def_trans_trf.trans_cd;
     this.selectedAccountType = vm.td_def_trans_trf.acc_type_cd;
     this.selectedTransactionMode = vm.td_def_trans_trf.trans_mode;
     this.getTranAcctInfo(vm.td_def_trans_trf.acc_num);
     this.getDepTrans(vm.td_def_trans_trf);
+  }
+
+  private getAdditionalInformationForAccount(tmDeposit: tm_deposit): void {
+    this.fetchingAddInf = true;
+    this.svc.addUpdDel<any>('Deposit/GetDepositAddlInfo', tmDeposit).subscribe(
+      res => {
+        debugger;
+        this.fetchingAddInf = false;
+        if (undefined !== res && null !== res) {
+          this.additionalInformation = res;
+          if (undefined !== this.additionalInformation.tdintroducer
+            && null !== this.additionalInformation.tdintroducer
+            && this.additionalInformation.tdintroducer.length > 0) {
+              this.additionalInformation.tdintroducer.forEach(element => {
+                const desc = TransactionapprovalComponent.accType
+                .filter(e => e.acc_type_cd === element.acc_type_cd)[0].acc_type_desc;
+                if (null !== desc && desc.length > 0) {
+                  element.AccTypeDesc = desc;
+                }
+              });
+          }
+        }
+      },
+      err => { this.additionalInformation = new AccOpenDM(); this.fetchingAddInf = false; }
+    );
   }
 
   private getDepTrans(depTras: td_def_trans_trf): void {
@@ -578,21 +606,18 @@ export class TransactionapprovalComponent implements OnInit {
     // defTransaction.brn_cd = localStorage.getItem('__brnCd');
     this.svc.addUpdDel<td_def_trans_trf>('Common/GetDepTrans', depTras).subscribe(
       res => {
-        ;
         this.selectedVm.td_def_trans_trf = res[0];
-        this.refresh = false;
         // this.msg.sendCommonTransactionInfo(res[0]); // show transaction details
         this.setTransactionDtl(res[0]);
         this.isLoading = false;
-        this.refresh = true;
       },
       err => { this.isLoading = false; }
     );
   }
-  private getCustInfo(cust_cd: number): void {
+  private getCustInfo(CustCd: number): void {
     this.isLoading = true;
     // this.showCust = false; // this is done to forcibly rebind the screen
-    const cust = new mm_customer(); cust.cust_cd = cust_cd;
+    const cust = new mm_customer(); cust.cust_cd = CustCd;
     this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
       res => {
         this.selectedVm.mm_customer = res[0];
@@ -612,11 +637,10 @@ export class TransactionapprovalComponent implements OnInit {
       res => {
         acc = res[0];
         this.selectedVm.tm_deposit = acc;
-        ;
         this.refresh = false;
-        // this.msg.sendCommonAcctInfo(acc);
         this.setAccDtlsFrmData(acc);
-        this.msg.sendCommonAccountNum(acc.acc_num);
+        // this.msg.sendCommonAccountNum(acc.acc_num);
+        this.getAdditionalInformationForAccount(acc);
         this.refresh = true;
         this.isLoading = false;
         this.getCustInfo(acc.cust_cd);

@@ -115,8 +115,120 @@
                     disabled>
                 </div>
               </div>
-
+              <button type="button" class="btn btn-link" (click)="openModal(addInfcontent)"
+              *ngIf="undefined !== selectedVm && undefined !== selectedVm.tm_deposit && selectedVm.tm_deposit.acc_num.length > 0"
+              >Additional Information</button>
             </form>
+            <ng-template #addInfcontent>
+              <div class="modal-header">
+                <h4 class="modal-title pull-left">Additional Information for Acc# {{selectedVm.tm_deposit.acc_num}}
+                </h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div *ngIf="fetchingAddInf">
+                  <div class="spinner-grow text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+                <div *ngIf="!fetchingAddInf">
+                  <h6 style="background-color:lightskyblue">Signatory</h6>
+                  <div *ngIf="additionalInformation.tdsignatory.length > 0">
+                    <table class="table table-hover table-bordered table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">Account Number</th>
+                          <th scope="col">Signatory Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let signatory of additionalInformation.tdsignatory">
+                          <td>{{signatory.acc_num}}</td>
+                          <td>{{signatory.signatory_name}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="!(additionalInformation.tdsignatory.length > 0)">
+                    <small>No Signatory present</small>
+                  </div>
+                  <hr>
+                  <h6 style="background-color:lightskyblue">Joint Holder(s)</h6>
+                  <div *ngIf="additionalInformation.tdaccholder.length > 0">
+                    <table class="table table-hover table-bordered table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">Cust Code</th>
+                          <th scope="col">Account Holder</th>
+                          <th scope="col">Relation</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let jointHolder of additionalInformation.tdaccholder">
+                          <td>{{jointHolder.cust_cd}}</td>
+                          <td>{{jointHolder.acc_holder}}</td>
+                          <td>{{jointHolder.relation}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="!(additionalInformation.tdaccholder.length > 0)">
+                    <small>No Joint Holder(s) present</small>
+                  </div>
+                  <hr>
+                  <h6 style="background-color:lightskyblue">Introducer(s)</h6>
+                  <div *ngIf="additionalInformation.tdintroducer.length > 0">
+                    <table class="table table-hover table-bordered table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">Account Type</th>
+                          <th scope="col">Account Number</th>
+                          <th scope="col">Introducer Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let intro of additionalInformation.tdintroducer">
+                          <td>{{intro.AccTypeDesc.length > 0 ? intro.AccTypeDesc : intro.acc_type_cd}}</td>
+                          <td>{{intro.acc_num}}</td>
+                          <td>{{intro.introducer_name}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="!(additionalInformation.tdintroducer.length > 0)">
+                    <small>No Introducer(s) present</small>
+                  </div>
+                  <hr>
+                  <h6 style="background-color:lightskyblue">Nominee(s)</h6>
+                  <div *ngIf="additionalInformation.tdnominee.length > 0">
+                    <table class="table table-hover table-bordered table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">Name</th>
+                          <th scope="col">Address</th>
+                          <th scope="col">Percentage</th>
+                          <th scope="col">Relation</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let nominee of additionalInformation.tdnominee">
+                          <td>{{nominee.nom_name}}</td>
+                          <td>{{nominee.nom_addr1 + ' ' + (nominee.nom_addr2 === null ? '' : nominee.nom_addr2)}}</td>
+                          <td>{{nominee.percentage}}</td>
+                          <td>{{nominee.relation}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="!(additionalInformation.tdnominee.length > 0)">
+                    <small>No Nominee(s) present</small>
+                  </div>
+                </div>
+
+              </div>
+            </ng-template>
           </div>
 
           <hr>
