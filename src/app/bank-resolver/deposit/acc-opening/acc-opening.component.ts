@@ -69,6 +69,7 @@ export class AccOpeningComponent implements OnInit {
 
   sys = new SystemValues();
   denominationGrandTotal = 0;
+  //new comment
 
   isLoading = false;
   // disableCustNameFlg = true;
