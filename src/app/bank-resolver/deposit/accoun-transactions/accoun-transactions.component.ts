@@ -588,7 +588,6 @@ export class AccounTransactionsComponent implements OnInit {
     this.isLoading = true;
     this.showMsg = null;
     let acc = new tm_depositall();
-    debugger;
     acc.acc_num = '' + this.f.acct_num.value;
     acc.acc_type_cd = +this.f.acc_type_cd.value;
     acc.brn_cd = this.sys.BranchCode;
@@ -619,6 +618,11 @@ export class AccounTransactionsComponent implements OnInit {
             this.onResetClick();
             return;
           }
+        } else {
+          this.HandleMessage(true, MessageType.Error,
+            'Account number does not exists.');
+          this.onResetClick();
+          return;
         }
       },
       err => {

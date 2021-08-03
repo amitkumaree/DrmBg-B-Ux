@@ -560,7 +560,7 @@ pushTmLoanSanctionDtls()
     ;
 
     if (loan_param.status == 0) {
-      this.tm_loan_sanction_dtls[idx].sanc_amt = loan_param.recov_amt;
+      this.tm_loan_sanction_dtls[idx].sanc_amt = +loan_param.recov_amt;
       this.tm_loan_sanction_dtls[idx].due_dt = loan_param.due_dt;
     }
 

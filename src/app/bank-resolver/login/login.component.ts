@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
     let login = new LOGIN_MASTER();
     let toreturn = false;
     login.user_id = this.f.username.value;
-    login.password = this.f.password.value;;
+    login.password = this.f.password.value;
     login.brn_cd = this.f.branch.value;
     this.rstSvc.addUpdDel<any>('Mst/GetUserDtls', login).subscribe(
       res => {
