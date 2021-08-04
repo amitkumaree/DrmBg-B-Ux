@@ -30,11 +30,14 @@ import { p_loan_param } from 'src/app/bank-resolver/Models/loan/p_loan_param';
   providers: [DatePipe]
 })
 export class LoanaccountTransactionComponent implements OnInit {
-  @ViewChild('content', { static: true }) content: TemplateRef<any>;
-  static constitutionList: mm_constitution[] = [];
-  constructor(private svc: RestService, private msg: InAppMessageService,private modalService: BsModalService,
+  constructor(private svc: RestService, private msg: InAppMessageService, private modalService: BsModalService,
     private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router) { }
+  get f() { return this.accTransFrm.controls; }
+  get fd() { return this.accDtlsFrm.controls; }
+  get td() { return this.tdDefTransFrm.controls; }
+  static constitutionList: mm_constitution[] = [];
   private static operations: mm_operation[] = [];
+  @ViewChild('content', { static: true }) content: TemplateRef<any>;
   operations: mm_operation[];
   unApprovedTransactionLst: td_def_trans_trf[] = [];
   disableOperation = true;
@@ -46,18 +49,15 @@ export class LoanaccountTransactionComponent implements OnInit {
   accTransFrm: FormGroup;
   tdDefTransFrm: FormGroup;
   accDtlsFrm: FormGroup;
-  sancDetails:FormGroup;
+  sancDetails: FormGroup;
   //sancdtls: FormArray;
   showTransMode = false;
   showTransactionDtl = false;
   hideOnClose = false;
   isRecovery = false;
-  isDisburs=false;
+  isDisburs = false;
   isOpenToDp = false;
   TrfTotAmt = 0;
-  get f() { return this.accTransFrm.controls; }
-  get fd() { return this.accDtlsFrm.controls; }
-  get td() { return this.tdDefTransFrm.controls; }
 
   customerList: mm_customer[] = [];
   td_deftrans = new td_def_trans_trf();
@@ -74,14 +74,14 @@ export class LoanaccountTransactionComponent implements OnInit {
   showInstrumentDtl = false;
   tm_denominationList: tm_denomination_trans[] = [];
   denominationList: tt_denomination[] = [];
-  sancdtls : tm_loan_sanction_dtls[] =[];
-  installmenttypeList : mm_installment_type[]=[];
+  sancdtls: tm_loan_sanction_dtls[] = [];
+  installmenttypeList: mm_installment_type[] = [];
   denominationGrandTotal = 0;
-  transferGrandTotal =0;
+  transferGrandTotal = 0;
 
   ngOnInit(): void {
     this.isLoading = false;
-    this.getOperationMaster();
+
     this.accTransFrm = this.frmBldr.group({
       acc_type_cd: [''],
       oprn_cd: [''],
@@ -96,7 +96,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       ovd_intt: [''],
       principal: [''],
       total_due: [''],
-      disb_amt:['']
+      disb_amt: ['']
     });
     this.tdDefTransFrm = this.frmBldr.group({
       trans_dt: [''],
@@ -161,26 +161,31 @@ export class LoanaccountTransactionComponent implements OnInit {
       intt_trf_type: [''],
       intt_rate: [''],
       interest: [''],
-      recov_type:[''],
-      intt_recov_dt:[''],
-      paid_amount:[''],
-      no_of_day:[''],
-      share:[''],
-      comm:[''],
-      svcchrg:[''],
-      saleform:[''],
-      insurence:['']
+      recov_type: [''],
+      intt_recov_dt: [''],
+      paid_amount: [''],
+      no_of_day: [''],
+      share: [''],
+      comm: [''],
+      svcchrg: [''],
+      saleform: [''],
+      insurence: ['']
     });
 
     const td_deftranstrf: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftranstrf;
-    let temp_deftranstrf = new td_def_trans_trf()
+    const temp_deftranstrf = new td_def_trans_trf();
     this.td_deftranstrfList.push(temp_deftranstrf);
-    this.getAccountTypeList();
-    //this.getCustomerList();
-    this.GetUnapprovedDepTrans();
-    this.getDenominationList();
-    this.getInstallmentType();
+
+
+    setTimeout(() => {
+      this.getOperationMaster();
+      this.getAccountTypeList();
+      // this.getCustomerList();
+      this.GetUnapprovedDepTrans();
+      this.getDenominationList();
+      this.getInstallmentType();
+    }, 150);
   }
   // addVoucherFromGroup(): FormGroup {
   //   return this.frmBldr.group({
@@ -191,8 +196,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   //   });
   // }
   processInterest(): void {
-    ;
-    let temp_gen_param = new p_gen_param();
+    const temp_gen_param = new p_gen_param();
 
     temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
 
@@ -224,7 +228,7 @@ export class LoanaccountTransactionComponent implements OnInit {
         return;
       }
 
-      ;
+
       // this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
       // this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
       // this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
@@ -247,7 +251,7 @@ export class LoanaccountTransactionComponent implements OnInit {
 
       const o = Utils.convertStringToDt(this.td.opening_dt.value);
       const m = Utils.convertStringToDt(this.td.mat_dt.value);
-      var diffDays = Math.ceil((Math.abs(m.getTime() - o.getTime())) / (1000 * 3600 * 24));
+      const diffDays = Math.ceil((Math.abs(m.getTime() - o.getTime())) / (1000 * 3600 * 24));
 
       temp_gen_param.ai_period = diffDays;
       temp_gen_param.ad_intt_rt = +this.td.intt_rate.value;
@@ -258,10 +262,10 @@ export class LoanaccountTransactionComponent implements OnInit {
 
   calCrdIntReg(tempGenParam: p_gen_param): void {
     this.isLoading = true;
-    ;
+
     this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', tempGenParam).subscribe(
       res => {
-        ;
+
         this.tm_deposit.intt_amt = res;
         this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
         this.isLoading = false;
@@ -269,7 +273,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       err => {
         this.tm_deposit.intt_amt = 0;
         this.isLoading = false;
-        ;
+
       }
     );
   }
@@ -285,7 +289,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       },
       err => {
         this.isLoading = false;
-        ;
+
       }
     );
   }
@@ -307,11 +311,11 @@ export class LoanaccountTransactionComponent implements OnInit {
   // }
 
   private getDenominationList(): void {
-    ;
+
     let denoList: tt_denomination[] = [];
     this.svc.addUpdDel<any>('Common/GetDenomination', null).subscribe(
       res => {
-        ;
+
         denoList = res;
         this.denominationList = denoList.sort((a, b) => (a.value < b.value) ? 1 : -1);
       },
@@ -320,10 +324,10 @@ export class LoanaccountTransactionComponent implements OnInit {
     );
   }
   private getInstallmentType(): void {
-    ;
-   this.svc.addUpdDel<any>('Mst/GetInstalmentTypeMaster', null).subscribe(
+
+    this.svc.addUpdDel<any>('Mst/GetInstalmentTypeMaster', null).subscribe(
       res => {
-        ;
+
         this.installmenttypeList = res;
       },
       err => { // ;
@@ -337,7 +341,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   private GetUnapprovedDepTrans(): void {
     const tdDepTrans = new td_def_trans_trf();
     tdDepTrans.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
-    tdDepTrans.trans_type="L";
+    tdDepTrans.trans_type = 'L';
     this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', tdDepTrans).subscribe(
       res => {
         this.unApprovedTransactionLst = res;
@@ -369,7 +373,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   // }
 
   private getOperationMaster(): void {
-    ;
+
     this.isLoading = true;
     if (undefined !== AccounTransactionsComponent.operations &&
       null !== AccounTransactionsComponent.operations &&
@@ -383,7 +387,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     } else {
       this.svc.addUpdDel<mm_operation[]>('Mst/GetOperationDtls', null).subscribe(
         res => {
-          ;
+
           AccounTransactionsComponent.operations = res;
           this.isLoading = false;
           this.AcctTypes = AccounTransactionsComponent.operations.filter(e => e.module_type === 'LOAN')
@@ -417,94 +421,94 @@ export class LoanaccountTransactionComponent implements OnInit {
 
   public onAccountNumTabOff(): void {
     debugger;
-    if (this.checkUnaprovedTransactionExixts( this.f.acct_num.value)) {
+    if (this.checkUnaprovedTransactionExixts(this.f.acct_num.value)) {
       this.HandleMessage(true, MessageType.Error,
         'Un-approved Transaction already exists for the Account ' + this.f.acct_num.value);
-        const td_deftranstrf: td_def_trans_trf[] = [];
-        this.td_deftranstrfList = td_deftranstrf;
-        let temp_deftranstrf = new td_def_trans_trf()
-        this.td_deftranstrfList.push(temp_deftranstrf);
-        this.tm_denominationList =[];
-        this.denominationGrandTotal=0
-        this.transferGrandTotal=0
-        this.TrfTotAmt=0
-        this.tdDefTransFrm.reset();
-        this.accDtlsFrm.reset();
-        this.showTransactionDtl=false;
-        this.disableOperation = true;
+      const td_deftranstrf: td_def_trans_trf[] = [];
+      this.td_deftranstrfList = td_deftranstrf;
+      const temp_deftranstrf = new td_def_trans_trf();
+      this.td_deftranstrfList.push(temp_deftranstrf);
+      this.tm_denominationList = [];
+      this.denominationGrandTotal = 0;
+      this.transferGrandTotal = 0;
+      this.TrfTotAmt = 0;
+      this.tdDefTransFrm.reset();
+      this.accDtlsFrm.reset();
+      this.showTransactionDtl = false;
+      this.disableOperation = true;
       return;
-   }
+    }
     this.f.oprn_cd.disable();
     this.disableOperation = true;
     this.showTranferType = true;
     // console.log('onAccountNumTabOff -' + this.f.acct_num.value);
     this.isLoading = true;
     this.showMsg = null;
-    let acc1 = new tm_loan_all();
+    const acc1 = new tm_loan_all();
     let acc = new LoanOpenDM();
 
     acc1.loan_id = '' + this.f.acct_num.value;
     acc1.brn_cd = this.sys.BranchCode;
-    acc1.acc_cd=this.f.acc_type_cd.value;
+    acc1.acc_cd = this.f.acc_type_cd.value;
     this.svc.addUpdDel<any>('Loan/GetLoanData', acc1).subscribe(
       res => {
-        ;
+        debugger;
         acc = res;
-        if (undefined === acc || acc.tmloanall.loan_id==null) {
+        if (undefined === acc || acc.tmloanall.loan_id == null) {
           this.accTransFrm.patchValue({
-            acct_num:''
-                });
+            acct_num: ''
+          });
           this.HandleMessage(true, MessageType.Error,
             'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
           this.msg.sendCommonTmLoanAll(null);
         } else {
           this.accTransFrm.patchValue({
-            oprn_cd:''
-                });
+            oprn_cd: ''
+          });
           const td_deftranstrf: td_def_trans_trf[] = [];
           this.td_deftranstrfList = td_deftranstrf;
-          let temp_deftranstrf = new td_def_trans_trf()
+          const temp_deftranstrf = new td_def_trans_trf();
           this.td_deftranstrfList.push(temp_deftranstrf);
-          this.tm_denominationList =[];
-          this.denominationGrandTotal=0
-          this.transferGrandTotal=0
-          this.TrfTotAmt=0
+          this.tm_denominationList = [];
+          this.denominationGrandTotal = 0;
+          this.transferGrandTotal = 0;
+          this.TrfTotAmt = 0;
           // const temp_denomination = new tm_denomination_trans();
           // temp_denomination.brn_cd = localStorage.getItem('__brnCd');
           // temp_denomination.trans_dt = this.sys.CurrentDate;
           // this.tm_denominationList.push(temp_denomination);
           this.tdDefTransFrm.reset();
           this.accDtlsFrm.reset();
-          this.showTransactionDtl=false;
+          this.showTransactionDtl = false;
           this.disableOperation = false;
           this.accNoEnteredForTransaction = acc.tmloanall;
           this.accDtlsFrm.patchValue({
             cust_name: acc.tmloanall.cust_name,
-            intt_recev: acc.tmloanall.curr_intt+acc.tmloanall.ovd_intt,
-            curr_principal:acc.tmloanall.curr_prn,
-            curr_intt:acc.tmloanall.curr_intt,
-            ovd_principal:acc.tmloanall.ovd_prn,
-            ovd_intt:acc.tmloanall.ovd_intt,
-            principal:acc.tmloanall.curr_prn+acc.tmloanall.ovd_prn,
-            total_due: acc.tmloanall.curr_intt+acc.tmloanall.ovd_intt+acc.tmloanall.curr_prn+acc.tmloanall.ovd_prn,
+            intt_recev: acc.tmloanall.curr_intt + acc.tmloanall.ovd_intt,
+            curr_principal: acc.tmloanall.curr_prn,
+            curr_intt: acc.tmloanall.curr_intt,
+            ovd_principal: acc.tmloanall.ovd_prn,
+            ovd_intt: acc.tmloanall.ovd_intt,
+            principal: acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
+            total_due: acc.tmloanall.curr_intt + acc.tmloanall.ovd_intt + acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
             disb_amt: acc.tmloanall.disb_amt
-          })
+          });
           this.msg.sendCommonTmLoanAll(acc.tmloanall);
           this.tdDefTransFrm.patchValue({
-            acc_num: acc.tmloanall.loan_id        ,
-            acc_type_cd : acc.tmloanall.acc_cd ,
-            curr_intt_rate: acc.tmloanall.curr_intt_rate        ,
-            ovd_intt_rate: acc.tmloanall.ovd_intt_rate        ,
-            instl_start_dt: acc.tmloanall.instl_start_dt.toString().substr(0, 10)        ,
-            periodicity: this.installmenttypeList.filter(x=>x.desc_type=== acc.tmloanall.piriodicity)[0].ins_desc,
-            instl_no:acc.tmloanall.instl_no,
-            recov_type:"A" ,
-            intt_recov_dt:Utils.convertStringToDt(acc.tmloanall.last_intt_calc_dt.toString().substr(0, 10)),
+            acc_num: acc.tmloanall.loan_id,
+            acc_type_cd: acc.tmloanall.acc_cd,
+            curr_intt_rate: acc.tmloanall.curr_intt_rate,
+            ovd_intt_rate: acc.tmloanall.ovd_intt_rate,
+            instl_start_dt: acc.tmloanall.instl_start_dt.toString().substr(0, 10),
+            periodicity: this.installmenttypeList.filter(x => x.desc_type === acc.tmloanall.piriodicity)[0].ins_desc,
+            instl_no: acc.tmloanall.instl_no,
+            recov_type: 'A',
+            intt_recov_dt: Utils.convertStringToDt(acc.tmloanall.last_intt_calc_dt.toString().substr(0, 10)),
             //paid_amount:acc.tmloanall.disb_amt,
-            intt_till_dt:Utils.convertStringToDt(acc.tmloanall.last_intt_calc_dt.toString().substr(0, 10)),
+            intt_till_dt: Utils.convertStringToDt(acc.tmloanall.last_intt_calc_dt.toString().substr(0, 10)),
           });
           this.sancdtls = acc.tmlaonsanctiondtls;
-          this.sancdtls.forEach(x=>x.draw_limit=x.sanc_amt-acc.tmloanall.curr_prn)
+          this.sancdtls.forEach(x => x.draw_limit = x.sanc_amt - acc.tmloanall.curr_prn);
           // for (let x = 0; x < acc.tmlaonsanctiondtls.length; x++) {
           //   this.sancdtls = this.sancDetails.get('sancdtls') as FormArray;
           //   this.sancdtls.push(this.frmBldr.group({
@@ -518,7 +522,7 @@ export class LoanaccountTransactionComponent implements OnInit {
         this.isLoading = false;
       },
       err => {
-        ;
+
         this.f.oprn_cd.disable(); this.isLoading = false;
         console.log(err);
         this.msg.sendCommonTmLoanAll(null);
@@ -527,52 +531,51 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   /* method fires on operation type change */
-   public onOperationTypeChange(): void {
-     this.HandleMessage(false);
-     this.showTranferType = true;
-     this.hideOnClose = false;
-     this.showTransactionDtl = true;
+  public onOperationTypeChange(): void {
+    this.HandleMessage(false);
+    this.showTranferType = true;
+    this.hideOnClose = false;
+    this.showTransactionDtl = true;
     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
-     this.transType = new DynamicSelect();
-     if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'disbursement') {
-       this.transType.key = 'B';
-       this.transType.Description = 'Disbursement';
-       this.tdDefTransFrm.patchValue({
-         trans_type: this.transType.Description,
-         trans_type_key: this.transType.key,
-         share : 0,
-         comm:0,
-         svcchrg:0,
-         saleform:0,
-         insurence:0    
-       });
-       this.showTransMode = true;
-       this.isDisburs=true;
-       this.isRecovery=false;
-       this.td.trf_type.value !== ''
-     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'recovery') {
-       ;
-       this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value)
-       this.transType.key = 'R';
-       this.transType.Description = 'Recovery';
-       this.tdDefTransFrm.patchValue({
-         trans_type: this.transType.Description,
-         trans_type_key: this.transType.key,
-         no_of_day: this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value)
-       });
-       this.geteffectiveinttrt()
-       this.isDisburs=false;
-       this.isRecovery=true;
-       this.td.trf_type.value !== ''
-     }
-   }
+    this.transType = new DynamicSelect();
+    if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'disbursement') {
+      this.transType.key = 'B';
+      this.transType.Description = 'Disbursement';
+      this.tdDefTransFrm.patchValue({
+        trans_type: this.transType.Description,
+        trans_type_key: this.transType.key,
+        share: 0,
+        comm: 0,
+        svcchrg: 0,
+        saleform: 0,
+        insurence: 0
+      });
+      this.showTransMode = true;
+      this.isDisburs = true;
+      this.isRecovery = false;
+      this.td.trf_type.value !== '';
+    } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'recovery') {
+
+      this.dayDiff(this.td.intt_recov_dt.value, this.td.intt_till_dt.value);
+      this.transType.key = 'R';
+      this.transType.Description = 'Recovery';
+      this.tdDefTransFrm.patchValue({
+        trans_type: this.transType.Description,
+        trans_type_key: this.transType.key,
+        no_of_day: this.dayDiff(this.td.intt_recov_dt.value, this.td.intt_till_dt.value)
+      });
+      this.geteffectiveinttrt();
+      this.isDisburs = false;
+      this.isRecovery = true;
+      this.td.trf_type.value !== '';
+    }
+  }
 
 
   onRecovTypeChange(): void {
-    ;
+
     const selectedRecovType = this.td.recov_type.value;
-    if ('M'===selectedRecovType)
-    {
+    if ('M' === selectedRecovType) {
       this.td.curr_prn_recov.enable();
       this.td.curr_intt_recov.enable();
       this.td.ovd_prn_recov.enable();
@@ -583,8 +586,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       this.td.ovd_prn_recov.setValue('');
       this.td.ovd_intt_recov.setValue('');
     }
-    else
-    {
+    else {
       this.td.curr_prn_recov.disable();
       this.td.curr_intt_recov.disable();
       this.td.ovd_prn_recov.disable();
@@ -597,26 +599,26 @@ export class LoanaccountTransactionComponent implements OnInit {
     }
   }
 
-   onTransModeChange(): void {
-     ;
-     const selectedTransMode = this.td.trans_mode.value;
-     if ('Q' === selectedTransMode) {
-       // check if cheque facility is available or not
-       if (this.accNoEnteredForTransaction.cheque_facility === 'N') {
-         this.td.trans_mode.reset();
-         alert('Account does not have cheque facility.');
-         return;
-       }
-       this.showInstrumentDtl = true;
-     } else {
-       this.showInstrumentDtl = false;
-     }
-   }
+  onTransModeChange(): void {
+
+    const selectedTransMode = this.td.trans_mode.value;
+    if ('Q' === selectedTransMode) {
+      // check if cheque facility is available or not
+      if (this.accNoEnteredForTransaction.cheque_facility === 'N') {
+        this.td.trans_mode.reset();
+        alert('Account does not have cheque facility.');
+        return;
+      }
+      this.showInstrumentDtl = true;
+    } else {
+      this.showInstrumentDtl = false;
+    }
+  }
 
 
 
   onTransTypeChange(): void {
-    ;
+
     const accTypeCd = +this.f.acc_type_cd.value;
     if (accTypeCd !== 2
       && accTypeCd !== 3
@@ -640,7 +642,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     }
   }
 
-  private checkUnaprovedTransactionExixts(acc_num :string): boolean {
+  private checkUnaprovedTransactionExixts(acc_num: string): boolean {
     this.GetUnapprovedDepTrans();
     const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
       === acc_num.toString())[0];
@@ -651,293 +653,285 @@ export class LoanaccountTransactionComponent implements OnInit {
     return true;
   }
 
-  onMiscChng() : void{
+  onMiscChng(): void {
     if ((+this.td.amount.value) < 0) {
       this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
       this.td.amount.setValue('');
       return;
     }
-    var totmiscAmt = (+this.td.share.value) + (+this.td.comm.value) +(+this.td.svcchrg.value) + (+this.td.saleform.value) + (+this.td.insurence.value)
+    const totmiscAmt = (+this.td.share.value) + (+this.td.comm.value) + (+this.td.svcchrg.value) + (+this.td.saleform.value) + (+this.td.insurence.value);
     if ((+this.td.amount.value) < totmiscAmt) {
       this.HandleMessage(true, MessageType.Error, 'Disbursement Amount can not be less than total  Misc. Charges.');
       this.td.amount.setValue('');
       return;
     }
     this.tdDefTransFrm.patchValue({
-      paid_amount:((+this.td.amount.value)-totmiscAmt)
+      paid_amount: ((+this.td.amount.value) - totmiscAmt)
     });
   }
 
-   onAmtChng(): void {
-     ;
-     this.HandleMessage(false);
+  onAmtChng(): void {
+
+    this.HandleMessage(false);
     if ((+this.td.amount.value) < 0) {
-       this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
-       this.td.amount.setValue('');
-       return;
-     }
-     if (this.td.trans_type_key.value === 'R' && (+this.td.amount.value) >
-      (Number(this.fd.curr_principal.value)+Number(this.fd.curr_intt.value)+Number(this.fd.ovd_principal.value)+Number(this.fd.ovd_intt.value))) {
+      this.HandleMessage(true, MessageType.Error, 'Amount can not be negative.');
+      this.td.amount.setValue('');
+      return;
+    }
+    if (this.td.trans_type_key.value === 'R' && (+this.td.amount.value) >
+      (Number(this.fd.curr_principal.value) + Number(this.fd.curr_intt.value) + Number(this.fd.ovd_principal.value) + Number(this.fd.ovd_intt.value))) {
       this.HandleMessage(true, MessageType.Error, 'Recovery Amount Can Not be greater Than Total Outstanding.');
       this.td.amount.setValue('');
       return;
     }
 
-    if (this.td.trans_type_key.value === 'B' &&  (+this.td.amount.value) > this.sancdtls.map(a => a.draw_limit).reduce(function(a, b){return a + b;})
-      ) {
+    if (this.td.trans_type_key.value === 'B' && (+this.td.amount.value) > this.sancdtls.map(a => a.draw_limit).reduce(function (a, b) { return a + b; })
+    ) {
       this.HandleMessage(true, MessageType.Error, 'Amount Exceeds Drawal Limit.');
       this.td.amount.setValue('');
       return;
     }
-     if (this.td.trans_type_key.value === 'R')
-     {
-       this.PopulateRecoveryDetails()
+    if (this.td.trans_type_key.value === 'R') {
+      this.PopulateRecoveryDetails();
     }
-    else
-    {
+    else {
       this.onMiscChng();
     }
 
   }
-  onRecoveryTillDateChng(ev:any):void{
-    ;
-    if (this.td.trans_type_key.value === 'R')
-      {
-        if (+this.td.amount.value > 0)
-         {
-           if (this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value)  <=0)
-           {
-            this.HandleMessage(true, MessageType.Error, 'Interest Already calculated upto '+this.td.intt_till_dt.value);
-            this.tdDefTransFrm.patchValue({
-                  no_of_day:0  ,
-                  curr_prn_recov: ''     ,
-                  curr_intt_recov: ''     ,
-                  ovd_prn_recov: ''     ,
-                  ovd_intt_recov: ''
-             });
-           }
-           else{
+  onRecoveryTillDateChng(ev: any): void {
+
+    if (this.td.trans_type_key.value === 'R') {
+      if (+this.td.amount.value > 0) {
+        if (this.dayDiff(this.td.intt_recov_dt.value, this.td.intt_till_dt.value) <= 0) {
+          this.HandleMessage(true, MessageType.Error, 'Interest Already calculated upto ' + this.td.intt_till_dt.value);
+          this.tdDefTransFrm.patchValue({
+            no_of_day: 0,
+            curr_prn_recov: '',
+            curr_intt_recov: '',
+            ovd_prn_recov: '',
+            ovd_intt_recov: ''
+          });
+        }
+        else {
           this.PopulateRecoveryDetails();
           this.geteffectiveinttrt();
           this.tdDefTransFrm.patchValue({
-                no_of_day: this.dayDiff(this.td.intt_recov_dt.value,this.td.intt_till_dt.value)
-               });
-              }
-          }
-          else
-          {
-              this.HandleMessage(true, MessageType.Error, 'Recovery amount can not be blank or negative');
-              this.td.amount.setValue('');
-          }
-       }
+            no_of_day: this.dayDiff(this.td.intt_recov_dt.value, this.td.intt_till_dt.value)
+          });
+        }
+      }
+      else {
+        this.HandleMessage(true, MessageType.Error, 'Recovery amount can not be blank or negative');
+        this.td.amount.setValue('');
+      }
+    }
   }
 
-  dayDiff(d1:Date, d2:Date)
-  {
-    ;
-    var diffDays =Math.floor((Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate()) - Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate()) ) /(1000 * 60 * 60 * 24));
+  dayDiff(d1: Date, d2: Date) {
+
+    const diffDays = Math.floor((Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate()) - Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate())) / (1000 * 60 * 60 * 24));
     return diffDays;
   }
-  PopulateRecoveryDetails()
-  {
+  PopulateRecoveryDetails() {
     const tmDep = new p_loan_param();
-       var inttRet = new p_loan_param();
-       tmDep.loan_id = this.f.acct_num.value;
-       tmDep.brn_cd = this.sys.BranchCode;
-       tmDep.gs_user_id = this.sys.UserId;
-       tmDep.curr_intt_rate=this.td.curr_intt_rate.value;
-       tmDep.recov_amt=this.td.amount.value;
-       tmDep.commit_roll_flag=0;
-       tmDep.intt_dt=this.td.intt_recov_dt.value;
-       this.svc.addUpdDel<any>('Loan/CalculateLoanInterest', tmDep).subscribe(
-         res => {
-           ;
-           if (undefined !== res ) {
-            inttRet = res;
-            this.tdDefTransFrm.patchValue({
-              curr_prn_recov: inttRet.curr_prn_recov      ,
-              curr_intt_recov: inttRet.curr_intt_recov     ,
-              ovd_prn_recov: inttRet.ovd_prn_recov      ,
-              ovd_intt_recov: inttRet.ovd_prn_recov
-                  });
+    let inttRet = new p_loan_param();
+    tmDep.loan_id = this.f.acct_num.value;
+    tmDep.brn_cd = this.sys.BranchCode;
+    tmDep.gs_user_id = this.sys.UserId;
+    tmDep.curr_intt_rate = this.td.curr_intt_rate.value;
+    tmDep.recov_amt = this.td.amount.value;
+    tmDep.commit_roll_flag = 0;
+    tmDep.intt_dt = this.td.intt_recov_dt.value;
+    this.svc.addUpdDel<any>('Loan/CalculateLoanInterest', tmDep).subscribe(
+      res => {
 
-          }
-        },
-        err => {
-          this.isLoading = false; console.log(err);
-          this.HandleMessage(true, MessageType.Error, 'Interest Can not be calculated, Try again later.');
+        if (undefined !== res) {
+          inttRet = res;
+          this.tdDefTransFrm.patchValue({
+            curr_prn_recov: inttRet.curr_prn_recov,
+            curr_intt_recov: inttRet.curr_intt_recov,
+            ovd_prn_recov: inttRet.ovd_prn_recov,
+            ovd_intt_recov: inttRet.ovd_prn_recov
+          });
+
         }
-      );
+      },
+      err => {
+        this.isLoading = false; console.log(err);
+        this.HandleMessage(true, MessageType.Error, 'Interest Can not be calculated, Try again later.');
+      }
+    );
   }
-  geteffectiveinttrt():void{
+  geteffectiveinttrt(): void {
     const tmDep = new p_loan_param();
-       var inttRet : number = 0;
-       tmDep.loan_id = this.f.acct_num.value;
-       tmDep.acc_type_cd = this.f.acc_type_cd.value;
-       tmDep.intt_dt=this.td.intt_recov_dt.value;
-       this.svc.addUpdDel<any>('Loan/F_GET_EFF_INTT_RT', tmDep).subscribe(
-         res => {
-           ;
-           if (undefined !== res ) {
-            inttRet = res;
-            this.tdDefTransFrm.patchValue({
-              intt_rate: inttRet
-                  });
+    let inttRet: number = 0;
+    tmDep.loan_id = this.f.acct_num.value;
+    tmDep.acc_type_cd = this.f.acc_type_cd.value;
+    tmDep.intt_dt = this.td.intt_recov_dt.value;
+    this.svc.addUpdDel<any>('Loan/F_GET_EFF_INTT_RT', tmDep).subscribe(
+      res => {
 
-          }
-        },
-        err => {
-          this.isLoading = false; console.log(err);
-          this.HandleMessage(true, MessageType.Error, 'Effective Interest Rate calculation failed, Try again later.');
+        if (undefined !== res) {
+          inttRet = res;
+          this.tdDefTransFrm.patchValue({
+            intt_rate: inttRet
+          });
+
         }
-      );
+      },
+      err => {
+        this.isLoading = false; console.log(err);
+        this.HandleMessage(true, MessageType.Error, 'Effective Interest Rate calculation failed, Try again later.');
+      }
+    );
   }
 
   onSaveClick(): void {
-      ;
 
-      if ((+this.td.amount.value) <= 0) {
-        this.HandleMessage(true, MessageType.Error, 'Amount can not be blank');
-       return;
-     }
 
-     if (this.checkUnaprovedTransactionExixts(this.td.acc_num.value)) {
-        this.HandleMessage(true, MessageType.Error,
-          'Un-approved Transaction already exists for the Account ' + this.td.acc_num.value);
-        return;
-     }
+    if ((+this.td.amount.value) <= 0) {
+      this.HandleMessage(true, MessageType.Error, 'Amount can not be blank');
+      return;
+    }
 
-     this.isLoading = true;
-     const saveTransaction = new LoanOpenDM();
-     const tdDefTrans = this.mappTddefTransFromFrm();
-     saveTransaction.tddeftrans = tdDefTrans;
-     if (this.td.trf_type.value === 'C') {
-       saveTransaction.tmdenominationtrans = this.tm_denominationList;
-     } else if (this.td.trf_type.value === 'T') {
-       let i=0
-       this.td_deftranstrfList.forEach(e => {
+    if (this.checkUnaprovedTransactionExixts(this.td.acc_num.value)) {
+      this.HandleMessage(true, MessageType.Error,
+        'Un-approved Transaction already exists for the Account ' + this.td.acc_num.value);
+      return;
+    }
+
+    this.isLoading = true;
+    const saveTransaction = new LoanOpenDM();
+    const tdDefTrans = this.mappTddefTransFromFrm();
+    saveTransaction.tddeftrans = tdDefTrans;
+    if (this.td.trf_type.value === 'C') {
+      saveTransaction.tmdenominationtrans = this.tm_denominationList;
+    } else if (this.td.trf_type.value === 'T') {
+      let i = 0;
+      this.td_deftranstrfList.forEach(e => {
         const tdDefTransAndTranfer = this.mappTddefTransAndTransFrFromFrm();
         if (e.trans_type === 'cust_acc') {
           tdDefTransAndTranfer.acc_type_cd = +e.cust_acc_type;
           tdDefTransAndTranfer.acc_num = e.cust_acc_number;
           tdDefTransAndTranfer.acc_name = e.cust_name;
-          tdDefTransAndTranfer.instrument_num=e.instrument_num;
-          tdDefTransAndTranfer.acc_cd=e.acc_cd;
-          tdDefTransAndTranfer.remarks='D';
-          tdDefTransAndTranfer.disb_id=++i;
+          tdDefTransAndTranfer.instrument_num = e.instrument_num;
+          tdDefTransAndTranfer.acc_cd = e.acc_cd;
+          tdDefTransAndTranfer.remarks = 'D';
+          tdDefTransAndTranfer.disb_id = ++i;
         } else {
-          tdDefTransAndTranfer.acc_type_cd =  +e.gl_acc_code;
-          tdDefTransAndTranfer.acc_num ='0000';
+          tdDefTransAndTranfer.acc_type_cd = +e.gl_acc_code;
+          tdDefTransAndTranfer.acc_num = '0000';
           tdDefTransAndTranfer.acc_name = e.gl_acc_desc;
-          tdDefTransAndTranfer.instrument_num=e.instrument_num;
-          tdDefTransAndTranfer.acc_cd=+e.gl_acc_code;
-          tdDefTransAndTranfer.remarks='X';
-          tdDefTransAndTranfer.disb_id=++i;
+          tdDefTransAndTranfer.instrument_num = e.instrument_num;
+          tdDefTransAndTranfer.acc_cd = +e.gl_acc_code;
+          tdDefTransAndTranfer.remarks = 'X';
+          tdDefTransAndTranfer.disb_id = ++i;
         }
         tdDefTransAndTranfer.amount = e.amount;
         debugger;
         saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
       });
 
-       const tmTrnsfr = new tm_transfer();
-       tmTrnsfr.brn_cd = this.sys.BranchCode;
-       tmTrnsfr.trf_dt = this.sys.CurrentDate;
-       tmTrnsfr.created_by = this.sys.UserId;
-       tmTrnsfr.approval_status = 'U';
+      const tmTrnsfr = new tm_transfer();
+      tmTrnsfr.brn_cd = this.sys.BranchCode;
+      tmTrnsfr.trf_dt = this.sys.CurrentDate;
+      tmTrnsfr.created_by = this.sys.UserId;
+      tmTrnsfr.approval_status = 'U';
 
-       saveTransaction.tmtransfer.push(tmTrnsfr);
-     }
-     this.svc.addUpdDel<LoanOpenDM>('Loan/InsertLoanTransactionData', saveTransaction).subscribe(
-       res => {
-         ;
-         this.unApprovedTransactionLst.push(tdDefTrans);
-         this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
-         // this.tdDefTransFrm.reset();
-         // this.accTransFrm.reset();
-         this.isLoading = false;
-       },
-       err => { this.isLoading = false;
+      saveTransaction.tmtransfer.push(tmTrnsfr);
+    }
+    this.svc.addUpdDel<LoanOpenDM>('Loan/InsertLoanTransactionData', saveTransaction).subscribe(
+      res => {
+
+        this.unApprovedTransactionLst.push(tdDefTrans);
+        this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
+        // this.tdDefTransFrm.reset();
+        // this.accTransFrm.reset();
+        this.isLoading = false;
+      },
+      err => {
+        this.isLoading = false;
         this.HandleMessage(true, MessageType.Error, 'Save Failed !!!!');
-        console.error('Error on onSaveClick' + JSON.stringify(err)); ; }
-     );
-   }
+        console.error('Error on onSaveClick' + JSON.stringify(err));
+      }
+    );
+  }
 
-   mappTddefTransFromFrm(): td_def_trans_trf {
-     ;
-     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
-     const toReturn = new td_def_trans_trf();
-     const accTypeCd = +this.f.acc_type_cd.value;
-     // toReturn.trans_dt = new Date(this.convertDate(localStorage.getItem('__currentDate')) + ' UTC');
-     toReturn.brn_cd = this.sys.BranchCode;
-     toReturn.trans_dt = this.sys.CurrentDate;
-     toReturn.acc_type_cd = this.td.acc_type_cd.value;
-     toReturn.acc_num = this.td.acc_num.value;
-     toReturn.trans_type = this.td.trans_type_key.value;
-     toReturn.trans_mode = this.td.trans_mode.value;
-     toReturn.amount = +this.td.amount.value;
-     toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
-     toReturn.instrument_num = this.td.instrument_num.value === '' ? 0 : +this.td.instrument_num.value;
-     toReturn.paid_to = this.td.paid_to.value;
-     toReturn.token_num = this.td.token_num.value;
-     toReturn.created_by = this.sys.UserId;
-     toReturn.modified_by = this.sys.UserId;
-     toReturn.approval_status = 'U';
-     toReturn.particulars = 'S'
-     if (this.td.trf_type.value === 'T') {
-       toReturn.tr_acc_cd = 10000;
-     } else if (this.td.trf_type.value === 'C') {
-       toReturn.tr_acc_cd = 28101;
-     }
-     toReturn.trf_type = this.td.trf_type.value;
-     toReturn.acc_cd = this.td.acc_type_cd.value;
-     if (this.td.trans_type_key.value === 'R')
-     {
-     toReturn.curr_prn_recov=this.td.curr_prn_recov.value;
-     toReturn.curr_intt_recov=this.td.curr_intt_recov.value;
-     toReturn.ovd_prn_recov=this.td.ovd_prn_recov.value;
-     toReturn.ovd_intt_recov=this.td.ovd_intt_recov.value;
-     toReturn.intt_till_dt=this.td.intt_recov_dt.value;
-     toReturn.paid_amt=+this.td.amount.value;
-     toReturn.share_amt=0,
-     toReturn.sum_assured=0,
-     toReturn.voucher_id=0,
-     toReturn.mis_advance_recov=0,
-     toReturn.audit_fees_recov=0
-     }
-     else
-     {
-      toReturn.curr_prn_recov=0;
-      toReturn.curr_intt_recov=0;
-      toReturn.ovd_prn_recov=0;
-      toReturn.ovd_intt_recov=0;
-      toReturn.intt_till_dt=Utils.convertStringToDt(this.td.instl_start_dt.value);
-     toReturn.paid_amt=+this.td.paid_amount.value;
-     toReturn.share_amt=this.td.share.value,
-     toReturn.sum_assured=this.td.comm.value,
-     toReturn.voucher_id=this.td.svcchrg.value,
-     toReturn.mis_advance_recov=this.td.saleform.value,
-     toReturn.audit_fees_recov=this.td.insurence.value
-     }
-     toReturn.remarks=null;
-     toReturn.crop_cd= this.sancdtls[0].crop_cd;
-     toReturn.activity_cd=this.sancdtls[0].activity_cd;
-     toReturn.curr_intt_rate=this.td.curr_intt_rate.value;
-     toReturn.ovd_intt_rate=this.td.ovd_intt_rate.value;
-     toReturn.instl_no=1;
-     toReturn.instl_start_dt=Utils.convertStringToDt(this.td.instl_start_dt.value);
-     toReturn.periodicity=Number(this.installmenttypeList.filter(x=>x.ins_desc=== this.td.periodicity.value)[0].ins_type);
-     toReturn.disb_id = 0;
-     toReturn.comp_unit_no = 0;
-     toReturn.ongoing_unit_no = 0;
-     toReturn.mis_advance_recov = 0;
-     toReturn.audit_fees_recov = 0;
-     toReturn.sector_cd = this.sancdtls[0].sector_cd;
-     toReturn.spl_prog_cd = '18';
-     toReturn.borrower_cr_cd = '0000';
-     return toReturn;
-   }
+  mappTddefTransFromFrm(): td_def_trans_trf {
 
-   mappTddefTransAndTransFrFromFrm(): td_def_trans_trf {
+    const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
+    const toReturn = new td_def_trans_trf();
+    const accTypeCd = +this.f.acc_type_cd.value;
+    // toReturn.trans_dt = new Date(this.convertDate(localStorage.getItem('__currentDate')) + ' UTC');
+    toReturn.brn_cd = this.sys.BranchCode;
+    toReturn.trans_dt = this.sys.CurrentDate;
+    toReturn.acc_type_cd = this.td.acc_type_cd.value;
+    toReturn.acc_num = this.td.acc_num.value;
+    toReturn.trans_type = this.td.trans_type_key.value;
+    toReturn.trans_mode = this.td.trans_mode.value;
+    toReturn.amount = +this.td.amount.value;
+    toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
+    toReturn.instrument_num = this.td.instrument_num.value === '' ? 0 : +this.td.instrument_num.value;
+    toReturn.paid_to = this.td.paid_to.value;
+    toReturn.token_num = this.td.token_num.value;
+    toReturn.created_by = this.sys.UserId;
+    toReturn.modified_by = this.sys.UserId;
+    toReturn.approval_status = 'U';
+    toReturn.particulars = 'S';
+    if (this.td.trf_type.value === 'T') {
+      toReturn.tr_acc_cd = 10000;
+    } else if (this.td.trf_type.value === 'C') {
+      toReturn.tr_acc_cd = 28101;
+    }
+    toReturn.trf_type = this.td.trf_type.value;
+    toReturn.acc_cd = this.td.acc_type_cd.value;
+    if (this.td.trans_type_key.value === 'R') {
+      toReturn.curr_prn_recov = this.td.curr_prn_recov.value;
+      toReturn.curr_intt_recov = this.td.curr_intt_recov.value;
+      toReturn.ovd_prn_recov = this.td.ovd_prn_recov.value;
+      toReturn.ovd_intt_recov = this.td.ovd_intt_recov.value;
+      toReturn.intt_till_dt = this.td.intt_recov_dt.value;
+      toReturn.paid_amt = +this.td.amount.value;
+      toReturn.share_amt = 0,
+        toReturn.sum_assured = 0,
+        toReturn.voucher_id = 0,
+        toReturn.mis_advance_recov = 0,
+        toReturn.audit_fees_recov = 0;
+    }
+    else {
+      toReturn.curr_prn_recov = 0;
+      toReturn.curr_intt_recov = 0;
+      toReturn.ovd_prn_recov = 0;
+      toReturn.ovd_intt_recov = 0;
+      toReturn.intt_till_dt = Utils.convertStringToDt(this.td.instl_start_dt.value);
+      toReturn.paid_amt = +this.td.paid_amount.value;
+      toReturn.share_amt = this.td.share.value,
+        toReturn.sum_assured = this.td.comm.value,
+        toReturn.voucher_id = this.td.svcchrg.value,
+        toReturn.mis_advance_recov = this.td.saleform.value,
+        toReturn.audit_fees_recov = this.td.insurence.value;
+    }
+    toReturn.remarks = null;
+    toReturn.crop_cd = this.sancdtls[0].crop_cd;
+    toReturn.activity_cd = this.sancdtls[0].activity_cd;
+    toReturn.curr_intt_rate = this.td.curr_intt_rate.value;
+    toReturn.ovd_intt_rate = this.td.ovd_intt_rate.value;
+    toReturn.instl_no = 1;
+    toReturn.instl_start_dt = Utils.convertStringToDt(this.td.instl_start_dt.value);
+    toReturn.periodicity = Number(this.installmenttypeList.filter(x => x.ins_desc === this.td.periodicity.value)[0].ins_type);
+    toReturn.disb_id = 0;
+    toReturn.comp_unit_no = 0;
+    toReturn.ongoing_unit_no = 0;
+    toReturn.mis_advance_recov = 0;
+    toReturn.audit_fees_recov = 0;
+    toReturn.sector_cd = this.sancdtls[0].sector_cd;
+    toReturn.spl_prog_cd = '18';
+    toReturn.borrower_cr_cd = '0000';
+    return toReturn;
+  }
+
+  mappTddefTransAndTransFrFromFrm(): td_def_trans_trf {
     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     const toReturn = new td_def_trans_trf();
     const accTypeCd = +this.f.acc_type_cd.value;
@@ -951,28 +945,28 @@ export class LoanaccountTransactionComponent implements OnInit {
     switch (selectedOperation.oprn_desc.toLocaleLowerCase()) {
       case 'disbursement':
         toReturn.trans_type = 'D';
-        toReturn.particulars = 'BY TRANSFER FROM'+ this.td.acc_num.value;
+        toReturn.particulars = 'BY TRANSFER FROM' + this.td.acc_num.value;
         toReturn.tr_acc_cd = 10000;
         break;
       case 'recovery':
         toReturn.trans_type = 'W';
-        toReturn.particulars = 'TO TRANSFER TO'+ this.td.acc_num.value;
+        toReturn.particulars = 'TO TRANSFER TO' + this.td.acc_num.value;
         toReturn.tr_acc_cd = 10000;
         break;
     }
-     toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
-     toReturn.paid_to = null;
-     toReturn.token_num =null;
-     toReturn.created_by = this.sys.UserId;
-     toReturn.modified_by = this.sys.UserId;
-     toReturn.approval_status = 'U';   
-     toReturn.trf_type ='T';
-     return toReturn;
+    toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
+    toReturn.paid_to = null;
+    toReturn.token_num = null;
+    toReturn.created_by = this.sys.UserId;
+    toReturn.modified_by = this.sys.UserId;
+    toReturn.approval_status = 'U';
+    toReturn.trf_type = 'T';
+    return toReturn;
   }
 
-   mapDenominationToTmdenominationtrans(): void {
+  mapDenominationToTmdenominationtrans(): void {
 
-   }
+  }
 
   onResetClick(): void {
     this.accTransFrm.reset();
@@ -985,13 +979,13 @@ export class LoanaccountTransactionComponent implements OnInit {
     this.msg.sendCommonTmLoanAll(null);
     this.tm_denominationList = [];
     this.td_deftranstrfList = [];
-    this.sancdtls=[];
-    this.showTransactionDtl=false;
+    this.sancdtls = [];
+    this.showTransactionDtl = false;
 
   }
 
   addDenomination() {
-    ;
+
     let alreadyHasEmptyDenominationItem = false;
     if (this.tm_denominationList.length >= 1) {
       // check if tm_denominationList has any blank items
@@ -1015,21 +1009,21 @@ export class LoanaccountTransactionComponent implements OnInit {
     if (this.tm_denominationList.length >= 1) {
       this.tm_denominationList.pop();
       this.denominationGrandTotal = 0;
-      for (let l of this.tm_denominationList) {
+      for (const l of this.tm_denominationList) {
         this.denominationGrandTotal = this.denominationGrandTotal + l.total;
       }
     }
   }
 
   setDenomination(val: number, idx: number) {
-    ;
+
     this.tm_denominationList[idx].rupees = Number(val);
     this.tm_denominationList[idx].rupees_desc = this.denominationList.filter(x => x.rupees === val.toString())[0].rupees;
     this.calculateTotalDenomination(idx);
   }
 
   calculateTotalDenomination(idx: number) {
-    ;
+
     let r = 0;
     let c = 0;
 
@@ -1045,13 +1039,13 @@ export class LoanaccountTransactionComponent implements OnInit {
     this.tm_denominationList[idx].total = r * c;
 
     this.denominationGrandTotal = 0;
-    for (let l of this.tm_denominationList) {
+    for (const l of this.tm_denominationList) {
       this.denominationGrandTotal = this.denominationGrandTotal + l.total;
     }
   }
 
   getAccountTypeList() {
-    ;
+
     if (this.accountTypeList.length > 0) {
       return;
     }
@@ -1059,13 +1053,13 @@ export class LoanaccountTransactionComponent implements OnInit {
 
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
-        ;
+
         this.accountTypeList = res;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
       },
       err => {
-        ;
+
       }
     );
   }
@@ -1088,35 +1082,45 @@ export class LoanaccountTransactionComponent implements OnInit {
       return;
     }
 
-    ;
+
     let temp_deposit_list: tm_deposit[] = [];
-    let temp_deposit = new tm_deposit();
+    const temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.sys.BranchCode;
     temp_deposit.acc_num = tdDefTransTrnsfr.cust_acc_number;
-    temp_deposit.acc_type_cd = parseInt(tdDefTransTrnsfr.cust_acc_type);
+    temp_deposit.acc_type_cd = +tdDefTransTrnsfr.cust_acc_type;
 
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetDepositWithChild', temp_deposit).subscribe(
       res => {
-        debugger;
-        temp_deposit_list = res;
         this.isLoading = false;
 
-        if (temp_deposit_list.length === 0) {
-          this.HandleMessage(true, MessageType.Warning, 'Invalid Account Number in Transfer Details');
-          tdDefTransTrnsfr.cust_acc_number = null;
-          return;
+        let foundOneUnclosed = false;
+        if (undefined !== res && null !== res && res.length > 0) {
+          temp_deposit_list = res;
+          temp_deposit_list.forEach(element => {
+            if (element.acc_status === null || element.acc_status.toUpperCase() !== 'C') {
+              foundOneUnclosed = true;
+              tdDefTransTrnsfr.cust_name = element.cust_name;
+              tdDefTransTrnsfr.acc_cd = element.acc_cd;
+              tdDefTransTrnsfr.clr_bal = element.clr_bal;
+            }
+          });
+          if (temp_deposit_list.length === 0) {
+            this.HandleMessage(true, MessageType.Error, 'Invalid Account Number in Transfer Details');
+            tdDefTransTrnsfr.cust_acc_number = null;
+            return;
+          }
+          if (!foundOneUnclosed) {
+            this.HandleMessage(true, MessageType.Error,
+              `Transfer details account number ${this.f.acct_num.value} is closed.`);
+            tdDefTransTrnsfr.cust_acc_number = null;
+            return;
+          }
         }
-        debugger;
-        let temp_mm_cust = new mm_customer();
-        temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
-        tdDefTransTrnsfr.cust_name = temp_deposit_list[0].cust_name;
-        tdDefTransTrnsfr.clr_bal = temp_deposit_list[0].clr_bal;
-        tdDefTransTrnsfr.acc_cd=temp_deposit_list[0].acc_cd;
       },
       err => {
-        ;
+
         this.isLoading = false;
       }
     );
@@ -1166,7 +1170,7 @@ export class LoanaccountTransactionComponent implements OnInit {
         tdDefTransTrnsfr.gl_acc_desc = null;
         return;
       }
-      ;
+
       if (tdDefTransTrnsfr.gl_acc_code === this.sys.CashAccCode.toString()) {
         this.HandleMessage(true, MessageType.Error, this.sys.CashAccCode.toString() +
           ' cash acount code is not permissible.');
@@ -1194,7 +1198,7 @@ export class LoanaccountTransactionComponent implements OnInit {
               }
               else {
                 tdDefTransTrnsfr.gl_acc_desc = temp_acc_master.acc_name;
-                tdDefTransTrnsfr.acc_cd=temp_acc_master.acc_cd;
+                tdDefTransTrnsfr.acc_cd = temp_acc_master.acc_cd;
                 tdDefTransTrnsfr.trans_type = tfrType;
               }
             },
@@ -1202,7 +1206,7 @@ export class LoanaccountTransactionComponent implements OnInit {
               ;
               this.isLoading = false;
             }
-          )
+          );
         }
         else {
           let temp_acc_master = new m_acc_master();
@@ -1300,7 +1304,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   private resetTransfer() {
     const td_deftranstrf: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftranstrf;
-    let temp_deftranstrf = new td_def_trans_trf()
+    const temp_deftranstrf = new td_def_trans_trf();
     this.td_deftranstrfList.push(temp_deftranstrf);
   }
 

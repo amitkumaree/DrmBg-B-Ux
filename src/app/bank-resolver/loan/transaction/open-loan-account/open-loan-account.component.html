@@ -318,7 +318,7 @@
       <div class="form-group col-2">
         <small>Sanction Amount</small>
         <input class="form-control form-control-sm text-capitalize" [disabled]="(tm_loan_all.acc_cd==23103 && ls.crop_cd !== '00')|| disableAll == 'Y'"
-         (change)="setValidityDate(i)" [ngModel]="ls.sanc_amt  | INRCurrency" (ngModelChange)="ls.sanc_amt=$event"  style="height:25px; text-align: right;"
+         (change)="setValidityDate(i)" [(ngModel)]="ls.sanc_amt"  style="height:25px; text-align: right;"
          id="sanc_amount" type="text" placeholder="Sanction Amount">
       </div>
 

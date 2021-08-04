@@ -46,9 +46,9 @@ export class LoanTransactionApprovalComponent implements OnInit {
   // tdDepTransRet: td_def_trans_trf[] = [];
 
   ngOnInit(): void {
-    ;
-    this.getAcctTypeMaster();
-
+    setTimeout(() => {
+      this.getAcctTypeMaster();
+    }, 150);
   }
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg' });

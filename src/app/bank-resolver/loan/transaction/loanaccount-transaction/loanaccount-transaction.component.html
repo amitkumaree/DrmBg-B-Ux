@@ -1,15 +1,6 @@
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center"
   style="background-color: #78c2ad21; min-height: 90vh;">
-  <div *ngIf="showMsg && showMsg.Show" class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
-    <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
-     'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
-      <strong>{{showMsg.Message}}</strong>
-      <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  </div>
   <div
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
@@ -18,6 +9,15 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+    <div *ngIf="showMsg && showMsg.Show" class="col-xs-12 col-sm-12 col-md-11 col-lg-11">
+      <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
+       'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
+        <strong>{{showMsg.Message}}</strong>
+        <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
     <div class="row justify-content-center">
       <form [formGroup]="accTransFrm" class="col-12">
         <div class="form-row">
@@ -78,7 +78,7 @@
                   <small for="constitution_cd">Current Interest</small>
                   <input type="text" class="form-control form-control-sm" formControlName="curr_intt" id="curr_intt"
                      disabled>
-                  
+
                 </div>
                 <div class="form-group col-6" >
                   <small for="oprn_instr_cd">Overdue Principal</small>
@@ -98,7 +98,7 @@
                   <small for="curr_bal">Total Due</small>
                   <input type="text" class="form-control form-control-sm" formControlName="total_due" id="total_due" disabled>
                 </div>
-              
+
               </div>
               <!-- <div class="form-row">
                 <div class="form-group col-6" >
@@ -140,7 +140,7 @@
                   <input type="text" class="form-control form-control-sm" formControlName="mat_amt" disabled>
                 </div>
               </div> -->
-             
+
               <button type="button" class="btn btn-link"  (click)="openModal(content)">Show Sanction Dtls</button>
               <ng-template #content>
                 <div class="modal-header">
@@ -170,9 +170,9 @@
                   </table>
                 </div>
               </ng-template>
-          
-              
-          
+
+
+
             </form>
           </div>
         </div>
@@ -264,19 +264,19 @@
               <div class="form-group col-3"  *ngIf="isDisburs">
               <small for="instl_no">No of Installment</small>
               <input type="text" disabled class="form-control form-control-sm" formControlName="instl_no" id="instl_no">
-            </div> 
+            </div>
             <div class="form-group col-2"  *ngIf="isDisburs">
               <small for="periodicity">Periodicity</small>
               <input type="text" disabled class="form-control form-control-sm" formControlName="periodicity" id="periodicity">
-            </div> 
+            </div>
             <div class="form-group col-3">
               <small for="curr_intt_rate">Current Intt Rate</small>
               <input type="text" disabled class="form-control form-control-sm" formControlName="curr_intt_rate" id="curr_intt_rate">
-            </div> 
+            </div>
             <div class="form-group col-3">
               <small for="ovd_intt_rate">Ovd Intt Rate</small>
               <input type="text" disabled class="form-control form-control-sm" formControlName="ovd_intt_rate" id="ovd_intt_rate">
-            </div> 
+            </div>
             <div class="form-group col-3"  *ngIf="isDisburs">
               <small for="instl_start_dt">Installment Start Dt</small>
               <input type="text" disabled class="form-control form-control-sm" formControlName="instl_start_dt" id="instl_start_dt">
@@ -284,7 +284,7 @@
             <div class="form-group col-3"  *ngIf="isDisburs">
               <small for="paid_amount">Paid Amount</small>
               <input type="text" disabled class="form-control form-control-sm" formControlName="paid_amount" id="paid_amount">
-            </div> 
+            </div>
               <!-- Recovery -->
               <div class="form-group col-3" *ngIf="isRecovery">
                 <small for="no_of_day">No. of Days</small>
@@ -303,7 +303,7 @@
             <div class="form-group col-3" *ngIf="isRecovery">
               <small for="curr_intt_recov">Current Interest Recov</small>
               <input type="text" class="form-control form-control-sm" formControlName="curr_intt_recov" id="curr_intt_recov"
-                 disabled>              
+                 disabled>
             </div>
             <div class="form-group col-3" *ngIf="isRecovery">
               <small for="ovd_prn_recov">Overdue Principal Recov</small>
@@ -312,11 +312,11 @@
             </div>
             <div class="form-group col-3" *ngIf="isRecovery">
               <small for="ovd_intt_recov">Overdue Interest Recov</small>
-              <input type="text" class="form-control form-control-sm" formControlName="ovd_intt_recov" id="ovd_intt_recov" 
+              <input type="text" class="form-control form-control-sm" formControlName="ovd_intt_recov" id="ovd_intt_recov"
               disabled>
             </div>
           </div>
-          </div>         
+          </div>
         </form>
         <div class="row" *ngIf="td.trf_type.value !== ''">
           <div class="col-12 col-sm-6 col-md-12 mt-2">
@@ -464,7 +464,17 @@
         </div>
       </div>
     </div>
+    <div *ngIf="showMsg && showMsg.Show" class="col-xs-12 col-sm-12 col-md-11 col-lg-11 mt-2">
+      <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
+       'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
+        <strong>{{showMsg.Message}}</strong>
+        <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
   </div>
+
   <div
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>

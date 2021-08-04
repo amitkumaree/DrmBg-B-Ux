@@ -26,8 +26,6 @@ export class ConfigurationService {
   //   return p;
   // }
   getAllConfiguration(): Promise<BankConfiguration[]> {
-    console.log('1');
-    debugger;
     const p = new Promise<BankConfiguration[]>((resolve, reject) => {
       this.http.get('./assets/constants/BankConfig.json').subscribe(data => {
         // console.log(data);
@@ -45,7 +43,6 @@ export class ConfigurationService {
 
 
   getConfigurationForName(findConf: string): Promise<BankConfiguration> {
-    debugger;
     const p = new Promise<BankConfiguration>((resolve, reject) => {
       this.http.get('./assets/constants/BankConfig.json').subscribe(data => {
         // console.log(data);
