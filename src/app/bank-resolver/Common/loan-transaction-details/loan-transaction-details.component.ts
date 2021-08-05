@@ -17,7 +17,7 @@ export class LoanTransactionDetailsComponent implements OnInit, OnDestroy {
 
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   constructor(private frmBldr: FormBuilder, private svc: RestService,
-    private msg: InAppMessageService, private modalService: BsModalService) {
+              private msg: InAppMessageService, private modalService: BsModalService) {
     this.subscription = this.msg.getCommonLoanTransactionInfo().subscribe(
       res => {
         this.showDenominationDtl = false;

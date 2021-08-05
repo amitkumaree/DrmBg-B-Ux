@@ -659,7 +659,9 @@ export class LoanaccountTransactionComponent implements OnInit {
       this.td.amount.setValue('');
       return;
     }
-    const totmiscAmt = (+this.td.share.value) + (+this.td.comm.value) + (+this.td.svcchrg.value) + (+this.td.saleform.value) + (+this.td.insurence.value);
+    const totmiscAmt = (+this.td.share.value) +
+      (+this.td.comm.value) + (+this.td.svcchrg.value) +
+      (+this.td.saleform.value) + (+this.td.insurence.value);
     if ((+this.td.amount.value) < totmiscAmt) {
       this.HandleMessage(true, MessageType.Error, 'Disbursement Amount can not be less than total  Misc. Charges.');
       this.td.amount.setValue('');
@@ -679,13 +681,18 @@ export class LoanaccountTransactionComponent implements OnInit {
       return;
     }
     if (this.td.trans_type_key.value === 'R' && (+this.td.amount.value) >
-      (Number(this.fd.curr_principal.value) + Number(this.fd.curr_intt.value) + Number(this.fd.ovd_principal.value) + Number(this.fd.ovd_intt.value))) {
+      (Number(this.fd.curr_principal.value) +
+        Number(this.fd.curr_intt.value) +
+        Number(this.fd.ovd_principal.value) + Number(this.fd.ovd_intt.value))) {
       this.HandleMessage(true, MessageType.Error, 'Recovery Amount Can Not be greater Than Total Outstanding.');
       this.td.amount.setValue('');
       return;
     }
-
-    if (this.td.trans_type_key.value === 'B' && (+this.td.amount.value) > this.sancdtls.map(a => a.draw_limit).reduce(function (a, b) { return a + b; })
+    debugger;
+    if (this.td.trans_type_key.value === 'B' &&
+      (undefined !== this.sancdtls && this.sancdtls.length > 0) &&
+      (+this.td.amount.value) >
+      this.sancdtls.map(a => a.draw_limit).reduce(function (a, b) { return a + b; })
     ) {
       this.HandleMessage(true, MessageType.Error, 'Amount Exceeds Drawal Limit.');
       this.td.amount.setValue('');
@@ -789,7 +796,7 @@ export class LoanaccountTransactionComponent implements OnInit {
 
   onSaveClick(): void {
 
-
+    debugger;
     if ((+this.td.amount.value) <= 0) {
       this.HandleMessage(true, MessageType.Error, 'Amount can not be blank');
       return;
@@ -843,7 +850,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     }
     this.svc.addUpdDel<LoanOpenDM>('Loan/InsertLoanTransactionData', saveTransaction).subscribe(
       res => {
-
+        debugger;
         this.unApprovedTransactionLst.push(tdDefTrans);
         this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
         // this.tdDefTransFrm.reset();
@@ -859,7 +866,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   mappTddefTransFromFrm(): td_def_trans_trf {
-
+    debugger;
     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     const toReturn = new td_def_trans_trf();
     const accTypeCd = +this.f.acc_type_cd.value;
@@ -913,8 +920,10 @@ export class LoanaccountTransactionComponent implements OnInit {
         toReturn.audit_fees_recov = this.td.insurence.value;
     }
     toReturn.remarks = null;
-    toReturn.crop_cd = this.sancdtls[0].crop_cd;
-    toReturn.activity_cd = this.sancdtls[0].activity_cd;
+    toReturn.crop_cd = (undefined !== this.sancdtls && this.sancdtls.length > 0) ?
+      this.sancdtls[0].crop_cd : '';
+    toReturn.activity_cd = (undefined !== this.sancdtls && this.sancdtls.length > 0) ?
+      this.sancdtls[0].activity_cd : '';
     toReturn.curr_intt_rate = this.td.curr_intt_rate.value;
     toReturn.ovd_intt_rate = this.td.ovd_intt_rate.value;
     toReturn.instl_no = 1;
@@ -925,7 +934,8 @@ export class LoanaccountTransactionComponent implements OnInit {
     toReturn.ongoing_unit_no = 0;
     toReturn.mis_advance_recov = 0;
     toReturn.audit_fees_recov = 0;
-    toReturn.sector_cd = this.sancdtls[0].sector_cd;
+    toReturn.sector_cd = (undefined !== this.sancdtls && this.sancdtls.length > 0) ?
+      this.sancdtls[0].sector_cd : '';
     toReturn.spl_prog_cd = '18';
     toReturn.borrower_cr_cd = '0000';
     return toReturn;
@@ -1016,9 +1026,10 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   setDenomination(val: number, idx: number) {
-
-    this.tm_denominationList[idx].rupees = Number(val);
-    this.tm_denominationList[idx].rupees_desc = this.denominationList.filter(x => x.rupees === val.toString())[0].rupees;
+    val = +val;
+    this.tm_denominationList[idx].rupees = val;
+    this.tm_denominationList[idx].rupees_desc =
+      this.denominationList.filter(x => x.value === val)[0].rupees;
     this.calculateTotalDenomination(idx);
   }
 
@@ -1065,11 +1076,11 @@ export class LoanaccountTransactionComponent implements OnInit {
   }
 
   setDebitAccDtls(tdDefTransTrnsfr: td_def_trans_trf) {
-    debugger;
+    this.HandleMessage(false);
     if (tdDefTransTrnsfr.cust_acc_type === undefined
       || tdDefTransTrnsfr.cust_acc_type === null
       || tdDefTransTrnsfr.cust_acc_type === '') {
-      this.HandleMessage(true, MessageType.Warning, 'Account Type in Transfer Details can not be blank');
+      this.HandleMessage(true, MessageType.Error, 'Account Type in Transfer Details can not be blank');
       tdDefTransTrnsfr.cust_acc_number = null;
       return;
     }
@@ -1082,13 +1093,13 @@ export class LoanaccountTransactionComponent implements OnInit {
       return;
     }
 
-
+    ;
     let temp_deposit_list: tm_deposit[] = [];
-    const temp_deposit = new tm_deposit();
+    let temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.sys.BranchCode;
     temp_deposit.acc_num = tdDefTransTrnsfr.cust_acc_number;
-    temp_deposit.acc_type_cd = +tdDefTransTrnsfr.cust_acc_type;
+    temp_deposit.acc_type_cd = parseInt(tdDefTransTrnsfr.cust_acc_type);
 
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetDepositWithChild', temp_deposit).subscribe(
@@ -1118,9 +1129,9 @@ export class LoanaccountTransactionComponent implements OnInit {
             return;
           }
         }
+
       },
       err => {
-
         this.isLoading = false;
       }
     );

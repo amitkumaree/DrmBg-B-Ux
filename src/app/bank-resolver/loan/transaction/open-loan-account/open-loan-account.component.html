@@ -98,7 +98,7 @@
         <input class="form-control form-control-sm text-capitalize" [disabled]="tm_loan_all.loan_id != undefined || operationType == '' || disableAll == 'Y'"
         id="curr_int_rate"
           style="height:25px; text-align: right; float: none;" type="number" min="0" step='any'
-          [(ngModel)]="tm_loan_all.curr_intt" placeholder="Curr Int Rate" >
+          [(ngModel)]="tm_loan_all.curr_intt_rate" placeholder="Curr Int Rate" >
       </div>
 
       <div class="form-group col-2">
@@ -106,7 +106,7 @@
         <input class="form-control form-control-sm text-capitalize" [disabled]="tm_loan_all.loan_id != undefined || operationType == '' || disableAll == 'Y'"
         id="ovd_int_rate"
           style="height:25px; text-align: right;" type="number" min="0" step='any'
-          [(ngModel)]="tm_loan_all.ovd_intt" placeholder="Customer Phone" placeholder="Overdue Interest Rate">
+          [(ngModel)]="tm_loan_all.ovd_intt_rate" placeholder="Customer Phone" placeholder="Overdue Interest Rate">
       </div>
 
       <div class="form-group col-2">

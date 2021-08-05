@@ -23,22 +23,15 @@ export class LandingComponent implements OnInit {
   }
 
   getDashboardItem() {
-    debugger;
-    this.isLoading = true;
     const param = new p_gen_param();
-    param.brn_cd=this.sys.BranchCode;
+    param.brn_cd = this.sys.BranchCode;
     this.svc.addUpdDel<any>('Common/GetDashBoardInfo', param).subscribe(
         res => {
-          debugger;
-          this.isLoading = false;
           this.dashboardItem = res;
         },
         err => {
-          this.isLoading = false;
-          ;
         }
       );
     }
-   
   }
 

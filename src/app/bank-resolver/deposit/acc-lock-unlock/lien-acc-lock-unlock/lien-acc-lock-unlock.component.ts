@@ -208,7 +208,7 @@ export class LienAccLockUnlockComponent implements OnInit {
   }
 
     backScreen() {
-      this.router.navigate([this.sys.BranchName + '/la']);
+      this.router.navigate([this.sys.BankName + '/la']);
     }
 
 

@@ -1633,7 +1633,6 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   setDenomination(val: number, idx: number) {
-    ;
     val = +val;
     this.tm_denominationList[idx].rupees = val;
     this.tm_denominationList[idx].rupees_desc =

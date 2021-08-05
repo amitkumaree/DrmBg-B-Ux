@@ -2181,7 +2181,7 @@ calculateInterestRate()
 
 backScreen()
 {
-  this.router.navigate([this.sys.BranchName + '/la']);
+  this.router.navigate([this.sys.BankName + '/la']);
 }
 
 deleteData() {
