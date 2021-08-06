@@ -92,8 +92,10 @@ export class LoanaccountTransactionComponent implements OnInit {
       intt_recev: [''],
       curr_principal: [''],
       curr_intt: [''],
+      curr_intt_rate: [''],
       ovd_principal: [''],
       ovd_intt: [''],
+      ovd_intt_rate: [''],
       principal: [''],
       total_due: [''],
       disb_amt: ['']
@@ -487,8 +489,10 @@ export class LoanaccountTransactionComponent implements OnInit {
             intt_recev: acc.tmloanall.curr_intt + acc.tmloanall.ovd_intt,
             curr_principal: acc.tmloanall.curr_prn,
             curr_intt: acc.tmloanall.curr_intt,
+            curr_intt_rate: acc.tmloanall.curr_intt_rate,
             ovd_principal: acc.tmloanall.ovd_prn,
             ovd_intt: acc.tmloanall.ovd_intt,
+            ovd_intt_rate: acc.tmloanall.ovd_intt_rate,
             principal: acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
             total_due: acc.tmloanall.curr_intt + acc.tmloanall.ovd_intt + acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
             disb_amt: acc.tmloanall.disb_amt

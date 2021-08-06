@@ -419,10 +419,10 @@
       <div class="col-6">
         <figure class="figure" *ngIf="ADDRESS">
           <img src="{{ADDRESS.img_cont}}" class="figure-img img-fluid img-thumbnail rounded mx-auto d-block">
-          <figcaption class="figure-caption">Photot ID</figcaption>
+          <figcaption class="figure-caption">Photo ID</figcaption>
         </figure>
         <div class="form-group">
-          <small for="PhotoId">Upload Address</small>
+          <small for="PhotoId">Upload Photo ID</small>
           <input (change)="handleFileInput($event.target.files, 'ADDRESS')" type="file"
             class="form-control-file form-control-sm" id="address" accept="image/*">
         </div>
@@ -434,7 +434,7 @@
           <figcaption class="figure-caption">Address ID</figcaption>
         </figure>
         <div class="form-group">
-          <small for="PhotoId">Upload Kyc Document</small>
+          <small for="PhotoId">Upload Address ID Document</small>
           <input (change)="handleFileInput($event.target.files, 'KYC')" type="file"
             class="form-control-file form-control-sm" id="kyc" accept="image/*">
         </div>
