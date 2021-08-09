@@ -96,9 +96,8 @@
       <div class="form-group col-2">
         <small for=curr_int_rate>Current Interest Rate</small>
         <input class="form-control form-control-sm text-capitalize" [disabled]="tm_loan_all.loan_id != undefined || operationType == '' || disableAll == 'Y'"
-        id="curr_int_rate"
-          style="height:25px; text-align: right; float: none;" type="number" min="0" step='any'
-          [(ngModel)]="tm_loan_all.curr_intt_rate" placeholder="Curr Int Rate" >
+        id="curr_int_rate" style="height:25px; text-align: right; float: none;" type="number" min="0" step='any'
+          [(ngModel)]="tm_loan_all.curr_intt_rate" (change)="checkAndSetOverdueInterest()" placeholder="Curr Int Rate" >
       </div>
 
       <div class="form-group col-2">
@@ -233,7 +232,7 @@
           <div class="form-group col-3">
             <small for="joint_cust_code">Customer Code</small>
             <input style="height:25px" disabled type="text" class="form-control form-control-sm text-capitalize"
-            [disabled]="disableAll == 'Y' " [(ngModel)]="t1.cust_cd" placeholder="Customer Code" id="joint_cust_code" placeholder="Customer Code">
+            [(ngModel)]="t1.cust_cd" placeholder="Customer Code" id="joint_cust_code" placeholder="Customer Code">
           </div>
 
 
@@ -332,16 +331,12 @@
         </div>
       </div>
 
-        <div class="form-group col-1">
-          <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm ml-1 mr-1 mt-4"
-          [disabled]="ls.sanc_status == undefined || ls.sanc_status != 'C' "(click)="approveData(i)">APRV</button>
+        <!-- <div class="form-group col-1" *ngIf="disableAll == 'N'"> -->
+          <div class="form-group col-1">
+            <button type="button" style="height:22px; padding-top: 0px;" class="btn btn-primary btn-sm ml-1 mr-1 mt-4"
+              [disabled]=" (ls.approval_status == undefined || ls.approval_status == 'A' || disableAll == 'Y')" (click)="approveData(i)">APRV</button>
 
-
-
-          <!-- <button type="button" class=".mat-icon"
-          [disabled]="ls.sanc_status == undefined || ls.sanc_status != 'C' "(click)="approveData(i)">APRV</button> -->
-
-        </div>
+          </div>
 
     </div>
     </section>

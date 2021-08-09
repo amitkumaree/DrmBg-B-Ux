@@ -142,10 +142,10 @@ export class LoanTransactionApprovalComponent implements OnInit {
   }
 
   setTransactionDtl(): void {
-    ;
     this.showDenominationDtl = false;
     this.totalOfDenomination = 0;
-    if (undefined !== this.loanOpenDm && Object.keys(this.loanOpenDm).length !== 0) {
+    if (null !== this.loanOpenDm &&
+      undefined !== this.loanOpenDm && Object.keys(this.loanOpenDm).length !== 0) {
       this.svc.addUpdDel<mm_acc_type[]>('Mst/GetAccountTypeMaster', null).subscribe(
         res => {
           const accType = res.filter(e => e.acc_type_cd === this.loanOpenDm.tddeftrans.acc_type_cd)[0];
@@ -311,6 +311,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
   }
 
   private getDepTrans(depTras: td_def_trans_trf): void {
+    debugger;
     this.isLoading = true;
     const tmLoanAll = new tm_loan_all();
     let loanOpnDm = new LoanOpenDM();
@@ -542,9 +543,8 @@ export class LoanTransactionApprovalComponent implements OnInit {
   }
 
   onDeleteClick(): void {
-    ;
-    if (!(confirm('Are you sure you want to Delete Transaction of Acc ' + this.selectedVm.tm_deposit.acc_num
-      + ' with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd))) {
+    if (!(confirm('Are you sure you want to Delete Transaction with Transancation Cd '
+      + this.selectedVm.td_def_trans_trf.trans_cd))) {
       return;
     }
 

@@ -557,7 +557,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       this.showTransMode = true;
       this.isDisburs = true;
       this.isRecovery = false;
-      this.td.trf_type.value !== '';
+      // this.td.trf_type.value !== '';
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'recovery') {
 
       this.dayDiff(this.td.intt_recov_dt.value, this.td.intt_till_dt.value);
@@ -936,8 +936,8 @@ export class LoanaccountTransactionComponent implements OnInit {
     toReturn.disb_id = 0;
     toReturn.comp_unit_no = 0;
     toReturn.ongoing_unit_no = 0;
-    toReturn.mis_advance_recov = 0;
-    toReturn.audit_fees_recov = 0;
+    // toReturn.mis_advance_recov = 0;
+    // toReturn.audit_fees_recov = 0;
     toReturn.sector_cd = (undefined !== this.sancdtls && this.sancdtls.length > 0) ?
       this.sancdtls[0].sector_cd : '';
     toReturn.spl_prog_cd = '18';
