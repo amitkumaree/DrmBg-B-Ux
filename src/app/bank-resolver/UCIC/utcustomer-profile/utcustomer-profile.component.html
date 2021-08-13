@@ -321,7 +321,7 @@
           <small for="kyc_address_type">Address ID Type</small>
           <select id="kyc_address_type" class="form-control form-control-sm" formControlName="kyc_address_type">
             <option *ngIf="KYCTypes" disabled>Choose</option>
-            <option *ngFor="let KYCType of KYCTypes" value="KYCType.kyc_type">{{KYCType.kyc_desc}}</option>
+            <option *ngFor="let KYCType of KYCTypes" [value]="KYCType.kyc_type">{{KYCType.kyc_desc}}</option>
           </select>
         </div>
         <div class="form-group col-2">
@@ -338,6 +338,17 @@
       <div class="form-row">
       </div> <!-- form group row end -->
     </form>
+    <div *ngIf="showMsgs && showMsgs.length > 0" class="col-12">
+      <div *ngFor="let showMsg of showMsgs">
+        <div *ngIf="showMsg.Show" class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
+        'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
+         <strong >{{showMsg.Message}}</strong>
+         <button type="button" class="close" data-dismiss="alert" (click)="RemoveMessage(showMsg)" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+      </div>
+    </div>
   </div>
 </div>
 <div class="row d-flex justify-content-center align-items-center"

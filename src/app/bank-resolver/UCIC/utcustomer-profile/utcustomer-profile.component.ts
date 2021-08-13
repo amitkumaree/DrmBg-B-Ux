@@ -148,16 +148,19 @@ export class UTCustomerProfileComponent implements OnInit {
       org_status: [''],
       org_reg_no: ['']
     });
-    this.getTitleMaster();
-    this.getCategoryMaster();
-    this.getStateMaster();
-    this.getDistMaster();
-    this.getVillageMaster();
-    this.getKYCTypMaster();
-    this.getBlockMster();
-    this.getServiceAreaMaster();
-    this.onRetrieveClick();
-    this.f.status.setValue('A');
+
+    setTimeout(() => {
+      this.getTitleMaster();
+      this.getCategoryMaster();
+      this.getStateMaster();
+      this.getDistMaster();
+      this.getVillageMaster();
+      this.getKYCTypMaster();
+      this.getBlockMster();
+      this.getServiceAreaMaster();
+      this.onRetrieveClick();
+      this.f.status.setValue('A');
+    }, 150);
   }
 
   openModal(template: TemplateRef<any>) {
@@ -620,7 +623,7 @@ export class UTCustomerProfileComponent implements OnInit {
       cust.nom_relation = this.f.nom_relation.value;
       cust.kyc_photo_type = this.f.kyc_photo_type.value;
       cust.kyc_photo_no = this.f.kyc_photo_no.value;
-      cust.kyc_address_type = null; // as per defect fix
+      cust.kyc_address_type = this.f.kyc_address_type.value; // as per defect fix
       cust.kyc_address_no = this.f.kyc_address_no.value;
       cust.org_status = this.f.org_status.value;
       cust.org_reg_no = +this.f.org_reg_no.value;

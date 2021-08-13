@@ -59,3 +59,11 @@ npm prune ## removes all unused pacakages
 Synergic#AM@2906
 1013605
 
+## If we get error " cannot be loaded because running scripts is disabled on this system. For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170. " 
+run the below command in power shell with admin mode
+" Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine "
+
+## Staging file not presnt error while npm install try below
+npm cache clean -f
+rm -rf node_modules
+npm i

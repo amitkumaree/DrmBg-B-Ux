@@ -1,6 +1,6 @@
 import { SystemValues } from './../../Models/SystemValues';
 
-import { Component, OnInit, ViewChild, ElementRef,TemplateRef} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import { mm_category, mm_customer, m_acc_master, td_def_trans_trf } from '../../Models';
@@ -52,7 +52,7 @@ export class AccOpeningComponent implements OnInit {
   suspanceAccCd: number;
   cashAccCd: number;
 
- // isOpenFromDp = false;
+  // isOpenFromDp = false;
   modalRef: BsModalRef;
   config = {
     keyboard: false, // ensure esc press doesnt close the modal
@@ -94,9 +94,9 @@ export class AccOpeningComponent implements OnInit {
   td_signatoryList: td_signatory[] = [];
   td_accholderList: td_accholder[] = [];
   td_introducerlist: td_introducer[] = [];
-  tm_denominationList : tm_denomination_trans[] = [];
+  tm_denominationList: tm_denomination_trans[] = [];
 
-  td_deftrans= new td_def_trans_trf();
+  td_deftrans = new td_def_trans_trf();
   td_deftranstrfList: td_def_trans_trf[] = [];
   tm_transferList: tm_transfer[] = [];
 
@@ -108,9 +108,9 @@ export class AccOpeningComponent implements OnInit {
   customerList: mm_customer[] = [];
   suggestedCustomer: mm_customer[];
   suggestedCustomerSignatories: mm_customer[];
-  suggestedCustomerSignatoriesIdx : number;
+  suggestedCustomerSignatoriesIdx: number;
   suggestedCustomerJointHolder: mm_customer[];
-  suggestedCustomerJointHolderIdx : number;
+  suggestedCustomerJointHolderIdx: number;
 
   selectedCustomer = new mm_customer();
 
@@ -120,7 +120,7 @@ export class AccOpeningComponent implements OnInit {
   selectedConstitutionList: mm_constitution[] = [];
   operationalInstrList: mm_oprational_intr[] = [];
 
-  acc_master :  m_acc_master[] = [];
+  acc_master: m_acc_master[] = [];
 
   p_gen_param = new p_gen_param();
 
@@ -155,7 +155,7 @@ export class AccOpeningComponent implements OnInit {
   standingInstrAfterMaturity = [
     { instr_code: '1', instr_dscr: 'Auto Close' },
     { instr_code: '2', instr_dscr: 'Auto Renew' }
-  ]
+  ];
 
 
   introducerAccTypeListTemp = [];
@@ -171,16 +171,15 @@ export class AccOpeningComponent implements OnInit {
   //   { value: '2'  , rupees: 'Two (Rs.2)' },
   //   { value: '1'  , rupees: 'One (Rs.1)' },];
 
-    transferTypeList = [
-      { trf_type: 'C', trf_type_desc: 'Cash' },
-      { trf_type: 'T', trf_type_desc: 'Transfer' }];
+  transferTypeList = [
+    { trf_type: 'C', trf_type_desc: 'Cash' },
+    { trf_type: 'T', trf_type_desc: 'Transfer' }];
 
-      transferTypeListTemp = this.transferTypeList;
+  transferTypeListTemp = this.transferTypeList;
 
-  ngOnInit(): void
-  {
+  ngOnInit(): void {
 
-    ;
+
 
     this.branchCode = this.sys.BranchCode;
     this.createUser = this.sys.UserId;
@@ -210,7 +209,7 @@ export class AccOpeningComponent implements OnInit {
     this.initializeMasterDataAndFlags();
     this.initializeModels();
 
-    ;
+
     this.getDenominationList();
     this.getAccountTypeList();
     this.getConstitutionList();
@@ -220,17 +219,16 @@ export class AccOpeningComponent implements OnInit {
   }
 
   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template , {class: 'modal-lg'});
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
 
   private convertDate(datestring: string): Date {
-    var parts = datestring.match(/(\d+)/g);
+    let parts = datestring.match(/(\d+)/g);
     return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
   }
 
 
-  initializeMasterDataAndFlags()
-  {
+  initializeMasterDataAndFlags() {
     this.getAccountTypeList();
     this.getConstitutionList();
     this.getOperationalInstr();
@@ -254,15 +252,14 @@ export class AccOpeningComponent implements OnInit {
     this.denominationGrandTotal = 0;
     this.masterModel = new AccOpenDM();
 
-    ;
+
 
   }
 
 
 
-  initializeModels()
-  {
-    ;
+  initializeModels() {
+
     this.tm_deposit = new tm_deposit();
     // this.tm_deposit.opening_dt = this.openDate  ; // this.DateFormatting(this.openDate);
     this.tm_deposit.opening_dt = this.sys.CurrentDate;
@@ -296,15 +293,15 @@ export class AccOpeningComponent implements OnInit {
 
     const td_deftranstrf: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftranstrf;
-    var temp_deftranstrf = new td_def_trans_trf()
+    let temp_deftranstrf = new td_def_trans_trf();
     this.td_deftranstrfList.push(temp_deftranstrf);
 
     const tm_trns: tm_transfer[] = [];
     this.tm_transferList = tm_trns;
-    var temp_transfer = new tm_transfer();
+    let temp_transfer = new tm_transfer();
     this.tm_transferList.push(temp_transfer);
 
-    ;
+
 
     this.masterModel.tmdeposit = this.tm_deposit;
     this.masterModel.tdintroducer = this.td_introducerlist;
@@ -323,11 +320,10 @@ export class AccOpeningComponent implements OnInit {
   }
 
 
-  assignModelsFromMasterData()
-  {
+  assignModelsFromMasterData() {
 
-    ;
-    var retDepositPeriodArr = [];
+
+    let retDepositPeriodArr = [];
 
     this.tm_deposit = new tm_deposit();
 
@@ -361,7 +357,7 @@ export class AccOpeningComponent implements OnInit {
     this.tm_transferList = tm_trns;
 
 
-    this.tm_deposit = this.masterModel.tmdeposit ;
+    this.tm_deposit = this.masterModel.tmdeposit;
 
     this.td_signatoryList = this.masterModel.tdsignatory;
     this.setCustDtls(this.tm_deposit.cust_cd);
@@ -372,54 +368,48 @@ export class AccOpeningComponent implements OnInit {
 
     this.td_introducerlist = this.masterModel.tdintroducer;
 
-    if (this.tm_deposit.intt_amt != undefined && this.tm_deposit.intt_amt != null)
-    {
+    if (this.tm_deposit.intt_amt != undefined && this.tm_deposit.intt_amt != null) {
       this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
     }
 
-    if ( this.tm_deposit.dep_period != undefined && this.tm_deposit.dep_period != null)
-    {
-    retDepositPeriodArr =  this.depositPeriodParser(this.tm_deposit.dep_period);
-    this.tm_deposit.year = Number(retDepositPeriodArr[0]);
-    this.tm_deposit.month = Number(retDepositPeriodArr[1]);
-    this.tm_deposit.day = Number(retDepositPeriodArr[2]);
+    if (this.tm_deposit.dep_period != undefined && this.tm_deposit.dep_period != null) {
+      retDepositPeriodArr = this.depositPeriodParser(this.tm_deposit.dep_period);
+      this.tm_deposit.year = Number(retDepositPeriodArr[0]);
+      this.tm_deposit.month = Number(retDepositPeriodArr[1]);
+      this.tm_deposit.day = Number(retDepositPeriodArr[2]);
     }
 
-    if ( this.tm_deposit.standing_instr_flag !== undefined && this.tm_deposit.standing_instr_flag !== null)
-    {
+    if (this.tm_deposit.standing_instr_flag !== undefined && this.tm_deposit.standing_instr_flag !== null) {
       this.setStandingInstrAfterMatu(Number(this.tm_deposit.standing_instr_flag));
     }
 
     // tslint:disable-next-line: forin
-    for (var idx in this.td_introducerlist) {
+    for (let idx in this.td_introducerlist) {
       this.setIntroducerAccountType(this.td_introducerlist[idx].introducer_acc_type, Number(idx));
     }
 
-    ;
+
     this.td_nomineeList = this.masterModel.tdnominee;
     this.td_signatoryList = this.masterModel.tdsignatory;
     this.td_accholderList = this.masterModel.tdaccholder;
 
     // tslint:disable-next-line: forin
-    for (var idx in this.td_accholderList) {
-      this.setRelationship( this.td_accholderList[idx].relation, Number(idx));
-      }
+    for (let idx in this.td_accholderList) {
+      this.setRelationship(this.td_accholderList[idx].relation, Number(idx));
+    }
 
     this.tm_denominationList = this.masterModel.tmdenominationtrans;
-    if ( this.tm_denominationList === undefined || this.tm_denominationList === null || this.tm_denominationList.length === 0)
-    {
+    if (this.tm_denominationList === undefined || this.tm_denominationList === null || this.tm_denominationList.length === 0) {
       null;
     }
-    else
-    {
-      for (var idx in this.tm_denominationList)
-      {
+    else {
+      for (let idx in this.tm_denominationList) {
         this.setDenomination(this.tm_denominationList[idx].rupees, Number(idx));
       }
 
     }
 
-    ;
+
     this.td_deftrans = this.masterModel.tddeftrans;
     this.setTransType(this.td_deftrans.trf_type);
     this.td_deftranstrfList = this.masterModel.tddeftranstrf;
@@ -429,7 +419,7 @@ export class AccOpeningComponent implements OnInit {
 
       if (this.td_deftranstrfList[0].acc_num === '0000') {
         this.td_deftranstrfList[0].gl_acc_code = this.td_deftranstrfList[0].acc_type_cd.toString();
-        this.checkAndSetDebitAccType('gl_acc', this.td_deftranstrfList[0].gl_acc_code)
+        this.checkAndSetDebitAccType('gl_acc', this.td_deftranstrfList[0].gl_acc_code);
 
       }
       else {
@@ -444,7 +434,7 @@ export class AccOpeningComponent implements OnInit {
 
 
   getCustomerList() {
-    ;
+
     const cust = new mm_customer();
     cust.cust_cd = 0;
     cust.brn_cd = this.branchCode;
@@ -452,24 +442,22 @@ export class AccOpeningComponent implements OnInit {
     if (this.customerList === undefined || this.customerList === null || this.customerList.length === 0) {
       this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
         res => {
-          ;
+
           this.isLoading = false;
           this.customerList = res;
         },
         err => {
           this.isLoading = false;
-          ;
+
         }
       );
     }
-    else
-    {this.isLoading = false;}
+    else { this.isLoading = false; }
   }
 
   getConstitutionList() {
 
-    if(this.constitutionList.length > 0)
-    {
+    if (this.constitutionList.length > 0) {
       return;
     }
 
@@ -485,7 +473,7 @@ export class AccOpeningComponent implements OnInit {
   }
 
   getAccountTypeList() {
-    ;
+
     if (this.accountTypeList.length > 0) {
       return;
     }
@@ -493,21 +481,20 @@ export class AccOpeningComponent implements OnInit {
 
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
-        ;
+
         this.accountTypeList = res;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
       },
       err => {
-        ;
+
       }
     );
   }
 
   getOperationalInstr() {
 
-    if (this.operationalInstrList.length > 0)
-    {
+    if (this.operationalInstrList.length > 0) {
       return;
     }
 
@@ -526,13 +513,13 @@ export class AccOpeningComponent implements OnInit {
 
 
   getDenominationList() {
-    ;
-    var denoList: tt_denomination[] = [];
+
+    let denoList: tt_denomination[] = [];
     this.svc.addUpdDel<any>('Common/GetDenomination', null).subscribe(
       res => {
-        ;
+
         denoList = res;
-        this.denominationList = denoList.sort((a,b) => (a.value < b.value) ? 1 : -1 );
+        this.denominationList = denoList.sort((a, b) => (a.value < b.value) ? 1 : -1);
       },
       err => { // ;
       }
@@ -541,16 +528,14 @@ export class AccOpeningComponent implements OnInit {
 
 
 
-  clearData()
-  {
+  clearData() {
     this.operationType = '';
     this.initializeMasterDataAndFlags();
     this.initializeModels();
   }
 
-  retrieveData()
-  {
-    ;
+  retrieveData() {
+
     this.clearData();
 
     this.operationType = '';
@@ -564,19 +549,18 @@ export class AccOpeningComponent implements OnInit {
     this.tm_deposit.brn_cd = this.branchCode;
   }
 
-  getAccountOpeningTempData()
-  {
+  getAccountOpeningTempData() {
     if (this.tm_deposit.acc_type_cd === null || this.tm_deposit.acc_type_cd === undefined) {
-      this.showAlertMsg('WARNING' , 'Please select Account Type');
+      this.showAlertMsg('WARNING', 'Please select Account Type');
       this.tm_deposit.acc_num = null;
       exit(0);
     }
 
-    ;
+
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetAccountOpeningTempData', this.tm_deposit).subscribe(
       res => {
-        ;
+
         this.isLoading = false;
         this.masterModel = res;
 
@@ -588,7 +572,7 @@ export class AccOpeningComponent implements OnInit {
             this.disableAccountTypeAndNo = true;
             this.assignModelsFromMasterData();
             this.operationType = 'Q';
-            ;
+
           }
           else {
             this.showAlertMsg('WARNING', 'No record found!!!');
@@ -598,19 +582,20 @@ export class AccOpeningComponent implements OnInit {
 
 
       },
-      err => { this.isLoading = false;
-        this.showAlertMsg('ERROR' , 'Unable to find record!!' );
-        ;}
+      err => {
+        this.isLoading = false;
+        this.showAlertMsg('ERROR', 'Unable to find record!!');
+
+      }
 
     );
   }
 
 
   modifyData() {
-    ;
-    if ( this.operationType !== 'Q' )
-    {
-      this.showAlertMsg('WARNING' , 'Record not retrived to modify');
+
+    if (this.operationType !== 'Q') {
+      this.showAlertMsg('WARNING', 'Record not retrived to modify');
       return;
     }
     this.operationType = 'U';
@@ -624,7 +609,7 @@ export class AccOpeningComponent implements OnInit {
     this.operationType = 'I';
     this.disableAll = true;
     this.isLoading = true;
-    ;
+
     this.getCustomerList();
     // this.disableCustNameFlg = false;
     this.disableCustomerName = false;
@@ -634,13 +619,11 @@ export class AccOpeningComponent implements OnInit {
 
   }
 
-saveData()
-  {
-    ;
+  saveData() {
 
-    if ( this.operationType !== 'I'  && this.operationType !== 'U')
-    {
-      this.showAlertMsg('WARNING' , 'Record not Created or Updated to Save');
+
+    if (this.operationType !== 'I' && this.operationType !== 'U') {
+      this.showAlertMsg('WARNING', 'Record not Created or Updated to Save');
       return;
     }
 
@@ -655,8 +638,7 @@ saveData()
 
       this.getNewAccountNoAndSaveData();
     }
-    else
-    {
+    else {
       this.tm_deposit.modified_by = this.updateUser;
       this.tm_deposit.modified_dt = this.updateDate;
       this.InsertAccountOpenData();
@@ -666,55 +648,46 @@ saveData()
     this.disableAccountTypeAndNo = false;
   }
 
-  validateData()
-  {
-   ;
+  validateData() {
+
     let nomPercent = 0;
 
-    if (this.tm_deposit.year === null || this.tm_deposit.year === undefined )
-    { this.tm_deposit.year = 0; }
+    if (this.tm_deposit.year === null || this.tm_deposit.year === undefined) { this.tm_deposit.year = 0; }
 
-    if (this.tm_deposit.month === null || this.tm_deposit.month === undefined )
-    { this.tm_deposit.month = 0; }
+    if (this.tm_deposit.month === null || this.tm_deposit.month === undefined) { this.tm_deposit.month = 0; }
 
-    if (this.tm_deposit.day === null || this.tm_deposit.day === undefined )
-    { this.tm_deposit.day = 0; }
+    if (this.tm_deposit.day === null || this.tm_deposit.day === undefined) { this.tm_deposit.day = 0; }
 
-    if (this.tm_deposit.year === 0 && this.tm_deposit.month === 0 && this.tm_deposit.day === 0)
-    { this.tm_deposit.dep_period = null; }
+    if (this.tm_deposit.year === 0 && this.tm_deposit.month === 0 && this.tm_deposit.day === 0) { this.tm_deposit.dep_period = null; }
     else {
       this.tm_deposit.dep_period = 'Year=' + this.tm_deposit.year + ';Month=' + this.tm_deposit.month + ';Day=' + this.tm_deposit.day;
     }
 
-    if (this.tm_deposit.cust_cd === null || this.tm_deposit.cust_cd === undefined)
-    {
-      this.showAlertMsg('WARNING' , 'Customer Information is Blank');
-        exit(0);
+    if (this.tm_deposit.cust_cd === null || this.tm_deposit.cust_cd === undefined) {
+      this.showAlertMsg('WARNING', 'Customer Information is Blank');
+      exit(0);
     }
 
-    if (this.tm_deposit.acc_type_cd === null || this.tm_deposit.acc_type_cd === undefined)
-    {
-      this.showAlertMsg('WARNING' , 'Account Type can not be blank');
-        exit(0);
+    if (this.tm_deposit.acc_type_cd === null || this.tm_deposit.acc_type_cd === undefined) {
+      this.showAlertMsg('WARNING', 'Account Type can not be blank');
+      exit(0);
     }
 
-    if (this.tm_deposit.constitution_cd === null || this.tm_deposit.constitution_cd === undefined)
-    {
-      this.showAlertMsg('WARNING' , 'Constitution can not be blank');
-        exit(0);
+    if (this.tm_deposit.constitution_cd === null || this.tm_deposit.constitution_cd === undefined) {
+      this.showAlertMsg('WARNING', 'Constitution can not be blank');
+      exit(0);
     }
 
-    if (this.tm_deposit.oprn_instr_cd === null || this.tm_deposit.oprn_instr_cd === undefined)
-    {
-      this.showAlertMsg('WARNING' , 'Operational Instruction can not be blank');
-        exit(0);
+    if (this.tm_deposit.oprn_instr_cd === null || this.tm_deposit.oprn_instr_cd === undefined) {
+      this.showAlertMsg('WARNING', 'Operational Instruction can not be blank');
+      exit(0);
     }
 
 
     // tslint:disable-next-line: forin
     for (let l in this.td_signatoryList) {
       if (this.td_signatoryList[l].signatory_name === null || this.td_signatoryList[l].signatory_name === undefined) {
-        this.showAlertMsg('WARNING' , 'Signatory Name is Blank');
+        this.showAlertMsg('WARNING', 'Signatory Name is Blank');
         exit(0);
       }
 
@@ -726,15 +699,13 @@ saveData()
 
     // ;
     // tslint:disable-next-line: forin
-    for (let l in this.td_accholderList)
-    {
-      if (this.td_accholderList[l].acc_holder === null || this.td_accholderList[l].acc_holder === undefined)
-      {
+    for (let l in this.td_accholderList) {
+      if (this.td_accholderList[l].acc_holder === null || this.td_accholderList[l].acc_holder === undefined) {
         this.td_accholderList = this.td_accholderList.splice(Number(l), 1);
       }
       else {
         if (this.td_accholderList[l].relation === null || this.td_accholderList[l].relation === undefined) {
-          this.showAlertMsg('WARNING' , 'Joint Holder Relation is Blank');
+          this.showAlertMsg('WARNING', 'Joint Holder Relation is Blank');
           exit(0);
         }
         this.td_accholderList[l].acc_type_cd = this.tm_deposit.acc_type_cd;
@@ -744,20 +715,24 @@ saveData()
       }
     }
 
-    if ( ( this.td_deftrans.trf_type === null || this.td_deftrans.trf_type === undefined) &&  this.operationType === 'I')
-    {
-      this.showAlertMsg('WARNING' , 'Please supply required value in transaction details');
+    if ((this.td_deftrans.trf_type === null || this.td_deftrans.trf_type === undefined) && this.operationType === 'I') {
+      this.showAlertMsg('WARNING', 'Please supply required value in transaction details');
       exit(0);
     }
 
 
-    if (this.td_deftrans.trf_type === 'C')
-    {
-      if (this.denominationGrandTotal !== this.tm_deposit.prn_amt)
-      {
-        this.showAlertMsg('WARNING' , 'Principal Amount and Total Denomination Amount not matching!!');
-        exit(0);
+    if (this.td_deftrans.trf_type === 'C') {
+      if (this.tm_deposit.acc_type_cd === 6) {
+        if (this.denominationGrandTotal !== this.tm_deposit.instl_amt) {
+          this.showAlertMsg('WARNING', 'Installment Amount and Total Denomination Amount not matching!!');
+          exit(0);
+        }
       }
+      else
+        if (this.denominationGrandTotal !== this.tm_deposit.prn_amt) {
+          this.showAlertMsg('WARNING', 'Principal Amount and Total Denomination Amount not matching!!');
+          exit(0);
+        }
     }
 
     // Populating data for TD_DEP_TRANS ================================================================
@@ -775,26 +750,23 @@ saveData()
       this.td_deftrans.particulars = 'BY TRANSFER';
       this.td_deftrans.tr_acc_cd = this.suspanceAccCd;
     }
-    else
-    {
-      this.td_deftrans.particulars = 'BY CASH'
+    else {
+      this.td_deftrans.particulars = 'BY CASH';
       this.td_deftrans.tr_acc_cd = this.cashAccCd;
     }
     this.td_deftrans.upd_ins_flag = this.operationType;
-    if (this.operationType === 'I')
-    {
+    if (this.operationType === 'I') {
       this.td_deftrans.created_by = this.createUser;
       this.td_deftrans.created_dt = this.createDate;
       this.td_deftrans.modified_by = this.updateUser;
       this.td_deftrans.modified_dt = this.updateDate;
     }
-    else
-    {
+    else {
       this.td_deftrans.modified_by = this.updateUser;
       this.td_deftrans.modified_dt = this.updateDate;
     }
 
-    ;
+
     // Populating data for TD_DEP_TRANS_TRF =============================================================
     if (this.td_deftrans.trf_type === 'T') {
 
@@ -808,7 +780,7 @@ saveData()
       this.td_deftranstrfList[0].brn_cd = this.branchCode;
       this.td_deftranstrfList[0].trans_dt = this.sys.CurrentDate;
 
-      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === "") {
+      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
         this.td_deftranstrfList[0].acc_type_cd = parseInt(this.td_deftranstrfList[0].gl_acc_code);
         this.td_deftranstrfList[0].acc_num = '0000';
         this.td_deftranstrfList[0].remarks = 'D';
@@ -852,20 +824,20 @@ saveData()
     else {
       this.td_deftranstrfList = this.td_deftranstrfList.splice(0, 1);
       this.tm_transferList = this.tm_transferList.splice(0, 1);
-  }
+    }
 
 
     // For Nominee ====================================================================================
-    ;
-    for (let l in this.td_nomineeList)
-    {
+
+    for (let l in this.td_nomineeList) {
       if (this.td_nomineeList[l].nom_name === null || this.td_nomineeList[l].nom_name === undefined) {
         this.td_nomineeList = this.td_nomineeList.splice(Number(l), 1);
       }
       else {
-        if (this.td_nomineeList[l].percentage === null || this.td_nomineeList[l].percentage === 0 || this.td_nomineeList[l].percentage === undefined)
-        { this.showAlertMsg('WARNING' , 'Nominee Percentage is blank');
-          exit(0); }
+        if (this.td_nomineeList[l].percentage === null || this.td_nomineeList[l].percentage === 0 || this.td_nomineeList[l].percentage === undefined) {
+          this.showAlertMsg('WARNING', 'Nominee Percentage is blank');
+          exit(0);
+        }
         this.td_nomineeList[l].acc_num = this.masterModel.tmdeposit.acc_num;
         this.td_nomineeList[l].acc_type_cd = this.tm_deposit.acc_type_cd;
         this.td_nomineeList[l].brn_cd = this.branchCode;
@@ -875,38 +847,35 @@ saveData()
       }
     }
 
-    if (nomPercent > 0 && nomPercent < 100)
-    {
-      this.showAlertMsg('WARNING' , 'Nominee Total Percentage < 100');
+    if (nomPercent > 0 && nomPercent < 100) {
+      this.showAlertMsg('WARNING', 'Nominee Total Percentage < 100');
       exit(0);
     }
 
-    ;
+
 
 
     // if ((this.operationType === 'I') && ( this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null) &&
     // ( this.tm_deposit.acc_type_cd ===  2 || this.tm_deposit.acc_type_cd ===  3 ||
     //   this.tm_deposit.acc_type_cd ===  4 || this.tm_deposit.acc_type_cd ===  5
     //   || this.tm_deposit.acc_type_cd ===  6  ) )
-    if ((this.operationType === 'I') && ( this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null) &&
-    ( this.tm_deposit.acc_type_cd ===  6 ) )
-    {
-      this.showAlertMsg('WARNING' , 'S/B Account Number not present to create the Account Type- '+ this.tm_deposit.acc_type_desc);
+    if ((this.operationType === 'I') && (this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null) &&
+      (this.tm_deposit.acc_type_cd === 6)) {
+      this.showAlertMsg('WARNING', 'S/B Account Number not present to create the Account Type- ' + this.tm_deposit.acc_type_desc);
       exit(0);
     }
 
-    if ((this.operationType === 'I') && ( this.tm_deposit.acc_type_cd === 1 || this.tm_deposit.acc_type_cd === 7 ||
-      this.tm_deposit.acc_type_cd === 8 || this.tm_deposit.acc_type_cd === 9 ) )
-      {
-        ;
-        this.tm_deposit.user_acc_num = null;
-      }
+    if ((this.operationType === 'I') && (this.tm_deposit.acc_type_cd === 1 || this.tm_deposit.acc_type_cd === 7 ||
+      this.tm_deposit.acc_type_cd === 8 || this.tm_deposit.acc_type_cd === 9)) {
+
+      this.tm_deposit.user_acc_num = null;
+    }
 
 
-    ;
+
     for (let l in this.tm_denominationList) {
-      ;
-      if (this.tm_denominationList[l].rupees === null || this.tm_denominationList[l].rupees === undefined ) {
+
+      if (this.tm_denominationList[l].rupees === null || this.tm_denominationList[l].rupees === undefined) {
         this.tm_denominationList = this.tm_denominationList.splice(Number(l), 1);
       }
       else {
@@ -914,11 +883,11 @@ saveData()
         this.tm_denominationList[l].trans_dt = this.sys.CurrentDate;
       }
     }
-    ;
+
 
 
     // tslint:disable-next-line: forin
-    var v = 0;
+    let v = 0;
     for (let l in this.td_introducerlist) {
       if (this.td_introducerlist[l].introducer_acc_num === null || this.td_introducerlist[l].introducer_acc_num === undefined) {
         // Removing the blank element
@@ -935,29 +904,29 @@ saveData()
     }
 
 
-      // if (this.operationType === 'I')
-      // {
-      //   for (let l in this.tm_denominationList)
-      //   {
-      //   this.tm_denominationList[l].brn_cd = this.branchCode;
-      //   this.tm_denominationList[l].trans_dt = this.sys.CurrentDate;
-      //   }
+    // if (this.operationType === 'I')
+    // {
+    //   for (let l in this.tm_denominationList)
+    //   {
+    //   this.tm_denominationList[l].brn_cd = this.branchCode;
+    //   this.tm_denominationList[l].trans_dt = this.sys.CurrentDate;
+    //   }
 
-      //   var v= 0;
-      //   for (let l in this.td_introducerlist) {
-      //     v = v + 1;
-      //     this.td_introducerlist[l].srl_no = v;
-      //     this.td_introducerlist[l].acc_type_cd = this.tm_deposit.acc_type_cd;
-      //     this.td_introducerlist[l].acc_num = this.tm_deposit.acc_num;
-      //     this.td_introducerlist[l].brn_cd = this.branchCode;
-      //   }
+    //   var v= 0;
+    //   for (let l in this.td_introducerlist) {
+    //     v = v + 1;
+    //     this.td_introducerlist[l].srl_no = v;
+    //     this.td_introducerlist[l].acc_type_cd = this.tm_deposit.acc_type_cd;
+    //     this.td_introducerlist[l].acc_num = this.tm_deposit.acc_num;
+    //     this.td_introducerlist[l].brn_cd = this.branchCode;
+    //   }
 
-      // }
+    // }
 
   }
 
   getNewAccountNoAndSaveData() {
-    ;
+
     this.isLoading = true;
 
     this.p_gen_param.brn_cd = this.branchCode; // String
@@ -967,18 +936,20 @@ saveData()
 
     this.svc.addUpdDel<any>('Deposit/PopulateAccountNumber', this.p_gen_param).subscribe(
       res => {
-        ;
+
         let val = '0';
         this.isLoading = false;
         val = res;
         this.masterModel.tmdeposit.acc_num = val.toString();
         this.masterModel.tmdeposit.brn_cd = this.branchCode;
 
-        ;
+
         this.InsertAccountOpenData();
       },
-      err => { this.isLoading = false;
-        ;}
+      err => {
+        this.isLoading = false;
+
+      }
 
     );
 
@@ -987,61 +958,59 @@ saveData()
 
   InsertAccountOpenData() {
     let ret = -1;
-    ;
+
 
     this.validateData();
 
-    ;
+
 
     this.isLoading = true;
     if (this.operationType === 'I') // For New Account
     {
       this.svc.addUpdDel<any>('Deposit/InsertAccountOpeningData', this.masterModel).subscribe(
         res => {
-          ;
+
           this.td_deftrans.trans_cd = Number(res);
           this.isLoading = false;
           this.disableCustomerName = true;
           this.operationType = '';
-          this.showAlertMsg('INFORMATION' , 'Account Record Created Successfully [Account Number:'+this.masterModel.tmdeposit.acc_num +'] [Trans Code: ' + this.td_deftrans.trans_cd+']');
+          this.showAlertMsg('INFORMATION', 'Account Record Created Successfully [Account Number:' + this.masterModel.tmdeposit.acc_num + '] [Trans Code: ' + this.td_deftrans.trans_cd + ']');
         },
         err => {
-          ;
+
           this.isLoading = false;
-          this.showAlertMsg('ERROR' , 'Record Not Saved !!!');
+          this.showAlertMsg('ERROR', 'Record Not Saved !!!');
           if (this.operationType === 'I') {
             this.masterModel.tmdeposit.acc_num = null;
           }
-          ;
+
         }
       );
     }
     else // Modify the Account opening Data
     {
-      ;
+
       this.svc.addUpdDel<any>('Deposit/UpdateAccountOpeningData', this.masterModel).subscribe(
         res => {
-          ;
+
           ret = Number(res);
           this.isLoading = false;
 
-          if ( ret === 0)
-          {
-            this.showAlertMsg('INFORMATION' , 'Record Set Updated Successfully');
+          if (ret === 0) {
+            this.showAlertMsg('INFORMATION', 'Record Set Updated Successfully');
 
             this.disableCustomerName = true;
             this.operationType = '';
           }
-          else
-          {
-            this.showAlertMsg('ERROR' , 'Unable to Save Record Set');
+          else {
+            this.showAlertMsg('ERROR', 'Unable to Save Record Set');
           }
 
         },
         err => {
           this.isLoading = false;
-          this.showAlertMsg('ERROR' , 'Unable to Update Data');
-          ;
+          this.showAlertMsg('ERROR', 'Unable to Update Data');
+
         }
       );
     }
@@ -1054,9 +1023,9 @@ saveData()
     return dt;
   }
 
-  public showAlertMsg(msgTyp: string , msg: string) {
+  public showAlertMsg(msgTyp: string, msg: string) {
     this.alertMsgType = msgTyp;
-    this.alertMsg     = msg;
+    this.alertMsg = msg;
     this.showAlert = true;
     this.disableAll = true;
     this.disableAccountTypeAndNo = true;
@@ -1065,23 +1034,21 @@ saveData()
   public closeAlertMsg() {
     this.showAlert = false;
 
-    if ( this.operationType == 'I' || this.operationType == 'U')
-    {
-    this.disableAll = false;
-    this.disableAccountTypeAndNo = false;
+    if (this.operationType == 'I' || this.operationType == 'U') {
+      this.disableAll = false;
+      this.disableAccountTypeAndNo = false;
     }
   }
 
 
   setAccountType(accType: number) {
-    ;
+
     if (accType === 0) {
       accType = 1;
     }
 
-    if (this.operationType === 'I')
-    {
-       this.setTmDepositModel();
+    if (this.operationType === 'I') {
+      this.setTmDepositModel();
     }
 
     this.accountTypeDiv = Number(accType);
@@ -1091,10 +1058,9 @@ saveData()
 
     // this.selectedConstitutionList = null;
     this.selectedConstitutionList = this.constitutionList.filter(x => x.acc_type_cd.toString() === accType.toString());
-    ;
 
-    if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 11 )
-    {
+
+    if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 11) {
       this.tm_deposit.month = this.savingsDepoSpclPeriod;
       // this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
       this.tm_deposit.mat_dt = this.sys.CurrentDate;
@@ -1104,15 +1070,14 @@ saveData()
     }
 
     if (this.operationType === 'I' &&
-        (this.tm_deposit.acc_type_cd === 2  ||
-          this.tm_deposit.acc_type_cd === 3 ||
-          this.tm_deposit.acc_type_cd === 4 ||
-          this.tm_deposit.acc_type_cd === 5 ||
-          this.tm_deposit.acc_type_cd === 6))
-          {
-            this.tm_deposit.standing_instr_flag = this.standingInstrAfterMaturity[0].instr_code;
-            this.tm_deposit.standing_instr_dscr = this.standingInstrAfterMaturity[0].instr_dscr;
-          }
+      (this.tm_deposit.acc_type_cd === 2 ||
+        this.tm_deposit.acc_type_cd === 3 ||
+        this.tm_deposit.acc_type_cd === 4 ||
+        this.tm_deposit.acc_type_cd === 5 ||
+        this.tm_deposit.acc_type_cd === 6)) {
+      this.tm_deposit.standing_instr_flag = this.standingInstrAfterMaturity[0].instr_code;
+      this.tm_deposit.standing_instr_dscr = this.standingInstrAfterMaturity[0].instr_dscr;
+    }
 
     if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 5) {
       this.tm_deposit.intt_trf_type = this.intTransferType[0].tfr_type;
@@ -1122,8 +1087,7 @@ saveData()
   }
 
 
-  setTmDepositModel()
-  {
+  setTmDepositModel() {
 
     this.tm_deposit.acc_type_cd = undefined;
     this.tm_deposit.acc_num = undefined;
@@ -1169,8 +1133,8 @@ saveData()
     this.tm_deposit.modified_by = undefined;
     this.tm_deposit.modified_dt = undefined;
     this.tm_deposit.acc_type_desc = undefined;
-    this.tm_deposit.constitution_desc  = undefined;
-    this.tm_deposit.oprn_instr_desc  = undefined;
+    this.tm_deposit.constitution_desc = undefined;
+    this.tm_deposit.oprn_instr_desc = undefined;
     this.tm_deposit.intt_tfr_type_dscr = undefined;
     this.tm_deposit.standing_instr_dscr = undefined;
     this.tm_deposit.year = undefined;
@@ -1186,15 +1150,13 @@ saveData()
 
   }
 
-  setTransType(tt: any)
-  {
+  setTransType(tt: any) {
     // this.transTypeFlg = val;
-    ;
+
     if (this.td_deftrans.trf_type === 'T') {
       // const deno: tm_denomination_trans[] = [];
       // this.tm_denominationList = deno;
-      for (let l in this.tm_denominationList)
-      {
+      for (let l in this.tm_denominationList) {
         this.tm_denominationList = this.tm_denominationList.splice(Number(l), 1);
       }
       this.denominationGrandTotal = 0;
@@ -1207,18 +1169,18 @@ saveData()
 
 
   setRelationship(relation: string, idx: number) {
-    ;
+
     this.td_accholderList[idx].cust_cd = Number(this.td_accholderList[idx].cust_cd);
     this.td_accholderList[idx].relation = relation;
     this.td_accholderList[idx].relationId = this.relationship.filter(x => x.val.toString() === relation)[0].id;
-    ;
+
   }
 
   setIntTfrType(tfr_type: string) {
-    ;
+
 
     if (tfr_type == null) {
-    return;
+      return;
     }
 
     this.tm_deposit.intt_trf_type = tfr_type;
@@ -1226,7 +1188,7 @@ saveData()
   }
 
   setConstitutionType(val: number) {
-    ;
+
     this.tm_deposit.constitution_cd = Number(val);
     this.tm_deposit.constitution_desc = this.constitutionList.filter(x => x.constitution_cd.toString() === val.toString())[0].constitution_desc;
     this.tm_deposit.acc_cd = this.constitutionList.filter(x => x.constitution_cd.toString() === val.toString())[0].acc_cd;
@@ -1252,15 +1214,15 @@ saveData()
 
 
   public suggestCustomer(): void {
-  this.suggestedCustomer = this.customerList
+    this.suggestedCustomer = this.customerList
       .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_deposit.cust_name.toLowerCase())
         || c.cust_cd.toString().startsWith(this.tm_deposit.cust_name)
-        || ( c.phone !== null && c.phone.startsWith(this.tm_deposit.cust_name)))
+        || (c.phone !== null && c.phone.startsWith(this.tm_deposit.cust_name)))
       .slice(0, 20);
   }
 
   public suggestCustomerSignatories(idx: number): void {
-    ;
+
     this.suggestedCustomerSignatoriesIdx = idx;
     this.suggestedCustomerSignatories = this.customerList
       .filter(c => c.cust_name.toLowerCase().startsWith(this.td_signatoryList[idx].signatory_name.toLowerCase())
@@ -1293,7 +1255,7 @@ saveData()
 
 
   getSetJointHolderName(idx: number) {
-    var temp_mm_cust = new mm_customer();
+    let temp_mm_cust = new mm_customer();
     temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === this.td_accholderList[idx].cust_cd.toString())[0];
 
     if (!temp_mm_cust) {
@@ -1322,22 +1284,20 @@ saveData()
   }
 
   populateCustDtls(cust_cd: number) {
-    ;
-    var temp_mm_cust = new mm_customer();
-    var temp_tm_deposit = new tm_deposit();
+
+    let temp_mm_cust = new mm_customer();
+    let temp_tm_deposit = new tm_deposit();
 
     temp_tm_deposit.cust_cd = cust_cd;
 
     temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
 
     this.tm_deposit.cust_name = temp_mm_cust.cust_name;
-    if (temp_mm_cust.cust_type === 'M')
-    {
-    this.tm_deposit.cust_type = "Member";
+    if (temp_mm_cust.cust_type === 'M') {
+      this.tm_deposit.cust_type = 'Member';
     }
-    else
-    {
-      this.tm_deposit.cust_type = "Non-Member";
+    else {
+      this.tm_deposit.cust_type = 'Non-Member';
     }
     this.tm_deposit.gurdain_name = temp_mm_cust.guardian_name;
 
@@ -1362,20 +1322,20 @@ saveData()
       this.td_signatoryList[0].brn_cd = this.branchCode;
     }
 
-    ;
+
 
     if (this.operationType === 'I') {
       this.isLoading = true;
       this.svc.addUpdDel<any>('Deposit/GetCustMinSavingsAccNo', temp_tm_deposit).subscribe(
         res => {
-          ;
+
           this.isLoading = false;
-          var x = res;
+          let x = res;
           this.tm_deposit.user_acc_num = x.toString();
           // this.tm_deposit.user_acc_num = this.tm_deposit.user_acc_num.toString();
         },
         err => {
-          ;
+
           this.isLoading = false;
           this.tm_deposit.user_acc_num = null;
         }
@@ -1384,24 +1344,22 @@ saveData()
 
   }
 
-setCategoryDesc(category: number) {
+  setCategoryDesc(category: number) {
     this.tm_deposit.category_desc = this.categoryList.filter(x => x.catg_cd.toString() === category.toString())[0].catg_desc;
   }
 
-addSignatory()
-  {
-    var temp_td_signatory = new td_signatory();
+  addSignatory() {
+    let temp_td_signatory = new td_signatory();
     this.td_signatoryList.push(temp_td_signatory);
   }
 
-removeSignatory()
-{
+  removeSignatory() {
     if (this.td_signatoryList.length > 1)
-    this.td_signatoryList.pop();
+      this.td_signatoryList.pop();
   }
 
   addJointHolder() {
-    var temp_td_accholder = new td_accholder();
+    let temp_td_accholder = new td_accholder();
     this.td_accholderList.push(temp_td_accholder);
   }
 
@@ -1410,15 +1368,13 @@ removeSignatory()
       this.td_accholderList.pop();
   }
 
-  checkSignatory(name: string, idx: number)
-  {
-    var x = this.td_accholderList.filter(c => c.acc_holder.toString() === name.toString())[0].cust_cd;
+  checkSignatory(name: string, idx: number) {
+    let x = this.td_accholderList.filter(c => c.acc_holder.toString() === name.toString())[0].cust_cd;
 
-    ;
-    if (!x)
-    {
+
+    if (!x) {
       this.td_signatoryList[idx].signatory_name = null;
-      this.showAlertMsg('ERROR' , 'Signatory is not a Joint Holder');
+      this.showAlertMsg('ERROR', 'Signatory is not a Joint Holder');
     }
   }
 
@@ -1431,12 +1387,13 @@ removeSignatory()
   }
 
   removeIntroducer() {
-    if (this.td_introducerlist.length > 1){
-      this.td_introducerlist.pop();}
+    if (this.td_introducerlist.length > 1) {
+      this.td_introducerlist.pop();
+    }
   }
 
   setIntroducerAccountType(intro_acc_typ_cd: number, idx: number) {
-    ;
+
     if (intro_acc_typ_cd != null && intro_acc_typ_cd > 0) {
       this.td_introducerlist[idx].introducer_acc_type = Number(intro_acc_typ_cd);
       this.td_introducerlist[idx].introducer_acc_type_desc = this.introducerAccTypeList.filter(x => x.introducer_acc_type_cd.toString() === intro_acc_typ_cd.toString())[0].introducer_acc_type_desc;
@@ -1445,17 +1402,16 @@ removeSignatory()
 
 
   setIntroducerName(idx: number) {
-    ;
 
-    if (this.td_introducerlist[idx].introducer_acc_type === null || this.td_introducerlist[idx].introducer_acc_type === undefined)
-    {
-      this.showAlertMsg('ERROR' , 'Introducer Account Type can not be blank');
+
+    if (this.td_introducerlist[idx].introducer_acc_type === null || this.td_introducerlist[idx].introducer_acc_type === undefined) {
+      this.showAlertMsg('ERROR', 'Introducer Account Type can not be blank');
       this.td_introducerlist[idx].introducer_acc_num = null;
       return;
     }
 
-    var temp_deposit_list: tm_deposit[] = [];
-    var temp_deposit = new tm_deposit();
+    let temp_deposit_list: tm_deposit[] = [];
+    let temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.branchCode;
     temp_deposit.acc_num = this.td_introducerlist[idx].introducer_acc_num;
@@ -1465,7 +1421,7 @@ removeSignatory()
 
     this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
       res => {
-        ;
+
         temp_deposit_list = res;
         this.isLoading = false;
 
@@ -1473,11 +1429,11 @@ removeSignatory()
           this.td_introducerlist[idx].introducer_acc_num = null;
           this.td_introducerlist[idx].introducer_name = null;
           this.td_introducerlist[idx].acc_type_cd = null;
-          this.showAlertMsg('ERROR' , 'Introducer Not Found');
+          this.showAlertMsg('ERROR', 'Introducer Not Found');
           return;
         }
 
-        var temp_mm_cust = new mm_customer();
+        let temp_mm_cust = new mm_customer();
         temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
 
         this.td_introducerlist[idx].introducer_name = temp_mm_cust.cust_name;
@@ -1489,9 +1445,8 @@ removeSignatory()
   }
 
 
-  addNominee()
-  {
-    var temp_td_nominee = new td_nominee();
+  addNominee() {
+    let temp_td_nominee = new td_nominee();
     this.td_nomineeList.push(temp_td_nominee);
   }
 
@@ -1500,30 +1455,26 @@ removeSignatory()
       this.td_nomineeList.pop();
   }
 
-  addDenomination()
-  {
-    var temp_denomination= new tm_denomination_trans();
+  addDenomination() {
+    let temp_denomination = new tm_denomination_trans();
     this.tm_denominationList.push(temp_denomination);
   }
 
-  removeDenomination()
-  {
+  removeDenomination() {
     if (this.tm_denominationList.length > 1)
-    this.tm_denominationList.pop();
+      this.tm_denominationList.pop();
   }
 
-  setDenomination(val: number, idx: number)
-  {
-    ;
+  setDenomination(val: number, idx: number) {
+
     this.tm_denominationList[idx].rupees = Number(val);
-    this.tm_denominationList[idx].rupees_desc = this.denominationList.filter( x => x.value.toString() === val.toString() )[0].rupees;
+    this.tm_denominationList[idx].rupees_desc = this.denominationList.filter(x => x.value.toString() === val.toString())[0].rupees;
     this.calculateTotalDenomination(idx);
   }
 
 
-  calculateTotalDenomination(idx: number)
-  {
-    ;
+  calculateTotalDenomination(idx: number) {
+
     let r = 0;
     let c = 0;
 
@@ -1547,7 +1498,7 @@ removeSignatory()
 
 
   checkNomineePercentage(idx: number) {
-    ;
+
     let tot = 0;
 
     for (let l of this.td_nomineeList) {
@@ -1555,7 +1506,7 @@ removeSignatory()
     }
 
     if (tot > 100) {
-      this.showAlertMsg('ERROR' , 'Nominee Total Percentage exceeding 100');
+      this.showAlertMsg('ERROR', 'Nominee Total Percentage exceeding 100');
       this.td_nomineeList[idx].percentage = 0;
     }
 
@@ -1566,9 +1517,9 @@ removeSignatory()
 
 
   checkAndSetDebitAccType(tfrType: string, accType: string) {
-    ;
+
     if (tfrType === 'cust_acc') {
-      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === "") {
+      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
         this.td_deftranstrfList[0].cust_name = null;
         this.td_deftranstrfList[0].clr_bal = null;
         this.td_deftranstrfList[0].cust_acc_desc = null;
@@ -1576,94 +1527,79 @@ removeSignatory()
         return;
       }
 
-      if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === "")
-      {
-        var temp_acc_type = new mm_acc_type();
+      if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === '') {
+        let temp_acc_type = new mm_acc_type();
         temp_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0];
 
-        if(temp_acc_type === undefined || temp_acc_type === null)
-        {
+        if (temp_acc_type === undefined || temp_acc_type === null) {
           this.td_deftranstrfList[0].cust_acc_type = null;
           this.showAlertMsg('WARNING', 'Invalid Account Type');
           return;
         }
-        else
-        {
+        else {
           this.td_deftranstrfList[0].cust_acc_desc = temp_acc_type.acc_type_desc;
         }
       }
-      else
-      {
+      else {
         this.showAlertMsg('WARNING', 'GL Code and Account Type can not have value simultaneously');
         this.td_deftranstrfList[0].cust_acc_type = null;
         return;
       }
     }
 
-    if (tfrType === 'gl_acc')
-    {
-      if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === "")
-      {
+    if (tfrType === 'gl_acc') {
+      if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === '') {
         this.td_deftranstrfList[0].gl_acc_desc = null;
         return;
       }
 
-      if(this.td_deftranstrfList[0].gl_acc_code === this.cashAccCd.toString())
-      {
+      if (this.td_deftranstrfList[0].gl_acc_code === this.cashAccCd.toString()) {
         this.showAlertMsg('WARNING', 'GL Code can not be Cash Account Code');
         return;
       }
 
 
-      this.td_deftranstrfList[0].acc_cd = Number(this.td_deftranstrfList[0].gl_acc_code) ;
+      this.td_deftranstrfList[0].acc_cd = Number(this.td_deftranstrfList[0].gl_acc_code);
 
-      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === "")
-      {
-        if (this.acc_master === undefined || this.acc_master === null || this.acc_master.length === 0)
-        {
+      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
+        if (this.acc_master === undefined || this.acc_master === null || this.acc_master.length === 0) {
           this.isLoading = true;
-          var temp_acc_master = new m_acc_master();
+          let temp_acc_master = new m_acc_master();
           this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
             res => {
               ;
               this.acc_master = res;
               this.isLoading = false;
               temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
-              if (temp_acc_master === undefined || temp_acc_master === null)
-              {
-              this.td_deftranstrfList[0].gl_acc_desc = null;
-              this.showAlertMsg('WARNING', 'Invalid GL Code');
-              return;
+              if (temp_acc_master === undefined || temp_acc_master === null) {
+                this.td_deftranstrfList[0].gl_acc_desc = null;
+                this.showAlertMsg('WARNING', 'Invalid GL Code');
+                return;
               }
-            else
-              {
-              this.td_deftranstrfList[0].gl_acc_desc = temp_acc_master.acc_name;
-             }
+              else {
+                this.td_deftranstrfList[0].gl_acc_desc = temp_acc_master.acc_name;
+              }
             },
             err => {
               ;
               this.isLoading = false;
             }
-          )
+          );
         }
-        else
-        {
-          var temp_acc_master = new m_acc_master();
+        else {
+          let temp_acc_master = new m_acc_master();
           temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
-          if (temp_acc_master === undefined || temp_acc_master === null)
-          {
+          if (temp_acc_master === undefined || temp_acc_master === null) {
             this.td_deftranstrfList[0].gl_acc_desc = null;
             this.showAlertMsg('WARNING', 'GL Code and Account Type can not have value simultaneously');
             return;
           }
-          else
-          {
-          this.td_deftranstrfList[0].gl_acc_desc = temp_acc_master.acc_name;
+          else {
+            this.td_deftranstrfList[0].gl_acc_desc = temp_acc_master.acc_name;
           }
         }
       }
-      else
-      {
+      else {
         this.showAlertMsg('WARNING', 'Account Type in Transfer Details is not blank');
         this.td_deftranstrfList[0].gl_acc_code = null;
         return;
@@ -1672,23 +1608,22 @@ removeSignatory()
   }
 
   setDebitAccDtls(acc_num: string) {
-    ;
-    if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === "") {
+
+    if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
       this.showAlertMsg('WARNING', 'Account Type in Transfer Details can not be blank');
       this.td_deftranstrfList[0].cust_acc_number = null;
       exit(0);
     }
 
-    if (this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === "")
-    {
+    if (this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === '') {
       this.td_deftranstrfList[0].cust_name = null;
-      this.td_deftranstrfList[0].clr_bal =  null;
+      this.td_deftranstrfList[0].clr_bal = null;
       exit(0);
     }
 
-    ;
-    var temp_deposit_list: tm_deposit[] = [];
-    var temp_deposit = new tm_deposit();
+
+    let temp_deposit_list: tm_deposit[] = [];
+    let temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.branchCode;
     temp_deposit.acc_num = this.td_deftranstrfList[0].cust_acc_number;
@@ -1697,7 +1632,7 @@ removeSignatory()
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
       res => {
-        ;
+
         temp_deposit_list = res;
         this.isLoading = false;
 
@@ -1707,83 +1642,81 @@ removeSignatory()
           exit(0);
         }
 
-        var temp_mm_cust = new mm_customer();
+        let temp_mm_cust = new mm_customer();
         temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
         this.td_deftranstrfList[0].cust_name = temp_mm_cust.cust_name;
 
-        this.td_deftranstrfList[0].clr_bal =  temp_deposit_list[0].clr_bal;
+        this.td_deftranstrfList[0].clr_bal = temp_deposit_list[0].clr_bal;
         this.td_deftranstrfList[0].acc_cd = this.constitutionList.filter(x => x.acc_type_cd.toString() === temp_deposit.acc_type_cd.toString()
-                                                                         && x.constitution_cd.toString() === temp_deposit_list[0].constitution_cd.toString())[0].acc_cd;
+          && x.constitution_cd.toString() === temp_deposit_list[0].constitution_cd.toString())[0].acc_cd;
 
       },
       err => {
-        ;
+
         this.isLoading = false;
       }
     );
   }
 
-  checkDebitBalance(amount: number)
-  {
-    ;
+  checkDebitBalance(amount: number) {
 
-    if(this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount ===null)
-    {
+
+    if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null) {
       exit(0);
     }
 
-    if ((this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === "")
-      && (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === ""))
-      {
+    if ((this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === '')
+      && (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === '')) {
       this.showAlertMsg('WARNING', 'Please enter Account Number or GL Code');
       this.td_deftranstrfList[0].amount = null;
       exit(0);
     }
 
-    if( this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null)
-    {
+    if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null) {
       this.showAlertMsg('WARNING', 'Principal Amount is blank');
       // this.td_deftranstrfList[0].amount = null;
       exit(0);
     }
 
-      if (this.tm_deposit.prn_amt.toString() !== amount.toString()) {
-        this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
-        // this.td_deftranstrfList[0].amount = null;
+    if (this.tm_deposit.acc_type_cd === 6) {
+      if (this.tm_deposit.instl_amt.toString() !== amount.toString()) {
+        this.showAlertMsg('WARNING', 'Debit Amount is not matching with Installment Amount');
         exit(0);
       }
+    }
+    else {
+      if (this.tm_deposit.prn_amt.toString() !== amount.toString()) {
+        this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
+        exit(0);
+      }
+    }
 
-
-    if (this.td_deftranstrfList[0].clr_bal === undefined || this.td_deftranstrfList[0].clr_bal === null)
-    {
+    if (this.td_deftranstrfList[0].clr_bal === undefined || this.td_deftranstrfList[0].clr_bal === null) {
       this.td_deftranstrfList[0].clr_bal = 0;
     }
 
-    if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === "") {
+    if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === '') {
       if (parseInt(this.td_deftranstrfList[0].clr_bal.toString()) < parseInt(amount.toString())) {
         this.showAlertMsg('WARNING', 'Insufficient Balance');
         this.td_deftranstrfList[0].amount = null;
         exit(0);
       }
-  }
+    }
 
   }
 
-  xxxxxxxx(val: any)
-  {
+  xxxxxxxx(val: any) {
     null;
   }
 
-  setStandingInstrAfterMatu(val: number)
-  {
-     this.tm_deposit.standing_instr_flag = val.toString();
-     this.tm_deposit.standing_instr_dscr = this.standingInstrAfterMaturity.filter( x => x.instr_code === val.toString())[0].instr_dscr;
+  setStandingInstrAfterMatu(val: number) {
+    this.tm_deposit.standing_instr_flag = val.toString();
+    this.tm_deposit.standing_instr_dscr = this.standingInstrAfterMaturity.filter(x => x.instr_code === val.toString())[0].instr_dscr;
   }
 
   private depositPeriodParser(constitutionText: string) {
     /// YEAR=1;Month=10;Days=25;
-    if (constitutionText == null)
-    {
+    if (constitutionText == null) {
       return null;
     }
     let arr = constitutionText.split(';');
@@ -1796,10 +1729,10 @@ removeSignatory()
   }
 
 
-processInstallmentNo() {
-    ;
-    var temp_gen_param1 = new p_gen_param();
-    var temp_gen_param2 = new p_gen_param();
+  processInstallmentNo() {
+
+    let temp_gen_param1 = new p_gen_param();
+    let temp_gen_param2 = new p_gen_param();
 
 
     if (this.tm_deposit.category_cd === undefined || this.tm_deposit.category_cd === null) {
@@ -1827,15 +1760,13 @@ processInstallmentNo() {
     temp_gen_param2.from_dt = this.sys.CurrentDate;
 
     temp_gen_param2.ls_catg_cd = this.tm_deposit.category_cd;
-    ;
 
-    if ( typeof(this.tm_deposit.opening_dt) === "string")
-    {
+
+    if (typeof (this.tm_deposit.opening_dt) === 'string') {
       this.tm_deposit.opening_dt = Utils.convertStringToDt(this.tm_deposit.opening_dt);
     }
 
-    if ( typeof(this.tm_deposit.mat_dt) === "string")
-    {
+    if (typeof (this.tm_deposit.mat_dt) === 'string') {
       this.tm_deposit.mat_dt = Utils.convertStringToDt(this.tm_deposit.mat_dt);
     }
 
@@ -1845,7 +1776,7 @@ processInstallmentNo() {
     temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
 
 
-    ;
+
     if (temp_gen_param1.an_intt_rate > 0) {
       this.calCrdIntReg(temp_gen_param1);
     }
@@ -1853,23 +1784,22 @@ processInstallmentNo() {
       //                               uf_GetInttRate
       this.svc.addUpdDel<any>('Deposit/GET_INT_RATE', temp_gen_param2).subscribe(
         res => {
-          ;
+
           this.tm_deposit.intt_rt = Number(res);
           temp_gen_param1.an_intt_rate = this.tm_deposit.intt_rt;
           this.calCrdIntReg(temp_gen_param1);
         },
         err => {
-          ;
+
         }
       );
     }
   }
 
 
-  processInstallmentAmount( )
-  {
-    ;
-    var temp_gen_param = new p_gen_param();
+  processInstallmentAmount() {
+
+    let temp_gen_param = new p_gen_param();
 
     this.tm_deposit.prn_amt = Number(this.tm_deposit.instl_no) * Number(this.tm_deposit.instl_amt);
 
@@ -1880,13 +1810,12 @@ processInstallmentNo() {
   }
 
 
-  calCrdIntReg(tempGenParam: p_gen_param )
-  {
+  calCrdIntReg(tempGenParam: p_gen_param) {
     this.isLoading = true;
-    ;
+
     this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', tempGenParam).subscribe(
       res => {
-        ;
+
         this.tm_deposit.intt_amt = res;
         this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
         this.isLoading = false;
@@ -1894,26 +1823,23 @@ processInstallmentNo() {
       err => {
         this.tm_deposit.intt_amt = 0;
         this.isLoading = false;
-        ;
+
       }
     );
   }
 
 
-  reProcessPrincipal()
-  {
-    if ( (this.tm_deposit.acc_type_cd !== 1) &&
-    (this.tm_deposit.acc_type_cd !== 7) &&
-    (this.tm_deposit.acc_type_cd !== 13) &&
-    (this.tm_deposit.prn_amt > 0) )
-    {
+  reProcessPrincipal() {
+    if ((this.tm_deposit.acc_type_cd !== 1) &&
+      (this.tm_deposit.acc_type_cd !== 7) &&
+      (this.tm_deposit.acc_type_cd !== 13) &&
+      (this.tm_deposit.prn_amt > 0)) {
       this.processPrincipal();
     }
   }
 
-  processPrincipal( )
-  {
-    ;
+  processPrincipal() {
+
     if ((this.tm_deposit.acc_type_cd !== 1) && (this.tm_deposit.acc_type_cd !== 7) && (this.tm_deposit.acc_type_cd !== 13)) {
 
       if (this.tm_deposit.year === undefined || this.tm_deposit.year === null) {
@@ -1949,15 +1875,13 @@ processInstallmentNo() {
         return;
       }
 
-      if (this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null || this.tm_deposit.intt_rt <= 0 )
-      {
+      if (this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null || this.tm_deposit.intt_rt <= 0) {
         this.tm_deposit.prn_amt = 0;
         this.showAlertMsg('Warning', 'Please set the Interest Rate..');
         return;
       }
 
-      if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null || this.tm_deposit.prn_amt <= 0 )
-      {
+      if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null || this.tm_deposit.prn_amt <= 0) {
         this.tm_deposit.prn_amt = 0;
         this.tm_deposit.intt_amt = 0;
         this.showAlertMsg('Warning', 'Please set the Principal..');
@@ -1965,34 +1889,32 @@ processInstallmentNo() {
       }
 
 
-      ;
+
       // this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
       // this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
       // this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
       // this.tm_deposit.mat_dt.setDate(this.tm_deposit.mat_dt.getDate() + this.tm_deposit.day);
 
 
-      var temp_gen_param = new p_gen_param();
+      let temp_gen_param = new p_gen_param();
       temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
       temp_gen_param.ad_prn_amt = this.tm_deposit.prn_amt;
       temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
       temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
       // tslint:disable-next-line: max-line-length
 
-      if ( typeof(this.tm_deposit.opening_dt) === "string")
-      {
+      if (typeof (this.tm_deposit.opening_dt) === 'string') {
         this.tm_deposit.opening_dt = Utils.convertStringToDt(this.tm_deposit.opening_dt);
       }
 
-      if (typeof (this.tm_deposit.mat_dt) === "string")
-      {
+      if (typeof (this.tm_deposit.mat_dt) === 'string') {
         this.tm_deposit.mat_dt = Utils.convertStringToDt(this.tm_deposit.mat_dt);
       }
 
       temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
       temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
-;
+
       this.f_calctdintt_reg(temp_gen_param);
 
       // this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
@@ -2009,39 +1931,35 @@ processInstallmentNo() {
       //   }
       // );
     }
-}
+  }
 
-f_calctdintt_reg(temp_gen_param : p_gen_param )
-{
-  this.isLoading = true;
-  ;
-  this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
-    res => {
-      ;
-      this.tm_deposit.intt_amt = res;
-      this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
-      ;
-      this.isLoading = false;
-    },
-    err => {
-      this.isLoading = false;
-      ;
-    }
-  );
-}
+  f_calctdintt_reg(temp_gen_param: p_gen_param) {
+    this.isLoading = true;
+    debugger;
+    this.svc.addUpdDel<any>('Deposit/F_CALCTDINTT_REG', temp_gen_param).subscribe(
+      res => {
+        this.tm_deposit.intt_amt = res;
+        this.tm_deposit.mat_val = (+this.tm_deposit.intt_amt) + (+this.tm_deposit.prn_amt);
+        this.isLoading = false;
+      },
+      err => {
+        this.isLoading = false;
+        console.log(err);
+
+      }
+    );
+  }
 
   processInterest() {
-    ;
-    var temp_gen_param = new p_gen_param();
+    let temp_gen_param = new p_gen_param();
 
     temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
 
-    if (this.tm_deposit.acc_type_cd === 6)
-    {
-      if ( this.tm_deposit.instl_amt === undefined || this.tm_deposit.instl_amt === null ||
-        this.tm_deposit.instl_no === undefined || this.tm_deposit.instl_no ===  null ||
-        this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null )
-        // temp_gen_param.an_intt_rate === undefined || temp_gen_param.an_intt_rate === null )
+    if (this.tm_deposit.acc_type_cd === 6) {
+      if (this.tm_deposit.instl_amt === undefined || this.tm_deposit.instl_amt === null ||
+        this.tm_deposit.instl_no === undefined || this.tm_deposit.instl_no === null ||
+        this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null)
+      // temp_gen_param.an_intt_rate === undefined || temp_gen_param.an_intt_rate === null )
       {
         return;
       }
@@ -2051,19 +1969,17 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
       temp_gen_param.an_intt_rate = Number(this.tm_deposit.intt_rt);
       this.calCrdIntReg(temp_gen_param);
     }
-    else
-    {
+    else {
 
-      if (  ( (this.tm_deposit.year === undefined || this.tm_deposit.year === null ) &&
-              (this.tm_deposit.month === undefined || this.tm_deposit.month === null) &&
-              (this.tm_deposit.day === undefined || this.tm_deposit.day === null) ) ||
-        this.tm_deposit.prn_amt === undefined ||  this.tm_deposit.prn_amt === null || this.tm_deposit.prn_amt === 0 ||
-        this.tm_deposit.intt_trf_type === undefined || this.tm_deposit.intt_trf_type === null )
-      {
+      if (((this.tm_deposit.year === undefined || this.tm_deposit.year === null) &&
+        (this.tm_deposit.month === undefined || this.tm_deposit.month === null) &&
+        (this.tm_deposit.day === undefined || this.tm_deposit.day === null)) ||
+        this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null || this.tm_deposit.prn_amt === 0 ||
+        this.tm_deposit.intt_trf_type === undefined || this.tm_deposit.intt_trf_type === null) {
         return;
       }
 
-      ;
+
       // this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
       // this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
       // this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
@@ -2076,17 +1992,19 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
       temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
       temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
       // tslint:disable-next-line: max-line-length
-      if ( typeof(this.tm_deposit.opening_dt) === "string")
-      {
+      if (typeof (this.tm_deposit.opening_dt) === 'string') {
         this.tm_deposit.opening_dt = Utils.convertStringToDt(this.tm_deposit.opening_dt);
       }
 
-      if (typeof (this.tm_deposit.mat_dt) === "string")
-      {
+      if (typeof (this.tm_deposit.mat_dt) === 'string') {
         this.tm_deposit.mat_dt = Utils.convertStringToDt(this.tm_deposit.mat_dt);
       }
 
-      temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
+      temp_gen_param.ai_period =
+        Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(),
+          this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) -
+          (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(),
+            this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
       temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
       this.f_calctdintt_reg(temp_gen_param);
@@ -2094,46 +2012,41 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
   }
 
   processYearMonthDay() {
-    var temp_gen_param = new p_gen_param();
-    ;
+    let temp_gen_param = new p_gen_param();
+
 
     this.tm_deposit.mat_dt = this.sys.CurrentDate;
     // this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
 
-    if (this.tm_deposit.year === undefined || this.tm_deposit.year === null)
-    {
+    if (this.tm_deposit.year === undefined || this.tm_deposit.year === null) {
       this.tm_deposit.year = 0;
     }
 
-    if (this.tm_deposit.month === undefined || this.tm_deposit.month === null)
-    {
+    if (this.tm_deposit.month === undefined || this.tm_deposit.month === null) {
       this.tm_deposit.month = 0;
     }
 
-    if (this.tm_deposit.day === undefined || this.tm_deposit.day === null)
-    {
+    if (this.tm_deposit.day === undefined || this.tm_deposit.day === null) {
       this.tm_deposit.day = 0;
     }
 
-    this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() +  this.tm_deposit.year);
+    this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
     this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
     this.tm_deposit.mat_dt.setDate(this.tm_deposit.mat_dt.getDate() + this.tm_deposit.day);
 
-    if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 4)
-    {
-      ;
+    if (this.operationType === 'I' && this.tm_deposit.acc_type_cd === 4) {
+
       this.calculateInterestRate();
     }
 
-    if (  ( (this.tm_deposit.year === undefined || this.tm_deposit.year === null ) &&
-              (this.tm_deposit.month === undefined || this.tm_deposit.month === null) &&
-              (this.tm_deposit.day === undefined || this.tm_deposit.day === null) ) ||
-        this.tm_deposit.prn_amt === undefined ||  this.tm_deposit.prn_amt === null ||
-        this.tm_deposit.intt_trf_type === undefined || this.tm_deposit.intt_trf_type === null ||
-        this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null)
-      {
-        return;
-      }
+    if (((this.tm_deposit.year === undefined || this.tm_deposit.year === null) &&
+      (this.tm_deposit.month === undefined || this.tm_deposit.month === null) &&
+      (this.tm_deposit.day === undefined || this.tm_deposit.day === null)) ||
+      this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null ||
+      this.tm_deposit.intt_trf_type === undefined || this.tm_deposit.intt_trf_type === null ||
+      this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null) {
+      return;
+    }
 
 
     // var temp_gen_param = new p_gen_param();
@@ -2142,14 +2055,11 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
     temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
     temp_gen_param.as_intt_type = this.tm_deposit.intt_trf_type;
     // tslint:disable-next-line: max-line-length
-    ;
-    if ( typeof(this.tm_deposit.opening_dt) === "string")
-    {
+    if (typeof (this.tm_deposit.opening_dt) === 'string') {
       this.tm_deposit.opening_dt = Utils.convertStringToDt(this.tm_deposit.opening_dt);
     }
 
-    if (typeof (this.tm_deposit.mat_dt) === "string")
-    {
+    if (typeof (this.tm_deposit.mat_dt) === 'string') {
       this.tm_deposit.mat_dt = Utils.convertStringToDt(this.tm_deposit.mat_dt);
     }
 
@@ -2157,74 +2067,70 @@ f_calctdintt_reg(temp_gen_param : p_gen_param )
     temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
     this.f_calctdintt_reg(temp_gen_param);
-    }
-
-calculateInterestRate()
-{
-  ;
-  var temp_gen_param2 = new p_gen_param();
-  temp_gen_param2.acc_cd = this.tm_deposit.acc_type_cd;
-  temp_gen_param2.from_dt = this.sys.CurrentDate;
-  temp_gen_param2.ls_catg_cd = this.tm_deposit.category_cd;
-  temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24)) - 1;
-  this.svc.addUpdDel<any>('Deposit/GET_INT_RATE', temp_gen_param2).subscribe(
-    res => {
-      ;
-      this.tm_deposit.intt_rt = Number(res);
-    },
-    err => {
-      ;
-    }
-  );
-
-}
-
-backScreen()
-{
-  this.router.navigate([this.sys.BankName + '/la']);
-}
-
-deleteData() {
-  ;
-  var n = 1;
-  var temp_def_trans_trf = new td_def_trans_trf();
-
-  if (this.operationType !== 'Q') {
-    this.showAlertMsg('WARNING', 'Record not retrived to delete');
-    return;
   }
 
-  ;
-  temp_def_trans_trf.brn_cd = this.tm_deposit.brn_cd;
-  temp_def_trans_trf.acc_num = this.tm_deposit.acc_num;
-  temp_def_trans_trf.acc_type_cd = this.tm_deposit.acc_type_cd;
-  temp_def_trans_trf.trans_cd = this.td_deftrans.trans_cd;
-  temp_def_trans_trf.trans_dt = this.td_deftrans.trans_dt;
-
-  this.isLoading = true;
-  this.svc.addUpdDel<any>('Deposit/DeleteAccountOpeningData', temp_def_trans_trf).subscribe(
-    res => {
-      ;
-      this.isLoading = false;
-      n = res;
-
-      if (n === 0) {
-        this.clearData();
-        this.operationType = '';
-        this.operationType = 'Q';
-        this.showAlertMsg('INFORMATION', 'Account opening data deleted successfully');
+  calculateInterestRate() {
+    let temp_gen_param2 = new p_gen_param();
+    temp_gen_param2.acc_cd = this.tm_deposit.acc_type_cd;
+    temp_gen_param2.from_dt = this.sys.CurrentDate;
+    temp_gen_param2.ls_catg_cd = this.tm_deposit.category_cd;
+    temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24)) - 1;
+    this.svc.addUpdDel<any>('Deposit/GET_INT_RATE', temp_gen_param2).subscribe(
+      res => {
+        debugger;
+        this.tm_deposit.intt_rt = Number(res);
+      },
+      err => {
+        console.log(err);
       }
-      if (n === -1) {
+    );
+
+  }
+
+  backScreen() {
+    this.router.navigate([this.sys.BankName + '/la']);
+  }
+
+  deleteData() {
+
+    let n = 1;
+    let temp_def_trans_trf = new td_def_trans_trf();
+
+    if (this.operationType !== 'Q') {
+      this.showAlertMsg('WARNING', 'Record not retrived to delete');
+      return;
+    }
+
+
+    temp_def_trans_trf.brn_cd = this.tm_deposit.brn_cd;
+    temp_def_trans_trf.acc_num = this.tm_deposit.acc_num;
+    temp_def_trans_trf.acc_type_cd = this.tm_deposit.acc_type_cd;
+    temp_def_trans_trf.trans_cd = this.td_deftrans.trans_cd;
+    temp_def_trans_trf.trans_dt = this.td_deftrans.trans_dt;
+
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('Deposit/DeleteAccountOpeningData', temp_def_trans_trf).subscribe(
+      res => {
+
+        this.isLoading = false;
+        n = res;
+
+        if (n === 0) {
+          this.clearData();
+          this.operationType = '';
+          this.operationType = 'Q';
+          this.showAlertMsg('INFORMATION', 'Account opening data deleted successfully');
+        }
+        if (n === -1) {
+          this.showAlertMsg('WARNING', 'Account opening data NOT deleted');
+        }
+
+      },
+      err => {
+        this.isLoading = false;
         this.showAlertMsg('WARNING', 'Account opening data NOT deleted');
       }
-
-    },
-    err => {
-      this.isLoading = false;
-      this.showAlertMsg('WARNING', 'Account opening data NOT deleted');
-      ;
-    }
-  );
-}
+    );
+  }
 
 }
