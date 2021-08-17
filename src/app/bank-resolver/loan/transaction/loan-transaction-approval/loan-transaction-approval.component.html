@@ -274,8 +274,10 @@
             </button>
             <ng-template #content>
               <div class="modal-header">
-                <h4 class="modal-title pull-left">Denomination Details
-                </h4>
+                <h5 class="modal-title pull-left">Denomination Details for Acc#
+                  <strong>{{selectedVm.td_def_trans_trf.acc_num}}</strong> and Transaction Code
+                  <strong>{{selectedVm.td_def_trans_trf.trans_cd}}</strong>
+                </h5>
                 <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -307,7 +309,7 @@
             <ng-template #trfcontent>
               <div class="modal-header text-center">
                 <h5 class="modal-title pull-left">Transfer Details for Acc#
-                 <strong>{{selectedVm.tm_deposit.acc_num}}</strong> and Tran Cd
+                 <strong>{{selectedVm.td_def_trans_trf.acc_num}}</strong> and Transaction Code
                  <strong>{{selectedVm.td_def_trans_trf.trans_cd}}</strong>
                 </h5>
                 <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">

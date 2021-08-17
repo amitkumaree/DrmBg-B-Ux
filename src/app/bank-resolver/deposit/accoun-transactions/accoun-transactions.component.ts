@@ -6,7 +6,7 @@ import { RestService, InAppMessageService } from 'src/app/_service';
 import {
   MessageType, mm_acc_type, mm_customer,
   mm_operation, m_acc_master, ShowMessage, SystemValues,
-  td_def_trans_trf, td_rd_installment, tm_deposit, tm_depositall
+  td_def_trans_trf, td_intt_dtls, td_rd_installment, tm_deposit, tm_depositall
 } from '../../Models';
 import { tm_denomination_trans } from '../../Models/deposit/tm_denomination_trans';
 import { DatePipe } from '@angular/common';
@@ -30,6 +30,7 @@ export class AccounTransactionsComponent implements OnInit {
     private modalService: BsModalService) { }
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
+  static existingCustomers: mm_customer[] = [];
   static constitutionList: mm_constitution[] = [];
   static operationalInstrList: mm_oprational_intr[] = [];
   public static operations: mm_operation[] = [];
@@ -50,10 +51,12 @@ export class AccounTransactionsComponent implements OnInit {
   disableSave = true;
   TrfTotAmt = 0;
   showInterestDtls = false;
-  showInterestForRd = false;
+  showRdInstalment = false;
+  showMisInstalment = false;
   accDtlsFrm: FormGroup;
   ShadowBalance: number;
 
+  suggestedCustomer: mm_customer[];
   customerList: mm_customer[] = [];
   td_deftrans = new td_def_trans_trf();
   td_deftranstrfList: td_def_trans_trf[] = [];
@@ -64,6 +67,7 @@ export class AccounTransactionsComponent implements OnInit {
 
   accNoEnteredForTransaction: tm_depositall;
   rdInstallemntsForSelectedAcc: td_rd_installment[] = [];
+  misInstallemntsForSelectedAcc: td_intt_dtls[] = [];
   preTransactionDtlForSelectedAcc: td_def_trans_trf[] = [];
   rdInstallamentOption: number[] = [];
   showOnRenewal = false;
@@ -86,6 +90,8 @@ export class AccounTransactionsComponent implements OnInit {
       this.getCustomerList();
       this.getDenominationList();
       this.getConstitutionList();
+      this.getOperationalInstr();
+      // this.getAllCustomer();
     }, 150);
 
     this.accTransFrm = this.frmBldr.group({
@@ -160,6 +166,32 @@ export class AccounTransactionsComponent implements OnInit {
     });
     this.resetTransfer();
     this.resetAccDtlsFrmFormData();
+  }
+
+  private getAllCustomer(): void {
+    if (undefined !== AccounTransactionsComponent.existingCustomers &&
+      null !== AccounTransactionsComponent.existingCustomers &&
+      AccounTransactionsComponent.existingCustomers.length > 0) {
+    } else {
+      const cust = new mm_customer(); cust.cust_cd = 0;
+      this.isLoading = true;
+      this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
+        res => {
+          AccounTransactionsComponent.existingCustomers = res;
+          this.isLoading = false;
+        },
+        err => { this.isLoading = false; }
+      );
+    }
+  }
+
+  public suggestCustomer(): void {
+    debugger;
+    this.suggestedCustomer = AccounTransactionsComponent.existingCustomers
+      .filter(c => c.cust_name.toLowerCase().startsWith(this.f.acct_num.value.toLowerCase())
+        || c.cust_cd.toString().startsWith(this.f.acct_num.value)
+        || (c.phone !== null && c.phone.startsWith(this.f.acct_num.value)))
+      .slice(0, 20);
   }
 
   processInterest(): void {
@@ -262,6 +294,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   getOperationalInstr() {
+    // debugger;
     if (AccounTransactionsComponent.operationalInstrList.length > 0) {
       return;
     }
@@ -283,8 +316,7 @@ export class AccounTransactionsComponent implements OnInit {
     AccounTransactionsComponent.constitutionList = [];
     this.svc.addUpdDel<any>('Mst/GetConstitution', null).subscribe(
       res => {
-        // ;
-        debugger;
+        // debugger;
         AccounTransactionsComponent.constitutionList = res;
       },
       err => { // ;
@@ -293,7 +325,8 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   private resetAccDtlsFrmFormData(): void {
-    this.showInterestForRd = false;
+    this.showRdInstalment = false;
+    this.showMisInstalment = false;
     this.accDtlsFrm = this.frmBldr.group({
       brn_cd: [''],
       acc_type_cd: [''],
@@ -379,18 +412,22 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   private setAccDtlsFrmForm(): void {
+    // debugger;
     if (undefined !== this.accNoEnteredForTransaction && Object.keys(this.accNoEnteredForTransaction).length !== 0) {
       this.resetAccDtlsFrmFormData();
       this.getShadowBalance();
       if (this.accNoEnteredForTransaction.acc_type_cd === 2
         || this.accNoEnteredForTransaction.acc_type_cd === 3
-        || this.accNoEnteredForTransaction.acc_type_cd === 4
-        || this.accNoEnteredForTransaction.acc_type_cd === 5) {
+        || this.accNoEnteredForTransaction.acc_type_cd === 4) {
         this.showInterestDtls = true;
         this.accNoEnteredForTransaction.ShowClose = true;
       }
       if (this.accNoEnteredForTransaction.acc_type_cd === 6) {
-        this.showInterestForRd = true;
+        this.showRdInstalment = true;
+        this.accNoEnteredForTransaction.ShowClose = true;
+      }
+      if (this.accNoEnteredForTransaction.acc_type_cd === 5) {
+        this.showMisInstalment = true;
         this.accNoEnteredForTransaction.ShowClose = true;
       }
       const constitution = AccounTransactionsComponent.constitutionList.filter(e => e.constitution_cd
@@ -468,7 +505,8 @@ export class AccounTransactionsComponent implements OnInit {
       });
     } else {
       this.accDtlsFrm.reset();
-      this.showInterestForRd = false;
+      this.showRdInstalment = false;
+      this.showMisInstalment = false;
     }
   }
 
@@ -577,6 +615,10 @@ export class AccounTransactionsComponent implements OnInit {
     // this.refresh = true;
   }
 
+  public SelectCustomer(cust: mm_customer): void {
+    debugger;
+  }
+
   public onAccountNumTabOff(): void {
     this.tm_denominationList = [];
     this.resetTransfer();
@@ -649,7 +691,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   private validationOnAcctTabOff(acc: tm_depositall): boolean {
-    debugger;
+    // debugger;
     if (undefined === acc) {
       this.HandleMessage(true, MessageType.Error,
         'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
@@ -732,6 +774,28 @@ export class AccounTransactionsComponent implements OnInit {
             });
           },
           rdInstallamentErr => { console.log(rdInstallamentErr); }
+        );
+        break;
+
+        case 5: // MIS
+        this.showMisInstalment = false;
+        const misInstalments = new td_intt_dtls();
+        misInstalments.brn_cd = this.sys.BranchCode;
+        misInstalments.acc_num = acc.acc_num;
+        misInstalments.acc_type_cd = acc.acc_type_cd;
+        this.svc.addUpdDel<any>('Deposit/GetInttDetails', misInstalments).subscribe(
+          misInstalmentsRes => {
+            this.misInstallemntsForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(misInstalmentsRes);
+            let i = 1;
+            this.showMisInstalment = true;
+            this.misInstallemntsForSelectedAcc.forEach(e => {
+              if (e.paid_status.toLocaleLowerCase() === 'p') {
+                this.rdInstallamentOption.push(acc.intt_amt * i);
+                i = i + 1;
+              }
+            });
+          },
+          misInstalmentsErr => { console.log(misInstalmentsErr); }
         );
         break;
 
@@ -851,10 +915,11 @@ export class AccounTransactionsComponent implements OnInit {
         this.showOnClose = true;
         this.td.amount.disable();
         this.tdDefTransFrm.patchValue({
-          amount: (this.accNoEnteredForTransaction.prn_amt +
-            (this.accNoEnteredForTransaction.intt_amt > 0 ?
-            this.accNoEnteredForTransaction.intt_amt :
-            (0.015 * this.accNoEnteredForTransaction.prn_amt))).toFixed(2),
+          // amount: (this.accNoEnteredForTransaction.prn_amt +
+          //   (this.accNoEnteredForTransaction.intt_amt > 0 ?
+          //   this.accNoEnteredForTransaction.intt_amt :
+          //   (0.015 * this.accNoEnteredForTransaction.prn_amt))).toFixed(2),
+          amount: (this.accNoEnteredForTransaction.prn_amt).toFixed(2),
           curr_intt_recov: (this.accNoEnteredForTransaction.intt_amt > 0 ?
             this.accNoEnteredForTransaction.intt_amt :
             (0.015 * this.accNoEnteredForTransaction.prn_amt)).toFixed(2),
@@ -862,15 +927,18 @@ export class AccounTransactionsComponent implements OnInit {
           curr_prn_recov: isMatured ? (this.sys.DepositBonusRate *
             this.accNoEnteredForTransaction.prn_amt).toFixed(2) : '',
           td_def_mat_amt: (this.accNoEnteredForTransaction.prn_amt +
-            (0.015 * this.accNoEnteredForTransaction.prn_amt)).toFixed(2)
+            (this.accNoEnteredForTransaction.intt_amt > 0 ?
+              this.accNoEnteredForTransaction.intt_amt :
+              (0.015 * this.accNoEnteredForTransaction.prn_amt))).toFixed(2)
         });
       }
       if (accTypCode === 5) { // Special logic for MIS on close
         this.showOnClose = true;
         this.td.amount.disable();
         this.tdDefTransFrm.patchValue({
-          amount: this.accNoEnteredForTransaction.prn_amt
-          + this.accNoEnteredForTransaction.intt_amt,
+          // amount: this.accNoEnteredForTransaction.prn_amt
+          // + this.accNoEnteredForTransaction.intt_amt,
+          amount: this.accNoEnteredForTransaction.prn_amt,
           curr_intt_recov: this.accNoEnteredForTransaction.intt_amt,
           ovd_intt_recov: '',
           curr_prn_recov: isMatured ? (this.sys.DepositBonusRate *
@@ -992,6 +1060,7 @@ export class AccounTransactionsComponent implements OnInit {
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'interest payment') {
       this.transType.key = 'D';
       this.transType.Description = 'Interest Payment';
+
       // this.accNoEnteredForTransaction.ShowClose = true;
       // this.showOnRenewal = true;
       // this.hideOnClose = true;
@@ -1004,8 +1073,10 @@ export class AccounTransactionsComponent implements OnInit {
         paid_to: 'SELF',
         particulars: 'BY INTEREST ' + this.td.acc_type_desc.value + ' A/C :'
           + this.f.acct_num.value,
-        amount: this.accNoEnteredForTransaction.intt_amt
+        amount: this.accNoEnteredForTransaction.instl_amt
       });
+      this.hideOnClose = true;
+      this.showAmtDrpDn = true;
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'rd installment') {
       this.transType.key = 'D';
       this.transType.Description = 'Deposit';
@@ -1343,7 +1414,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   mappTddefTransFromFrm(): td_def_trans_trf {
-    debugger;
+    // debugger;
     const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     const toReturn = new td_def_trans_trf();
     const accTypeCd = +this.f.acc_type_cd.value;
@@ -1436,7 +1507,7 @@ export class AccounTransactionsComponent implements OnInit {
     toReturn.trans_dt = this.sys.CurrentDate;
     toReturn.acc_type_cd = this.td.acc_type_cd.value;
     toReturn.acc_num = this.td.acc_num.value;
-    toReturn.trans_mode = this.td.trans_mode.value;
+    // toReturn.trans_mode = this.td.trans_mode.value;
     toReturn.paid_to = this.td.paid_to.value;
     toReturn.token_num = this.td.token_num.value;
     toReturn.trf_type = this.td.trf_type.value;

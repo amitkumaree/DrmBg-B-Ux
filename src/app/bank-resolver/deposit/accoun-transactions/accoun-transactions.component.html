@@ -43,8 +43,21 @@
               </small>
             </small>
             <input type="number" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
-              formControlName="acct_num" id="acct_num" placeholder="Account Number" (keydown.Tab)="onAccountNumTabOff()"
+              formControlName="acct_num" id="acct_num" placeholder="Account Number"
+              (keydown.Tab)="onAccountNumTabOff()"
               name="x-field-1" autocomplete="new-field-1">
+              <!-- <div class="suggestions border p-2" style="width: 150%;"
+              *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
+              <strong> [ Customer Cd / Phone ] Name </strong>
+              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer"
+                (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + ' / '
+                + ((null === cust.phone) ? '' : cust.phone) +'] '
+                + cust.cust_name}}</p>
+            </div>
+            <div class="suggestions border p-2" style="width: 200%; font-size: small;"
+            *ngIf="suggestedCustomer && !(suggestedCustomer.length > 0)">
+            <strong class="text-danger">" {{this.f.cust_name.value}} " does not match with any customer</strong>
+            </div> -->
           </div>
           <div class="form-group col-2">
             <small for="oprn_cd">Operation Type</small>
@@ -83,7 +96,7 @@
               <input type="text" class="form-control form-control-sm" formControlName="constitution_cd_desc"
                 id="constitution_cd_desc" disabled>
             </div>
-            <div class="form-group col-6" *ngIf="!showInterestForRd">
+            <div class="form-group col-6" *ngIf="!showRdInstalment">
               <small for="oprn_instr_cd">Operation Instr</small>
               <input type="text" class="form-control form-control-sm" formControlName="oprn_instr_cd" id="oprn_instr_cd"
                 disabled hidden>
@@ -109,7 +122,7 @@
             </div>
           </div>
           <div class="form-row">
-            <div class="form-group col-6" *ngIf="showInterestDtls || showInterestForRd">
+            <div class="form-group col-6" *ngIf="showInterestDtls || showRdInstalment">
               <small for="intt_rt">Interest Rate</small>
               <input type="text" class="form-control form-control-sm" formControlName="intt_rt" disabled>
             </div>
@@ -117,7 +130,7 @@
               <small for="intt_trf_type">Interest Type</small>
               <input type="text" class="form-control form-control-sm" formControlName="intt_trf_type" disabled>
             </div>
-            <div class="form-group col-6" *ngIf="showInterestForRd">
+            <div class="form-group col-6" *ngIf="showRdInstalment">
               <small for="instl_amt">Installment Amt</small>
               <input type="text" class="form-control form-control-sm" formControlName="instl_amt" disabled>
             </div>
@@ -165,8 +178,11 @@
               <input type="text" class="form-control form-control-sm" formControlName="dep_period_d" disabled>
             </div>
           </div>
-          <button type="button" class="btn btn-link" *ngIf="showInterestForRd" (click)="openModal(content)">Show RD
-            Installaments
+          <button type="button" class="btn btn-link" *ngIf="showRdInstalment"
+          (click)="openModal(content)">Show Installaments
+          </button>
+          <button type="button" class="btn btn-link" *ngIf="showMisInstalment"
+          (click)="openModal(misInstalmentContent)">Show Installaments
           </button>
         </form>
       </div>
@@ -516,7 +532,7 @@
 </ng-template>
 <ng-template #content>
   <div class="modal-header">
-    <h4 class="modal-title pull-left">RD Installments Details for Acc# {{accNoEnteredForTransaction.acc_num}}</h4>
+    <h4 class="modal-title pull-left">Installments Details for Acc# {{accNoEnteredForTransaction.acc_num}}</h4>
     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -544,6 +560,44 @@
                 <td>
                   <i *ngIf="installement.status === 'P'" class="fa fa-check text-success" aria-hidden="true"></i>
                   <i *ngIf="installement.status === 'U'" class="fa fa-times text-danger" aria-hidden="true"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+<ng-template #misInstalmentContent>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Installments Details for Acc# {{accNoEnteredForTransaction.acc_num}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <div class="col-12 scroll-when-long">
+        <h6 style="background-color:lightskyblue" *ngIf="!(misInstallemntsForSelectedAcc.length > 0)">No Installamanet data Available</h6>
+        <div class="table-responsive" *ngIf="misInstallemntsForSelectedAcc.length > 0">
+          <!-- <h6 style="background-color:lightskyblue">View Installment Details</h6> -->
+          <table class="table table-sm table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Due Date</th>
+                <th scope="col">Deposit Date</th>
+                <th scope="col">Paid</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let installement of misInstallemntsForSelectedAcc" >
+                <td>{{installement.calc_dt}}</td>
+                <td>{{installement.paid_dt === '01/01/0001 00:00' ? null : installement.paid_dt}}</td>
+                <td>
+                  <i *ngIf="installement.paid_status === 'P'" class="fa fa-check text-success" aria-hidden="true"></i>
+                  <i *ngIf="installement.paid_status === 'U'" class="fa fa-times text-danger" aria-hidden="true"></i>
                 </td>
               </tr>
             </tbody>
