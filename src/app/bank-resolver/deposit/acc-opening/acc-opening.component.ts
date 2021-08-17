@@ -742,7 +742,15 @@ export class AccOpeningComponent implements OnInit {
     this.td_deftrans.acc_num = this.masterModel.tmdeposit.acc_num;
     this.td_deftrans.trans_type = 'D';
     this.td_deftrans.trans_mode = 'O';
-    this.td_deftrans.amount = this.tm_deposit.prn_amt;
+    this.td_deftrans.tr_acc_num = 'N';
+
+    if (this.tm_deposit.acc_type_cd === 6) {
+      this.td_deftrans.amount = this.tm_deposit.instl_amt;
+    }
+    else {
+      this.td_deftrans.amount = this.tm_deposit.prn_amt;
+    }
+
     this.td_deftrans.approval_status = 'U';
     this.td_deftrans.acc_cd = this.tm_deposit.acc_cd;
 
@@ -770,11 +778,21 @@ export class AccOpeningComponent implements OnInit {
     // Populating data for TD_DEP_TRANS_TRF =============================================================
     if (this.td_deftrans.trf_type === 'T') {
 
-      if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null ||
-        (this.tm_deposit.prn_amt.toString() !== this.td_deftranstrfList[0].amount.toString())) {
-        this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
-        // this.td_deftranstrfList[0].amount = null;
-        exit(0);
+      if (this.tm_deposit.acc_type_cd === 6) {
+        if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null ||
+          (this.tm_deposit.instl_amt.toString() !== this.td_deftranstrfList[0].amount.toString())) {
+          this.showAlertMsg('WARNING', 'Debit Amount is not matching with Installment Amount');
+          // this.td_deftranstrfList[0].amount = null;
+          exit(0);
+        }
+      }
+      else {
+        if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null ||
+          (this.tm_deposit.prn_amt.toString() !== this.td_deftranstrfList[0].amount.toString())) {
+          this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
+          // this.td_deftranstrfList[0].amount = null;
+          exit(0);
+        }
       }
 
       this.td_deftranstrfList[0].brn_cd = this.branchCode;
@@ -783,13 +801,15 @@ export class AccOpeningComponent implements OnInit {
       if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
         this.td_deftranstrfList[0].acc_type_cd = parseInt(this.td_deftranstrfList[0].gl_acc_code);
         this.td_deftranstrfList[0].acc_num = '0000';
-        this.td_deftranstrfList[0].remarks = 'D';
+        //this.td_deftranstrfList[0].remarks = 'D';
       }
       else {
         this.td_deftranstrfList[0].acc_type_cd = parseInt(this.td_deftranstrfList[0].cust_acc_type);
         this.td_deftranstrfList[0].acc_num = this.td_deftranstrfList[0].cust_acc_number;
-        this.td_deftranstrfList[0].remarks = 'X';
+        //this.td_deftranstrfList[0].remarks = 'X';
       }
+      this.td_deftranstrfList[0].remarks = 'D';
+
       this.td_deftranstrfList[0].trans_type = 'W';
       this.td_deftranstrfList[0].trans_mode = 'V';
       this.td_deftranstrfList[0].approval_status = 'U';
