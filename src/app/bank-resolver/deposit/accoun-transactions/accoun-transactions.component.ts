@@ -186,12 +186,23 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   public suggestCustomer(): void {
-    debugger;
-    this.suggestedCustomer = AccounTransactionsComponent.existingCustomers
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.f.acct_num.value.toLowerCase())
-        || c.cust_cd.toString().startsWith(this.f.acct_num.value)
-        || (c.phone !== null && c.phone.startsWith(this.f.acct_num.value)))
-      .slice(0, 20);
+    if (this.f.acct_num.value.length > 0) {
+      const prm = new p_gen_param();
+      prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.f.acct_num.value.toLowerCase();
+      this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomer = res.slice(0, 20);
+          } else {
+            this.suggestedCustomer = [];
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomer = null;
+    }
   }
 
   processInterest(): void {
@@ -615,8 +626,10 @@ export class AccounTransactionsComponent implements OnInit {
     // this.refresh = true;
   }
 
-  public SelectCustomer(cust: mm_customer): void {
-    debugger;
+  public SelectCustomer(cust: any): void {
+    this.f.acct_num.setValue(cust.acc_num);
+    this.onAccountNumTabOff();
+    this.suggestedCustomer = null;
   }
 
   public onAccountNumTabOff(): void {
@@ -777,7 +790,7 @@ export class AccounTransactionsComponent implements OnInit {
         );
         break;
 
-        case 5: // MIS
+      case 5: // MIS
         this.showMisInstalment = false;
         const misInstalments = new td_intt_dtls();
         misInstalments.brn_cd = this.sys.BranchCode;

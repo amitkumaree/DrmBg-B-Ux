@@ -42,22 +42,40 @@
                 Press tab.
               </small>
             </small>
-            <input type="number" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
+            <!-- <input type="number" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
               formControlName="acct_num" id="acct_num" placeholder="Account Number"
               (keydown.Tab)="onAccountNumTabOff()"
+              name="x-field-1" autocomplete="new-field-1"> -->
+              <input type="text" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
+              formControlName="acct_num" id="acct_num" placeholder="Account Number"
+              (input)="suggestCustomer()"
               name="x-field-1" autocomplete="new-field-1">
-              <!-- <div class="suggestions border p-2" style="width: 150%;"
-              *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
-              <strong> [ Customer Cd / Phone ] Name </strong>
-              <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer"
-                (click)="SelectCustomer(cust)">{{'[' + cust.cust_cd + ' / '
-                + ((null === cust.phone) ? '' : cust.phone) +'] '
-                + cust.cust_name}}</p>
+              <div class="suggestions" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
+                <table class="table table-hover table-bordered table-sm w-auto small">
+                  <thead>
+                    <tr>
+                      <th scope="col">Account Number</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Phone</th>
+                      <th scope="col">Gurdian Name</th>
+                      <th scope="col">Address</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let cust of suggestedCustomer" (click)="SelectCustomer(cust)">
+                      <td scope="row">{{cust.acc_num}}</td>
+                      <td>{{cust.cust_name}}</td>
+                      <td>{{((null === cust.phone) ? '' : cust.phone)}}</td>
+                      <td>{{cust.guardian_name}}</td>
+                      <td>{{cust.present_address}}</td>
+                    </tr>
+                  </tbody>
+                </table>
             </div>
-            <div class="suggestions border p-2" style="width: 200%; font-size: small;"
+            <div class="suggestions border p-2" style="width: 150%; font-size: small;"
             *ngIf="suggestedCustomer && !(suggestedCustomer.length > 0)">
-            <strong class="text-danger">" {{this.f.cust_name.value}} " does not match with any customer</strong>
-            </div> -->
+            <strong class="text-danger">" {{this.f.acct_num.value}} " does not match with any customer</strong>
+            </div>
           </div>
           <div class="form-group col-2">
             <small for="oprn_cd">Operation Type</small>
