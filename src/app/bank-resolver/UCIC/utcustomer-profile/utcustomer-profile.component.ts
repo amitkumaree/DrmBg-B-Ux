@@ -9,6 +9,7 @@ import { formatDate } from '@angular/common';
 import { Router } from '@angular/router';
 import Utils from 'src/app/_utility/utils';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { p_gen_param } from '../../Models/p_gen_param';
 
 @Component({
   selector: 'app-utcustomer-profile',
@@ -158,7 +159,7 @@ export class UTCustomerProfileComponent implements OnInit {
       this.getKYCTypMaster();
       this.getBlockMster();
       this.getServiceAreaMaster();
-      this.onRetrieveClick();
+      // this.onRetrieveClick();
       this.f.status.setValue('A');
     }, 150);
   }
@@ -271,36 +272,57 @@ export class UTCustomerProfileComponent implements OnInit {
     });
   }
 
-  public onRetrieveClick(loadingReq: boolean = false): void {
-    if (loadingReq) {
-      this.retrieveClicked = true;
-      this.onClearClick();
-      this.custMstrFrm.disable();
-      this.f.cust_name.enable();
-    }
-    if (undefined !== UTCustomerProfileComponent.existingCustomers &&
-      null !== UTCustomerProfileComponent.existingCustomers &&
-      UTCustomerProfileComponent.existingCustomers.length > 0) {
-    } else {
-      // this.cust_name.nativeElement.focus();
-      if (loadingReq) { this.isLoading = true; }
-      const cust = new mm_customer(); cust.cust_cd = 0;
-      this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
+  public onRetrieveClick(): void {
+    this.retrieveClicked = true;
+    this.onClearClick();
+    this.custMstrFrm.disable();
+    this.f.cust_name.enable();
+    // if (loadingReq) {
+
+    // }
+    // if (undefined !== UTCustomerProfileComponent.existingCustomers &&
+    //   null !== UTCustomerProfileComponent.existingCustomers &&
+    //   UTCustomerProfileComponent.existingCustomers.length > 0) {
+    // } else {
+    //   // this.cust_name.nativeElement.focus();
+    //   if (loadingReq) { this.isLoading = true; }
+    //   const cust = new mm_customer(); cust.cust_cd = 0;
+    //   this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
+    //     res => {
+    //       UTCustomerProfileComponent.existingCustomers = res;
+    //       if (loadingReq) { this.isLoading = false; }
+    //     },
+    //     err => { this.isLoading = false; }
+    //   );
+    // }
+  }
+
+  // public suggestCustomer(): void {
+  //   this.suggestedCustomer = UTCustomerProfileComponent.existingCustomers
+  //     .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase())
+  //       || c.cust_cd.toString().startsWith(this.f.cust_name.value)
+  //       || (c.phone !== null && c.phone.startsWith(this.f.cust_name.value)))
+  //     .slice(0, 20);
+  // }
+  public suggestCustomer(): void {
+    if (this.f.cust_name.value.length > 0) {
+      const prm = new p_gen_param();
+      // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.f.cust_name.value.toLowerCase();
+      this.svc.addUpdDel<any>('Deposit/GetCustDtls', prm).subscribe(
         res => {
-          UTCustomerProfileComponent.existingCustomers = res;
-          if (loadingReq) { this.isLoading = false; }
+          debugger;
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomer = res.slice(0, 10);
+          } else {
+            this.suggestedCustomer = [];
+          }
         },
         err => { this.isLoading = false; }
       );
+    } else {
+      this.suggestedCustomer = null;
     }
-  }
-
-  public suggestCustomer(): void {
-    this.suggestedCustomer = UTCustomerProfileComponent.existingCustomers
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.f.cust_name.value.toLowerCase())
-        || c.cust_cd.toString().startsWith(this.f.cust_name.value)
-        || (c.phone !== null && c.phone.startsWith(this.f.cust_name.value)))
-      .slice(0, 20);
   }
 
   public onDobChange(value: Date): number {

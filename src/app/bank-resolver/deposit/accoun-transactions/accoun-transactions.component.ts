@@ -168,22 +168,22 @@ export class AccounTransactionsComponent implements OnInit {
     this.resetAccDtlsFrmFormData();
   }
 
-  private getAllCustomer(): void {
-    if (undefined !== AccounTransactionsComponent.existingCustomers &&
-      null !== AccounTransactionsComponent.existingCustomers &&
-      AccounTransactionsComponent.existingCustomers.length > 0) {
-    } else {
-      const cust = new mm_customer(); cust.cust_cd = 0;
-      this.isLoading = true;
-      this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
-        res => {
-          AccounTransactionsComponent.existingCustomers = res;
-          this.isLoading = false;
-        },
-        err => { this.isLoading = false; }
-      );
-    }
-  }
+  // private getAllCustomer(): void {
+  //   if (undefined !== AccounTransactionsComponent.existingCustomers &&
+  //     null !== AccounTransactionsComponent.existingCustomers &&
+  //     AccounTransactionsComponent.existingCustomers.length > 0) {
+  //   } else {
+  //     const cust = new mm_customer(); cust.cust_cd = 0;
+  //     this.isLoading = true;
+  //     this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
+  //       res => {
+  //         AccounTransactionsComponent.existingCustomers = res;
+  //         this.isLoading = false;
+  //       },
+  //       err => { this.isLoading = false; }
+  //     );
+  //   }
+  // }
 
   public suggestCustomer(): void {
     if (this.f.acct_num.value.length > 0) {
@@ -193,7 +193,7 @@ export class AccounTransactionsComponent implements OnInit {
       this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
         res => {
           if (undefined !== res && null !== res && res.length > 0) {
-            this.suggestedCustomer = res.slice(0, 20);
+            this.suggestedCustomer = res.slice(0, 10);
           } else {
             this.suggestedCustomer = [];
           }

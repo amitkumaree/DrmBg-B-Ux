@@ -214,7 +214,7 @@ export class AccOpeningComponent implements OnInit {
     this.getAccountTypeList();
     this.getConstitutionList();
     this.getOperationalInstr();
-
+    this.newAccount();
     // console.log(this.constitutionDtParser('YEAR=1;Month=10;Days=25;'));
   }
 
