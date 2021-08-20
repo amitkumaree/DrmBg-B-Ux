@@ -694,6 +694,7 @@ export class AccounTransactionsComponent implements OnInit {
     t.brn_cd = this.sys.BranchCode;
     t.acc_num = acc.acc_num;
     t.acc_type_cd = acc.acc_type_cd;
+    console.log(JSON.stringify(t));
     this.svc.addUpdDel<any>('Deposit/GetPrevTransaction', t).subscribe(
       res => {
         this.preTransactionDtlForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
@@ -753,6 +754,7 @@ export class AccounTransactionsComponent implements OnInit {
         const temp = new tm_deposit()
         temp.brn_cd = this.sys.BranchCode;
         temp.acc_num = acc.acc_num;
+        console.log(JSON.stringify(temp));
         this.svc.addUpdDel<any>('Deposit/isDormantAccount', temp).subscribe(
           res => {
             if (undefined !== res && null !== res && res === 0) {

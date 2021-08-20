@@ -46,6 +46,7 @@ const routes: Routes = [
   { path: 'te-st4', component: LoanTransactionApprovalComponent },
   { path: 'te-st5', component: LoanaccountTransactionComponent },
   { path: 'te-st', component: UTCustomerProfileComponent },
+  { path: 't6', component: AccOpeningComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   {path: 'BankWiseConfig', component: BankWiseConfigComponent},

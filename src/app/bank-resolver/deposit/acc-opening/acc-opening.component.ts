@@ -3,7 +3,7 @@ import { SystemValues } from './../../Models/SystemValues';
 import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InAppMessageService, RestService } from 'src/app/_service';
-import { mm_category, mm_customer, m_acc_master, td_def_trans_trf } from '../../Models';
+import { MessageType, mm_category, mm_customer, m_acc_master, ShowMessage, td_def_trans_trf } from '../../Models';
 import { AccOpenDM } from '../../Models/deposit/AccOpenDM';
 import { mm_acc_type } from '../../Models/deposit/mm_acc_type';
 import { mm_constitution } from '../../Models/deposit/mm_constitution';
@@ -30,7 +30,6 @@ import { tt_denomination } from '../../Models/deposit/tt_denomination';
 
 
 export class AccOpeningComponent implements OnInit {
-  @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
 
   constructor(
     // private frmBldr: FormBuilder,
@@ -41,6 +40,7 @@ export class AccOpeningComponent implements OnInit {
   ) { }
 
   static accTypes: mm_acc_type[] = [];
+  @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
   // selectedTransType = '';
   transTypeFlg = '';
   accountTypeDiv = 1;
@@ -48,7 +48,7 @@ export class AccOpeningComponent implements OnInit {
   savingsDepoSpclPeriod = 0;
   openDate: Date;
   cashAccountCode = -1;
-
+  showMsg: ShowMessage;
   suspanceAccCd: number;
   cashAccCd: number;
 
@@ -69,7 +69,7 @@ export class AccOpeningComponent implements OnInit {
 
   sys = new SystemValues();
   denominationGrandTotal = 0;
-  //new comment
+  // new comment
 
   isLoading = false;
   // disableCustNameFlg = true;
@@ -223,7 +223,7 @@ export class AccOpeningComponent implements OnInit {
   }
 
   private convertDate(datestring: string): Date {
-    let parts = datestring.match(/(\d+)/g);
+    const parts = datestring.match(/(\d+)/g);
     return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
   }
 
@@ -293,12 +293,12 @@ export class AccOpeningComponent implements OnInit {
 
     const td_deftranstrf: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftranstrf;
-    let temp_deftranstrf = new td_def_trans_trf();
+    const temp_deftranstrf = new td_def_trans_trf();
     this.td_deftranstrfList.push(temp_deftranstrf);
 
     const tm_trns: tm_transfer[] = [];
     this.tm_transferList = tm_trns;
-    let temp_transfer = new tm_transfer();
+    const temp_transfer = new tm_transfer();
     this.tm_transferList.push(temp_transfer);
 
 
@@ -368,11 +368,11 @@ export class AccOpeningComponent implements OnInit {
 
     this.td_introducerlist = this.masterModel.tdintroducer;
 
-    if (this.tm_deposit.intt_amt != undefined && this.tm_deposit.intt_amt != null) {
+    if (this.tm_deposit.intt_amt !== undefined && this.tm_deposit.intt_amt != null) {
       this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
     }
 
-    if (this.tm_deposit.dep_period != undefined && this.tm_deposit.dep_period != null) {
+    if (this.tm_deposit.dep_period !== undefined && this.tm_deposit.dep_period != null) {
       retDepositPeriodArr = this.depositPeriodParser(this.tm_deposit.dep_period);
       this.tm_deposit.year = Number(retDepositPeriodArr[0]);
       this.tm_deposit.month = Number(retDepositPeriodArr[1]);
@@ -384,7 +384,7 @@ export class AccOpeningComponent implements OnInit {
     }
 
     // tslint:disable-next-line: forin
-    for (let idx in this.td_introducerlist) {
+    for (const idx in this.td_introducerlist) {
       this.setIntroducerAccountType(this.td_introducerlist[idx].introducer_acc_type, Number(idx));
     }
 
@@ -394,7 +394,7 @@ export class AccOpeningComponent implements OnInit {
     this.td_accholderList = this.masterModel.tdaccholder;
 
     // tslint:disable-next-line: forin
-    for (let idx in this.td_accholderList) {
+    for (const idx in this.td_accholderList) {
       this.setRelationship(this.td_accholderList[idx].relation, Number(idx));
     }
 
@@ -403,7 +403,7 @@ export class AccOpeningComponent implements OnInit {
       null;
     }
     else {
-      for (let idx in this.tm_denominationList) {
+      for (const idx in this.tm_denominationList) {
         this.setDenomination(this.tm_denominationList[idx].rupees, Number(idx));
       }
 
@@ -551,7 +551,8 @@ export class AccOpeningComponent implements OnInit {
 
   getAccountOpeningTempData() {
     if (this.tm_deposit.acc_type_cd === null || this.tm_deposit.acc_type_cd === undefined) {
-      this.showAlertMsg('WARNING', 'Please select Account Type');
+      // this.showAlertMsg('WARNING', 'Please select Account Type');
+      this.HandleMessage(true, MessageType.Warning, 'Please select Account Type');
       this.tm_deposit.acc_num = null;
       exit(0);
     }
@@ -565,7 +566,8 @@ export class AccOpeningComponent implements OnInit {
         this.masterModel = res;
 
         if (this.masterModel === undefined || this.masterModel === null) {
-          this.showAlertMsg('WARNING', 'No record found!!');
+          // this.showAlertMsg('WARNING', 'No record found!!');
+          this.HandleMessage(true, MessageType.Warning, 'No record found!!');
         }
         else {
           if (this.masterModel.tmdeposit.acc_num !== null) {
@@ -575,7 +577,8 @@ export class AccOpeningComponent implements OnInit {
 
           }
           else {
-            this.showAlertMsg('WARNING', 'No record found!!!');
+            // this.showAlertMsg('WARNING', 'No record found!!!');
+            this.HandleMessage(true, MessageType.Warning, 'No record found!!');
           }
 
         }
@@ -584,8 +587,8 @@ export class AccOpeningComponent implements OnInit {
       },
       err => {
         this.isLoading = false;
-        this.showAlertMsg('ERROR', 'Unable to find record!!');
-
+        // this.showAlertMsg('ERROR', 'Unable to find record!!');
+        this.HandleMessage(true, MessageType.Warning, 'Unable to find record!!');
       }
 
     );
@@ -595,7 +598,8 @@ export class AccOpeningComponent implements OnInit {
   modifyData() {
 
     if (this.operationType !== 'Q') {
-      this.showAlertMsg('WARNING', 'Record not retrived to modify');
+      // this.showAlertMsg('WARNING', 'Record not retrived to modify');
+      this.HandleMessage(true, MessageType.Warning, 'Record not retrived to modify');
       return;
     }
     this.operationType = 'U';
@@ -623,7 +627,8 @@ export class AccOpeningComponent implements OnInit {
 
 
     if (this.operationType !== 'I' && this.operationType !== 'U') {
-      this.showAlertMsg('WARNING', 'Record not Created or Updated to Save');
+      // this.showAlertMsg('WARNING', 'Record not Created or Updated to Save');
+      this.HandleMessage(true, MessageType.Warning, 'Record not Created or Updated to Save');
       return;
     }
 
@@ -664,30 +669,35 @@ export class AccOpeningComponent implements OnInit {
     }
 
     if (this.tm_deposit.cust_cd === null || this.tm_deposit.cust_cd === undefined) {
-      this.showAlertMsg('WARNING', 'Customer Information is Blank');
+      // this.showAlertMsg('WARNING', 'Customer Information is Blank');
+      this.HandleMessage(true, MessageType.Warning, 'Customer Information is Blank');
       exit(0);
     }
 
     if (this.tm_deposit.acc_type_cd === null || this.tm_deposit.acc_type_cd === undefined) {
-      this.showAlertMsg('WARNING', 'Account Type can not be blank');
+      // this.showAlertMsg('WARNING', 'Account Type can not be blank');
+      this.HandleMessage(true, MessageType.Warning, 'Account Type can not be blank');
       exit(0);
     }
 
     if (this.tm_deposit.constitution_cd === null || this.tm_deposit.constitution_cd === undefined) {
-      this.showAlertMsg('WARNING', 'Constitution can not be blank');
+      // this.showAlertMsg('WARNING', 'Constitution can not be blank');
+      this.HandleMessage(true, MessageType.Warning, 'Constitution can not be blank');
       exit(0);
     }
 
     if (this.tm_deposit.oprn_instr_cd === null || this.tm_deposit.oprn_instr_cd === undefined) {
-      this.showAlertMsg('WARNING', 'Operational Instruction can not be blank');
+      // this.showAlertMsg('WARNING', 'Operational Instruction can not be blank');
+      this.HandleMessage(true, MessageType.Warning, 'Operational Instruction can not be blank');
       exit(0);
     }
 
 
     // tslint:disable-next-line: forin
-    for (let l in this.td_signatoryList) {
+    for (const l in this.td_signatoryList) {
       if (this.td_signatoryList[l].signatory_name === null || this.td_signatoryList[l].signatory_name === undefined) {
-        this.showAlertMsg('WARNING', 'Signatory Name is Blank');
+        // this.showAlertMsg('WARNING', 'Signatory Name is Blank');
+        this.HandleMessage(true, MessageType.Warning, 'Signatory Name is Blank');
         exit(0);
       }
 
@@ -699,13 +709,14 @@ export class AccOpeningComponent implements OnInit {
 
     // ;
     // tslint:disable-next-line: forin
-    for (let l in this.td_accholderList) {
+    for (const l in this.td_accholderList) {
       if (this.td_accholderList[l].acc_holder === null || this.td_accholderList[l].acc_holder === undefined) {
         this.td_accholderList = this.td_accholderList.splice(Number(l), 1);
       }
       else {
         if (this.td_accholderList[l].relation === null || this.td_accholderList[l].relation === undefined) {
-          this.showAlertMsg('WARNING', 'Joint Holder Relation is Blank');
+          // this.showAlertMsg('WARNING', 'Joint Holder Relation is Blank');
+          this.HandleMessage(true, MessageType.Warning, 'Joint Holder Relation is Blank');
           exit(0);
         }
         this.td_accholderList[l].acc_type_cd = this.tm_deposit.acc_type_cd;
@@ -716,7 +727,8 @@ export class AccOpeningComponent implements OnInit {
     }
 
     if ((this.td_deftrans.trf_type === null || this.td_deftrans.trf_type === undefined) && this.operationType === 'I') {
-      this.showAlertMsg('WARNING', 'Please supply required value in transaction details');
+      // this.showAlertMsg('WARNING', 'Please supply required value in transaction details');
+      this.HandleMessage(true, MessageType.Warning, 'Please supply required value in transaction details');
       exit(0);
     }
 
@@ -724,13 +736,15 @@ export class AccOpeningComponent implements OnInit {
     if (this.td_deftrans.trf_type === 'C') {
       if (this.tm_deposit.acc_type_cd === 6) {
         if (this.denominationGrandTotal !== this.tm_deposit.instl_amt) {
-          this.showAlertMsg('WARNING', 'Installment Amount and Total Denomination Amount not matching!!');
+          // this.showAlertMsg('WARNING', 'Installment Amount and Total Denomination Amount not matching!!');
+          this.HandleMessage(true, MessageType.Warning, 'Installment Amount and Total Denomination Amount not matching!!');
           exit(0);
         }
       }
       else
         if (this.denominationGrandTotal !== this.tm_deposit.prn_amt) {
-          this.showAlertMsg('WARNING', 'Principal Amount and Total Denomination Amount not matching!!');
+          // this.showAlertMsg('WARNING', 'Principal Amount and Total Denomination Amount not matching!!');
+          this.HandleMessage(true, MessageType.Warning, 'Principal Amount and Total Denomination Amount not matching!!');
           exit(0);
         }
     }
@@ -781,7 +795,8 @@ export class AccOpeningComponent implements OnInit {
       if (this.tm_deposit.acc_type_cd === 6) {
         if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null ||
           (this.tm_deposit.instl_amt.toString() !== this.td_deftranstrfList[0].amount.toString())) {
-          this.showAlertMsg('WARNING', 'Debit Amount is not matching with Installment Amount');
+          // this.showAlertMsg('WARNING', 'Debit Amount is not matching with Installment Amount');
+          this.HandleMessage(true, MessageType.Warning, 'Debit Amount is not matching with Installment Amount');
           // this.td_deftranstrfList[0].amount = null;
           exit(0);
         }
@@ -789,7 +804,8 @@ export class AccOpeningComponent implements OnInit {
       else {
         if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null ||
           (this.tm_deposit.prn_amt.toString() !== this.td_deftranstrfList[0].amount.toString())) {
-          this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
+          // this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
+          this.HandleMessage(true, MessageType.Warning, 'Debit Amount is not matching with Principal Amount');
           // this.td_deftranstrfList[0].amount = null;
           exit(0);
         }
@@ -798,15 +814,17 @@ export class AccOpeningComponent implements OnInit {
       this.td_deftranstrfList[0].brn_cd = this.branchCode;
       this.td_deftranstrfList[0].trans_dt = this.sys.CurrentDate;
 
-      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
+      if (this.td_deftranstrfList[0].cust_acc_type === undefined ||
+        this.td_deftranstrfList[0].cust_acc_type === null ||
+        this.td_deftranstrfList[0].cust_acc_type === '') {
         this.td_deftranstrfList[0].acc_type_cd = parseInt(this.td_deftranstrfList[0].gl_acc_code);
         this.td_deftranstrfList[0].acc_num = '0000';
-        //this.td_deftranstrfList[0].remarks = 'D';
+        // this.td_deftranstrfList[0].remarks = 'D';
       }
       else {
         this.td_deftranstrfList[0].acc_type_cd = parseInt(this.td_deftranstrfList[0].cust_acc_type);
         this.td_deftranstrfList[0].acc_num = this.td_deftranstrfList[0].cust_acc_number;
-        //this.td_deftranstrfList[0].remarks = 'X';
+        // this.td_deftranstrfList[0].remarks = 'X';
       }
       this.td_deftranstrfList[0].remarks = 'D';
 
@@ -849,13 +867,16 @@ export class AccOpeningComponent implements OnInit {
 
     // For Nominee ====================================================================================
 
-    for (let l in this.td_nomineeList) {
+    for (const l in this.td_nomineeList) {
       if (this.td_nomineeList[l].nom_name === null || this.td_nomineeList[l].nom_name === undefined) {
         this.td_nomineeList = this.td_nomineeList.splice(Number(l), 1);
       }
       else {
-        if (this.td_nomineeList[l].percentage === null || this.td_nomineeList[l].percentage === 0 || this.td_nomineeList[l].percentage === undefined) {
-          this.showAlertMsg('WARNING', 'Nominee Percentage is blank');
+        if (this.td_nomineeList[l].percentage === null ||
+          this.td_nomineeList[l].percentage === 0 ||
+          this.td_nomineeList[l].percentage === undefined) {
+          // this.showAlertMsg('WARNING', 'Nominee Percentage is blank');
+          this.HandleMessage(true, MessageType.Warning, 'Nominee Percentage is blank');
           exit(0);
         }
         this.td_nomineeList[l].acc_num = this.masterModel.tmdeposit.acc_num;
@@ -868,7 +889,8 @@ export class AccOpeningComponent implements OnInit {
     }
 
     if (nomPercent > 0 && nomPercent < 100) {
-      this.showAlertMsg('WARNING', 'Nominee Total Percentage < 100');
+      // this.showAlertMsg('WARNING', 'Nominee Total Percentage < 100');
+      this.HandleMessage(true, MessageType.Warning, 'Nominee Total Percentage < 100');
       exit(0);
     }
 
@@ -879,9 +901,12 @@ export class AccOpeningComponent implements OnInit {
     // ( this.tm_deposit.acc_type_cd ===  2 || this.tm_deposit.acc_type_cd ===  3 ||
     //   this.tm_deposit.acc_type_cd ===  4 || this.tm_deposit.acc_type_cd ===  5
     //   || this.tm_deposit.acc_type_cd ===  6  ) )
-    if ((this.operationType === 'I') && (this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null) &&
+    if ((this.operationType === 'I') && (this.tm_deposit.user_acc_num === undefined ||
+      this.tm_deposit.user_acc_num === null) &&
       (this.tm_deposit.acc_type_cd === 6)) {
-      this.showAlertMsg('WARNING', 'S/B Account Number not present to create the Account Type- ' + this.tm_deposit.acc_type_desc);
+      // this.showAlertMsg('WARNING', 'S/B Account Number not present to create the Account Type- ' + this.tm_deposit.acc_type_desc);
+      this.HandleMessage(true, MessageType.Warning, 'S/B Account Number not present to create the Account Type- '
+        + this.tm_deposit.acc_type_desc);
       exit(0);
     }
 
@@ -893,7 +918,7 @@ export class AccOpeningComponent implements OnInit {
 
 
 
-    for (let l in this.tm_denominationList) {
+    for (const l in this.tm_denominationList) {
 
       if (this.tm_denominationList[l].rupees === null || this.tm_denominationList[l].rupees === undefined) {
         this.tm_denominationList = this.tm_denominationList.splice(Number(l), 1);
@@ -908,7 +933,7 @@ export class AccOpeningComponent implements OnInit {
 
     // tslint:disable-next-line: forin
     let v = 0;
-    for (let l in this.td_introducerlist) {
+    for (const l in this.td_introducerlist) {
       if (this.td_introducerlist[l].introducer_acc_num === null || this.td_introducerlist[l].introducer_acc_num === undefined) {
         // Removing the blank element
         this.td_introducerlist = this.td_introducerlist.splice(Number(l), 1);
@@ -994,12 +1019,16 @@ export class AccOpeningComponent implements OnInit {
           this.isLoading = false;
           this.disableCustomerName = true;
           this.operationType = '';
-          this.showAlertMsg('INFORMATION', 'Account Record Created Successfully [Account Number:' + this.masterModel.tmdeposit.acc_num + '] [Trans Code: ' + this.td_deftrans.trans_cd + ']');
+          // this.showAlertMsg('INFORMATION', 'Account Record Created Successfully [Account Number:' +
+          //   this.masterModel.tmdeposit.acc_num + '] [Trans Code: ' + this.td_deftrans.trans_cd + ']');
+          this.HandleMessage(true, MessageType.Sucess, 'Account Record Created Successfully [Account Number:' +
+            this.masterModel.tmdeposit.acc_num + '] [Trans Code: ' + this.td_deftrans.trans_cd + ']');
         },
         err => {
 
           this.isLoading = false;
-          this.showAlertMsg('ERROR', 'Record Not Saved !!!');
+          // this.showAlertMsg('ERROR', 'Record Not Saved !!!');
+          this.HandleMessage(true, MessageType.Error, 'Record Not Saved !!!');
           if (this.operationType === 'I') {
             this.masterModel.tmdeposit.acc_num = null;
           }
@@ -1017,20 +1046,22 @@ export class AccOpeningComponent implements OnInit {
           this.isLoading = false;
 
           if (ret === 0) {
-            this.showAlertMsg('INFORMATION', 'Record Set Updated Successfully');
+            // this.showAlertMsg('INFORMATION', 'Record Set Updated Successfully');
+            this.HandleMessage(true, MessageType.Sucess, 'Record Set Updated Successfully');
 
             this.disableCustomerName = true;
             this.operationType = '';
           }
           else {
-            this.showAlertMsg('ERROR', 'Unable to Save Record Set');
+            // this.showAlertMsg('ERROR', 'Unable to Save Record Set');
+            this.HandleMessage(true, MessageType.Error, 'Unable to Save Record Set');
           }
 
         },
         err => {
           this.isLoading = false;
-          this.showAlertMsg('ERROR', 'Unable to Update Data');
-
+          // this.showAlertMsg('ERROR', 'Unable to Update Data');
+          this.HandleMessage(true, MessageType.Error, 'Unable to Update Data');
         }
       );
     }
@@ -1043,22 +1074,9 @@ export class AccOpeningComponent implements OnInit {
     return dt;
   }
 
-  public showAlertMsg(msgTyp: string, msg: string) {
-    this.alertMsgType = msgTyp;
-    this.alertMsg = msg;
-    this.showAlert = true;
-    this.disableAll = true;
-    this.disableAccountTypeAndNo = true;
-  }
 
-  public closeAlertMsg() {
-    this.showAlert = false;
 
-    if (this.operationType == 'I' || this.operationType == 'U') {
-      this.disableAll = false;
-      this.disableAccountTypeAndNo = false;
-    }
-  }
+
 
 
   setAccountType(accType: number) {
@@ -1176,7 +1194,7 @@ export class AccOpeningComponent implements OnInit {
     if (this.td_deftrans.trf_type === 'T') {
       // const deno: tm_denomination_trans[] = [];
       // this.tm_denominationList = deno;
-      for (let l in this.tm_denominationList) {
+      for (const l in this.tm_denominationList) {
         this.tm_denominationList = this.tm_denominationList.splice(Number(l), 1);
       }
       this.denominationGrandTotal = 0;
@@ -1204,14 +1222,17 @@ export class AccOpeningComponent implements OnInit {
     }
 
     this.tm_deposit.intt_trf_type = tfr_type;
-    this.tm_deposit.intt_tfr_type_dscr = this.intTransferType.filter(x => x.tfr_type.toString() === tfr_type.toString())[0].tfr_desc;
+    this.tm_deposit.intt_tfr_type_dscr = this.intTransferType.filter(x => x.tfr_type.toString()
+      === tfr_type.toString())[0].tfr_desc;
   }
 
   setConstitutionType(val: number) {
 
     this.tm_deposit.constitution_cd = Number(val);
-    this.tm_deposit.constitution_desc = this.constitutionList.filter(x => x.constitution_cd.toString() === val.toString())[0].constitution_desc;
-    this.tm_deposit.acc_cd = this.constitutionList.filter(x => x.constitution_cd.toString() === val.toString())[0].acc_cd;
+    this.tm_deposit.constitution_desc = this.constitutionList.
+      filter(x => x.constitution_cd.toString() === val.toString())[0].constitution_desc;
+    this.tm_deposit.acc_cd = this.constitutionList.
+      filter(x => x.constitution_cd.toString() === val.toString())[0].acc_cd;
   }
 
   setOperationalInstr(val: number) {
@@ -1233,12 +1254,32 @@ export class AccOpeningComponent implements OnInit {
   }
 
 
+  // public suggestCustomer(): void {
+  //   this.suggestedCustomer = this.customerList
+  //     .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_deposit.cust_name.toLowerCase())
+  //       || c.cust_cd.toString().startsWith(this.tm_deposit.cust_name)
+  //       || (c.phone !== null && c.phone.startsWith(this.tm_deposit.cust_name)))
+  //     .slice(0, 20);
+  // }
+
   public suggestCustomer(): void {
-    this.suggestedCustomer = this.customerList
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_deposit.cust_name.toLowerCase())
-        || c.cust_cd.toString().startsWith(this.tm_deposit.cust_name)
-        || (c.phone !== null && c.phone.startsWith(this.tm_deposit.cust_name)))
-      .slice(0, 20);
+    if (this.tm_deposit.cust_name.length > 0) {
+      const prm = new p_gen_param();
+      // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.tm_deposit.cust_name.toLowerCase();
+      this.svc.addUpdDel<any>('Deposit/GetCustDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomer = res.slice(0, 10);
+          } else {
+            this.suggestedCustomer = [];
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomer = null;
+    }
   }
 
   public suggestCustomerSignatories(idx: number): void {
@@ -1281,14 +1322,16 @@ export class AccOpeningComponent implements OnInit {
     if (!temp_mm_cust) {
       this.td_accholderList[idx].cust_cd = null;
       this.td_accholderList[idx].acc_holder = null;
-      this.showAlertMsg('ERROR', 'Joint Holder Customer Not Found');
+      // this.showAlertMsg('ERROR', 'Joint Holder Customer Not Found');
+      this.HandleMessage(true, MessageType.Error, 'Joint Holder Customer Not Found');
       return;
     }
 
     if (temp_mm_cust.cust_cd === this.tm_deposit.cust_cd) {
       this.td_accholderList[idx].cust_cd = null;
       this.td_accholderList[idx].acc_holder = null;
-      this.showAlertMsg('ERROR', 'First Holder and Joint Holder can not be same');
+      // this.showAlertMsg('ERROR', 'First Holder and Joint Holder can not be same');
+      this.HandleMessage(true, MessageType.Error, 'First Holder and Joint Holder can not be same');
       return;
     }
 
@@ -1306,7 +1349,7 @@ export class AccOpeningComponent implements OnInit {
   populateCustDtls(cust_cd: number) {
 
     let temp_mm_cust = new mm_customer();
-    let temp_tm_deposit = new tm_deposit();
+    const temp_tm_deposit = new tm_deposit();
 
     temp_tm_deposit.cust_cd = cust_cd;
 
@@ -1350,7 +1393,7 @@ export class AccOpeningComponent implements OnInit {
         res => {
 
           this.isLoading = false;
-          let x = res;
+          const x = res;
           this.tm_deposit.user_acc_num = x.toString();
           // this.tm_deposit.user_acc_num = this.tm_deposit.user_acc_num.toString();
         },
@@ -1365,36 +1408,40 @@ export class AccOpeningComponent implements OnInit {
   }
 
   setCategoryDesc(category: number) {
-    this.tm_deposit.category_desc = this.categoryList.filter(x => x.catg_cd.toString() === category.toString())[0].catg_desc;
+    this.tm_deposit.category_desc = this.categoryList.filter(x => x.catg_cd.toString()
+      === category.toString())[0].catg_desc;
   }
 
   addSignatory() {
-    let temp_td_signatory = new td_signatory();
+    const temp_td_signatory = new td_signatory();
     this.td_signatoryList.push(temp_td_signatory);
   }
 
   removeSignatory() {
-    if (this.td_signatoryList.length > 1)
+    if (this.td_signatoryList.length > 1) {
       this.td_signatoryList.pop();
+    }
   }
 
   addJointHolder() {
-    let temp_td_accholder = new td_accholder();
+    const temp_td_accholder = new td_accholder();
     this.td_accholderList.push(temp_td_accholder);
   }
 
   removeJointHolder() {
-    if (this.td_accholderList.length > 1)
+    if (this.td_accholderList.length > 1) {
       this.td_accholderList.pop();
+    }
   }
 
   checkSignatory(name: string, idx: number) {
-    let x = this.td_accholderList.filter(c => c.acc_holder.toString() === name.toString())[0].cust_cd;
+    const x = this.td_accholderList.filter(c => c.acc_holder.toString() === name.toString())[0].cust_cd;
 
 
     if (!x) {
       this.td_signatoryList[idx].signatory_name = null;
-      this.showAlertMsg('ERROR', 'Signatory is not a Joint Holder');
+      // this.showAlertMsg('ERROR', 'Signatory is not a Joint Holder');
+      this.HandleMessage(true, MessageType.Error, 'Signatory is not a Joint Holder');
     }
   }
 
@@ -1402,7 +1449,7 @@ export class AccOpeningComponent implements OnInit {
 
 
   addIntroducer() {
-    let temp_td_introducer = new td_introducer();
+    const temp_td_introducer = new td_introducer();
     this.td_introducerlist.push(temp_td_introducer);
   }
 
@@ -1416,7 +1463,9 @@ export class AccOpeningComponent implements OnInit {
 
     if (intro_acc_typ_cd != null && intro_acc_typ_cd > 0) {
       this.td_introducerlist[idx].introducer_acc_type = Number(intro_acc_typ_cd);
-      this.td_introducerlist[idx].introducer_acc_type_desc = this.introducerAccTypeList.filter(x => x.introducer_acc_type_cd.toString() === intro_acc_typ_cd.toString())[0].introducer_acc_type_desc;
+      this.td_introducerlist[idx].introducer_acc_type_desc = this.introducerAccTypeList
+        .filter(x => x.introducer_acc_type_cd.toString() ===
+          intro_acc_typ_cd.toString())[0].introducer_acc_type_desc;
     }
   }
 
@@ -1425,13 +1474,14 @@ export class AccOpeningComponent implements OnInit {
 
 
     if (this.td_introducerlist[idx].introducer_acc_type === null || this.td_introducerlist[idx].introducer_acc_type === undefined) {
-      this.showAlertMsg('ERROR', 'Introducer Account Type can not be blank');
+      // this.showAlertMsg('ERROR', 'Introducer Account Type can not be blank');
+      this.HandleMessage(true, MessageType.Error, 'Introducer Account Type can not be blank');
       this.td_introducerlist[idx].introducer_acc_num = null;
       return;
     }
 
     let temp_deposit_list: tm_deposit[] = [];
-    let temp_deposit = new tm_deposit();
+    const temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.branchCode;
     temp_deposit.acc_num = this.td_introducerlist[idx].introducer_acc_num;
@@ -1449,7 +1499,8 @@ export class AccOpeningComponent implements OnInit {
           this.td_introducerlist[idx].introducer_acc_num = null;
           this.td_introducerlist[idx].introducer_name = null;
           this.td_introducerlist[idx].acc_type_cd = null;
-          this.showAlertMsg('ERROR', 'Introducer Not Found');
+          // this.showAlertMsg('ERROR', 'Introducer Not Found');
+          this.HandleMessage(true, MessageType.Error, 'Introducer Not Found');
           return;
         }
 
@@ -1466,29 +1517,32 @@ export class AccOpeningComponent implements OnInit {
 
 
   addNominee() {
-    let temp_td_nominee = new td_nominee();
+    const temp_td_nominee = new td_nominee();
     this.td_nomineeList.push(temp_td_nominee);
   }
 
   removeNominee() {
-    if (this.td_nomineeList.length > 1)
+    if (this.td_nomineeList.length > 1) {
       this.td_nomineeList.pop();
+    }
   }
 
   addDenomination() {
-    let temp_denomination = new tm_denomination_trans();
+    const temp_denomination = new tm_denomination_trans();
     this.tm_denominationList.push(temp_denomination);
   }
 
   removeDenomination() {
-    if (this.tm_denominationList.length > 1)
+    if (this.tm_denominationList.length > 1) {
       this.tm_denominationList.pop();
+    }
   }
 
   setDenomination(val: number, idx: number) {
 
     this.tm_denominationList[idx].rupees = Number(val);
-    this.tm_denominationList[idx].rupees_desc = this.denominationList.filter(x => x.value.toString() === val.toString())[0].rupees;
+    this.tm_denominationList[idx].rupees_desc = this.denominationList.filter(x => x.value.toString()
+      === val.toString())[0].rupees;
     this.calculateTotalDenomination(idx);
   }
 
@@ -1510,7 +1564,7 @@ export class AccOpeningComponent implements OnInit {
     this.tm_denominationList[idx].total = r * c;
 
     this.denominationGrandTotal = 0;
-    for (let l of this.tm_denominationList) {
+    for (const l of this.tm_denominationList) {
       this.denominationGrandTotal = this.denominationGrandTotal + l.total;
     }
   }
@@ -1521,12 +1575,13 @@ export class AccOpeningComponent implements OnInit {
 
     let tot = 0;
 
-    for (let l of this.td_nomineeList) {
+    for (const l of this.td_nomineeList) {
       tot = tot + Number(l.percentage);
     }
 
     if (tot > 100) {
-      this.showAlertMsg('ERROR', 'Nominee Total Percentage exceeding 100');
+      // this.showAlertMsg('ERROR', 'Nominee Total Percentage exceeding 100');
+      this.HandleMessage(true, MessageType.Error, 'Nominee Total Percentage exceeding 100');
       this.td_nomineeList[idx].percentage = 0;
     }
 
@@ -1539,7 +1594,9 @@ export class AccOpeningComponent implements OnInit {
   checkAndSetDebitAccType(tfrType: string, accType: string) {
 
     if (tfrType === 'cust_acc') {
-      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
+      if (this.td_deftranstrfList[0].cust_acc_type === undefined ||
+        this.td_deftranstrfList[0].cust_acc_type === null ||
+        this.td_deftranstrfList[0].cust_acc_type === '') {
         this.td_deftranstrfList[0].cust_name = null;
         this.td_deftranstrfList[0].clr_bal = null;
         this.td_deftranstrfList[0].cust_acc_desc = null;
@@ -1547,13 +1604,16 @@ export class AccOpeningComponent implements OnInit {
         return;
       }
 
-      if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === '') {
+      if (this.td_deftranstrfList[0].gl_acc_code === undefined ||
+        this.td_deftranstrfList[0].gl_acc_code === null ||
+        this.td_deftranstrfList[0].gl_acc_code === '') {
         let temp_acc_type = new mm_acc_type();
         temp_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0];
 
         if (temp_acc_type === undefined || temp_acc_type === null) {
           this.td_deftranstrfList[0].cust_acc_type = null;
-          this.showAlertMsg('WARNING', 'Invalid Account Type');
+          // this.showAlertMsg('WARNING', 'Invalid Account Type');
+          this.HandleMessage(true, MessageType.Warning, 'Invalid Account Type');
           return;
         }
         else {
@@ -1561,39 +1621,46 @@ export class AccOpeningComponent implements OnInit {
         }
       }
       else {
-        this.showAlertMsg('WARNING', 'GL Code and Account Type can not have value simultaneously');
+        // this.showAlertMsg('WARNING', 'GL Code and Account Type can not have value simultaneously');
+        this.HandleMessage(true, MessageType.Warning, 'GL Code and Account Type can not have value simultaneously');
         this.td_deftranstrfList[0].cust_acc_type = null;
         return;
       }
     }
 
     if (tfrType === 'gl_acc') {
-      if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === '') {
+      if (this.td_deftranstrfList[0].gl_acc_code === undefined ||
+        this.td_deftranstrfList[0].gl_acc_code === null ||
+        this.td_deftranstrfList[0].gl_acc_code === '') {
         this.td_deftranstrfList[0].gl_acc_desc = null;
         return;
       }
 
       if (this.td_deftranstrfList[0].gl_acc_code === this.cashAccCd.toString()) {
-        this.showAlertMsg('WARNING', 'GL Code can not be Cash Account Code');
+        // this.showAlertMsg('WARNING', 'GL Code can not be Cash Account Code');
+        this.HandleMessage(true, MessageType.Warning, 'GL Code can not be Cash Account Code');
         return;
       }
 
 
       this.td_deftranstrfList[0].acc_cd = Number(this.td_deftranstrfList[0].gl_acc_code);
 
-      if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
+      if (this.td_deftranstrfList[0].cust_acc_type === undefined ||
+        this.td_deftranstrfList[0].cust_acc_type === null ||
+        this.td_deftranstrfList[0].cust_acc_type === '') {
         if (this.acc_master === undefined || this.acc_master === null || this.acc_master.length === 0) {
           this.isLoading = true;
           let temp_acc_master = new m_acc_master();
           this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
             res => {
-              ;
+
               this.acc_master = res;
               this.isLoading = false;
               temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
               if (temp_acc_master === undefined || temp_acc_master === null) {
                 this.td_deftranstrfList[0].gl_acc_desc = null;
-                this.showAlertMsg('WARNING', 'Invalid GL Code');
+                // this.showAlertMsg('WARNING', 'Invalid GL Code');
+                this.HandleMessage(true, MessageType.Warning, 'Invalid GL Code');
                 return;
               }
               else {
@@ -1601,7 +1668,7 @@ export class AccOpeningComponent implements OnInit {
               }
             },
             err => {
-              ;
+
               this.isLoading = false;
             }
           );
@@ -1611,7 +1678,8 @@ export class AccOpeningComponent implements OnInit {
           temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === this.td_deftranstrfList[0].gl_acc_code)[0];
           if (temp_acc_master === undefined || temp_acc_master === null) {
             this.td_deftranstrfList[0].gl_acc_desc = null;
-            this.showAlertMsg('WARNING', 'GL Code and Account Type can not have value simultaneously');
+            // this.showAlertMsg('WARNING', 'GL Code and Account Type can not have value simultaneously');
+            this.HandleMessage(true, MessageType.Warning, 'GL Code and Account Type can not have value simultaneously');
             return;
           }
           else {
@@ -1620,7 +1688,8 @@ export class AccOpeningComponent implements OnInit {
         }
       }
       else {
-        this.showAlertMsg('WARNING', 'Account Type in Transfer Details is not blank');
+        // this.showAlertMsg('WARNING', 'Account Type in Transfer Details is not blank');
+        this.HandleMessage(true, MessageType.Warning, 'Account Type in Transfer Details is not blank');
         this.td_deftranstrfList[0].gl_acc_code = null;
         return;
       }
@@ -1629,13 +1698,18 @@ export class AccOpeningComponent implements OnInit {
 
   setDebitAccDtls(acc_num: string) {
 
-    if (this.td_deftranstrfList[0].cust_acc_type === undefined || this.td_deftranstrfList[0].cust_acc_type === null || this.td_deftranstrfList[0].cust_acc_type === '') {
-      this.showAlertMsg('WARNING', 'Account Type in Transfer Details can not be blank');
+    if (this.td_deftranstrfList[0].cust_acc_type === undefined ||
+      this.td_deftranstrfList[0].cust_acc_type === null ||
+      this.td_deftranstrfList[0].cust_acc_type === '') {
+      // this.showAlertMsg('WARNING', 'Account Type in Transfer Details can not be blank');
+      this.HandleMessage(true, MessageType.Warning, 'Account Type in Transfer Details can not be blank');
       this.td_deftranstrfList[0].cust_acc_number = null;
       exit(0);
     }
 
-    if (this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === '') {
+    if (this.td_deftranstrfList[0].cust_acc_number === undefined ||
+      this.td_deftranstrfList[0].cust_acc_number === null ||
+      this.td_deftranstrfList[0].cust_acc_number === '') {
       this.td_deftranstrfList[0].cust_name = null;
       this.td_deftranstrfList[0].clr_bal = null;
       exit(0);
@@ -1643,7 +1717,7 @@ export class AccOpeningComponent implements OnInit {
 
 
     let temp_deposit_list: tm_deposit[] = [];
-    let temp_deposit = new tm_deposit();
+    const temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.branchCode;
     temp_deposit.acc_num = this.td_deftranstrfList[0].cust_acc_number;
@@ -1657,7 +1731,8 @@ export class AccOpeningComponent implements OnInit {
         this.isLoading = false;
 
         if (temp_deposit_list.length === 0) {
-          this.showAlertMsg('WARNING', 'Invalid Account Number in Transfer Details');
+          // this.showAlertMsg('WARNING', '');
+          this.HandleMessage(true, MessageType.Warning, 'Invalid Account Number in Transfer Details');
           this.td_deftranstrfList[0].cust_acc_number = null;
           exit(0);
         }
@@ -1667,7 +1742,8 @@ export class AccOpeningComponent implements OnInit {
         this.td_deftranstrfList[0].cust_name = temp_mm_cust.cust_name;
 
         this.td_deftranstrfList[0].clr_bal = temp_deposit_list[0].clr_bal;
-        this.td_deftranstrfList[0].acc_cd = this.constitutionList.filter(x => x.acc_type_cd.toString() === temp_deposit.acc_type_cd.toString()
+        this.td_deftranstrfList[0].acc_cd = this.constitutionList.filter(x => x.acc_type_cd.toString() ===
+          temp_deposit.acc_type_cd.toString()
           && x.constitution_cd.toString() === temp_deposit_list[0].constitution_cd.toString())[0].acc_cd;
 
       },
@@ -1685,28 +1761,36 @@ export class AccOpeningComponent implements OnInit {
       exit(0);
     }
 
-    if ((this.td_deftranstrfList[0].cust_acc_number === undefined || this.td_deftranstrfList[0].cust_acc_number === null || this.td_deftranstrfList[0].cust_acc_number === '')
-      && (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === '')) {
-      this.showAlertMsg('WARNING', 'Please enter Account Number or GL Code');
+    if ((this.td_deftranstrfList[0].cust_acc_number === undefined
+      || this.td_deftranstrfList[0].cust_acc_number === null ||
+      this.td_deftranstrfList[0].cust_acc_number === '')
+      && (this.td_deftranstrfList[0].gl_acc_code === undefined ||
+        this.td_deftranstrfList[0].gl_acc_code === null ||
+        this.td_deftranstrfList[0].gl_acc_code === '')) {
+      // this.showAlertMsg('WARNING', 'Please enter Account Number or GL Code');
+      this.HandleMessage(true, MessageType.Warning, 'Please enter Account Number or GL Code');
       this.td_deftranstrfList[0].amount = null;
       exit(0);
     }
 
     if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null) {
-      this.showAlertMsg('WARNING', 'Principal Amount is blank');
+      // this.showAlertMsg('WARNING', 'Principal Amount is blank');
+      this.HandleMessage(true, MessageType.Warning, 'Principal Amount is blank');
       // this.td_deftranstrfList[0].amount = null;
       exit(0);
     }
 
     if (this.tm_deposit.acc_type_cd === 6) {
       if (this.tm_deposit.instl_amt.toString() !== amount.toString()) {
-        this.showAlertMsg('WARNING', 'Debit Amount is not matching with Installment Amount');
+        // this.showAlertMsg('WARNING', 'Debit Amount is not matching with Installment Amount');
+        this.HandleMessage(true, MessageType.Warning, 'Debit Amount is not matching with Installment Amount');
         exit(0);
       }
     }
     else {
       if (this.tm_deposit.prn_amt.toString() !== amount.toString()) {
-        this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
+        // this.showAlertMsg('WARNING', 'Debit Amount is not matching with Principal Amount');
+        this.HandleMessage(true, MessageType.Warning, 'Debit Amount is not matching with Principal Amount');
         exit(0);
       }
     }
@@ -1715,9 +1799,12 @@ export class AccOpeningComponent implements OnInit {
       this.td_deftranstrfList[0].clr_bal = 0;
     }
 
-    if (this.td_deftranstrfList[0].gl_acc_code === undefined || this.td_deftranstrfList[0].gl_acc_code === null || this.td_deftranstrfList[0].gl_acc_code === '') {
+    if (this.td_deftranstrfList[0].gl_acc_code === undefined ||
+      this.td_deftranstrfList[0].gl_acc_code === null ||
+      this.td_deftranstrfList[0].gl_acc_code === '') {
       if (parseInt(this.td_deftranstrfList[0].clr_bal.toString()) < parseInt(amount.toString())) {
-        this.showAlertMsg('WARNING', 'Insufficient Balance');
+        // this.showAlertMsg('WARNING', 'Insufficient Balance');
+        this.HandleMessage(true, MessageType.Warning, 'Insufficient Balance');
         this.td_deftranstrfList[0].amount = null;
         exit(0);
       }
@@ -1739,8 +1826,8 @@ export class AccOpeningComponent implements OnInit {
     if (constitutionText == null) {
       return null;
     }
-    let arr = constitutionText.split(';');
-    let arrToReturn = [];
+    const arr = constitutionText.split(';');
+    const arrToReturn = [];
     arr.forEach(element => {
       arrToReturn.push(element.split('=').pop());
     });
@@ -1751,12 +1838,13 @@ export class AccOpeningComponent implements OnInit {
 
   processInstallmentNo() {
 
-    let temp_gen_param1 = new p_gen_param();
-    let temp_gen_param2 = new p_gen_param();
+    const temp_gen_param1 = new p_gen_param();
+    const temp_gen_param2 = new p_gen_param();
 
 
     if (this.tm_deposit.category_cd === undefined || this.tm_deposit.category_cd === null) {
-      this.showAlertMsg('ERROR', 'Interest Rate Cannot Be Fixed!!!...Category Not Yet Mentioned.');
+      // this.showAlertMsg('ERROR', 'Interest Rate Cannot Be Fixed!!!...Category Not Yet Mentioned.');
+      this.HandleMessage(true, MessageType.Error, 'Interest Rate Cannot Be Fixed!!!...Category Not Yet Mentioned.');
       return;
     }
 
@@ -1792,8 +1880,11 @@ export class AccOpeningComponent implements OnInit {
 
 
     // tslint:disable-next-line: max-line-length
-    //temp_gen_param2.ai_period = Math.floor(Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()) ) / (1000 * 60 * 60 * 24));
-    temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
+    // temp_gen_param2.ai_period = Math.floor(Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()) ) / (1000 * 60 * 60 * 24));
+    temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(),
+      this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) -
+      (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(),
+        this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
 
 
 
@@ -1819,7 +1910,7 @@ export class AccOpeningComponent implements OnInit {
 
   processInstallmentAmount() {
 
-    let temp_gen_param = new p_gen_param();
+    const temp_gen_param = new p_gen_param();
 
     this.tm_deposit.prn_amt = Number(this.tm_deposit.instl_no) * Number(this.tm_deposit.instl_amt);
 
@@ -1876,7 +1967,8 @@ export class AccOpeningComponent implements OnInit {
 
       if (this.tm_deposit.year === 0 && this.tm_deposit.month === 0 && this.tm_deposit.day === 0) {
         this.tm_deposit.prn_amt = 0;
-        this.showAlertMsg('Warning', 'Please enter Deposit period');
+        // this.showAlertMsg('Warning', 'Please enter Deposit period');
+        this.HandleMessage(true, MessageType.Error, 'Please enter Deposit period');
         return;
       }
 
@@ -1884,27 +1976,31 @@ export class AccOpeningComponent implements OnInit {
         this.tm_deposit.acc_type_cd === null ||
         this.tm_deposit.acc_type_cd < 0) {
         this.tm_deposit.prn_amt = 0;
-        this.showAlertMsg('Warning', 'Account Type can not be blank');
+        // this.showAlertMsg('Warning', 'Account Type can not be blank');
+        this.HandleMessage(true, MessageType.Error, 'Account Type can not be blank');
         return;
       }
 
       if (this.tm_deposit.intt_trf_type === undefined ||
         this.tm_deposit.intt_trf_type === null) {
         this.tm_deposit.prn_amt = 0;
-        this.showAlertMsg('Warning', 'Interest Transfer Type can not be blank');
+        // this.showAlertMsg('Warning', 'Interest Transfer Type can not be blank');
+        this.HandleMessage(true, MessageType.Error, 'Interest Transfer Type can not be blank');
         return;
       }
 
       if (this.tm_deposit.intt_rt === undefined || this.tm_deposit.intt_rt === null || this.tm_deposit.intt_rt <= 0) {
         this.tm_deposit.prn_amt = 0;
-        this.showAlertMsg('Warning', 'Please set the Interest Rate..');
+        // this.showAlertMsg('Warning', 'Please set the Interest Rate..');
+        this.HandleMessage(true, MessageType.Error, 'Please set the Interest Rate..');
         return;
       }
 
       if (this.tm_deposit.prn_amt === undefined || this.tm_deposit.prn_amt === null || this.tm_deposit.prn_amt <= 0) {
         this.tm_deposit.prn_amt = 0;
         this.tm_deposit.intt_amt = 0;
-        this.showAlertMsg('Warning', 'Please set the Principal..');
+        // this.showAlertMsg('Warning', 'Please set the Principal..');
+        this.HandleMessage(true, MessageType.Error, 'Please set the Principal..');
         return;
       }
 
@@ -1916,7 +2012,7 @@ export class AccOpeningComponent implements OnInit {
       // this.tm_deposit.mat_dt.setDate(this.tm_deposit.mat_dt.getDate() + this.tm_deposit.day);
 
 
-      let temp_gen_param = new p_gen_param();
+      const temp_gen_param = new p_gen_param();
       temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
       temp_gen_param.ad_prn_amt = this.tm_deposit.prn_amt;
       temp_gen_param.adt_temp_dt = this.tm_deposit.opening_dt;
@@ -1931,7 +2027,10 @@ export class AccOpeningComponent implements OnInit {
         this.tm_deposit.mat_dt = Utils.convertStringToDt(this.tm_deposit.mat_dt);
       }
 
-      temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
+      temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(),
+        this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) -
+        (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(),
+          this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
       temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
 
@@ -1971,7 +2070,7 @@ export class AccOpeningComponent implements OnInit {
   }
 
   processInterest() {
-    let temp_gen_param = new p_gen_param();
+    const temp_gen_param = new p_gen_param();
 
     temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
 
@@ -2032,7 +2131,7 @@ export class AccOpeningComponent implements OnInit {
   }
 
   processYearMonthDay() {
-    let temp_gen_param = new p_gen_param();
+    const temp_gen_param = new p_gen_param();
 
 
     this.tm_deposit.mat_dt = this.sys.CurrentDate;
@@ -2083,18 +2182,24 @@ export class AccOpeningComponent implements OnInit {
       this.tm_deposit.mat_dt = Utils.convertStringToDt(this.tm_deposit.mat_dt);
     }
 
-    temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
+    temp_gen_param.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(),
+      this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) -
+      (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(),
+        this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24));
     temp_gen_param.ad_intt_rt = this.tm_deposit.intt_rt;
 
     this.f_calctdintt_reg(temp_gen_param);
   }
 
   calculateInterestRate() {
-    let temp_gen_param2 = new p_gen_param();
+    const temp_gen_param2 = new p_gen_param();
     temp_gen_param2.acc_cd = this.tm_deposit.acc_type_cd;
     temp_gen_param2.from_dt = this.sys.CurrentDate;
     temp_gen_param2.ls_catg_cd = this.tm_deposit.category_cd;
-    temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(), this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) - (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(), this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24)) - 1;
+    temp_gen_param2.ai_period = Math.floor((Date.UTC(this.tm_deposit.mat_dt.getFullYear(),
+      this.tm_deposit.mat_dt.getMonth(), this.tm_deposit.mat_dt.getDate()) -
+      (Date.UTC(this.tm_deposit.opening_dt.getFullYear(), this.tm_deposit.opening_dt.getMonth(),
+        this.tm_deposit.opening_dt.getDate()))) / (1000 * 60 * 60 * 24)) - 1;
     this.svc.addUpdDel<any>('Deposit/GET_INT_RATE', temp_gen_param2).subscribe(
       res => {
         debugger;
@@ -2114,10 +2219,11 @@ export class AccOpeningComponent implements OnInit {
   deleteData() {
 
     let n = 1;
-    let temp_def_trans_trf = new td_def_trans_trf();
+    const temp_def_trans_trf = new td_def_trans_trf();
 
     if (this.operationType !== 'Q') {
-      this.showAlertMsg('WARNING', 'Record not retrived to delete');
+      // this.showAlertMsg('WARNING', 'Record not retrived to delete');
+      this.HandleMessage(true, MessageType.Warning, 'Record not retrived to delete');
       return;
     }
 
@@ -2139,18 +2245,47 @@ export class AccOpeningComponent implements OnInit {
           this.clearData();
           this.operationType = '';
           this.operationType = 'Q';
-          this.showAlertMsg('INFORMATION', 'Account opening data deleted successfully');
+          // this.showAlertMsg('INFORMATION', 'Account opening data deleted successfully');
+          this.HandleMessage(true, MessageType.Sucess, 'Account opening data deleted successfully');
         }
         if (n === -1) {
-          this.showAlertMsg('WARNING', 'Account opening data NOT deleted');
+          // this.showAlertMsg('WARNING', 'Account opening data NOT deleted');
+          this.HandleMessage(true, MessageType.Warning, 'Account opening data NOT deleted');
         }
 
       },
       err => {
         this.isLoading = false;
-        this.showAlertMsg('WARNING', 'Account opening data NOT deleted');
+        // this.showAlertMsg('WARNING', 'Account opening data NOT deleted');
+        this.HandleMessage(true, MessageType.Warning, 'Account opening data NOT deleted');
       }
     );
   }
+  // public showAlertMsg(msgTyp: string, msg: string) {
+  //   this.alertMsgType = msgTyp;
+  //   this.alertMsg = msg;
+  //   this.showAlert = true;
+  //   this.disableAll = true;
+  //   this.disableAccountTypeAndNo = true;
+  // }
 
+  public closeAlertMsg() {
+    this.HandleMessage(false);
+
+    if (this.operationType === 'I' || this.operationType === 'U') {
+      this.disableAll = false;
+      this.disableAccountTypeAndNo = false;
+    }
+  }
+  private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
+    this.showMsg = new ShowMessage();
+    this.showMsg.Show = show;
+    this.showMsg.Type = type;
+    this.showMsg.Message = message;
+    this.disableAll = true; this.disableAccountTypeAndNo = true;
+    // On below for dissapearing message
+    // setTimeout(() => {
+    //   this.showMsg = new ShowMessage();
+    // }, 3000);
+  }
 }

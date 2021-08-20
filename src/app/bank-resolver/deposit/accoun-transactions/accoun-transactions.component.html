@@ -26,7 +26,7 @@
     <div class="row justify-content-center">
       <form [formGroup]="accTransFrm" class="col-12">
         <div class="form-row">
-          <div class="form-group col-2 offset-2">
+          <div class="form-group col-2 offset-1">
             <small for="acc_type_cd">Account Type</small>
             <select id="acc_type_cd" class="form-control form-control-sm" formControlName="acc_type_cd"
               (change)="onAcctTypeChange()">
@@ -36,20 +36,19 @@
               </option>
             </select>
           </div>
-          <div class="form-group col-3">
-            <small for="acct_num">Account Number
-              <small style="display: inline;" class="form-text text-muted">
+          <div class="form-group col-6">
+            <small for="acct_num">Search by Acc# / Customer Name / Phone number
+              <!-- <small style="display: inline;" class="form-text text-muted">
                 Press tab.
-              </small>
+              </small> -->
             </small>
             <!-- <input type="number" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
               formControlName="acct_num" id="acct_num" placeholder="Account Number"
               (keydown.Tab)="onAccountNumTabOff()"
               name="x-field-1" autocomplete="new-field-1"> -->
               <input type="text" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
-              formControlName="acct_num" id="acct_num" placeholder="Account Number"
-              (input)="suggestCustomer()"
-              name="x-field-1" autocomplete="new-field-1">
+              formControlName="acct_num" id="acct_num" placeholder="Enter Acc# / Customer Name / Phone number"
+              (input)="suggestCustomer()" name="x-field-1" autocomplete="new-field-1">
               <div class="suggestions" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
                 <table class="table table-hover table-bordered table-sm w-auto small">
                   <thead>
@@ -203,6 +202,9 @@
           (click)="openModal(misInstalmentContent)">Show Installaments
           </button>
         </form>
+        <button type="button" class="btn btn-link" *ngIf="preTransactionDtlForSelectedAcc.length > 0"
+          (click)="openModal(PreContent)">Previous Transaction
+        </button>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
         <form [formGroup]="tdDefTransFrm" *ngIf="showTransactionDtl">
@@ -370,9 +372,6 @@
               </textarea>
             </div>
           </div>
-          <button type="button" class="btn btn-link" *ngIf="preTransactionDtlForSelectedAcc.length > 0"
-            (click)="openModal(PreContent)">Previous Transaction
-          </button>
         </form>
         <div class="row" *ngIf="td.trf_type.value !== ''">
           <div class="col-12 col-sm-6 col-md-12 mt-2">
