@@ -20,16 +20,18 @@ export class LoginComponent implements OnInit {
   isError = false;
   brnDtls: m_branch[] = [];
   systemParam: sm_parameter[] = [];
-  //genparam=new p_gen_param();
+  // genparam=new p_gen_param();
   isLoading = false;
   showAlert = false;
   alertMsg = '';
   ipAddress: any;
+  showUnlockUsr = false;
+  usrToUnlock: any;
   constructor(private router: Router,
-    private formBuilder: FormBuilder,
-    private rstSvc: RestService,
-    private msg: InAppMessageService,
-    private http: HttpClient) { }
+              private formBuilder: FormBuilder,
+              private rstSvc: RestService,
+              private msg: InAppMessageService,
+              private http: HttpClient) { }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
@@ -56,6 +58,7 @@ export class LoginComponent implements OnInit {
   get f() { return this.loginForm.controls; }
 
   onSubmit(): void {
+    this.showUnlockUsr = false;
     // this.submitted = true;
     if (this.loginForm.invalid) {
       return;
@@ -64,8 +67,8 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     const __bName = localStorage.getItem('__bName');
     // this.router.navigate([__bName + '/la']); // TODO remove this it will be after login
-    let login = new LOGIN_MASTER();
-    let toreturn = false;
+    const login = new LOGIN_MASTER();
+    const toreturn = false;
     login.user_id = this.f.username.value;
     login.password = this.f.password.value;
     login.brn_cd = this.f.branch.value;
@@ -80,6 +83,8 @@ export class LoginComponent implements OnInit {
           if (res[0].login_status === 'Y') {
             this.showAlert = true;
             this.alertMsg = 'User id already logged in another machine;';
+            this.showUnlockUsr = true;
+            this.usrToUnlock = res[0];
             return;
           }
           // console.log('Login Sucess');
@@ -93,11 +98,23 @@ export class LoginComponent implements OnInit {
         this.showAlert = true;
         this.alertMsg = 'Invalid Credential !!!!!';
       }
-    )
+    );
   }
 
   closeAlert() {
     this.showAlert = false;
+  }
+
+  public unlockUsr(): void {
+    this.isLoading = true;
+    this.usrToUnlock.login_status = 'N';
+    this.rstSvc.addUpdDel('Mst/Updateuserstatus', this.usrToUnlock).subscribe(
+      res => {
+        this.isLoading = false;
+        this.onSubmit();
+      },
+      err => { }
+    );
   }
 
   private updateUsrStatus(usr: any): void {
@@ -117,9 +134,9 @@ export class LoginComponent implements OnInit {
           this.systemParam = sysRes;
           console.log('ParameterList Sucess');
           localStorage.setItem('__brnCd', this.f.branch.value); // "101"
-          localStorage.setItem('__brnName', this.brnDtls.find(x => x.brn_cd === this.f.branch.value).brn_name);//"101"
-          localStorage.setItem('__currentDate', this.systemParam.find(x => x.param_cd === '206').param_value);//Day initilaze
-          localStorage.setItem('__cashaccountCD', this.systemParam.find(x => x.param_cd === '213').param_value);//28101
+          localStorage.setItem('__brnName', this.brnDtls.find(x => x.brn_cd === this.f.branch.value).brn_name); // "101"
+          localStorage.setItem('__currentDate', this.systemParam.find(x => x.param_cd === '206').param_value); // Day initilaze
+          localStorage.setItem('__cashaccountCD', this.systemParam.find(x => x.param_cd === '213').param_value); // 28101
           localStorage.setItem('__ddsPeriod', this.systemParam.find(x => x.param_cd === '220').param_value); // 12
           localStorage.setItem('__userId', this.f.username.value); // feather
           localStorage.setItem('__minBalWdChq', this.systemParam.find(x => x.param_cd === '301').param_value);
@@ -162,8 +179,8 @@ export class LoginComponent implements OnInit {
       res => {
         this.loginForm.disable();
         debugger;
-        this.http.get<{ ip: string }>('https://jsonip.com')
-          .subscribe(data => {
+        this.http.get<{ ip: string }>('https://jsonip.com').subscribe(
+          data => {
             debugger;
             // console.log('th data', data);
             this.ipAddress = data;
@@ -175,15 +192,20 @@ export class LoginComponent implements OnInit {
             });
             if (!ipMatched) {
               this.showAlert = true;
-              this.alertMsg = 'Can not access, contact support.';
+              this.alertMsg = 'IP not allowed to access, contact support.';
               this.loginForm.disable();
               return;
             } else {
               this.loginForm.enable();
             }
-          });
+          },
+          ipErr => {
+            this.isLoading = false;
+            this.alertMsg = 'Unable to get IP, contact support.';
+          }
+        );
       },
       err => { this.isLoading = false; }
-    )
+    );
   }
 }
