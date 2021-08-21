@@ -409,19 +409,6 @@ export class LoanTransactionApprovalComponent implements OnInit {
   }
 
   public onApproveClick(): void {
-    debugger;
-    // if (this.selectedVm.td_def_trans_trf.trans_type.toLocaleLowerCase() === 'W') {
-    //   if (this.selectedVm.tm_deposit.acc_type_cd === 1 ||
-    //     this.selectedVm.tm_deposit.acc_type_cd === 7) {
-    //     if ((this.selectedVm.tm_deposit.clr_bal - this.selectedVm.td_def_trans_trf.amount) < 0) {
-    //       this.HandleMessage(true, MessageType.Warning, 'Balance Will Be Negative....So Operation Rejected.' +
-    //         'You First Approve The Deposit Vouchers Then Approve This Voucher.');
-    //       return;
-    //     }
-    //   }
-    // }
-
-    ;
     this.isLoading = true;
     const param = new p_loan_param();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
@@ -437,60 +424,21 @@ export class LoanTransactionApprovalComponent implements OnInit {
     // param.gs_user_type = this.sys.u;
     param.gs_user_id = this.sys.UserId;
     param.commit_roll_flag = 1;
+    if (this.selectedVm.td_def_trans_trf.trans_type === 'R') {
+      this.svc.addUpdDel<any>('Loan/CalculateLoanInterest', param).subscribe(
+        loanRes => {
+          this.isLoading = false;
+          this.approveLoanAccTransaction();
+        },
+        loanErr => {
+          this.isLoading = false;
+          this.HandleMessage(true, MessageType.Error, loanErr.error.text);
+        }
+      );
+    } else {
+      this.approveLoanAccTransaction();
+    }
 
-    this.svc.addUpdDel<any>('Loan/CalculateLoanInterest', param).subscribe(
-      loanRes => {
-        this.isLoading = false;
-        // if (res === 0) {
-        //   this.selectedVm.td_def_trans_trf.approval_status = 'A';
-        //   this.HandleMessage(true, MessageType.Sucess, this.selectedVm.tm_deposit.acc_num
-        //     + '\'s Transaction with Transancation Cd ' + this.selectedVm.td_def_trans_trf.trans_cd
-        //     + ' is approved.');
-        //   setTimeout(() => {
-        //     this.onClickRefreshList();
-        //   }, 3000);
-        // } else {
-        //   this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
-        // }
-
-        // ON SUCCESS
-        this.isLoading = true;
-        const trnParam = new p_gen_param();
-        trnParam.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
-        trnParam.ad_trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
-        // const dt = this.sys.CurrentDate;
-        trnParam.adt_trans_dt = this.sys.CurrentDate;
-        // trnParam.ad_acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
-        // trnParam.as_acc_num = this.selectedVm.td_def_trans_trf.acc_num;
-        trnParam.flag = this.selectedVm.td_def_trans_trf.trans_type === 'R' ? 'D' : 'W';
-        trnParam.gs_user_id = this.sys.UserId;
-        this.svc.addUpdDel<any>('Loan/ApproveLoanAccountTranaction', trnParam).subscribe(
-          res => {
-            this.isLoading = false;
-            if (res === 0) {
-              this.selectedVm.td_def_trans_trf.approval_status = 'A';
-              this.HandleMessage(true, MessageType.Sucess,
-                `Transaction with Transancation Cd ${this.selectedVm.td_def_trans_trf.trans_cd} is approved.`);
-              setTimeout(() => {
-                this.onClickRefreshList();
-              }, 3000);
-            } else {
-              this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
-            }
-          },
-          err => {
-            this.isLoading = false;
-            this.HandleMessage(true, MessageType.Error, err.error.text);
-          }
-        );
-
-
-      },
-      loanErr => {
-        this.isLoading = false;
-        this.HandleMessage(true, MessageType.Error, loanErr.error.text);
-      }
-    );
 
     // this.svc.addUpdDel<any>('Deposit/ApproveAccountTranaction', param).subscribe(
     //   res => {
@@ -513,6 +461,41 @@ export class LoanTransactionApprovalComponent implements OnInit {
     //   }
     // );
 
+  }
+
+  private approveLoanAccTransaction(): void {
+    this.isLoading = true;
+    const trnParam = new p_gen_param();
+    trnParam.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
+    trnParam.ad_trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
+    // const dt = this.sys.CurrentDate;
+    trnParam.adt_trans_dt = this.sys.CurrentDate;
+    // trnParam.ad_acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;
+    // trnParam.as_acc_num = this.selectedVm.td_def_trans_trf.acc_num;
+    trnParam.flag = this.selectedVm.td_def_trans_trf.trans_type === 'R' ? 'D' : 'W';
+    trnParam.gs_user_id = this.sys.UserId;
+    this.svc.addUpdDel<any>('Loan/ApproveLoanAccountTranaction', trnParam).subscribe(
+      res => {
+        this.isLoading = false;
+        if (res === 0) {
+          this.selectedVm.td_def_trans_trf.approval_status = 'A';
+          this.HandleMessage(true, MessageType.Sucess,
+            `Transaction with Transancation Cd ${this.selectedVm.td_def_trans_trf.trans_cd} is approved.`);
+          setTimeout(() => {
+            this.onClickRefreshList();
+            this.transactionDtlsFrm.reset();
+            this.showDenominationDtl = false;
+            if (this.tranferDetails.length > 0) { this.tranferDetails = null; }
+          }, 3000);
+        } else {
+          this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
+        }
+      },
+      err => {
+        this.isLoading = false;
+        this.HandleMessage(true, MessageType.Error, err.error.text);
+      }
+    );
   }
 
   public onChangeAcctType(acctTypeCd: number): void {

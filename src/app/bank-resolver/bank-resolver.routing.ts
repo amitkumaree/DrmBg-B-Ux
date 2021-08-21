@@ -35,6 +35,16 @@ import { LoanTransactionApprovalComponent } from './loan/transaction/loan-transa
 import { LoanaccountTransactionComponent } from './loan/transaction/loanaccount-transaction/loanaccount-transaction.component';
 import { LoanAccwiseinttcalcComponent } from './loan/transaction/loan-accwiseinttcalc/loan-accwiseinttcalc.component';
 import { LienAccLockUnlockComponent } from './deposit/acc-lock-unlock/lien-acc-lock-unlock/lien-acc-lock-unlock.component';
+import { NetworthStatementComponent } from './UCIC/Report/networth-statement/networth-statement.component';
+import { SubCashBookComponent } from './deposit/report/sub-cash-book/sub-cash-book.component';
+import { AccStmtRDComponent } from './deposit/report/acc-stmt-rd/acc-stmt-rd.component';
+import { AccStmtSBCAComponent } from './deposit/report/acc-stmt-sbca/acc-stmt-sbca.component';
+import { AccStmtTDComponent } from './deposit/report/acc-stmt-td/acc-stmt-td.component';
+import { DetailListFDMISComponent } from './deposit/report/detail-list-fdmis/detail-list-fdmis.component';
+import { DetailListRDComponent } from './deposit/report/detail-list-rd/detail-list-rd.component';
+import { DetailListSBCAComponent } from './deposit/report/detail-list-sbca/detail-list-sbca.component';
+import { NearMaturityReportComponent } from './deposit/report/near-maturity-report/near-maturity-report.component';
+import { OpenClosingRegisterComponent } from './deposit/report/open-closing-register/open-closing-register.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -83,6 +93,16 @@ const routes: Routes = [
       { path: 'LT_CalcIntt', component: LoanAccwiseinttcalcComponent, canActivate: [ AuthGuard ]},
       { path: 'LT_LoanAprv', component: LoanTransactionApprovalComponent, canActivate: [ AuthGuard ]},
       { path: 'DT_AccLockUnlock', component: LienAccLockUnlockComponent, canActivate: [ AuthGuard ]},
+      { path: 'UR_Networth', component: NetworthStatementComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_SubCashBook', component: SubCashBookComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_DLS', component: DetailListSBCAComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_DLR', component: DetailListRDComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_DLF', component: DetailListFDMISComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_ASS', component: AccStmtSBCAComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_ASR', component: AccStmtRDComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_ASF', component: AccStmtTDComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_NearMatReport', component: NearMaturityReportComponent, canActivate: [ AuthGuard ]},
+      { path: 'DR_OpenCloseReg', component: OpenClosingRegisterComponent, canActivate: [ AuthGuard ]},
 
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
