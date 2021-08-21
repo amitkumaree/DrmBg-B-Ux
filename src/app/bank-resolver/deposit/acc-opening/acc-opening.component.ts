@@ -201,14 +201,12 @@ export class AccOpeningComponent implements OnInit {
     this.suggestedCustomerSignatories = null;
     this.suggestedCustomerJointHolder = null;
 
-    this.getCustomerList();
+    // this.isLoading = true;
+    // this.getCustomerList();
     this.getCategoryList();
-
-    this.isLoading = true;
 
     this.initializeMasterDataAndFlags();
     this.initializeModels();
-
 
     this.getDenominationList();
     this.getAccountTypeList();
@@ -540,8 +538,8 @@ export class AccOpeningComponent implements OnInit {
 
     this.operationType = '';
 
-    this.isLoading = true;
-    this.getCustomerList();
+    // this.isLoading = true;
+    // this.getCustomerList();
 
     this.disableAll = true;
     this.disableCustomerName = true;
@@ -612,9 +610,8 @@ export class AccOpeningComponent implements OnInit {
 
     this.operationType = 'I';
     this.disableAll = true;
-    this.isLoading = true;
-
-    this.getCustomerList();
+    // this.isLoading = true;
+    // this.getCustomerList();
     // this.disableCustNameFlg = false;
     this.disableCustomerName = false;
     this.disableAll = false;
@@ -972,13 +969,12 @@ export class AccOpeningComponent implements OnInit {
 
   getNewAccountNoAndSaveData() {
 
-    this.isLoading = true;
-
     this.p_gen_param.brn_cd = this.branchCode; // String
     this.p_gen_param.gs_acc_type_cd = this.masterModel.tmdeposit.acc_type_cd; // Integer
     this.p_gen_param.ls_catg_cd = this.masterModel.tmdeposit.category_cd; // Integer
     this.p_gen_param.ls_cons_cd = this.masterModel.tmdeposit.constitution_cd; // Integer
 
+    this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/PopulateAccountNumber', this.p_gen_param).subscribe(
       res => {
 
@@ -1004,10 +1000,7 @@ export class AccOpeningComponent implements OnInit {
   InsertAccountOpenData() {
     let ret = -1;
 
-
     this.validateData();
-
-
 
     this.isLoading = true;
     if (this.operationType === 'I') // For New Account
@@ -1263,16 +1256,16 @@ export class AccOpeningComponent implements OnInit {
   // }
 
   public suggestCustomer(): void {
-    if (this.tm_deposit.cust_name.length > 0) {
+    if (this.tm_deposit.cust_name.length > 2) {
       const prm = new p_gen_param();
       // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
       prm.as_cust_name = this.tm_deposit.cust_name.toLowerCase();
       this.svc.addUpdDel<any>('Deposit/GetCustDtls', prm).subscribe(
         res => {
           if (undefined !== res && null !== res && res.length > 0) {
-            this.suggestedCustomer = res.slice(0, 10);
+            this.suggestedCustomer = res.slice(0, 20);
           } else {
-            this.suggestedCustomer = [];
+            this.suggestedCustomer = null;
           }
         },
         err => { this.isLoading = false; }
@@ -1282,42 +1275,118 @@ export class AccOpeningComponent implements OnInit {
     }
   }
 
+  // public suggestCustomerSignatories(idx: number): void {
+
+  //   this.suggestedCustomerSignatoriesIdx = idx;
+  //   this.suggestedCustomerSignatories = this.customerList
+  //     .filter(c => c.cust_name.toLowerCase().startsWith(this.td_signatoryList[idx].signatory_name.toLowerCase())
+  //       || c.cust_cd.toString().startsWith(this.td_signatoryList[idx].signatory_name)
+  //       || (c.phone !== null && c.phone.startsWith(this.td_signatoryList[idx].signatory_name)))
+  //     .slice(0, 10);
+  // }
+
   public suggestCustomerSignatories(idx: number): void {
 
     this.suggestedCustomerSignatoriesIdx = idx;
-    this.suggestedCustomerSignatories = this.customerList
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.td_signatoryList[idx].signatory_name.toLowerCase())
-        || c.cust_cd.toString().startsWith(this.td_signatoryList[idx].signatory_name)
-        || (c.phone !== null && c.phone.startsWith(this.td_signatoryList[idx].signatory_name)))
-      .slice(0, 10);
+
+    if (this.td_signatoryList[idx].signatory_name.toString().length > 2) {
+      const prm = new p_gen_param();
+      prm.as_cust_name = this.td_signatoryList[idx].signatory_name.toString().toLowerCase();
+      this.isLoading = true;
+      this.svc.addUpdDel<any>('Deposit/GetCustDtls', prm).subscribe(
+        res => {
+          debugger;
+          this.isLoading = false;
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomerSignatories = res.slice(0, 20);
+          } else {
+            this.suggestedCustomerSignatories = null;
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomerSignatories = null;
+    }
   }
 
   public setCustDtlsSignatories(cust_cd: number, idx: number): void {
-    this.td_signatoryList[idx].signatory_name = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0].cust_name;
+    this.td_signatoryList[idx].signatory_name = this.suggestedCustomerSignatories.filter(c => c.cust_cd.toString() === cust_cd.toString())[0].cust_name;
     this.suggestedCustomerSignatories = null;
   }
 
+  // public suggestCustomerJointHolder(idx: number): void {
+  //   this.suggestedCustomerJointHolderIdx = idx;
+  //   this.suggestedCustomerJointHolder = this.customerList
+  //     .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholderList[idx].cust_cd.toString())
+  //       || c.cust_cd.toString().startsWith(this.td_accholderList[idx].cust_cd.toString())
+  //       || (c.phone !== null && c.phone.startsWith(this.td_accholderList[idx].cust_cd.toString())))
+  //     .slice(0, 10);
+  // }
+
   public suggestCustomerJointHolder(idx: number): void {
     this.suggestedCustomerJointHolderIdx = idx;
-    this.suggestedCustomerJointHolder = this.customerList
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholderList[idx].cust_cd.toString())
-        || c.cust_cd.toString().startsWith(this.td_accholderList[idx].cust_cd.toString())
-        || (c.phone !== null && c.phone.startsWith(this.td_accholderList[idx].cust_cd.toString())))
-      .slice(0, 10);
-  }
 
+    if (this.td_accholderList[idx].cust_cd.toString().length > 2) {
+      const prm = new p_gen_param();
+      prm.as_cust_name = this.td_accholderList[idx].cust_cd.toString().toLowerCase();
+      this.isLoading = true;
+      this.svc.addUpdDel<any>('Deposit/GetCustDtls', prm).subscribe(
+        res => {
+          debugger;
+          this.isLoading = false;
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomerJointHolder = res.slice(0, 20);
+          } else {
+            this.suggestedCustomerJointHolder = null;
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomerJointHolder = null;
+    }
+  }
 
 
   public setCustDtlsJointHolder(cust_cd: number, idx: number): void {
     this.td_accholderList[idx].cust_cd = cust_cd;
-    this.suggestedCustomerJointHolder = null;
     this.getSetJointHolderName(idx);
+    this.suggestedCustomerJointHolder = null;
   }
+
+
+  // getSetJointHolderName(idx: number) {
+  //   let temp_mm_cust = new mm_customer();
+  //   temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === this.td_accholderList[idx].cust_cd.toString())[0];
+
+  //   if (!temp_mm_cust) {
+  //     this.td_accholderList[idx].cust_cd = null;
+  //     this.td_accholderList[idx].acc_holder = null;
+  //     // this.showAlertMsg('ERROR', 'Joint Holder Customer Not Found');
+  //     this.HandleMessage(true, MessageType.Error, 'Joint Holder Customer Not Found');
+  //     return;
+  //   }
+
+  //   if (temp_mm_cust.cust_cd === this.tm_deposit.cust_cd) {
+  //     this.td_accholderList[idx].cust_cd = null;
+  //     this.td_accholderList[idx].acc_holder = null;
+  //     // this.showAlertMsg('ERROR', 'First Holder and Joint Holder can not be same');
+  //     this.HandleMessage(true, MessageType.Error, 'First Holder and Joint Holder can not be same');
+  //     return;
+  //   }
+
+  //   this.td_accholderList[idx].cust_cd = Number(this.td_accholderList[idx].cust_cd);
+  //   this.td_accholderList[idx].acc_holder = temp_mm_cust.cust_name;
+  // }
 
 
   getSetJointHolderName(idx: number) {
     let temp_mm_cust = new mm_customer();
-    temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === this.td_accholderList[idx].cust_cd.toString())[0];
+
+    if (this.suggestedCustomerJointHolder != undefined && this.suggestedCustomerJointHolder != null && this.suggestedCustomerJointHolder.length > 0) {
+      temp_mm_cust = this.suggestedCustomerJointHolder.filter(c => c.cust_cd.toString() === this.td_accholderList[idx].cust_cd.toString())[0];
+    }
 
     if (!temp_mm_cust) {
       this.td_accholderList[idx].cust_cd = null;
@@ -1339,21 +1408,66 @@ export class AccOpeningComponent implements OnInit {
     this.td_accholderList[idx].acc_holder = temp_mm_cust.cust_name;
   }
 
+
+
   public setCustDtls(cust_cd: number): void {
     this.tm_deposit.cust_cd = cust_cd;
     this.msg.sendcustomerCodeForKyc(cust_cd);
-    this.populateCustDtls(cust_cd);
-    this.suggestedCustomer = null;
+    this.getSetCustDtls(cust_cd);
   }
 
-  populateCustDtls(cust_cd: number) {
+  getSetCustDtls(cust_cd: number) {
 
     let temp_mm_cust = new mm_customer();
     const temp_tm_deposit = new tm_deposit();
-
     temp_tm_deposit.cust_cd = cust_cd;
 
-    temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
+    if (this.suggestedCustomer != undefined && this.suggestedCustomer != null && this.suggestedCustomer.length > 0) {
+      temp_mm_cust = this.suggestedCustomer.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
+      this.suggestedCustomer = null;
+      this.populateCustDtls(temp_mm_cust);
+    }
+    else {
+      debugger;
+      this.isLoading = true;
+      temp_mm_cust.cust_cd = cust_cd;
+      this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', temp_mm_cust).subscribe(
+        res => {
+          debugger;
+          this.suggestedCustomer = res;
+
+          if (this.suggestedCustomer != undefined && this.suggestedCustomer != null && this.suggestedCustomer.length > 0) {
+            temp_mm_cust = this.suggestedCustomer.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
+            this.suggestedCustomer = null;
+            this.populateCustDtls(temp_mm_cust);
+          }
+          this.isLoading = false;
+        },
+        err => { this.isLoading = false; }
+      );
+    }
+
+    // temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
+
+    if (this.operationType === 'I') {
+      this.isLoading = true;
+      this.svc.addUpdDel<any>('Deposit/GetCustMinSavingsAccNo', temp_tm_deposit).subscribe(
+        res => {
+          debugger;
+          this.isLoading = false;
+          const x = res;
+          this.tm_deposit.user_acc_num = x.toString();
+          // this.tm_deposit.user_acc_num = this.tm_deposit.user_acc_num.toString();
+        },
+        err => {
+          this.isLoading = false;
+          this.tm_deposit.user_acc_num = null;
+        }
+      );
+    }
+  }
+
+  populateCustDtls(temp_mm_cust: mm_customer) {
 
     this.tm_deposit.cust_name = temp_mm_cust.cust_name;
     if (temp_mm_cust.cust_type === 'M') {
@@ -1365,7 +1479,6 @@ export class AccOpeningComponent implements OnInit {
     this.tm_deposit.gurdain_name = temp_mm_cust.guardian_name;
 
     this.tm_deposit.date_of_birth = temp_mm_cust.dt_of_birth;
-    // this.tm_deposit.date_of_birth = new Date(temp_mm_cust.dt_of_birth);
 
     this.tm_deposit.sex = temp_mm_cust.sex;
     this.tm_deposit.sexType = this.sexType.filter(c => c.type.toString() === this.tm_deposit.sex.toString())[0].desc;
@@ -1380,31 +1493,10 @@ export class AccOpeningComponent implements OnInit {
     this.setCategoryDesc(this.tm_deposit.category_cd);
 
     if (this.operationType === 'I') {
-      this.td_signatoryList[0].cust_cd = cust_cd;
+      this.td_signatoryList[0].cust_cd = temp_mm_cust.cust_cd;
       this.td_signatoryList[0].signatory_name = temp_mm_cust.cust_name;
       this.td_signatoryList[0].brn_cd = this.branchCode;
     }
-
-
-
-    if (this.operationType === 'I') {
-      this.isLoading = true;
-      this.svc.addUpdDel<any>('Deposit/GetCustMinSavingsAccNo', temp_tm_deposit).subscribe(
-        res => {
-
-          this.isLoading = false;
-          const x = res;
-          this.tm_deposit.user_acc_num = x.toString();
-          // this.tm_deposit.user_acc_num = this.tm_deposit.user_acc_num.toString();
-        },
-        err => {
-
-          this.isLoading = false;
-          this.tm_deposit.user_acc_num = null;
-        }
-      );
-    }
-
   }
 
   setCategoryDesc(category: number) {
@@ -1472,7 +1564,6 @@ export class AccOpeningComponent implements OnInit {
 
   setIntroducerName(idx: number) {
 
-
     if (this.td_introducerlist[idx].introducer_acc_type === null || this.td_introducerlist[idx].introducer_acc_type === undefined) {
       // this.showAlertMsg('ERROR', 'Introducer Account Type can not be blank');
       this.HandleMessage(true, MessageType.Error, 'Introducer Account Type can not be blank');
@@ -1488,13 +1579,12 @@ export class AccOpeningComponent implements OnInit {
     temp_deposit.acc_type_cd = this.td_introducerlist[idx].introducer_acc_type;
 
     this.isLoading = true;
-
+    debugger;
     this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
       res => {
-
+        debugger;
         temp_deposit_list = res;
         this.isLoading = false;
-
         if (temp_deposit_list.length === 0) {
           this.td_introducerlist[idx].introducer_acc_num = null;
           this.td_introducerlist[idx].introducer_name = null;
@@ -1504,17 +1594,40 @@ export class AccOpeningComponent implements OnInit {
           return;
         }
 
-        let temp_mm_cust = new mm_customer();
-        temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
+        this.getIntroducerName(temp_deposit_list[0].cust_cd , idx);
 
-        this.td_introducerlist[idx].introducer_name = temp_mm_cust.cust_name;
+        // let temp_mm_cust = new mm_customer();
+        // temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
+        // this.td_introducerlist[idx].introducer_name = temp_mm_cust.cust_name;
       },
       err => {
+        debugger;
         this.isLoading = false;
       }
     );
   }
 
+  getIntroducerName(cust_cd: number, idx: number)
+  {
+    debugger;
+    let temp_mm_cust = new mm_customer();
+    let temp_mm_cust_list: mm_customer[] = [];
+    temp_mm_cust.cust_cd = cust_cd;
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', temp_mm_cust).subscribe(
+      res => {
+        debugger;
+        temp_mm_cust_list = res;
+
+        if (temp_mm_cust_list != undefined && temp_mm_cust_list != null && temp_mm_cust_list.length > 0) {
+          temp_mm_cust = temp_mm_cust_list.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
+          this.td_introducerlist[idx].introducer_name = temp_mm_cust.cust_name;
+        }
+        this.isLoading = false;
+      },
+      err => { this.isLoading = false; }
+    );
+  }
 
   addNominee() {
     const temp_td_nominee = new td_nominee();
