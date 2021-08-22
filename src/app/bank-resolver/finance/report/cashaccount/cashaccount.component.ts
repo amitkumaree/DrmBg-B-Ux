@@ -46,11 +46,11 @@ export class CashaccountComponent implements OnInit {
   fromdate: Date;
   todate: Date;
   constructor(private svc: RestService, private formBuilder: FormBuilder,
-    private modalService: BsModalService, private _domSanitizer: DomSanitizer,
-    private router: Router) { }
+              private modalService: BsModalService, private _domSanitizer: DomSanitizer,
+              private router: Router) { }
   ngOnInit(): void {
-    this.fromdate = this.sys.CurrentDate;// new Date(localStorage.getItem('__currentDate'));
-    this.todate = this.sys.CurrentDate;// new Date(localStorage.getItem('__currentDate'));
+    this.fromdate = this.sys.CurrentDate; // new Date(localStorage.getItem('__currentDate'));
+    this.todate = this.sys.CurrentDate; // new Date(localStorage.getItem('__currentDate'));
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
@@ -59,7 +59,7 @@ export class CashaccountComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.external.nativeElement.o()
+    this.external.nativeElement.o();
   }
 
   private onLoadScreen(content) {
@@ -73,30 +73,33 @@ export class CashaccountComponent implements OnInit {
       this.alertMsg = 'Invalid Input.';
       return false;
     }
-    else if (new Date(this.reportcriteria.value['fromDate']) > new Date(this.reportcriteria.value['toDate'])) {
+    else if (new Date(this.reportcriteria.value.fromDate) > new Date(this.reportcriteria.value.toDate)) {
       this.showAlert = true;
       this.alertMsg = 'To Date cannot be greater than From Date!';
       return false;
     }
     else {
       this.showAlert = false;
-      this.fromdate = this.reportcriteria.value['fromDate'];
-      this.todate = this.reportcriteria.value['toDate'];
+      this.fromdate = this.reportcriteria.value.fromDate;
+      this.todate = this.reportcriteria.value.toDate;
       // this.isLoading=true;
       // this.onReportComplete();
       // this.modalService.dismissAll(this.content);
       this.UrlString = this.svc.getReportUrl();
-      this.UrlString = this.UrlString + 'WebForm/Fin/cashaccount?' + 'brn_cd=' + this.sys.BranchCode + '&from_dt=' +Utils.convertDtToString(this.fromdate) + '&to_dt=' + Utils.convertDtToString(this.todate) + '&acc_cd=' + localStorage.getItem('__cashaccountCD')
+      this.UrlString = this.UrlString + 'WebForm/Fin/cashaccount?' + 'brn_cd=' + this.sys.BranchCode + '&from_dt=' + Utils.convertDtToString(this.fromdate) + '&to_dt=' + Utils.convertDtToString(this.todate) + '&acc_cd=' + localStorage.getItem('__cashaccountCD')
       ;
       this.isLoading = true;
-      this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString) // 20/01/2019
-      this.modalRef.hide();
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 3000);
+      this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString); // 20/01/2019
+      // this.modalRef.hide();
+      // setTimeout(() => {
+      //   this.isLoading = false;
+      // }, 3000);
     }
   }
-
+  public oniframeLoad(): void {
+    this.isLoading = false;
+    this.modalRef.hide();
+  }
 
   public closeAlert() {
     this.showAlert = false;
@@ -267,12 +270,12 @@ export class CashaccountComponent implements OnInit {
         [option]: value
       }
     });
-    ;
+
     this.child.webDataRocks.refresh();
   }
 
   exportPDFTitle() {
-    var options = this.child.webDataRocks.getOptions();
+    const options = this.child.webDataRocks.getOptions();
     this.child.webDataRocks.setOptions({
       grid: {
         title: 'Cash Account For The Period ' + this.fd + '-' + this.td
@@ -282,8 +285,8 @@ export class CashaccountComponent implements OnInit {
     this.child.webDataRocks.refresh();
     this.child.webDataRocks.exportTo('pdf', { pageOrientation: 'potrait', header: '<div>##CURRENT-DATE##&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Synergic Banking&emsp;&emsp;&emsp;Branch : ' + localStorage.getItem('__brnName') + '<br>&nbsp</div>', filename: 'CashAccount' });
 
-    this.child.webDataRocks.on('exportcomplete', function () {
-      this.child.webDataRocks.off('exportcomplete')
+    this.child.webDataRocks.on('exportcomplete', function() {
+      this.child.webDataRocks.off('exportcomplete');
       this.child.webDataRocks.setOptions(options);
       this.child.webDataRocks.refresh();
     });

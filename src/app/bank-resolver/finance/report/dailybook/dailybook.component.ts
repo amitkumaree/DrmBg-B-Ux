@@ -112,11 +112,15 @@ export class DailybookComponent implements OnInit {
       ;
       this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
-      this.modalRef.hide();
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 3000);
+      // this.modalRef.hide();
+      // setTimeout(() => {
+      //   this.isLoading = false;
+      // }, 3000);
     }
+  }
+  public oniframeLoad(): void {
+    this.isLoading = false;
+    this.modalRef.hide();
   }
 
   public closeAlert() {

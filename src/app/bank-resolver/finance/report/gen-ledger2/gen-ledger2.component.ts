@@ -87,11 +87,16 @@ export class GenLedger2Component implements OnInit {
       ;
       this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
-      this.modalRef.hide();
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 4000);
+      // this.modalRef.hide();
+      // setTimeout(() => {
+      //   this.isLoading = false;
+      // }, 4000);
     }
+  }
+
+  public oniframeLoad(): void {
+    this.isLoading = false;
+    this.modalRef.hide();
   }
 
   public closeAlert() {

@@ -83,13 +83,16 @@ export class CashcumtrialComponent implements OnInit {
       ;
       this.isLoading = true;
       this.ReportUrl=this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
-      this.modalRef.hide();
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 10000);
+      // this.modalRef.hide();
+      // setTimeout(() => {
+      //   this.isLoading = false;
+      // }, 10000);
     }
   }
-
+  public oniframeLoad(): void {
+    this.isLoading = false;
+    this.modalRef.hide();
+  }
   public closeAlert() {
     this.showAlert = false;
   }

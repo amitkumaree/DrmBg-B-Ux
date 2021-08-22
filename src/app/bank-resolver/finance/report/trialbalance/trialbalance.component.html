@@ -1,7 +1,7 @@
 <ng-template #content let-modal data-keyboard="false" data-backdrop="false">
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">Report Criteria</h4>
-      <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
+      <button type="button" class="close text-danger" aria-label="Close" data-dismiss="modal" (click)="modalRef.hide()">
       <span aria-hidden="true">&times;</span>
       </button>
     </div>
