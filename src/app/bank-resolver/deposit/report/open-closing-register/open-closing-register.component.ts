@@ -47,7 +47,8 @@ export class OpenClosingRegisterComponent implements OnInit {
     this.fromdate = this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
-      toDate: [null, Validators.required]
+      toDate: [null, Validators.required],
+      OpenClose: [null, Validators.required]
     });
     this.onLoadScreen(this.content);
   }
@@ -64,15 +65,16 @@ export class OpenClosingRegisterComponent implements OnInit {
     }
 
     else {
+      debugger;
       this.showAlert = false;
       this.fromdate = this.reportcriteria.controls.fromDate.value;
       this.toDate = this.reportcriteria.controls.toDate.value;
       this.UrlString = this.svc.getReportUrl();
-      this.UrlString = this.UrlString + 'WebForm/Deposit/nearmatdetails?'
+      this.UrlString = this.UrlString + 'WebForm/Deposit/opencloseregister?'
         + 'from_dt=' + Utils.convertDtToString(this.fromdate)
         + '&to_dt=' + Utils.convertDtToString(this.toDate)
         + '&brn_cd=' + this.sys.BranchCode
-        + '&flag=O';
+        + '&flag=' + this.reportcriteria.controls.OpenClose.value; // todo opn/close    O / C.
 
       this.isLoading = true;
       this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString);

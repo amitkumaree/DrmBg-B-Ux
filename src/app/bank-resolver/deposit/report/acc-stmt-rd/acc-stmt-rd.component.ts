@@ -61,7 +61,7 @@ export class AccStmtRDComponent implements OnInit {
   public suggestCustomer(): void {
     if (this.reportcriteria.controls.acct_num.value.length > 0) {
       const prm = new p_gen_param();
-      prm.ad_acc_type_cd = 1;
+      prm.ad_acc_type_cd = 6; // RD
       prm.as_cust_name = this.reportcriteria.controls.acct_num.value.toLowerCase();
       this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
         res => {

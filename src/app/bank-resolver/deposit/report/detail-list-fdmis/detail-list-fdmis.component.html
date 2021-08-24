@@ -14,8 +14,28 @@
         </div>
 
     <form [formGroup]="reportcriteria">
-      <div>
-        <label for="fromDate">As on</label>
+      <div class="form-row">
+        <div class="form-group col-6">
+          <small for="acc_type_cd">Account Type</small>
+          <select id="acc_type_cd" class="form-control form-control-sm" formControlName="acc_type_cd"
+          (change)="onAccountTypeChange()">
+            <option disabled>Choose</option>
+            <option [value]="2">2 - Fixed Deposit</option>
+            <option [value]="3">3 - DBS</option>
+            <option [value]="4">4 - Term Deposit</option>
+            <option [value]="5">5 - MIS</option>
+          </select>
+        </div>
+        <div class="form-group col-6">
+          <small for="constitution_cd">Constituion</small>
+          <select id="constitution_cd" class="form-control form-control-sm"
+          formControlName="constitution_cd">
+            <option disabled>Choose</option>
+            <option *ngFor="let cc of constitutionListToBind" [value]="cc.constitution_cd">{{cc.constitution_cd +' - ' +cc.constitution_desc}}</option>
+          </select>
+        </div>
+        <div class="form-group col-4">
+          <label for="fromDate">As on</label>
         <div class="input-group">
           <input type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="fromdate" disabled bsDatepicker
           formControlName="fromDate" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
@@ -24,6 +44,7 @@
           <button class="btn btn-outline-secondary" type="button" (click)="isOpenFromDp = !isOpenFromDp">
             <i class="fa fa-calendar" aria-hidden="true"></i>
           </button>
+        </div>
         </div>
         </div>
       </div>

@@ -44,9 +44,10 @@ export class TrialbalanceComponent implements OnInit {
   dt: any;
   fromdate: Date;
   todate: Date;
+  called = 0;
   constructor(private svc: RestService, private formBuilder: FormBuilder,
-    private modalService: BsModalService, private _domSanitizer: DomSanitizer,
-    private router: Router) { }
+              private modalService: BsModalService, private _domSanitizer: DomSanitizer,
+              private router: Router) { }
   ngOnInit(): void {
     this.fromdate = this.sys.CurrentDate;
     this.todate = this.sys.CurrentDate;
@@ -87,8 +88,12 @@ export class TrialbalanceComponent implements OnInit {
   }
 
   public oniframeLoad(): void {
-    this.isLoading = false;
-    this.modalRef.hide();
+    if (this.called > 0) {
+      this.isLoading = false;
+      this.modalRef.hide();
+    } else {
+      this.called = this.called + 1;
+    }
   }
 
   public closeAlert() {
@@ -238,7 +243,7 @@ export class TrialbalanceComponent implements OnInit {
     );
     this.child.webDataRocks.refresh();
     this.child.webDataRocks.exportTo('pdf', { pageOrientation: 'potrait', header: '<div>##CURRENT-DATE##&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Synergic Banking&emsp;&emsp;&emsp;Branch : ' + localStorage.getItem('__brnName') + '<br>&nbsp</div>', filename: 'TrialBalance' });
-    this.child.webDataRocks.on('exportcomplete', function () {
+    this.child.webDataRocks.on('exportcomplete', function() {
       this.child.webDataRocks.off('exportcomplete');
       this.child.webDataRocks.setOptions(options);
       this.child.webDataRocks.refresh();

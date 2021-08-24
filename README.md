@@ -67,3 +67,6 @@ run the below command in power shell with admin mode
 npm cache clean -f
 rm -rf node_modules
 npm i
+
+## Report Oracle.dataaccess problem to be resolved via checking entry in Webconfig
+search oracle dataaccess assembly binding and match its version with dll version.

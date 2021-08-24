@@ -14,6 +14,16 @@
         </div>
 
     <form [formGroup]="reportcriteria">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" formControlName="OpenClose" type="radio"
+        name="inlineRadioOptions" id="inlineRadio1" value="O">
+        <small class="form-check-label" for="inlineRadio1">Opening Register</small>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" formControlName="OpenClose" type="radio"
+        name="inlineRadioOptions" id="inlineRadio2" value="C">
+        <small class="form-check-label" for="inlineRadio2">Close Register</small>
+      </div>
       <div class="form-row">
         <div class="col-6">
           <small for="fromDate" >From Date</small>

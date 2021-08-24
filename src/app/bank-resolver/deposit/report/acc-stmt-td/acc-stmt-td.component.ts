@@ -50,17 +50,25 @@ export class AccStmtTDComponent implements OnInit {
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required],
-      acct_num: [null, Validators.required]
+      acct_num: [{ value: '', disabled: true }, Validators.required],
+      acc_type_cd: [null, Validators.required]
     });
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
   }
+  public onAccountTypeChange(): void {
+    this.reportcriteria.controls.acct_num.setValue('');
+    this.suggestedCustomer = null;
+    if (+this.reportcriteria.controls.acc_type_cd.value > 0) {
+      this.reportcriteria.controls.acct_num.enable();
+    }
+  }
   public suggestCustomer(): void {
     if (this.reportcriteria.controls.acct_num.value.length > 0) {
       const prm = new p_gen_param();
-      prm.ad_acc_type_cd = 1;
+      prm.ad_acc_type_cd = (+this.reportcriteria.controls.acc_type_cd.value);
       prm.as_cust_name = this.reportcriteria.controls.acct_num.value.toLowerCase();
       this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
         res => {
@@ -96,7 +104,8 @@ export class AccStmtTDComponent implements OnInit {
       this.UrlString = this.svc.getReportUrl();
       this.UrlString = this.UrlString + 'WebForm/Deposit/asfixed?'
         + 'acc_num=' + this.reportcriteria.controls.acct_num.value
-        + '&acc_type_cd=5&brn_cd=' + this.sys.BranchCode
+        + '&acc_type_cd=' + (+this.reportcriteria.controls.acc_type_cd.value)
+        + '&brn_cd=' + this.sys.BranchCode
         + '&from_dt=' + Utils.convertDtToString(this.fromdate)
         + '&to_dt=' + Utils.convertDtToString(this.toDate)
         + '&renew_id=0';

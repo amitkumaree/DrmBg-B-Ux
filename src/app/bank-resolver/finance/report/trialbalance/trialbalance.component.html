@@ -39,7 +39,7 @@
 style="background-color: #78c2ad21; min-height: 20vh;">
 
 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
-  <iframe *ngIf="ReportUrl" [src]="ReportUrl" width="100%" height="700px"
+  <iframe id="ifrmrpt" *ngIf="ReportUrl" [src]="ReportUrl" width="100%" height="700px"
   (load)="oniframeLoad()" allowfullscreen></iframe>
 </div>
 <!-- <div  class="col-xs-12 col-sm-12 col-md-8 col-lg-8 shadow-lg mb-4 bg-white p-3">
