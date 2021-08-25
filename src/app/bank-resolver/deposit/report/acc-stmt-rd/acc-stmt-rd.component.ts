@@ -47,7 +47,7 @@ export class AccStmtRDComponent implements OnInit {
     private modalService: BsModalService, private _domSanitizer: DomSanitizer,
     private router: Router) { }
   ngOnInit(): void {
-    this.fromdate = this.sys.CurrentDate;
+    // this.fromdate = this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required],
@@ -59,6 +59,7 @@ export class AccStmtRDComponent implements OnInit {
     this.modalRef = this.modalService.show(content, this.config);
   }
   public suggestCustomer(): void {
+    debugger;
     if (this.reportcriteria.controls.acct_num.value.length > 0) {
       const prm = new p_gen_param();
       prm.ad_acc_type_cd = 6; // RD
@@ -80,6 +81,8 @@ export class AccStmtRDComponent implements OnInit {
 
   public SelectCustomer(cust: any): void {
     this.reportcriteria.controls.acct_num.setValue(cust.acc_num);
+    this.fromdate = cust.opening_dt;
+    this.toDate = this.sys.CurrentDate;
     this.suggestedCustomer = null;
   }
 

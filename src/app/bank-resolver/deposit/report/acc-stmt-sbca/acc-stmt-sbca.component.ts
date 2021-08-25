@@ -46,7 +46,7 @@ export class AccStmtSBCAComponent implements OnInit {
     private modalService: BsModalService, private _domSanitizer: DomSanitizer,
     private router: Router) { }
   ngOnInit(): void {
-    this.fromdate = this.sys.CurrentDate;
+    // this.fromdate = this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required],
@@ -88,6 +88,8 @@ export class AccStmtSBCAComponent implements OnInit {
 
   public SelectCustomer(cust: any): void {
     this.reportcriteria.controls.acct_num.setValue(cust.acc_num);
+    this.fromdate = cust.opening_dt;
+    this.toDate = this.sys.CurrentDate;
     this.suggestedCustomer = null;
   }
 

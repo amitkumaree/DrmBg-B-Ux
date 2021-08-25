@@ -63,9 +63,8 @@ export class NetworthStatementComponent implements OnInit {
     }
   }
   public SelectCustomer(cust: mm_customer): void {
-    debugger;
     this.reportcriteria.controls.cust_name.setValue(cust.cust_cd);
-    this.suggestedCustomer = [];
+    this.suggestedCustomer = null;
   }
 
   public SubmitReport() {

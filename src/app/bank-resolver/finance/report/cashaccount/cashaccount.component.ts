@@ -98,12 +98,14 @@ export class CashaccountComponent implements OnInit {
     }
   }
   public oniframeLoad(): void {
-    if (this.called > 0) {
-      this.isLoading = false;
-      this.modalRef.hide();
-    } else {
-      this.called = this.called + 1;
-    }
+    this.isLoading = false;
+    this.modalRef.hide();
+    // if (this.called > 0) {
+    //   this.isLoading = false;
+    //   this.modalRef.hide();
+    // } else {
+    //   this.called = this.called + 1;
+    // }
   }
 
   public closeAlert() {
