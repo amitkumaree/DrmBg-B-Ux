@@ -88,7 +88,7 @@ export class AccStmtSBCAComponent implements OnInit {
 
   public SelectCustomer(cust: any): void {
     this.reportcriteria.controls.acct_num.setValue(cust.acc_num);
-    this.fromdate = cust.opening_dt;
+    this.fromdate = Utils.convertStringToDt(cust.opening_dt);
     this.toDate = this.sys.CurrentDate;
     this.suggestedCustomer = null;
   }

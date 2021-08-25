@@ -101,8 +101,8 @@ export class AccStmtTDComponent implements OnInit {
 
     else {
       this.showAlert = false;
-      this.fromdate = Utils.convertStringToDt(this.reportcriteria.controls.fromDate.value);
-      this.toDate = Utils.convertStringToDt(this.reportcriteria.controls.toDate.value);
+      this.fromdate = this.reportcriteria.controls.fromDate.value;
+      this.toDate = this.reportcriteria.controls.toDate.value;
       this.UrlString = this.svc.getReportUrl();
       this.UrlString = this.UrlString + 'WebForm/Deposit/asfixed?'
         + 'acc_num=' + this.reportcriteria.controls.acct_num.value
