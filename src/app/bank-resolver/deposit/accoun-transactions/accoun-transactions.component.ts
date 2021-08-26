@@ -439,6 +439,7 @@ export class AccounTransactionsComponent implements OnInit {
       }
       if (this.accNoEnteredForTransaction.acc_type_cd === 5) {
         this.showMisInstalment = true;
+        this.showInterestDtls = true;
         this.accNoEnteredForTransaction.ShowClose = true;
       }
       const constitution = AccounTransactionsComponent.constitutionList.filter(e => e.constitution_cd
@@ -648,6 +649,7 @@ export class AccounTransactionsComponent implements OnInit {
     acc.brn_cd = this.sys.BranchCode;
     this.svc.addUpdDel<any>('Deposit/GetDepositWithChild', acc).subscribe(
       res => {
+        debugger;
         this.isLoading = false;
         let foundOneUnclosed = false;
         if (undefined !== res && null !== res && res.length > 0) {
@@ -779,6 +781,7 @@ export class AccounTransactionsComponent implements OnInit {
         rdInstallament.acc_num = acc.acc_num;
         this.svc.addUpdDel<any>('Deposit/GetRDInstallment', rdInstallament).subscribe(
           rdInstallamentRes => {
+            this.rdInstallemntsForSelectedAcc = [];
             this.rdInstallemntsForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(rdInstallamentRes);
             let i = 1;
             this.rdInstallemntsForSelectedAcc.forEach(e => {
@@ -800,15 +803,18 @@ export class AccounTransactionsComponent implements OnInit {
         misInstalments.acc_type_cd = acc.acc_type_cd;
         this.svc.addUpdDel<any>('Deposit/GetInttDetails', misInstalments).subscribe(
           misInstalmentsRes => {
+            this.misInstallemntsForSelectedAcc = [];
             this.misInstallemntsForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(misInstalmentsRes);
             let i = 1;
             this.showMisInstalment = true;
             this.misInstallemntsForSelectedAcc.forEach(e => {
-              if (e.paid_status.toLocaleLowerCase() === 'p') {
+              if (e.paid_status.toLocaleLowerCase() === 'b') {
                 this.rdInstallamentOption.push(acc.intt_amt * i);
                 i = i + 1;
               }
             });
+            this.misInstallemntsForSelectedAcc = this.misInstallemntsForSelectedAcc.filter(e =>
+              e.paid_status.toLocaleLowerCase() === 'b' || e.paid_status.toLocaleLowerCase() === 'p');
           },
           misInstalmentsErr => { console.log(misInstalmentsErr); }
         );
