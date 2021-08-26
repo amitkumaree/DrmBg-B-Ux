@@ -28,7 +28,7 @@
         </div>
         <div class="form-group col-6">
           <small for="constitution_cd">Constituion</small>
-          <select id="constitution_cd" class="form-control"
+          <select id="constitution_cd" class="form-control form-control-sm"
           formControlName="constitution_cd">
             <option disabled>Choose</option>
             <option *ngFor="let cc of constitutionListToBind" [value]="cc.constitution_cd">{{cc.constitution_cd +' - ' +cc.constitution_desc}}</option>
