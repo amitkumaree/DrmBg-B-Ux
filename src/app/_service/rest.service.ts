@@ -34,7 +34,7 @@ export class RestService {
     }
     url += 'api/';
     // console.log(url);
-   // url = 'https://localhost:5001/api/';
+    //url = 'https://localhost:5001/api/';
     return url;
   }
   public getReportUrl(): string {
@@ -46,6 +46,7 @@ export class RestService {
       url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
     }
     url = url.substr(0, url.length - 1) + 'Rpt/'
+    debugger;
     return url;
   }
 

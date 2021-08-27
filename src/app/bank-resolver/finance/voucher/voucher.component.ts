@@ -81,6 +81,7 @@ export class VoucherComponent implements OnInit {
     this.isRetrieveBatch = false;
     this.isNew = false;
     this.getmAccMaster();
+    this.New();
   }
   Initialize() {
     ;
@@ -130,6 +131,8 @@ export class VoucherComponent implements OnInit {
     this.isLoading=true;
     this.getVoucherNarration();
     this.modalRef = this.modalService.show(this.contentbatch, this.config);
+    this.isRemove=false;
+    this.isSave=false;
   }
 
   // private getDismissReason(reason: any): string {
@@ -164,8 +167,12 @@ export class VoucherComponent implements OnInit {
     ;
   }
   Remove() {
-
-  }
+    if (this._voucherId>0)
+        if (this._approvalSts=="Unapproved")
+                this.DeleteVoucher();
+         else 
+        this.HandleMessage(true, MessageType.Error, 'Voucher already Approved can not be Deleted !');
+      }
   Approve() {
     this.UpdateVoucher();
 
@@ -180,6 +187,8 @@ export class VoucherComponent implements OnInit {
     {
       this.isLoading = true;
       this.getVoucher(this.reportcriteria.value['fromDate'], this.reportcriteria.value['voucherNo']);
+      this.isRemove=false;
+      this.isSave=false;
     }
   }
 
@@ -225,6 +234,15 @@ export class VoucherComponent implements OnInit {
 
       }
       else {
+        debugger;
+        if (this._voucherId>0)
+        if (this._approvalSts=="Unapproved")
+        {
+        this.DeleteInsertVoucher();
+        }
+        else 
+        this.HandleMessage(true, MessageType.Error, 'Voucher already Approved can not Modify !');
+        else
         this.InsertVoucher();
       }
     }
@@ -457,6 +475,97 @@ export class VoucherComponent implements OnInit {
     }
     catch (exception) { let x = 0; }
   }
+
+  private DeleteInsertVoucher(): void {
+    try {
+      this.isLoading=true;
+      let tvdSaveAll: T_VOUCHER_DTLS[] = [];
+      for (let x = 0; x < this.VoucherF.length; x++) {
+        let tvdSave = new T_VOUCHER_DTLS();
+        tvdSave.approval_status = 'U';
+        tvdSave.brn_cd =  this.sys.BranchCode;
+        tvdSave.cr_amount = Number(this.voucherData.value[x].cr_amt == null ? 0 : this.voucherData.value[x].cr_amt);
+        tvdSave.dr_amount = Number(this.voucherData.value[x].dr_amt == null ? 0 : this.voucherData.value[x].dr_amt);
+        tvdSave.debit_credit_flag = this.voucherData.value[x].dr_cr=='Debit'? 'D' : 'C';
+        tvdSave.narrationdtl = this._voucherNarration;
+        tvdSave.transaction_type =  this._voucherTyp == "Cash" ? "C" : this._voucherTyp == "Clearing" ? "L" : "T";
+        tvdSave.voucher_dt = this._voucherDt;//new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
+        //tvdSave.voucher_dt = this._voucherDt;
+        tvdSave.acc_cd = this.voucherData.value[x].acc_cd;
+        tvdSave.amount = Number(tvdSave.cr_amount == 0 ? tvdSave.dr_amount : tvdSave.cr_amount);
+        tvdSave.voucher_id=this._voucherId;
+        tvdSaveAll.push(tvdSave);
+      }
+      ;
+      this.svc.addUpdDel<any>('Voucher/DeleteInsertVoucherDtls', tvdSaveAll).subscribe(
+        res => {
+          ;
+          this._voucherId = this._voucherId;
+          this._approvalSts = "Unapproved";
+          this._voucherTyp = this._voucherTyp == "C" ? "Cash" : this._voucherTyp == "L" ? "Clearing" : "Transfer";
+          this.insertMode = false;
+          this.isDel = true;
+          this.isAddNew = true;
+          this.isRetrieve = false;
+          this.isRetrieveBatch = false;
+          this.isNew = false;
+          this.isRemove = true;
+          this.isSave = true;
+          this.isApprove = true;
+          this.isClear = false;
+          this.isLoading=false;
+          this.HandleMessage(true, MessageType.Sucess, 'Voucher Updated Sucessfully !');
+        },
+        err => {this.isLoading=false; this.HandleMessage(true, MessageType.Error, 'Update Failed !'); }
+      );
+    }
+    catch (exception) { let x = 0; }
+  }
+  
+  private DeleteVoucher(): void {
+    try {
+      this.isLoading=true;
+      let tvdSaveAll: T_VOUCHER_DTLS[] = [];
+      for (let x = 0; x < this.VoucherF.length; x++) {
+        let tvdSave = new T_VOUCHER_DTLS();
+        tvdSave.approval_status = 'U';
+        tvdSave.brn_cd =  this.sys.BranchCode;
+        tvdSave.cr_amount = Number(this.voucherData.value[x].cr_amt == null ? 0 : this.voucherData.value[x].cr_amt);
+        tvdSave.dr_amount = Number(this.voucherData.value[x].dr_amt == null ? 0 : this.voucherData.value[x].dr_amt);
+        tvdSave.debit_credit_flag = this.voucherData.value[x].dr_cr=='Debit'? 'D' : 'C';
+        tvdSave.narrationdtl = this._voucherNarration;
+        tvdSave.transaction_type =  this._voucherTyp == "Cash" ? "C" : this._voucherTyp == "Clearing" ? "L" : "T";
+        tvdSave.voucher_dt = this._voucherDt;//new Date(Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate(), this._voucherDt.getHours(), this._voucherDt.getMinutes()));
+        //tvdSave.voucher_dt = this._voucherDt;
+        tvdSave.acc_cd = this.voucherData.value[x].acc_cd;
+        tvdSave.amount = Number(tvdSave.cr_amount == 0 ? tvdSave.dr_amount : tvdSave.cr_amount);
+        tvdSave.voucher_id=this._voucherId;
+        tvdSaveAll.push(tvdSave);
+      }
+      debugger;
+      this.svc.addUpdDel<any>('Voucher/DeleteVoucherDtls', tvdSaveAll).subscribe(
+        res => {
+          debugger;
+          this.insertMode = false;
+          this.Initialize();
+          this.isDel = true;
+          this.isAddNew = true;
+          this.isRetrieve = false;
+          this.isRetrieveBatch = false;
+          this.isNew = false;
+          this.isRemove = true;
+          this.isSave = true;
+          this.isApprove = true;
+          this.isClear = false;
+          this.isLoading=false;
+          this.HandleMessage(true, MessageType.Sucess, 'Voucher Deleted Sucessfully !');
+        },
+        err => {this.isLoading=false; this.HandleMessage(true, MessageType.Error, 'Delete Failed !'); }
+      );
+    }
+    catch (exception) { let x = 0; }
+  }
+
 
   private UpdateVoucher(): void {
     try {
