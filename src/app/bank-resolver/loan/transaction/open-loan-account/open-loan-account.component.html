@@ -55,6 +55,10 @@
             + cust.cust_name}}
           </p>
           </div>
+          <div class="suggestions border p-2" style="width: 150%; font-size: small;"
+          *ngIf="suggestedCustomer && !(suggestedCustomer.length > 0)">
+          <strong class="text-danger">" {{tm_loan_all.cust_name}} " does not match with any customer</strong>
+          </div>
       </div>
 
 

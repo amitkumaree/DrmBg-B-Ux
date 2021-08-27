@@ -378,7 +378,8 @@ export class OpenLoanAccountComponent implements OnInit {
   //     .slice(0, 20);
   // }
   public suggestCustomer(): void {
-    if (this.tm_loan_all.cust_name.length > 2) {
+    debugger;
+    if (this.tm_loan_all.cust_name.length > 0) {
       const prm = new p_gen_param();
       // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
       prm.as_cust_name = this.tm_loan_all.cust_name.toLowerCase();
@@ -387,7 +388,7 @@ export class OpenLoanAccountComponent implements OnInit {
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedCustomer = res.slice(0, 20);
           } else {
-            this.suggestedCustomer = null;
+            this.suggestedCustomer = [];
           }
         },
         err => { this.isLoading = false; }
@@ -425,7 +426,7 @@ export class OpenLoanAccountComponent implements OnInit {
 
   public suggestJointCustomer(idx: number): void {
     this.suggestedCustomerJointHolderIdx = idx;
-    if (this.td_accholder[idx].acc_holder.length > 2) {
+    if (this.td_accholder[idx].acc_holder.length > 0) {
       const prm = new p_gen_param();
       // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
       prm.as_cust_name = this.td_accholder[idx].acc_holder.toLowerCase();
@@ -434,7 +435,7 @@ export class OpenLoanAccountComponent implements OnInit {
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedJointCustomer = res.slice(0, 20);
           } else {
-            this.suggestedJointCustomer = null;
+            this.suggestedJointCustomer = [];
           }
         },
         err => { this.isLoading = false; }

@@ -1256,7 +1256,7 @@ export class AccOpeningComponent implements OnInit {
   // }
 
   public suggestCustomer(): void {
-    if (this.tm_deposit.cust_name.length > 2) {
+    if (this.tm_deposit.cust_name.length > 0) {
       const prm = new p_gen_param();
       // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
       prm.as_cust_name = this.tm_deposit.cust_name.toLowerCase();
@@ -1265,7 +1265,7 @@ export class AccOpeningComponent implements OnInit {
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedCustomer = res.slice(0, 20);
           } else {
-            this.suggestedCustomer = null;
+            this.suggestedCustomer = [];
           }
         },
         err => { this.isLoading = false; }
@@ -1289,7 +1289,7 @@ export class AccOpeningComponent implements OnInit {
 
     this.suggestedCustomerSignatoriesIdx = idx;
 
-    if (this.td_signatoryList[idx].signatory_name.toString().length > 2) {
+    if (this.td_signatoryList[idx].signatory_name.toString().length > 0) {
       const prm = new p_gen_param();
       prm.as_cust_name = this.td_signatoryList[idx].signatory_name.toString().toLowerCase();
       this.isLoading = true;
@@ -1300,7 +1300,7 @@ export class AccOpeningComponent implements OnInit {
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedCustomerSignatories = res.slice(0, 20);
           } else {
-            this.suggestedCustomerSignatories = null;
+            this.suggestedCustomerSignatories = [];
           }
         },
         err => { this.isLoading = false; }
