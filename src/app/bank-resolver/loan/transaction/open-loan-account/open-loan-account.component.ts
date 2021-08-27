@@ -70,7 +70,7 @@ export class OpenLoanAccountComponent implements OnInit {
   suggestedCustomer: mm_customer[];
   suggestedJointCustomer: mm_customer[];
   suggestedCustomerJointHolderIdx: number;
-
+  kycEnable = false;
 
   masterModel = new LoanOpenDM();
   tm_loan_all = new tm_loan_all();
@@ -379,8 +379,10 @@ export class OpenLoanAccountComponent implements OnInit {
   }
 
   public setCustDtls(cust_cd: number): void {
+    this.kycEnable = false;
     this.tm_loan_all.party_cd = cust_cd;
     this.msg.sendcustomerCodeForKyc(cust_cd);
+    this.kycEnable = true;
     this.populateCustDtls(cust_cd);
     this.suggestedCustomer = null;
   }

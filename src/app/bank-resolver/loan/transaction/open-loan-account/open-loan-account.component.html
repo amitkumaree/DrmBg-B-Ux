@@ -9,7 +9,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData('N')">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" >Delete</button>
-    <button type="button" [disabled]="undefined === undefined" class="btn btn-primary btn-sm ml-1 mr-1"
+    <button type="button" [disabled]="!kycEnable" class="btn btn-primary btn-sm ml-1 mr-1"
       (click)="openModal(kycContent)">Kyc</button>
     <!-- class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button> -->
   </div>
@@ -361,7 +361,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData('N')">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" >Delete</button>
-    <button type="button" [disabled]="undefined === undefined" class="btn btn-primary btn-sm ml-1 mr-1"
+    <button type="button" [disabled]="!kycEnable" class="btn btn-primary btn-sm ml-1 mr-1"
       (click)="openModal(kycContent)">Kyc</button>
     <!-- class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button> -->
   </div>
