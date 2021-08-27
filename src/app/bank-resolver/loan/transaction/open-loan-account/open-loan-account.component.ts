@@ -50,7 +50,7 @@ export class OpenLoanAccountComponent implements OnInit {
 
   p_gen_param = new p_gen_param();
 
-  isLoading = true;
+  isLoading = false;
 
   customerList: mm_customer[] = [];
   accountTypeList: mm_acc_type[] = [];
@@ -70,7 +70,7 @@ export class OpenLoanAccountComponent implements OnInit {
   suggestedCustomer: mm_customer[];
   suggestedJointCustomer: mm_customer[];
   suggestedCustomerJointHolderIdx: number;
-
+  kycEnable = false;
 
   masterModel = new LoanOpenDM();
   tm_loan_all = new tm_loan_all();
@@ -370,17 +370,38 @@ export class OpenLoanAccountComponent implements OnInit {
   }
 
 
+  // public suggestCustomer(): void {
+  //   this.suggestedCustomer = this.customerList
+  //     .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_loan_all.cust_name.toLowerCase())
+  //       || c.cust_cd.toString().startsWith(this.tm_loan_all.cust_name)
+  //       || (c.phone !== null && c.phone.startsWith(this.tm_loan_all.cust_name)))
+  //     .slice(0, 20);
+  // }
   public suggestCustomer(): void {
-    this.suggestedCustomer = this.customerList
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_loan_all.cust_name.toLowerCase())
-        || c.cust_cd.toString().startsWith(this.tm_loan_all.cust_name)
-        || (c.phone !== null && c.phone.startsWith(this.tm_loan_all.cust_name)))
-      .slice(0, 20);
+    if (this.tm_loan_all.cust_name.length > 2) {
+      const prm = new p_gen_param();
+      // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.tm_loan_all.cust_name.toLowerCase();
+      this.svc.addUpdDel<any>('Deposit/GetCustDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomer = res.slice(0, 20);
+          } else {
+            this.suggestedCustomer = null;
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomer = null;
+    }
   }
 
   public setCustDtls(cust_cd: number): void {
+    this.kycEnable = false;
     this.tm_loan_all.party_cd = cust_cd;
     this.msg.sendcustomerCodeForKyc(cust_cd);
+    this.kycEnable = true;
     this.populateCustDtls(cust_cd);
     this.suggestedCustomer = null;
   }
@@ -392,14 +413,36 @@ export class OpenLoanAccountComponent implements OnInit {
     this.tm_loan_all.cust_name = temp_mm_cust.cust_name;
   }
 
-  public suggestJointCustomer(idx: number): void {
+  // public suggestJointCustomer(idx: number): void {
 
+  //   this.suggestedCustomerJointHolderIdx = idx;
+  //   this.suggestedJointCustomer = this.customerList
+  //     .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholder[idx].acc_holder.toLowerCase())
+  //       || c.cust_cd.toString().startsWith(this.td_accholder[idx].acc_holder)
+  //       || (c.phone !== null && c.phone.startsWith(this.td_accholder[idx].acc_holder)))
+  //     .slice(0, 20);
+  // }
+
+  public suggestJointCustomer(idx: number): void {
     this.suggestedCustomerJointHolderIdx = idx;
-    this.suggestedJointCustomer = this.customerList
-      .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholder[idx].acc_holder.toLowerCase())
-        || c.cust_cd.toString().startsWith(this.td_accholder[idx].acc_holder)
-        || (c.phone !== null && c.phone.startsWith(this.td_accholder[idx].acc_holder)))
-      .slice(0, 20);
+    if (this.td_accholder[idx].acc_holder.length > 2) {
+      const prm = new p_gen_param();
+      // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.td_accholder[idx].acc_holder.toLowerCase();
+      this.svc.addUpdDel<any>('Deposit/GetCustDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedJointCustomer = res.slice(0, 20);
+          } else {
+            this.suggestedJointCustomer = null;
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedJointCustomer = null;
+    }
+
   }
 
   public setJointCustDtls(cust_cd: number, idx: number): void {
@@ -583,7 +626,7 @@ export class OpenLoanAccountComponent implements OnInit {
     this.operationType = 'N';
     this.disableAll = 'N';
     // this.disablePersonal = 'N';
-    this.isLoading = true;
+    // this.isLoading = true;
 
     this.getCustomerList();
 

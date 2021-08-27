@@ -464,6 +464,15 @@ export class LoanaccountTransactionComponent implements OnInit {
             'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
           this.msg.sendCommonTmLoanAll(null);
         } else {
+          if (null !== acc.tmloanall.approval_status
+            && acc.tmloanall.approval_status.toLowerCase() === 'u') {
+              this.HandleMessage(true, MessageType.Error,
+                'Loan ' + this.f.acct_num.value + ' is not approved, please approve before transaction.');
+              this.msg.sendCommonTmLoanAll(null);
+              this.isLoading = false;
+              this.onResetClick();
+              return;
+          }
           this.accTransFrm.patchValue({
             oprn_cd: ''
           });
