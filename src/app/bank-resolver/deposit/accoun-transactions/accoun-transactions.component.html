@@ -6,13 +6,15 @@
     class="mt-1 col-xs-12 col-sm-12 col-md-11 col-lg-11 d-flex justify-content-center align-items-center">
     <!-- <button type="button" [disabled]="disableSave" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onDeleteClick()"
+    *ngIf="editDeleteMode">Delete</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
     <button type="button" [disabled]="undefined === accNoEnteredForTransaction"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button>
     <!-- <button type="button" [disabled]="!(preTransactionDtlForSelectedAcc.length > 0)"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(PreContent)" >Previous Transaction</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
+    <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button> -->
   </div>
     <div *ngIf="showMsg && showMsg.Show" class="col-12 mt-1">
       <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
@@ -76,7 +78,7 @@
             <strong class="text-danger">" {{this.f.acct_num.value}} " does not match with any customer</strong>
             </div>
           </div>
-          <div class="form-group col-2">
+          <div class="form-group col-2" *ngIf="!editDeleteMode">
             <small for="oprn_cd">Operation Type</small>
             <select id="oprn_cd" [attr.disabled]="(null == operations || disableOperation) ? '' : null"
               class="form-control form-control-sm" formControlName="oprn_cd" (change)="onOperationTypeChange()">
@@ -210,6 +212,11 @@
         <form [formGroup]="tdDefTransFrm" *ngIf="showTransactionDtl">
           <h6 class="mt-2" style="background-color:lightskyblue">Transaction Details</h6>
           <div class="form-row">
+            <div class="form-group col-2" *ngIf="editDeleteMode">
+              <small for="trans_cd">Tran Cd</small>
+              <input type="text" class="form-control form-control-sm" disabled formControlName="trans_cd"
+                id="trans_cd">
+            </div>
             <div class="form-group col-3">
               <small for="acc_type_cd">Account Type</small>
               <input type="text" hidden class="form-control form-control-sm" disabled formControlName="acc_type_cd"
@@ -375,7 +382,7 @@
         </form>
         <div class="row" *ngIf="td.trf_type.value !== ''">
           <div class="col-12 col-sm-6 col-md-12 mt-2">
-            <div *ngIf="td.trf_type.value === 'C'">
+            <div *ngIf="td.trf_type.value === 'C' || td.trf_type.value === 'c'">
               <h6 style="background-color: lightskyblue">Denomination Details</h6>
 
               <section *ngFor="let t1 of tm_denominationList; let i=index">
@@ -431,7 +438,7 @@
 
             </div>
 
-            <div *ngIf="td.trf_type.value   === 'T'">
+            <div *ngIf="td.trf_type.value   === 'T' || td.trf_type.value   === 't'">
               <h6 style="background-color: lightskyblue">Transfer Details</h6>
               <section *ngFor="let l of td_deftranstrfList; let i=index">
                 <div class="form-row">
@@ -439,7 +446,7 @@
                     <small for="debit_ac">Account Type</small>
                     <input type="text" [(ngModel)]="l.cust_acc_type"
                       [disabled]="undefined !== l.gl_acc_code && l.gl_acc_code.length > 0"
-                      (focusout)="checkAndSetDebitAccType('cust_acc', l)"
+                      (change)="checkAndSetDebitAccType('cust_acc', l)"
                       class="form-control form-control-sm text-capitalize" id="debit_ac">
                   </div>
 
@@ -452,7 +459,7 @@
                   <div class="form-group col-3">
                     <small for="debit_ac_no">Account Number</small>
                     <input type="text" [(ngModel)]="l.cust_acc_number"
-                      (focusout)="setDebitAccDtls(l)" [disabled]="undefined !== l.gl_acc_code && l.gl_acc_code.length > 0"
+                      (change)="setDebitAccDtls(l)" [disabled]="undefined !== l.gl_acc_code && l.gl_acc_code.length > 0"
                       class="form-control form-control-sm text-capitalize" id="debit_ac_no">
                   </div>
 
@@ -524,13 +531,15 @@
     class="mb-1 col-xs-12 col-sm-12 col-md-11 col-lg-11 d-flex justify-content-center align-items-center">
     <!-- <button type="button" [disabled]="disableSave" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onDeleteClick()"
+    *ngIf="editDeleteMode">Delete</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
     <button type="button" [disabled]="undefined === accNoEnteredForTransaction"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(kycContent)" >Kyc</button>
     <!-- <button type="button" [disabled]="!(preTransactionDtlForSelectedAcc.length > 0)"
     class="btn btn-primary btn-sm ml-1 mr-1" (click)="openModal(PreContent)" >Previous Transaction</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
+    <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button> -->
   </div>
   </div>
 
@@ -666,5 +675,47 @@
         </div>
       </div>
     </div>
+  </div>
+</ng-template>
+<ng-template #unappconfirm >
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Wish to edit or delete Un-Approved Transaction?
+    </h4>
+    <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button> -->
+  </div>
+  <div class="modal-body">
+    <div>
+      <div class="col-12 scroll-when-long">
+        <div class="table-responsive" *ngIf="unApprovedTransactionLst.length > 0">
+          <h5>List of Un-Approved Transaction for Acc# {{accNoEnteredForTransaction.acc_num}}.</h5>
+          <table class="table table-sm table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Trans Code</th>
+                <th scope="col">Trans Dt</th>
+                <th scope="col">Account Number</th>
+                <th scope="col">Amount</th>
+                <th scope="col" *ngIf="unApprovedTransactionLstOfAcc.length > 1"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tran of unApprovedTransactionLstOfAcc,let i=index" >
+                <td>{{tran.trans_cd}}</td>
+                <td>{{tran.trans_dt}}</td>
+                <td>{{tran.acc_num}}</td>
+                <td>{{tran.amount | INRCurrency}}</td>
+                <td *ngIf="unApprovedTransactionLstOfAcc.length > 1"><button type="button" class="btn btn-primary float-right"
+                  (click)="onUpapprovedConfirm(tran)" >Confirm</button></td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-default" (click)="onUpapprovedCancel()" >Cancel</button>
+    <button type="button" *ngIf="unApprovedTransactionLstOfAcc.length === 1"
+    class="btn btn-primary float-right" (click)="onUpapprovedConfirm(unApprovedTransactionLstOfAcc[0])" >Confirm</button>
   </div>
 </ng-template>

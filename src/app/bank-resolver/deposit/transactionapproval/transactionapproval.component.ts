@@ -25,8 +25,8 @@ import { AccOpenDM } from '../../Models/deposit/AccOpenDM';
 })
 export class TransactionapprovalComponent implements OnInit {
   constructor(private svc: RestService, private elementRef: ElementRef,
-    private msg: InAppMessageService, private modalService: BsModalService,
-    private router: Router, private frmBldr: FormBuilder) { }
+              private msg: InAppMessageService, private modalService: BsModalService,
+              private router: Router, private frmBldr: FormBuilder) { }
   static accType: mm_acc_type[] = [];
   static categories: mm_category[] = [];
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
@@ -113,7 +113,7 @@ export class TransactionapprovalComponent implements OnInit {
       date_of_death: [''],
       sms_flag: [''],
       status: [''],
-      pan: ['',],
+      pan: ['', ],
       nominee: [''],
       nom_relation: [''],
       kyc_photo_type: [''],
@@ -315,7 +315,7 @@ export class TransactionapprovalComponent implements OnInit {
     this.tmDenominationTransLst = [];
     this.tranferDetails = [];
     if (transactionDtl.trf_type === 'C') {
-      let tmDenoTrf = new tm_denomination_trans();
+      const tmDenoTrf = new tm_denomination_trans();
       tmDenoTrf.brn_cd = this.sys.BranchCode;
       tmDenoTrf.trans_cd = transactionDtl.trans_cd;
       tmDenoTrf.trans_dt = Utils.convertStringToDt(transactionDtl.trans_dt.toString());
@@ -332,7 +332,7 @@ export class TransactionapprovalComponent implements OnInit {
         err => { }
       );
     } else {
-      let tdDefTranTransfr = new td_def_trans_trf();
+      const tdDefTranTransfr = new td_def_trans_trf();
       tdDefTranTransfr.brn_cd = this.sys.BranchCode;
       tdDefTranTransfr.trans_cd = transactionDtl.trans_cd;
       tdDefTranTransfr.trans_dt = Utils.convertStringToDt(transactionDtl.trans_dt.toString());
@@ -621,7 +621,7 @@ export class TransactionapprovalComponent implements OnInit {
     this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
       res => {
         this.selectedVm.mm_customer = res[0];
-        this.setCustFrm(res[0])
+        this.setCustFrm(res[0]);
         this.msg.sendcustomerCodeForKyc(this.selectedVm.mm_customer.cust_cd);
         this.isLoading = false;
       },
@@ -700,7 +700,7 @@ export class TransactionapprovalComponent implements OnInit {
       }
     }
     this.isLoading = true;
-    let param = new p_gen_param();
+    const param = new p_gen_param();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
     param.ad_trans_cd = this.selectedVm.td_def_trans_trf.trans_cd;
     // const dt = this.sys.CurrentDate;
