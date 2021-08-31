@@ -38,8 +38,10 @@ export class LoanaccountTransactionComponent implements OnInit {
   static constitutionList: mm_constitution[] = [];
   private static operations: mm_operation[] = [];
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
+  @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
   operations: mm_operation[];
   unApprovedTransactionLst: td_def_trans_trf[] = [];
+  unapprovedTrans : td_def_trans_trf[] = [];
   disableOperation = true;
   modalRef: BsModalRef;
   AcctTypes: mm_operation[];
@@ -57,7 +59,13 @@ export class LoanaccountTransactionComponent implements OnInit {
   isRecovery = false;
   isDisburs = false;
   isOpenToDp = false;
+  isDelete=false;
   TrfTotAmt = 0;
+  config = {
+    keyboard: false, // ensure esc press doesnt close the modal
+    backdrop: true, // enable backdrop shaded color
+    ignoreBackdropClick: true // disable backdrop click to close the modal
+  };
 
   customerList: mm_customer[] = [];
   td_deftrans = new td_def_trans_trf();
@@ -403,7 +411,6 @@ export class LoanaccountTransactionComponent implements OnInit {
     }
   }
 
-  /** method fires on account type change */
   public onAcctTypeChange(): void {
     this.f.acct_num.reset();
     const acctTypCdTofilter = +this.f.acc_type_cd.value;
@@ -421,34 +428,207 @@ export class LoanaccountTransactionComponent implements OnInit {
     this.msg.sendCommonTmLoanAll(null);
   }
 
-  public onAccountNumTabOff(): void {
+  Submit()
+  {
     debugger;
-    if (this.checkUnaprovedTransactionExixts(this.f.acct_num.value)) {
-      this.HandleMessage(true, MessageType.Error,
-        'Un-approved Transaction already exists for the Account ' + this.f.acct_num.value);
-      const td_deftranstrf: td_def_trans_trf[] = [];
-      this.td_deftranstrfList = td_deftranstrf;
-      const temp_deftranstrf = new td_def_trans_trf();
-      this.td_deftranstrfList.push(temp_deftranstrf);
-      this.tm_denominationList = [];
-      this.denominationGrandTotal = 0;
-      this.transferGrandTotal = 0;
-      this.TrfTotAmt = 0;
-      this.tdDefTransFrm.reset();
-      this.accDtlsFrm.reset();
-      this.showTransactionDtl = false;
-      this.disableOperation = true;
-      return;
-    }
     this.f.oprn_cd.disable();
     this.disableOperation = true;
     this.showTranferType = true;
+    this.isLoading = true;
+    this.showMsg = null;
+    const acc1 = new tm_loan_all();
+    let acc = new LoanOpenDM();
+    acc1.loan_id = '' + this.f.acct_num.value;
+    acc1.brn_cd = this.sys.BranchCode;
+    acc1.acc_cd = this.f.acc_type_cd.value;
+    acc1.trans_cd= this.unapprovedTrans[0].trans_cd;
+    acc1.trans_dt= this.unapprovedTrans[0].trans_dt;
+    this.svc.addUpdDel<any>('Loan/GetLoanData', acc1).subscribe(
+      res => {
+        debugger;
+        acc = res;
+        if (undefined === acc || acc.tmloanall.loan_id == null) {
+          this.accTransFrm.patchValue({
+            acct_num: ''
+          });
+          this.HandleMessage(true, MessageType.Error,
+            'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
+          this.msg.sendCommonTmLoanAll(null);
+        } else {
+          if (null !== acc.tmloanall.approval_status
+            && acc.tmloanall.approval_status.toLowerCase() === 'u') {
+              this.HandleMessage(true, MessageType.Error,
+                'Loan ' + this.f.acct_num.value + ' is not approved, please approve before transaction.');
+              this.msg.sendCommonTmLoanAll(null);
+              this.isLoading = false;
+              this.onResetClick();
+              return;
+          }
+          let oprn_cd_temp=this.operations.filter(e => e.acc_type_cd === acc.tddeftrans.acc_type_cd && e.oprn_desc.toLocaleLowerCase()===(acc.tddeftrans.trans_type.toLocaleUpperCase()=='B'?'disbursement':'recovery') && e.module_type.toLocaleUpperCase()==="LOAN")[0].oprn_cd;
+          this.accTransFrm.patchValue({
+            oprn_cd: oprn_cd_temp
+          });
+          //const td_deftranstrf: td_def_trans_trf[] = [];
+          //this.td_deftranstrfList = td_deftranstrf;
+          //const temp_deftranstrf = new td_def_trans_trf();
+          //this.td_deftranstrfList.push(temp_deftranstrf);
+          //this.tm_denominationList = [];
+          //this.denominationGrandTotal = 0;
+          //this.transferGrandTotal = 0;
+          //this.TrfTotAmt = 0;
+          //this.tdDefTransFrm.reset();
+          //this.accDtlsFrm.reset();
+          //this.showTransactionDtl = false;
+          //this.disableOperation = false;
+          this.accNoEnteredForTransaction = acc.tmloanall;
+          this.accDtlsFrm.patchValue({
+            cust_name: acc.tmloanall.cust_name,
+            intt_recev: acc.tmloanall.curr_intt + acc.tmloanall.ovd_intt,
+            curr_principal: acc.tmloanall.curr_prn,
+            curr_intt: acc.tmloanall.curr_intt,
+            curr_intt_rate: acc.tmloanall.curr_intt_rate,
+            ovd_principal: acc.tmloanall.ovd_prn,
+            ovd_intt: acc.tmloanall.ovd_intt,
+            ovd_intt_rate: acc.tmloanall.ovd_intt_rate,
+            principal: acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
+            total_due: acc.tmloanall.curr_intt + acc.tmloanall.ovd_intt + acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
+            disb_amt: acc.tmloanall.disb_amt
+          });
+          this.msg.sendCommonTmLoanAll(acc.tmloanall);
+          this.tdDefTransFrm.patchValue({
+            trans_cd:acc.tddeftrans.trans_cd,
+            trans_dt:acc.tddeftrans.trans_dt,
+            acc_num: acc.tmloanall.loan_id,
+            acc_type_cd: acc.tmloanall.acc_cd,
+            curr_intt_rate: acc.tmloanall.curr_intt_rate,
+            ovd_intt_rate: acc.tmloanall.ovd_intt_rate,
+            instl_start_dt: acc.tmloanall.instl_start_dt.toString().substr(0, 10),
+            periodicity: this.installmenttypeList.filter(x => x.desc_type === acc.tmloanall.piriodicity)[0].ins_desc,
+            instl_no: acc.tmloanall.instl_no,
+            recov_type: 'A',
+            intt_recov_dt: Utils.convertStringToDt(acc.tmloanall.last_intt_calc_dt.toString().substr(0, 10)),
+            intt_till_dt: Utils.convertStringToDt(acc.tmloanall.last_intt_calc_dt.toString().substr(0, 10)),
+            trans_type_key:acc.tddeftrans.trans_type,
+            trans_mode:acc.tddeftrans.trans_mode,
+            amount:acc.tddeftrans.amount,
+            instrument_dt:acc.tddeftrans.instrument_dt,
+            instrument_num :acc.tddeftrans.instrument_num,
+            paid_to:acc.tddeftrans.paid_to,
+            token_num:acc.tddeftrans.token_num,
+            trf_type:acc.tddeftrans.trf_type,
+            curr_prn_recov:acc.tddeftrans.curr_prn_recov,
+            curr_intt_recov:acc.tddeftrans.curr_intt_recov,
+            ovd_prn_recov:acc.tddeftrans.ovd_prn_recov,
+            ovd_intt_recov:acc.tddeftrans.ovd_intt_recov,
+            paid_amount:acc.tddeftrans.paid_amt,
+            share:acc.tddeftrans.share_amt,
+            comm:acc.tddeftrans.sum_assured,
+            svcchrg:acc.tddeftrans.voucher_id,
+            saleform:acc.tddeftrans.mis_advance_recov,
+            insurence:acc.tddeftrans.audit_fees_recov
+          });
+          this.sancdtls = acc.tmlaonsanctiondtls;
+          this.sancdtls.forEach(x => x.draw_limit = x.sanc_amt - acc.tmloanall.curr_prn);
+          if (acc.tddeftrans.trf_type=='C')
+          {
+          this.tm_denominationList=acc.tmdenominationtrans;
+          this.tm_denominationList.forEach(x => x.rupees_desc = this.denominationList.filter(y => y.value === x.rupees)[0].rupees);
+          this.denominationGrandTotal = 0;
+          for (const l of this.tm_denominationList) {
+            this.denominationGrandTotal = this.denominationGrandTotal + l.total;
+          }
+        }
+        else
+        {
+          debugger;
+          this.td_deftranstrfList=acc.tddeftranstrf; 
+          //this.f.oprn_cd.enable();
+          for (let i=0;i<this.td_deftranstrfList.length;i++)
+          {
+          if (this.td_deftranstrfList[i].acc_num === '0000') {
+            this.td_deftranstrfList[i].gl_acc_code = this.td_deftranstrfList[i].acc_type_cd.toString();
+            this.checkAndSetDebitAccType('gl_acc', this.td_deftranstrfList[i]);
+    
+          }
+          else {
+            this.td_deftranstrfList[i].cust_acc_type = this.td_deftranstrfList[i].acc_type_cd.toString();
+            this.td_deftranstrfList[i].cust_acc_number = this.td_deftranstrfList[i].acc_num;
+            this.checkAndSetDebitAccType('cust_acc', this.td_deftranstrfList[i]);
+            this.setDebitAccDtls(this.td_deftranstrfList[i]);
+            
+          }
+        }
+        this.sumTransfer();
+      }
+          if (acc.tddeftrans.trans_type=="B")
+          {
+            this.showTransactionDtl = true;
+            this.isDisburs          = true;
+            this.showTranferType    = true;
+            this.isRecovery         = false;
+            this.showInstrumentDtl  = true;
+            this.isDelete=true;
+            this.f.oprn_cd.disable();
+          }
+          else
+          {
+            this.showTransactionDtl = true;
+            this.isDisburs          = false;
+            this.showTranferType    = true;
+            this.isRecovery         = true;
+            this.isDelete=true;
+            this.showInstrumentDtl  = false;
+          }
+
+        }
+        this.isLoading = false;
+      },
+      err => {
+
+        this.f.oprn_cd.disable(); this.isLoading = false;
+        console.log(err);
+        this.msg.sendCommonTmLoanAll(null);
+      }
+    );
+      
+      this.modalRef.hide();
+  }
+
+  public onAccountNumTabOff(): void {
+    debugger;
+    if (this.checkUnaprovedTransactionExixts(this.f.acct_num.value,Number(this.f.acc_type_cd.value))) {
+      this.unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
+        === this.f.acct_num.value.toString() && e.acc_type_cd===Number(this.f.acc_type_cd.value));
+      this.modalRef = this.modalService.show(this.contentbatch, this.config);
+      //this.HandleMessage(true, MessageType.Error,
+      //  'Un-approved Transaction already exists for the Account ' + this.f.acct_num.value);
+       const td_deftranstrf: td_def_trans_trf[] = [];
+       this.td_deftranstrfList = td_deftranstrf;
+       const temp_deftranstrf = new td_def_trans_trf();
+       this.td_deftranstrfList.push(temp_deftranstrf);
+       this.tm_denominationList = [];
+       this.denominationGrandTotal = 0;
+       this.transferGrandTotal = 0;
+       this.TrfTotAmt = 0;
+      // this.tdDefTransFrm.reset();
+      // this.accDtlsFrm.reset();
+      // this.showTransactionDtl = false;
+      // this.disableOperation = true;
+      
+      
+      //return;
+    }
+    else
+    {
+    this.f.oprn_cd.disable();
+    this.disableOperation = true;
+    this.showTranferType = true;
+    this.isDelete=false;
     // console.log('onAccountNumTabOff -' + this.f.acct_num.value);
     this.isLoading = true;
     this.showMsg = null;
     const acc1 = new tm_loan_all();
     let acc = new LoanOpenDM();
-
     acc1.loan_id = '' + this.f.acct_num.value;
     acc1.brn_cd = this.sys.BranchCode;
     acc1.acc_cd = this.f.acc_type_cd.value;
@@ -541,6 +721,7 @@ export class LoanaccountTransactionComponent implements OnInit {
         this.msg.sendCommonTmLoanAll(null);
       }
     );
+    }
   }
 
   /* method fires on operation type change */
@@ -655,10 +836,11 @@ export class LoanaccountTransactionComponent implements OnInit {
     }
   }
 
-  private checkUnaprovedTransactionExixts(acc_num: string): boolean {
+  private checkUnaprovedTransactionExixts(acc_num: string,acc_type_cd : number): boolean {
     this.GetUnapprovedDepTrans();
-    const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
-      === acc_num.toString())[0];
+    debugger;
+    const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num 
+      === acc_num.toString()  &&  e.acc_type_cd===acc_type_cd)[0]; 
 
     if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
       return false;
@@ -815,7 +997,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       return;
     }
 
-    if (this.checkUnaprovedTransactionExixts(this.td.acc_num.value)) {
+    if (this.checkUnaprovedTransactionExixts(this.td.acc_num.value,this.td.acc_cd.value)) {
       this.HandleMessage(true, MessageType.Error,
         'Un-approved Transaction already exists for the Account ' + this.td.acc_num.value);
       return;
@@ -827,6 +1009,13 @@ export class LoanaccountTransactionComponent implements OnInit {
     saveTransaction.tddeftrans = tdDefTrans;
     if (this.td.trf_type.value === 'C') {
       saveTransaction.tmdenominationtrans = this.tm_denominationList;
+      for(let i=0;i<saveTransaction.tmdenominationtrans.length;i++)
+      {
+        debugger;
+        if (this.td.trans_cd.value>0)
+        saveTransaction.tmdenominationtrans[i].trans_cd=this.td.trans_cd.value;
+      }
+      //saveTransaction.tmdenominationtrans.forEach(x=>x.trans_cd = this.td.trans_cd.value);
     } else if (this.td.trf_type.value === 'T') {
       let i = 0;
       this.td_deftranstrfList.forEach(e => {
@@ -854,13 +1043,38 @@ export class LoanaccountTransactionComponent implements OnInit {
       });
 
       const tmTrnsfr = new tm_transfer();
+      if (this.td.trans_cd.value>0)
+      tmTrnsfr.trans_cd=this.td.trans_cd.value;
       tmTrnsfr.brn_cd = this.sys.BranchCode;
       tmTrnsfr.trf_dt = this.sys.CurrentDate;
       tmTrnsfr.created_by = this.sys.UserId;
+      //tmTrnsfr.created_dt = this.sys.CurrentDate;
+      //tmTrnsfr.trf_cd=this.td.trans_cd.value;
       tmTrnsfr.approval_status = 'U';
-
       saveTransaction.tmtransfer.push(tmTrnsfr);
     }
+    debugger;
+    if (this.td.trans_cd.value>0)
+    {
+      this.svc.addUpdDel<LoanOpenDM>('Common/UpdateTransactionDetails', saveTransaction).subscribe(
+        res => {
+          debugger;
+          //this.unApprovedTransactionLst.push(tdDefTrans);
+          this.HandleMessage(true, MessageType.Sucess, 'Transaction Updated sucessfully !!!!');
+          // this.tdDefTransFrm.reset();
+          // this.accTransFrm.reset();
+          this.isLoading = false;
+        },
+        err => {
+          this.isLoading = false;
+          this.HandleMessage(true, MessageType.Error, 'Update Failed !!!!');
+          console.error('Error on onSaveClick' + JSON.stringify(err));
+        }
+      );
+
+    }
+    else
+    {
     this.svc.addUpdDel<LoanOpenDM>('Loan/InsertLoanTransactionData', saveTransaction).subscribe(
       res => {
         debugger;
@@ -868,12 +1082,51 @@ export class LoanaccountTransactionComponent implements OnInit {
         this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
         // this.tdDefTransFrm.reset();
         // this.accTransFrm.reset();
+        this.tdDefTransFrm.patchValue({
+          trans_cd:res});
         this.isLoading = false;
       },
       err => {
         this.isLoading = false;
         this.HandleMessage(true, MessageType.Error, 'Save Failed !!!!');
         console.error('Error on onSaveClick' + JSON.stringify(err));
+      }
+    );
+    }
+    
+  }
+
+  onDeleteClick(): void {
+    if (!(confirm('Are you sure you want to Delete Transaction of Acc '
+      + this.td.acc_num.value
+      + ' with Transancation Cd ' + this.td.trans_cd.value))) {
+      return;
+    }
+    debugger;
+    this.isLoading = true;
+    const param = new td_def_trans_trf();
+    param.brn_cd = this.sys.BranchCode; 
+    param.trans_cd = this.td.trans_cd.value;
+    param.trans_dt = this.sys.CurrentDate;
+    param.acc_type_cd = (+this.f.acc_type_cd.value);
+    param.acc_num = this.td.acc_num.value;
+
+    this.svc.addUpdDel<any>('Deposit/DeleteAccountOpeningData ', param).subscribe(
+      res => {
+        this.isLoading = false;
+        if (res === 0) {
+          this.HandleMessage(true, MessageType.Sucess, this.td.acc_num.value
+            + '\'s Transaction with Transancation Cd ' + this.td.trans_cd.value
+            + ' is deleted.');
+            this.GetUnapprovedDepTrans();
+          this.onResetClick();
+        } else {
+          this.HandleMessage(true, MessageType.Error, JSON.stringify(res));
+        }
+      },
+      err => {
+        this.isLoading = false;
+        this.HandleMessage(true, MessageType.Error, err.error.text);
       }
     );
   }
@@ -884,6 +1137,8 @@ export class LoanaccountTransactionComponent implements OnInit {
     const toReturn = new td_def_trans_trf();
     const accTypeCd = +this.f.acc_type_cd.value;
     // toReturn.trans_dt = new Date(this.convertDate(localStorage.getItem('__currentDate')) + ' UTC');
+    if (this.td.trans_cd.value>0)
+    toReturn.trans_cd=this.td.trans_cd.value;
     toReturn.brn_cd = this.sys.BranchCode;
     toReturn.trans_dt = this.sys.CurrentDate;
     toReturn.acc_type_cd = this.td.acc_type_cd.value;
@@ -959,6 +1214,8 @@ export class LoanaccountTransactionComponent implements OnInit {
     const toReturn = new td_def_trans_trf();
     const accTypeCd = +this.f.acc_type_cd.value;
     toReturn.brn_cd = this.sys.BranchCode;
+    if (this.td.trans_cd.value>0)
+    toReturn.trans_cd=this.td.trans_cd.value;
     toReturn.trans_dt = this.sys.CurrentDate;
     toReturn.trans_mode = 'V';
     toReturn.paid_to = null;
@@ -995,7 +1252,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     this.accTransFrm.reset();
     this.tdDefTransFrm.reset();
     this.accDtlsFrm.reset();
-
+    this.isDelete=false;
     // this.getOperationMaster();
     this.f.oprn_cd.disable();
     this.f.acct_num.disable();
@@ -1350,6 +1607,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     this.msg.sendCommonAccountNum('9');
     this.modalRef = this.modalService.show(template);
   }
+  
 }
 export class DynamicSelect {
   key: any;

@@ -1,9 +1,39 @@
+<ng-template #contentbatch let-modal bd-example-modal-lg>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Unapprove Transaction List</h4>
+    
+  </div>
+  <div class="modal-body">
+
+
+
+    <table class="table table-sm table-hover">
+      <tr>
+        <td>Trans Cd</td>
+        <td>Operation Type</td>
+        <td>Trans Type</td>
+        <td>Trans Amount</td>
+      </tr>
+      <tr *ngFor="let item of unapprovedTrans; let i = index;" title="Click to Select"  style="cursor: pointer;">
+        <td>{{item.trans_cd}}</td>
+        <td>{{item.trans_type=='B'?"Disbrusement":"Recovery"}}</td>
+        <td>{{item.trf_type=='T'?"Transfer":"Cash"}}</td>
+        <td>{{item.amount}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="Submit()">View/Edit</button>
+    <button class="btn btn-light" (click)="modalRef.hide()">Cancel</button>
+  </div>
+</ng-template>
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center"
   style="background-color: #78c2ad21; min-height: 90vh;">
   <div
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onDeleteClick()" [disabled]="!isDelete">Delete</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
@@ -189,6 +219,10 @@
         <form [formGroup]="tdDefTransFrm" *ngIf="showTransactionDtl">
           <h6 class="mt-2" style="background-color:lightskyblue">Transaction Details</h6>
           <div class="form-row">
+            <div class="form-group col-2">
+              <small for="amount">Trans Code</small>
+              <input type="text" class="form-control form-control-sm" formControlName="trans_cd" id="trans_cd" disabled>                
+            </div>
           <div class="form-group col-2"  *ngIf="isRecovery">
             <small for="recov_type">Recovery Type<span class="text-danger">*</span></small>
                <select id="recov_type" class="form-control form-control-sm" formControlName="recov_type"
@@ -486,6 +520,7 @@
   <div
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onSaveClick()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onDeleteClick()" [disabled]="!isDelete">Delete</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onResetClick()">Reset</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="onBackClick()">Back</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1">Cancel</button>
