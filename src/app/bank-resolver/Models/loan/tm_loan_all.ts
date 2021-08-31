@@ -55,4 +55,8 @@ export class tm_loan_all extends baseModel {
   public joint_cust_code: number; // Extra
   public joint_cust_relation: string; // Extra
 
+  public trans_cd: number; // Extra
+  public trans_dt: Date; // Extra
+
+
 }
