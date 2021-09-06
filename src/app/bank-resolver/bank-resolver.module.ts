@@ -60,7 +60,7 @@ import { DetailListComponent } from './loan/report/detail-list/detail-list.compo
 import { LoanDisbursementRegisterComponent } from './loan/report/loan-disbursement-register/loan-disbursement-register.component';
 import { RecoveryRegisterComponent } from './loan/report/recovery-register/recovery-register.component';
 import { LoanSubCashBookComponent } from './loan/report/loan-sub-cash-book/loan-sub-cash-book.component';
-
+import { AccOpeningViewComponent } from './deposit/acc-opening-view/acc-opening-view.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +91,11 @@ import { LoanSubCashBookComponent } from './loan/report/loan-sub-cash-book/loan-
     DetailListSBCAComponent, DetailListRDComponent,
     DetailListFDMISComponent, AccStmtSBCAComponent,
     AccStmtRDComponent, AccStmtTDComponent,
-    NearMaturityReportComponent, OpenClosingRegisterComponent, LoanStatementComponent, DetailListComponent, LoanDisbursementRegisterComponent, RecoveryRegisterComponent, LoanSubCashBookComponent
+    NearMaturityReportComponent, OpenClosingRegisterComponent,
+    LoanStatementComponent, DetailListComponent,
+    LoanDisbursementRegisterComponent, RecoveryRegisterComponent,
+    LoanSubCashBookComponent,
+    AccOpeningViewComponent,
   ],
   imports: [
     CommonModule,

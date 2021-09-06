@@ -50,6 +50,7 @@ import { DetailListComponent } from './loan/report/detail-list/detail-list.compo
 import { LoanDisbursementRegisterComponent } from './loan/report/loan-disbursement-register/loan-disbursement-register.component';
 import { RecoveryRegisterComponent } from './loan/report/recovery-register/recovery-register.component';
 import { LoanSubCashBookComponent } from './loan/report/loan-sub-cash-book/loan-sub-cash-book.component';
+import { AccOpeningViewComponent } from './deposit/acc-opening-view/acc-opening-view.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -113,7 +114,7 @@ const routes: Routes = [
       { path: 'LR_DisReg', component: LoanDisbursementRegisterComponent, canActivate: [ AuthGuard ]},
       { path: 'LR_RecReg', component: RecoveryRegisterComponent, canActivate: [ AuthGuard ]},
       { path: 'LR_SubCashBk', component: LoanSubCashBookComponent, canActivate: [ AuthGuard ]},
-
+      { path: 'DT_OpenAccView', component: AccOpeningViewComponent, canActivate: [ AuthGuard ]},
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
