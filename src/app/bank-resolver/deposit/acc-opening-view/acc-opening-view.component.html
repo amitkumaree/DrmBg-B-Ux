@@ -325,13 +325,11 @@
                 class="form-control form-control-sm text-capitalize" id="dep_principal" placeholder="Principal">
 
               <small for="dep_amount">Amount</small>
-              <input disabled style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+              <input disabled [(ngModel)]="tm_deposit.clr_bal" style="height:25px; text-align-last: right;" type="number" min="0" step='any'
                 class="form-control form-control-sm text-capitalize" id="dep_amount" placeholder="Amount">
 
               <small for="dep_cur_bal">Curr. Balance</small>
-              <!-- <input [disabled]='disableAll' style="height:25px; text-align-last: right;" type="number" min="0" step='any'
-              class="form-control form-control-sm text-capitalize" id="dep_cur_bal" placeholder="Curr. Balance"> -->
-              <input disabled style="height:25px; text-align-last: right;" type="number" min="0" step='any'
+              <input disabled [(ngModel)]="tm_deposit.curr_bal" style="height:25px; text-align-last: right;" type="number" min="0" step='any'
                 class="form-control form-control-sm text-capitalize" id="dep_cur_bal" placeholder="Curr. Balance">
             </div>
           </div>
@@ -1354,7 +1352,7 @@
       <!-- <==================================================================================> -->
 
       <div class="col-6 col-md-5 border-left">
-        <h1></h1>
+        <!-- <h1></h1>
         <h6 style="background-color: lightskyblue">Introducer Details</h6>
 
         <section *ngFor="let t1 of td_introducerlist; let i=index">
@@ -1378,9 +1376,9 @@
                 class="form-control form-control-sm text-capitalize" id="intr_name" placeholder="Introducer Name">
             </div>
           </div>
-        </section>
+        </section> -->
 
-        <hr style="margin-top: 0ch;">
+        <!-- <hr style="margin-top: 0ch;"> -->
         <h1></h1>
         <h6 style="background-color: lightskyblue">Nominee Details</h6>
 
