@@ -45,6 +45,11 @@ import { DetailListRDComponent } from './deposit/report/detail-list-rd/detail-li
 import { DetailListSBCAComponent } from './deposit/report/detail-list-sbca/detail-list-sbca.component';
 import { NearMaturityReportComponent } from './deposit/report/near-maturity-report/near-maturity-report.component';
 import { OpenClosingRegisterComponent } from './deposit/report/open-closing-register/open-closing-register.component';
+import { LoanStatementComponent } from './loan/report/loan-statement/loan-statement.component';
+import { DetailListComponent } from './loan/report/detail-list/detail-list.component';
+import { LoanDisbursementRegisterComponent } from './loan/report/loan-disbursement-register/loan-disbursement-register.component';
+import { RecoveryRegisterComponent } from './loan/report/recovery-register/recovery-register.component';
+import { LoanSubCashBookComponent } from './loan/report/loan-sub-cash-book/loan-sub-cash-book.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -54,7 +59,7 @@ const routes: Routes = [
   { path: 'te-st1', component: TransactionapprovalComponent },
   { path: 'te-st2', component: AccounTransactionsComponent },
   { path: 'te-st4', component: LoanTransactionApprovalComponent },
-  { path: 'te-st5', component: LoanaccountTransactionComponent },  
+  { path: 'te-st5', component: LoanaccountTransactionComponent },
   { path: 'te-st', component: UTCustomerProfileComponent },
   { path: 't6', component: AccOpeningComponent },
   { path: 'BankConfig', component: BankConfigComponent },
@@ -103,6 +108,11 @@ const routes: Routes = [
       { path: 'DR_ASF', component: AccStmtTDComponent, canActivate: [ AuthGuard ]},
       { path: 'DR_NearMatReport', component: NearMaturityReportComponent, canActivate: [ AuthGuard ]},
       { path: 'DR_OpenCloseReg', component: OpenClosingRegisterComponent, canActivate: [ AuthGuard ]},
+      { path: 'LR_LoanStmt', component: LoanStatementComponent, canActivate: [ AuthGuard ]},
+      { path: 'LR_DtlLst', component: DetailListComponent, canActivate: [ AuthGuard ]},
+      { path: 'LR_DisReg', component: LoanDisbursementRegisterComponent, canActivate: [ AuthGuard ]},
+      { path: 'LR_RecReg', component: RecoveryRegisterComponent, canActivate: [ AuthGuard ]},
+      { path: 'LR_SubCashBk', component: LoanSubCashBookComponent, canActivate: [ AuthGuard ]},
 
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
