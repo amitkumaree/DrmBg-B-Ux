@@ -48,4 +48,5 @@ export class mm_customer {
   public created_dt: Date;
   public modified_by: string;
   public modified_dt: Date;
+  public acc_num: string;
 }

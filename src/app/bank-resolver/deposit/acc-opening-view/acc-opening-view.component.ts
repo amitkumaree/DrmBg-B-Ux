@@ -480,7 +480,7 @@ export class AccOpeningViewComponent implements OnInit {
     this.tm_deposit.brn_cd = this.branchCode;
   }
 
-  getAccountOpeningData() {
+  getAccountOpeningData(cust: mm_customer) {
 
     if (this.tm_deposit.acc_type_cd === null || this.tm_deposit.acc_type_cd === undefined) {
       this.HandleMessage(true, MessageType.Warning, 'Please select Account Type');
@@ -488,6 +488,8 @@ export class AccOpeningViewComponent implements OnInit {
       exit(0);
     }
 
+    this.tm_deposit.acc_num = cust.acc_num;
+    this.suggestedCustomer = null;
 
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetAccountOpeningData', this.tm_deposit).subscribe(
@@ -724,6 +726,38 @@ export class AccOpeningViewComponent implements OnInit {
       }
     );
   }
+
+
+
+  public suggestCustomer(): void {
+    debugger;
+    if (this.tm_deposit.acc_num.length > 2)
+      {
+        if (this.tm_deposit.acc_type_cd === undefined || this.tm_deposit.acc_type_cd === null) {
+        this.HandleMessage(true, MessageType.Warning, 'Please select Account Type');
+        this.tm_deposit.acc_num = null;
+        exit(0);
+      }
+
+      const prm = new p_gen_param();
+      prm.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
+      prm.as_cust_name = this.tm_deposit.acc_num.toLowerCase();
+
+      this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomer = res.slice(0, 10);
+          } else {
+            this.suggestedCustomer = [];
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomer = null;
+    }
+  }
+
 
 
   public suggestCustomerSignatories(idx: number): void {
