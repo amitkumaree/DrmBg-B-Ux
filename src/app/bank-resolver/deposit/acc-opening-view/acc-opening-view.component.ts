@@ -295,7 +295,15 @@ export class AccOpeningViewComponent implements OnInit {
 
   assignModelsFromMasterData() {
 
-
+      debugger;
+    if ( this.masterModel.tmdeposit.acc_close_dt !== undefined
+      && this.masterModel.tmdeposit.acc_close_dt !== null
+      && this.masterModel.tmdeposit.acc_close_dt.toString() !== '01/01/0001 00:00'
+      && this.masterModel.tmdeposit.acc_status.toUpperCase() === 'C' )
+      {
+        this.HandleMessage(true, MessageType.Warning, 'The Account#'+ this.masterModel.tmdeposit.acc_num +' is Closed !!');
+        return;
+      }
 
     let retDepositPeriodArr = [];
 
@@ -485,7 +493,7 @@ export class AccOpeningViewComponent implements OnInit {
     this.svc.addUpdDel<any>('Deposit/GetAccountOpeningData', this.tm_deposit).subscribe(
       res => {
 
-
+        debugger;
         this.isLoading = false;
         this.masterModel = res;
 
