@@ -749,6 +749,8 @@ export class AccOpeningViewComponent implements OnInit {
             this.suggestedCustomer = res.slice(0, 10);
           } else {
             this.suggestedCustomer = [];
+            this.HandleMessage(true, MessageType.Warning, 'The Account#'+ this.masterModel.tmdeposit.acc_num +' does not match with any active account !!');
+            return;
           }
         },
         err => { this.isLoading = false; }
