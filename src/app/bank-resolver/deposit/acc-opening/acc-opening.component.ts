@@ -437,6 +437,7 @@ export class AccOpeningComponent implements OnInit {
     cust.cust_cd = 0;
     cust.brn_cd = this.branchCode;
 
+    this.isLoading = true;
     if (this.customerList === undefined || this.customerList === null || this.customerList.length === 0) {
       this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
         res => {
@@ -1836,9 +1837,11 @@ export class AccOpeningComponent implements OnInit {
     temp_deposit.acc_num = this.td_deftranstrfList[0].cust_acc_number;
     temp_deposit.acc_type_cd = parseInt(this.td_deftranstrfList[0].cust_acc_type);
 
+    debugger;
     this.isLoading = true;
     this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
       res => {
+        debugger;
 
         temp_deposit_list = res;
         this.isLoading = false;
@@ -1850,14 +1853,34 @@ export class AccOpeningComponent implements OnInit {
           exit(0);
         }
 
-        let temp_mm_cust = new mm_customer();
-        temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
-        this.td_deftranstrfList[0].cust_name = temp_mm_cust.cust_name;
+        // let temp_mm_cust = new mm_customer();
+        // temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
+        // this.td_deftranstrfList[0].cust_name = temp_mm_cust.cust_name;
 
         this.td_deftranstrfList[0].clr_bal = temp_deposit_list[0].clr_bal;
         this.td_deftranstrfList[0].acc_cd = this.constitutionList.filter(x => x.acc_type_cd.toString() ===
           temp_deposit.acc_type_cd.toString()
           && x.constitution_cd.toString() === temp_deposit_list[0].constitution_cd.toString())[0].acc_cd;
+
+        let temp_mm_cust = new mm_customer();
+        temp_mm_cust.cust_cd = temp_deposit_list[0].cust_cd;
+        this.isLoading = true;
+        this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', temp_mm_cust).subscribe(
+          res => {
+
+            this.isLoading = false;
+            this.customerList = res;
+            if (this.customerList !== undefined && this.customerList.length > 0)
+            {
+              this.td_deftranstrfList[0].cust_name = this.customerList[0].cust_name;
+              this.customerList = null;
+            }
+          },
+          err => {
+            this.isLoading = false;
+
+          }
+        );
 
       },
       err => {
