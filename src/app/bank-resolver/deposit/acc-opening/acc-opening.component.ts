@@ -531,6 +531,7 @@ export class AccOpeningComponent implements OnInit {
     this.operationType = '';
     this.initializeMasterDataAndFlags();
     this.initializeModels();
+    this.closeAlertMsg();
   }
 
   retrieveData() {

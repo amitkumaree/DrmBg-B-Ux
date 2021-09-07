@@ -466,6 +466,7 @@ export class AccOpeningViewComponent implements OnInit {
     this.operationType = '';
     this.initializeMasterDataAndFlags();
     this.initializeModels();
+    this.closeAlertMsg();
   }
 
   retrieveData() {
