@@ -242,8 +242,6 @@ export class AccounTransactionsComponent implements OnInit {
         this.td.intt_rate.value === '') {
         return;
       }
-
-      ;
       // this.tm_deposit.mat_dt = this.DateFormatting(this.openDate); // this.tm_deposit.opening_dt;
       // this.tm_deposit.mat_dt.setFullYear(this.tm_deposit.mat_dt.getFullYear() + this.tm_deposit.year);
       // this.tm_deposit.mat_dt.setMonth(this.tm_deposit.mat_dt.getMonth() + this.tm_deposit.month);
@@ -706,6 +704,9 @@ export class AccounTransactionsComponent implements OnInit {
     this.svc.addUpdDel<any>('Deposit/GetPrevTransaction', t).subscribe(
       res => {
         this.preTransactionDtlForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
+        this.preTransactionDtlForSelectedAcc.forEach(ele => {
+          ele.TransDtAsString = ele.trans_dt.toString().substring(0, 10);
+        });
         // this.preTransactionDtlForSelectedAcc = this.preTransactionDtlForSelectedAcc.((a, b) => (a.trans_dt < b.trans_dt ? -1 : 1));
       },
       err => { console.log(err); }
@@ -1826,26 +1827,48 @@ export class AccounTransactionsComponent implements OnInit {
       }
       toReturn.instrument_num = this.td.instrument_num.value === '' ? 0 : +this.td.instrument_num.value;
       toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
-      if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close') {
-        if (accTypeCd === 2
-          || accTypeCd === 3
-          || accTypeCd === 4
-          || accTypeCd === 5) {
-          toReturn.particulars = this.td.particulars.value;
+      if (this.td.particulars.value === null ||
+        this.td.particulars.value === '') {
+        if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close') {
+          if (accTypeCd === 2
+            || accTypeCd === 3
+            || accTypeCd === 4
+            || accTypeCd === 5) {
+            toReturn.particulars = this.td.particulars.value;
+          } else {
+            if (this.td.trf_type.value === 'C') {
+              if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
+                toReturn.particulars = 'TO CASH ';
+              } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
+                toReturn.particulars = 'BY CASH ';
+              }
+
+            } else {
+              if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
+                toReturn.particulars = 'TO TRANSFER :' + this.td.acc_num.value;
+              } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
+                toReturn.particulars = 'BY TRANSFER :' + this.td.acc_num.value;
+              }
+            }
+          }
         } else {
-          if (this.td.trf_type.value === 'T') {
-            toReturn.particulars = 'BY TRANSFER TO ' + this.td.particulars.value + ':' + this.td.acc_num.value;
-          } else if (this.td.trf_type.value === 'C') {
-            toReturn.particulars = 'BY CASH';
+          if (this.td.trf_type.value === 'C') {
+            if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
+              toReturn.particulars = 'TO CASH ';
+            } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
+              toReturn.particulars = 'BY CASH ';
+            }
+
+          } else {
+            if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
+              toReturn.particulars = 'TO TRANSFER :' + this.td.acc_num.value;
+            } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
+              toReturn.particulars = 'BY TRANSFER :' + this.td.acc_num.value;
+            }
           }
         }
-      } else {
-        if (this.td.trf_type.value === 'T') {
-          toReturn.particulars = 'BY TRANSFER TO ' + this.td.particulars.value + ':' + this.td.acc_num.value;
-        } else if (this.td.trf_type.value === 'C') {
-          toReturn.particulars = 'BY CASH';
-        }
-      }
+      } else { toReturn.particulars = this.td.particulars.value; }
+
       if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'
         && this.td.trf_type.value === '') {
         toReturn.trans_type = 'T';
@@ -1971,26 +1994,58 @@ export class AccounTransactionsComponent implements OnInit {
     }
     toReturn.instrument_num = this.td.instrument_num.value === '' ? 0 : +this.td.instrument_num.value;
     toReturn.instrument_dt = this.td.instrument_dt.value === '' ? null : this.td.instrument_dt.value;
-    if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close') {
-      if (accTypeCd === 2
-        || accTypeCd === 3
-        || accTypeCd === 4
-        || accTypeCd === 5) {
-        toReturn.particulars = this.td.particulars.value;
+    if (this.td.particulars.value === null ||
+      this.td.particulars.value === '') {
+      if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close') {
+        if (accTypeCd === 2
+          || accTypeCd === 3
+          || accTypeCd === 4
+          || accTypeCd === 5) {
+          toReturn.particulars = this.td.particulars.value;
+        } else {
+          // if (this.td.trf_type.value === 'T') {
+          //   toReturn.particulars = 'BY TRANSFER TO ' + this.td.particulars.value + ':' + this.td.acc_num.value;
+          // } else if (this.td.trf_type.value === 'C') {
+          //   toReturn.particulars = 'BY CASH';
+          // }
+          if (this.td.trf_type.value === 'C') {
+            if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
+              toReturn.particulars = 'TO CASH ';
+            } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
+              toReturn.particulars = 'BY CASH ';
+            }
+
+          } else {
+            if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
+              toReturn.particulars = 'TO TRANSFER :' + this.td.acc_num.value;
+            } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
+              toReturn.particulars = 'BY TRANSFER FROM :' + this.td.acc_num.value;
+            }
+          }
+        }
       } else {
-        if (this.td.trf_type.value === 'T') {
-          toReturn.particulars = 'BY TRANSFER TO ' + this.td.particulars.value + ':' + this.td.acc_num.value;
-        } else if (this.td.trf_type.value === 'C') {
-          toReturn.particulars = 'BY CASH';
+        // if (this.td.trf_type.value === 'T') {
+        //   toReturn.particulars = 'BY TRANSFER TO ' + this.td.particulars.value + ':' + this.td.acc_num.value;
+        // } else if (this.td.trf_type.value === 'C') {
+        //   toReturn.particulars = 'BY CASH';
+        // }
+        if (this.td.trf_type.value === 'C') {
+          if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
+            toReturn.particulars = 'TO CASH ';
+          } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
+            toReturn.particulars = 'BY CASH ';
+          }
+
+        } else {
+          if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'withdraw') {
+            toReturn.particulars = 'TO TRANSFER :' + this.td.acc_num.value;
+          } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'deposit') {
+            toReturn.particulars = 'BY TRANSFER FROM :' + this.td.acc_num.value;
+          }
         }
       }
-    } else {
-      if (this.td.trf_type.value === 'T') {
-        toReturn.particulars = 'BY TRANSFER TO ' + this.td.particulars.value + ':' + this.td.acc_num.value;
-      } else if (this.td.trf_type.value === 'C') {
-        toReturn.particulars = 'BY CASH';
-      }
-    }
+    } else { toReturn.particulars = this.td.particulars.value; }
+
     if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'
       && this.td.trf_type.value === '') {
       toReturn.trans_type = 'T';
@@ -2199,8 +2254,6 @@ export class AccounTransactionsComponent implements OnInit {
       tdDefTransTrnsfr.clr_bal = null;
       return;
     }
-
-    ;
     let temp_deposit_list: tm_deposit[] = [];
     let temp_deposit = new tm_deposit();
 
