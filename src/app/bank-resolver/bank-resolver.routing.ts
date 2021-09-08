@@ -52,6 +52,8 @@ import { RecoveryRegisterComponent } from './loan/report/recovery-register/recov
 import { LoanSubCashBookComponent } from './loan/report/loan-sub-cash-book/loan-sub-cash-book.component';
 import { AccOpeningViewComponent } from './deposit/acc-opening-view/acc-opening-view.component';
 import { NeftOutwardComponent } from './deposit/neft-outward/neft-outward.component';
+import { NeftInwardReportComponent } from './deposit/report/neft-inward-report/neft-inward-report.component';
+import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report/neft-outward-report.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -117,6 +119,8 @@ const routes: Routes = [
       { path: 'LR_SubCashBk', component: LoanSubCashBookComponent, canActivate: [AuthGuard] },
       { path: 'DT_OpenAccView', component: AccOpeningViewComponent, canActivate: [AuthGuard] },
       { path: 'DT_NEFTPayment', component: NeftOutwardComponent, canActivate: [AuthGuard] },
+      { path: 'DR_NeftIn', component: NeftInwardReportComponent, canActivate: [AuthGuard] },
+      { path: 'DR_NeftOut', component: NeftOutwardReportComponent, canActivate: [AuthGuard] },
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {

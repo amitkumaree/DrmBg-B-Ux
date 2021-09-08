@@ -1,4 +1,5 @@
 <img src="../../../../../assets/images/underCons.gif" class="img-fluid">
+
 <!-- <ng-template #content let-modal data-keyboard="false" data-backdrop="false">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Report Criteria</h4>
@@ -15,19 +16,35 @@
         </div>
 
     <form [formGroup]="reportcriteria">
-      <div>
-        <label for="fromDate">As on</label>
-        <div class="input-group">
-          <input type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="fromdate" disabled bsDatepicker
-          formControlName="fromDate" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
-          [isOpen]="isOpenFromDp">
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary" type="button" (click)="isOpenFromDp = !isOpenFromDp">
-            <i class="fa fa-calendar" aria-hidden="true"></i>
-          </button>
+      <div class="form-row">
+        <div class="col-6">
+          <small for="fromDate" >From Date</small>
+          <div class="input-group">
+            <input type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="fromdate" disabled bsDatepicker
+            formControlName="fromDate" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
+            [isOpen]="isOpenFromDp">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" (click)="isOpenFromDp = !isOpenFromDp">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+          </div>
+          </div>
         </div>
+        <div class="col-6">
+          <small for="toDate" >To Date</small>
+          <div class="input-group">
+            <input type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="toDate" disabled bsDatepicker
+            formControlName="toDate" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
+            [isOpen]="isOpenToDp">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" (click)="isOpenToDp = !isOpenToDp">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+          </div>
+          </div>
         </div>
       </div>
+
     </form>
   </div>
   <div class="modal-footer">

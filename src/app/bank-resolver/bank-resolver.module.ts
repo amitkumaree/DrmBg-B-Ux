@@ -62,6 +62,8 @@ import { RecoveryRegisterComponent } from './loan/report/recovery-register/recov
 import { LoanSubCashBookComponent } from './loan/report/loan-sub-cash-book/loan-sub-cash-book.component';
 import { AccOpeningViewComponent } from './deposit/acc-opening-view/acc-opening-view.component';
 import { NeftOutwardComponent } from './deposit/neft-outward/neft-outward.component';
+import { NeftInwardReportComponent } from './deposit/report/neft-inward-report/neft-inward-report.component';
+import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report/neft-outward-report.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +100,8 @@ import { NeftOutwardComponent } from './deposit/neft-outward/neft-outward.compon
     LoanSubCashBookComponent,
     AccOpeningViewComponent,
     NeftOutwardComponent,
+    NeftInwardReportComponent,
+    NeftOutwardReportComponent,
   ],
   imports: [
     CommonModule,
