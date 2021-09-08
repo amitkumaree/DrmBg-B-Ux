@@ -1,5 +1,5 @@
 import Utils from "src/app/_utility/utils";
-import { mm_customer } from "./mm_customer";
+// import { mm_customer } from "./mm_customer";
 
 export class SystemValues {
   private __brnCd: string;
@@ -14,10 +14,10 @@ export class SystemValues {
   private __minBalNoChq: string;
   private __isLoggedIn: boolean;
   private __dpstBnsRt: string;
-  private __neftPayDrAcc:string;
+  private __neftPayDrAcc: string;
   private __pnlIntRtFrAccPreMatClos: string;
   private __curFinyr: string;
-  private __allCustomerLst: mm_customer[];
+  // private __allCustomerLst: mm_customer[];
 
   constructor() {
     this.__brnCd = localStorage.getItem('__brnCd');
@@ -37,14 +37,14 @@ export class SystemValues {
     this.__dpstBnsRt = localStorage.getItem('__dpstBnsRt');
     this.__pnlIntRtFrAccPreMatClos = localStorage.getItem('__pnlIntRtFrAccPreMatClos');
     this.__curFinyr = localStorage.getItem('__curFinyr');
-    this.__neftPayDrAcc=localStorage.getItem('__neftPayDrAcc');
+    this.__neftPayDrAcc = localStorage.getItem('__neftPayDrAcc');
   }
 
-  get AllCustomer(): mm_customer[] {
-    return (null !== this.__allCustomerLst
-      && undefined !== this.__allCustomerLst
-      && this.__allCustomerLst.length > 0) ? this.__allCustomerLst : null;
-  }
+  // get AllCustomer(): mm_customer[] {
+  //   return (null !== this.__allCustomerLst
+  //     && undefined !== this.__allCustomerLst
+  //     && this.__allCustomerLst.length > 0) ? this.__allCustomerLst : null;
+  // }
 
   get IsUsrLoggedIn(): boolean {
     return this.__isLoggedIn;

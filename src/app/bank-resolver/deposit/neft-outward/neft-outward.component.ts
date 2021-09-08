@@ -12,11 +12,11 @@ import { p_gen_param } from '../../Models/p_gen_param';
 })
 export class NeftOutwardComponent implements OnInit {
 
-  constructor(private svc: RestService, private router: Router,private modalService: BsModalService,
+  constructor(private svc: RestService, private router: Router, private modalService: BsModalService,
   ) { }
   @ViewChild('ifsc', { static: true }) ifsc: TemplateRef<any>;
   modalRef: BsModalRef;
-  
+
   alertMsgType: string;
   alertMsg: string;
   disabledAll = false;
@@ -35,11 +35,11 @@ export class NeftOutwardComponent implements OnInit {
   neftPayRet = new td_outward_payment();
   acc_master: m_acc_master[] = [];
   accountTypeList: mm_acc_type[] = [];
-  __ifsc='';
-  __ifscbank='';
-  __ifscbranch='';
-  __ifscaddress='';
-  __ifsccity='';
+  __ifsc = '';
+  __ifscbank = '';
+  __ifscbranch = '';
+  __ifscaddress = '';
+  __ifsccity = '';
   config = {
     keyboard: false, // ensure esc press doesnt close the modal
     backdrop: true, // enable backdrop shaded color
@@ -52,8 +52,8 @@ export class NeftOutwardComponent implements OnInit {
     this.userName = this.sys.UserId;
     this.neftPayRet.brn_cd = this.sys.BranchCode;
     this.neftPayRet.trans_dt = this.sys.CurrentDate;
-    this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
-    this.neftPayRet.date_of_payment=this.sys.CurrentDate;
+    this.neftPayRet.dr_acc_no = this.sys.NeftPayDrAcc;
+    this.neftPayRet.date_of_payment = this.sys.CurrentDate;
     this.getAccountTypeList();
   }
 
@@ -104,17 +104,17 @@ export class NeftOutwardComponent implements OnInit {
   clearData() {
     this.isRetrieve = true;
     this.neftPayRet = new td_outward_payment();
-    //this.neftPayRet=null;
+    // this.neftPayRet=null;
     this.neftPayRet.brn_cd = this.sys.BranchCode;
     this.neftPayRet.trans_dt = this.sys.CurrentDate;
-    this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
-    this.neftPayRet.date_of_payment=this.sys.CurrentDate;
-    this.neftPayRet.bene_ifsc_code='';
-    this.__ifsc='';
-    this.__ifscbank='';
-    this.__ifscbranch='';
-    this.__ifscaddress='';
-    this.__ifsccity='';
+    this.neftPayRet.dr_acc_no = this.sys.NeftPayDrAcc;
+    this.neftPayRet.date_of_payment = this.sys.CurrentDate;
+    this.neftPayRet.bene_ifsc_code = '';
+    this.__ifsc = '';
+    this.__ifscbank = '';
+    this.__ifscbranch = '';
+    this.__ifscaddress = '';
+    this.__ifsccity = '';
   }
 
   retrieveData() {
@@ -122,23 +122,21 @@ export class NeftOutwardComponent implements OnInit {
     this.neftPayRet = new td_outward_payment();
     this.neftPayRet.brn_cd = this.sys.BranchCode;
     this.neftPayRet.trans_dt = this.sys.CurrentDate;
-    this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
-    this.neftPayRet.date_of_payment=this.sys.CurrentDate;
-    this.neftPayRet.bene_ifsc_code='';
-    this.__ifsc='';
-    this.__ifscbank='';
-    this.__ifscbranch='';
-    this.__ifscaddress='';
-    this.__ifsccity='';
-    //this.neftPayRet=null;
-    this.neftPayRet.bene_ifsc_code='';
+    this.neftPayRet.dr_acc_no = this.sys.NeftPayDrAcc;
+    this.neftPayRet.date_of_payment = this.sys.CurrentDate;
+    this.neftPayRet.bene_ifsc_code = '';
+    this.__ifsc = '';
+    this.__ifscbank = '';
+    this.__ifscbranch = '';
+    this.__ifscaddress = '';
+    this.__ifsccity = '';
+    // this.neftPayRet=null;
+    this.neftPayRet.bene_ifsc_code = '';
   }
-  openModal()
-  {
-    if (this.__ifsc=='' && this.neftPayRet.bene_ifsc_code.length>8)
-    {
+  openModal() {
+    if (this.__ifsc === '' && this.neftPayRet.bene_ifsc_code.length > 8) {
       const ifscentred = this.neftPayRet.bene_ifsc_code;
-      let neftPaySearch = new td_outward_payment();
+      const neftPaySearch = new td_outward_payment();
       neftPaySearch.bene_ifsc_code = ifscentred.toUpperCase();
       this.isLoading = true;
       this.svc.addUpdDel<any>('Deposit/GetIfscCode', neftPaySearch).subscribe(
@@ -146,26 +144,25 @@ export class NeftOutwardComponent implements OnInit {
 
           this.isLoading = false;
           if (undefined !== res && null !== res && res.length > 0) {
-            this.__ifsc=res[0].ifsc;
-            this.__ifscbank=res[0].bank;
-            this.__ifscbranch=res[0].branch;
-            this.__ifscaddress=res[0].address;
-            this.__ifsccity=res[0].city;
+            this.__ifsc = res[0].ifsc;
+            this.__ifscbank = res[0].bank;
+            this.__ifscbranch = res[0].branch;
+            this.__ifscaddress = res[0].address;
+            this.__ifsccity = res[0].city;
             this.modalRef = this.modalService.show(this.ifsc, this.config);
           } else {
-            this.__ifsc='';
-            this.__ifscbank='';
-            this.__ifscbranch='';
-            this.__ifscaddress='';
-            this.__ifsccity='';
+            this.__ifsc = '';
+            this.__ifscbank = '';
+            this.__ifscbranch = '';
+            this.__ifscaddress = '';
+            this.__ifsccity = '';
           }
         },
         err => { this.isLoading = false; }
       );
 
     }
-    else
-    {
+    else {
       this.modalRef = this.modalService.show(this.ifsc, this.config);
     }
   }
@@ -192,17 +189,17 @@ export class NeftOutwardComponent implements OnInit {
         if (res === 0) {
           this.HandleMessage(true, MessageType.Sucess, 'Deleted Successfully!!!');
           this.neftPayRet = new td_outward_payment();
-          //this.neftPayRet=null;
-          this.__ifsc='';
-          this.__ifscbank='';
-          this.__ifscbranch='';
-          this.__ifscaddress='';
-          this.__ifsccity='';
-          this.neftPayRet.bene_ifsc_code='';
+          // this.neftPayRet=null;
+          this.__ifsc = '';
+          this.__ifscbank = '';
+          this.__ifscbranch = '';
+          this.__ifscaddress = '';
+          this.__ifsccity = '';
+          this.neftPayRet.bene_ifsc_code = '';
           this.neftPayRet.brn_cd = this.sys.BranchCode;
           this.neftPayRet.trans_dt = this.sys.CurrentDate;
-          this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
-          this.neftPayRet.date_of_payment=this.sys.CurrentDate;
+          this.neftPayRet.dr_acc_no = this.sys.NeftPayDrAcc;
+          this.neftPayRet.date_of_payment = this.sys.CurrentDate;
         }
         else {
           this.HandleMessage(true, MessageType.Error, 'Delete Failed!!!');
@@ -346,7 +343,7 @@ export class NeftOutwardComponent implements OnInit {
 
     if (this.neftPayRet.bene_ifsc_code.length > 3) {
       const ifscentred = this.neftPayRet.bene_ifsc_code;
-      let neftPaySearch = new td_outward_payment();
+      const neftPaySearch = new td_outward_payment();
       neftPaySearch.bene_ifsc_code = ifscentred.toUpperCase();
       this.isLoading = true;
       this.svc.addUpdDel<any>('Deposit/GetIfscCode', neftPaySearch).subscribe(
@@ -367,17 +364,17 @@ export class NeftOutwardComponent implements OnInit {
     }
   }
   public SelectedIfsc(cust: any): void {
-    this.__ifsc='';
-    this.__ifscbank='';
-   this.__ifscbranch='';
-    this.__ifscaddress='';
-    this.__ifsccity='';
+    this.__ifsc = '';
+    this.__ifscbank = '';
+    this.__ifscbranch = '';
+    this.__ifscaddress = '';
+    this.__ifsccity = '';
     this.neftPayRet.bene_ifsc_code = (cust.ifsc);
-    this.__ifsc=cust.ifsc;
-    this.__ifscbank=cust.bank;
-   this.__ifscbranch=cust.branch;
-    this.__ifscaddress=cust.address;
-    this.__ifsccity=cust.city;
+    this.__ifsc = cust.ifsc;
+    this.__ifscbank = cust.bank;
+    this.__ifscbranch = cust.branch;
+    this.__ifscaddress = cust.address;
+    this.__ifsccity = cust.city;
     this.suggestedIfsc = null;
   }
 
@@ -399,74 +396,73 @@ export class NeftOutwardComponent implements OnInit {
     if (tfrType.length === 1) {
       this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
         res => {
-  debugger;
+          debugger;
           this.accountTypeList = res;
           this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
           this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
           let temp_acc_type = new mm_acc_type();
-        temp_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString()
-          === tfrType)[0];
+          temp_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString()
+            === tfrType)[0];
 
-        if (temp_acc_type === undefined || temp_acc_type === null) {
-             this.HandleMessage(true, MessageType.Error, 'Invalid Account Type');
-          return;
-        }  
+          if (temp_acc_type === undefined || temp_acc_type === null) {
+            this.HandleMessage(true, MessageType.Error, 'Invalid Account Type');
+            return;
+          }
         },
         err => {
           this.HandleMessage(true, MessageType.Error, 'Invalid Account Type');
           return;
         }
-      );      
-            
+      );
+
     }
-    else if  (tfrType.length > 1)
-     {
+    else if (tfrType.length > 1) {
       if (tfrType === this.sys.CashAccCode.toString()) {
         this.HandleMessage(true, MessageType.Error, this.sys.CashAccCode.toString() +
-          ' cash acount code is not permissible.');       
+          ' cash acount code is not permissible.');
         return;
       }
 
-        if (this.acc_master === undefined || this.acc_master === null || this.acc_master.length === 0) {
-          this.isLoading = true;
-          let temp_acc_master = new m_acc_master();
-          this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
-            res => {
-              ;
-              this.acc_master = res;
-              this.isLoading = false;
-              temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === tfrType)[0];
-              if (temp_acc_master === undefined || temp_acc_master === null) {
-                this.HandleMessage(true, MessageType.Error, 'Invalid GL Code');
-                return;
-              }
-              else {
-                this.neftPayRet.bank_dr_acc_no='0000';
-                this.neftPayRet.bank_dr_acc_name=temp_acc_master.acc_name;
-              }
-            },
-            err => {
-              ;
-              this.isLoading = false;
+      if (this.acc_master === undefined || this.acc_master === null || this.acc_master.length === 0) {
+        this.isLoading = true;
+        let temp_acc_master = new m_acc_master();
+        this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
+          res => {
+            ;
+            this.acc_master = res;
+            this.isLoading = false;
+            temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === tfrType)[0];
+            if (temp_acc_master === undefined || temp_acc_master === null) {
+              this.HandleMessage(true, MessageType.Error, 'Invalid GL Code');
+              return;
             }
-          );
+            else {
+              this.neftPayRet.bank_dr_acc_no = '0000';
+              this.neftPayRet.bank_dr_acc_name = temp_acc_master.acc_name;
+            }
+          },
+          err => {
+            ;
+            this.isLoading = false;
+          }
+        );
+      }
+      else {
+        let temp_acc_master = new m_acc_master();
+        temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === tfrType)[0];
+        if (temp_acc_master === undefined || temp_acc_master === null) {
+          this.HandleMessage(true, MessageType.Error, 'Invalid GL Code');
+          return;
         }
         else {
-          let temp_acc_master = new m_acc_master();
-          temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === tfrType)[0];
-          if (temp_acc_master === undefined || temp_acc_master === null) {
-            this.HandleMessage(true, MessageType.Error, 'Invalid GL Code');
-            return;
-          }
-          else {
-            this.neftPayRet.bank_dr_acc_no='0000';
-            this.neftPayRet.bank_dr_acc_name=temp_acc_master.acc_name;
-          }
+          this.neftPayRet.bank_dr_acc_no = '0000';
+          this.neftPayRet.bank_dr_acc_name = temp_acc_master.acc_name;
         }
       }
-      
     }
-    
+
+  }
+
   getAccountTypeList() {
     debugger;
     if (this.accountTypeList.length > 0) {
@@ -476,7 +472,7 @@ export class NeftOutwardComponent implements OnInit {
 
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
-debugger;
+        debugger;
         this.accountTypeList = res;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
@@ -488,14 +484,12 @@ debugger;
   }
 
   public suggestCustomer(): void {
-    if(this.neftPayRet.bank_dr_acc_type==null || this.neftPayRet.bank_dr_acc_type==0)
-    {
+    if (this.neftPayRet.bank_dr_acc_type == null || this.neftPayRet.bank_dr_acc_type === 0) {
       this.HandleMessage(true, MessageType.Error, 'Bene A/C Type can not be Blank');
       return;
     }
-    if(this.neftPayRet.bank_dr_acc_type>1000)
-    {
-      this.neftPayRet.bank_dr_acc_no='0000';
+    if (this.neftPayRet.bank_dr_acc_type > 1000) {
+      this.neftPayRet.bank_dr_acc_no = '0000';
       this.HandleMessage(true, MessageType.Error, 'Please change Bene A/C Type First!!!');
       return;
     }
@@ -518,8 +512,8 @@ debugger;
     }
   }
   public SelectCustomer(cust: any): void {
-    this.neftPayRet.bank_dr_acc_no=cust.acc_num;
-    this.neftPayRet.bank_dr_acc_name=cust.cust_name;
+    this.neftPayRet.bank_dr_acc_no = cust.acc_num;
+    this.neftPayRet.bank_dr_acc_name = cust.cust_name;
     this.suggestedCustomer = null;
   }
 

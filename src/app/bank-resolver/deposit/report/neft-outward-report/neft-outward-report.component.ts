@@ -10,12 +10,11 @@ import { RestService } from 'src/app/_service';
 import Utils from 'src/app/_utility/utils';
 
 @Component({
-  selector: 'app-loan-disbursement-register',
-  templateUrl: './loan-disbursement-register.component.html',
-  styleUrls: ['./loan-disbursement-register.component.css']
+  selector: 'app-neft-outward-report',
+  templateUrl: './neft-outward-report.component.html',
+  styleUrls: ['./neft-outward-report.component.css']
 })
-export class LoanDisbursementRegisterComponent implements OnInit {
-
+export class NeftOutwardReportComponent implements OnInit {
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   modalRef: BsModalRef;
   isOpenFromDp = false;
@@ -51,7 +50,7 @@ export class LoanDisbursementRegisterComponent implements OnInit {
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
     });
-    // this.onLoadScreen(this.content);
+    this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
@@ -95,4 +94,5 @@ export class LoanDisbursementRegisterComponent implements OnInit {
   closeScreen() {
     this.router.navigate([this.sys.BankName + '/la']);
   }
+
 }

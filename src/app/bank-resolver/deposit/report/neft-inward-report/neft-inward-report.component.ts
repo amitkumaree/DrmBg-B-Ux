@@ -10,11 +10,11 @@ import { RestService } from 'src/app/_service';
 import Utils from 'src/app/_utility/utils';
 
 @Component({
-  selector: 'app-loan-disbursement-register',
-  templateUrl: './loan-disbursement-register.component.html',
-  styleUrls: ['./loan-disbursement-register.component.css']
+  selector: 'app-neft-inward-report',
+  templateUrl: './neft-inward-report.component.html',
+  styleUrls: ['./neft-inward-report.component.css']
 })
-export class LoanDisbursementRegisterComponent implements OnInit {
+export class NeftInwardReportComponent implements OnInit {
 
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   modalRef: BsModalRef;
@@ -43,8 +43,8 @@ export class LoanDisbursementRegisterComponent implements OnInit {
   toDate: Date;
   suggestedCustomer: mm_customer[];
   constructor(private svc: RestService, private formBuilder: FormBuilder,
-    private modalService: BsModalService, private _domSanitizer: DomSanitizer,
-    private router: Router) { }
+              private modalService: BsModalService, private _domSanitizer: DomSanitizer,
+              private router: Router) { }
   ngOnInit(): void {
     this.fromdate = this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
@@ -70,10 +70,10 @@ export class LoanDisbursementRegisterComponent implements OnInit {
       this.fromdate = this.reportcriteria.controls.fromDate.value;
       this.toDate = this.reportcriteria.controls.toDate.value;
       this.UrlString = this.svc.getReportUrl();
-      this.UrlString = this.UrlString + 'WebForm/Deposit/neftoutwardpay?'
-        + 'brn_cd=' + this.sys.BranchCode
-        + '&from_dt=' + Utils.convertDtToString(this.fromdate)
-        + '&to_dt=' + Utils.convertDtToString(this.toDate);
+      this.UrlString = this.UrlString + 'WebForm/Deposit/nearmatdetails?'
+        + 'from_dt=' + Utils.convertDtToString(this.fromdate)
+        + '&to_dt=' + Utils.convertDtToString(this.toDate)
+        + '&brn_cd=' + this.sys.BranchCode;
 
       this.isLoading = true;
       this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString);
@@ -95,4 +95,5 @@ export class LoanDisbursementRegisterComponent implements OnInit {
   closeScreen() {
     this.router.navigate([this.sys.BankName + '/la']);
   }
+
 }
