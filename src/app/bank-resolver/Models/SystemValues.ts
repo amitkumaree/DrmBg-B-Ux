@@ -14,6 +14,7 @@ export class SystemValues {
   private __minBalNoChq: string;
   private __isLoggedIn: boolean;
   private __dpstBnsRt: string;
+  private __neftPayDrAcc:string;
   private __pnlIntRtFrAccPreMatClos: string;
   private __curFinyr: string;
   private __allCustomerLst: mm_customer[];
@@ -36,6 +37,7 @@ export class SystemValues {
     this.__dpstBnsRt = localStorage.getItem('__dpstBnsRt');
     this.__pnlIntRtFrAccPreMatClos = localStorage.getItem('__pnlIntRtFrAccPreMatClos');
     this.__curFinyr = localStorage.getItem('__curFinyr');
+    this.__neftPayDrAcc=localStorage.getItem('__neftPayDrAcc');
   }
 
   get AllCustomer(): mm_customer[] {
@@ -89,6 +91,9 @@ export class SystemValues {
   }
   get CurrentFinancialYr(): number {
     return +this.__curFinyr;
+  }
+  get NeftPayDrAcc(): number {
+    return +this.__neftPayDrAcc;
   }
 
   /** expected format of the string is dd/mm/yyyy */

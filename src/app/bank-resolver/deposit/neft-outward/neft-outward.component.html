@@ -1,3 +1,24 @@
+<ng-template #ifsc let-modal bd-example-modal-lg>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">IFSC Code Details</h4>
+    <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <!-- Default inline 1-->
+    <table class="table table-sm table-hover">
+      <tr><td>IFSC       #</td><td>{{__ifsc}}</td></tr>
+      <tr><td>Bank Name  #</td><td>{{__ifscbank}}</td></tr>
+      <tr><td>Branch Name#</td><td>{{__ifscbranch}}</td></tr>
+      <tr><td>Address    #</td><td>{{__ifscaddress}}</td></tr>
+      <tr><td>City       #</td><td>{{__ifsccity}}</td></tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+  <button class="btn btn-light" (click)="modalRef.hide()">Close</button>
+  </div>
+</ng-template>
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center">
   <div
@@ -38,6 +59,11 @@
         <small for="brn_cd">Branch Code</small>
         <input  [disabled]="true" [(ngModel)]="neftPayRet.brn_cd" type="text"
           class="form-control form-control-sm text-capitalize" id="brn_cd" placeholder="Branch Code">
+      </div>
+      <div class="form-group col-4">
+        <small for="dr_acc_no">Dr Acc No<span class="text-danger">*</span></small>
+        <input  [(ngModel)]="neftPayRet.dr_acc_no" type="number"  [disabled]="true"
+         class="form-control form-control-sm text-capitalize" id="dr_acc_no" placeholder="Dr Acc No">
       </div>
       <div class="form-group col-4">
         <small for="trans_dt">Trans Date</small>
@@ -111,7 +137,11 @@
           class="form-control form-control-sm text-capitalize" id="bene_ifsc_code" placeholder="Bene Ifsc Code">
       </div> -->
       <div class="form-group col-4">
-        <small for="bene_ifsc_code">Search by IFSC#<span class="text-danger">*</span></small>
+        <small for="bene_ifsc_code">Search by IFSC#<span class="text-danger">*</span>
+          <button type="button" class="btn btn-link" *ngIf="neftPayRet.bene_ifsc_code.length > 8"
+            (click)="openModal()">IFSC Details
+          </button></small>
+
           <input type="text" class="form-control form-control-sm "  [disabled]="!isRetrieve"
           [(ngModel)]="neftPayRet.bene_ifsc_code" id="bene_ifsc_code" placeholder="Enter IFSC#"
           (input)="suggestIfsc()" name="x-field-1" autocomplete="new-field-1">
@@ -141,25 +171,51 @@
         *ngIf="suggestedIfsc && !(suggestedIfsc.length > 0)">
         <strong class="text-danger">" {{neftPayRet.bene_ifsc_code}} " does not match with any IFSC</strong>
         </div>
+               
       </div>
-      <div class="form-group col-4">
-        <small for="dr_acc_no">Dr Acc No<span class="text-danger">*</span></small>
-        <input  [(ngModel)]="neftPayRet.dr_acc_no" type="number"  [disabled]="!isRetrieve"
-          class="form-control form-control-sm text-capitalize" id="dr_acc_no" placeholder="Dr Acc No">
-      </div>
+     
       <div class="form-group col-4">
         <small for="bank_dr_acc_type">Bene A/C Type<span class="text-danger">*</span></small>
         <input  [(ngModel)]="neftPayRet.bank_dr_acc_type" type="number"  [disabled]="!isRetrieve"
+        (focusout)="checkAndSetDebitAccType($event.target.value)"
           class="form-control form-control-sm text-capitalize" id="bank_dr_acc_type" placeholder="Bene A/C Type">
       </div>
       <div class="form-group col-4">
         <small for="bank_dr_acc_no">Bank Dr Acc No<span class="text-danger">*</span></small>
-        <input  [(ngModel)]="neftPayRet.bank_dr_acc_no" type="text"  [disabled]="!isRetrieve"
-          class="form-control form-control-sm text-capitalize" id="bank_dr_acc_no" placeholder="Bank Dr Acc No">
+        <!-- <input  [(ngModel)]="neftPayRet.bank_dr_acc_no" type="text"  [disabled]="!isRetrieve"
+          class="form-control form-control-sm text-capitalize" id="bank_dr_acc_no" placeholder="Bank Dr Acc No"> -->
+          <input type="text" [disabled]="!isRetrieve" class="form-control form-control-sm "
+          [(ngModel)]="neftPayRet.bank_dr_acc_no" id="bank_dr_acc_no" placeholder="Enter Acc# / Customer Name / Phone number"
+              (input)="suggestCustomer()" name="x-field-1" autocomplete="new-field-1">
+              <div class="suggestions" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
+                <table class="table table-hover table-bordered table-sm w-auto small">
+                  <thead>
+                    <tr>
+                      <th scope="col">Acc#</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Phone</th>
+                      <th scope="col">Gurdian Name</th>
+                      <th scope="col">Address</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let cust of suggestedCustomer" (click)="SelectCustomer(cust)">
+                      <td scope="row">{{cust.acc_num}}</td>
+                      <td>{{cust.cust_name}}</td>
+                      <td>{{((null === cust.phone) ? '' : cust.phone)}}</td>
+                      <td>{{cust.guardian_name}}</td>
+                      <td>{{cust.present_address}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        
       </div>
+
+
       <div class="form-group col-4">
         <small for="bank_dr_acc_name">Bank Dr Acc Name<span class="text-danger">*</span></small>
-        <input  [(ngModel)]="neftPayRet.bank_dr_acc_name" type="text"  [disabled]="!isRetrieve"
+        <input  [(ngModel)]="neftPayRet.bank_dr_acc_name" type="text"  [disabled]="true"
           class="form-control form-control-sm text-capitalize" id="bank_dr_acc_name" placeholder="Bank Dr Acc Name">
       </div>
       <div class="form-group col-4">
