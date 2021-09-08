@@ -660,7 +660,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let tran of preTransactionDtlForSelectedAcc,let i=index" >
-                <td>{{tran.trans_dt}}</td>
+                <td>{{tran.TransDtAsString}}</td>
                 <td>{{tran.remarks}}</td>
                 <td>{{tran.instrument_num}}</td>
                 <td *ngIf="tran.trans_type === 'D'">Cr</td>

@@ -1,6 +1,6 @@
 import { baseModel } from './baseModel';
 
-export class td_def_trans_trf extends baseModel{
+export class td_def_trans_trf extends baseModel {
   public trans_dt?: Date;
   public trans_cd: number;
   public acc_type_cd: number;
@@ -65,4 +65,5 @@ export class td_def_trans_trf extends baseModel{
 
   public clr_bal: number;
 
+  public TransDtAsString: string;
 }
