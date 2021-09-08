@@ -120,6 +120,16 @@ export class NeftOutwardComponent implements OnInit {
   retrieveData() {
     this.isRetrieve = false;
     this.neftPayRet = new td_outward_payment();
+    this.neftPayRet.brn_cd = this.sys.BranchCode;
+    this.neftPayRet.trans_dt = this.sys.CurrentDate;
+    this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
+    this.neftPayRet.date_of_payment=this.sys.CurrentDate;
+    this.neftPayRet.bene_ifsc_code='';
+    this.__ifsc='';
+    this.__ifscbank='';
+    this.__ifscbranch='';
+    this.__ifscaddress='';
+    this.__ifsccity='';
     //this.neftPayRet=null;
     this.neftPayRet.bene_ifsc_code='';
   }
