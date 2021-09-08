@@ -126,7 +126,6 @@ export class NeftOutwardComponent implements OnInit {
     // this.neftPayRet=null;
     this.neftPayRet.brn_cd = this.sys.BranchCode;
     this.neftPayRet.trans_dt = this.sys.CurrentDate;
-<<<<<<< HEAD
     this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
     this.neftPayRet.date_of_payment=this.sys.CurrentDate;
     this.neftPayRet.bene_ifsc_code='';
@@ -137,16 +136,6 @@ export class NeftOutwardComponent implements OnInit {
     this.__ifscbranch='';
     this.__ifscaddress='';
     this.__ifsccity='';
-=======
-    this.neftPayRet.dr_acc_no = this.sys.NeftPayDrAcc;
-    this.neftPayRet.date_of_payment = this.sys.CurrentDate;
-    this.neftPayRet.bene_ifsc_code = '';
-    this.__ifsc = '';
-    this.__ifscbank = '';
-    this.__ifscbranch = '';
-    this.__ifscaddress = '';
-    this.__ifsccity = '';
->>>>>>> 778d17cb82bc4a5e8080f6f5446b9cebb83d2e1f
   }
 
   retrieveData() {
@@ -154,7 +143,6 @@ export class NeftOutwardComponent implements OnInit {
     this.neftPayRet = new td_outward_payment();
     this.neftPayRet.brn_cd = this.sys.BranchCode;
     this.neftPayRet.trans_dt = this.sys.CurrentDate;
-<<<<<<< HEAD
     this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
     this.neftPayRet.date_of_payment=this.sys.CurrentDate;
     this.neftPayRet.bene_ifsc_code='';
@@ -167,18 +155,6 @@ export class NeftOutwardComponent implements OnInit {
     this.__ifsccity='';
     //this.neftPayRet=null;
     this.neftPayRet.bene_ifsc_code='';
-=======
-    this.neftPayRet.dr_acc_no = this.sys.NeftPayDrAcc;
-    this.neftPayRet.date_of_payment = this.sys.CurrentDate;
-    this.neftPayRet.bene_ifsc_code = '';
-    this.__ifsc = '';
-    this.__ifscbank = '';
-    this.__ifscbranch = '';
-    this.__ifscaddress = '';
-    this.__ifsccity = '';
-    // this.neftPayRet=null;
-    this.neftPayRet.bene_ifsc_code = '';
->>>>>>> 778d17cb82bc4a5e8080f6f5446b9cebb83d2e1f
   }
   openModal() {
     if (this.__ifsc === '' && this.neftPayRet.bene_ifsc_code.length > 8) {
@@ -245,15 +221,10 @@ export class NeftOutwardComponent implements OnInit {
           this.neftPayRet.bene_ifsc_code = '';
           this.neftPayRet.brn_cd = this.sys.BranchCode;
           this.neftPayRet.trans_dt = this.sys.CurrentDate;
-<<<<<<< HEAD
           this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
           this.neftPayRet.date_of_payment=this.sys.CurrentDate;
           this.neftPayRet.charge_ded=0;
           this.neftPayRet.credit_narration='';
-=======
-          this.neftPayRet.dr_acc_no = this.sys.NeftPayDrAcc;
-          this.neftPayRet.date_of_payment = this.sys.CurrentDate;
->>>>>>> 778d17cb82bc4a5e8080f6f5446b9cebb83d2e1f
         }
         else {
           this.HandleMessage(true, MessageType.Error, 'Delete Failed!!!');
@@ -576,14 +547,9 @@ debugger;
     }
   }
   public SelectCustomer(cust: any): void {
-<<<<<<< HEAD
     this.neftPayRet.bank_dr_acc_no=cust.acc_num;
     this.neftPayRet.bank_dr_acc_name=cust.cust_name;
     this.neftPayRet.credit_narration='TRF FRM '+cust.cust_name;
-=======
-    this.neftPayRet.bank_dr_acc_no = cust.acc_num;
-    this.neftPayRet.bank_dr_acc_name = cust.cust_name;
->>>>>>> 778d17cb82bc4a5e8080f6f5446b9cebb83d2e1f
     this.suggestedCustomer = null;
   }
 
