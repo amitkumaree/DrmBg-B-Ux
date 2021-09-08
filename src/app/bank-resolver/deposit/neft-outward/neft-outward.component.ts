@@ -47,7 +47,7 @@ export class NeftOutwardComponent implements OnInit {
   };
 
   ngOnInit(): void {
-
+    //this.neftPayRet = new td_outward_payment();
     this.branchCode = this.sys.BranchCode;
     this.userName = this.sys.UserId;
     this.neftPayRet.brn_cd = this.sys.BranchCode;
@@ -55,9 +55,28 @@ export class NeftOutwardComponent implements OnInit {
     this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
     this.neftPayRet.date_of_payment=this.sys.CurrentDate;
     this.getAccountTypeList();
+    this.clearData();
+    
   }
+  setCharge(amt : number){
+   let param = new p_gen_param();
+  param.ad_prn_amt=amt;    
+  this.isLoading = true;
+    this.svc.addUpdDel<any>('Deposit/GetNeftCharge', param).subscribe(
+      res => {
+          this.neftPayRet.charge_ded = res;
+          this.isLoading = false;
+          
+      },
+      err => {
+        this.isLoading = false;
+        this.isRetrieve = true;
+        this.neftPayRet.charge_ded = 0;
+      }
+    );
 
-
+  }
+  
   GetNeftOutDtls() {
     this.isLoading = true;
     this.neftPay.brn_cd = this.sys.BranchCode;
@@ -110,6 +129,8 @@ export class NeftOutwardComponent implements OnInit {
     this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
     this.neftPayRet.date_of_payment=this.sys.CurrentDate;
     this.neftPayRet.bene_ifsc_code='';
+    this.neftPayRet.credit_narration='';
+    this.neftPayRet.charge_ded=0;
     this.__ifsc='';
     this.__ifscbank='';
     this.__ifscbranch='';
@@ -125,6 +146,8 @@ export class NeftOutwardComponent implements OnInit {
     this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
     this.neftPayRet.date_of_payment=this.sys.CurrentDate;
     this.neftPayRet.bene_ifsc_code='';
+    this.neftPayRet.credit_narration='';
+    this.neftPayRet.charge_ded=0;
     this.__ifsc='';
     this.__ifscbank='';
     this.__ifscbranch='';
@@ -203,6 +226,8 @@ export class NeftOutwardComponent implements OnInit {
           this.neftPayRet.trans_dt = this.sys.CurrentDate;
           this.neftPayRet.dr_acc_no=this.sys.NeftPayDrAcc;
           this.neftPayRet.date_of_payment=this.sys.CurrentDate;
+          this.neftPayRet.charge_ded=0;
+          this.neftPayRet.credit_narration='';
         }
         else {
           this.HandleMessage(true, MessageType.Error, 'Delete Failed!!!');
@@ -341,17 +366,17 @@ export class NeftOutwardComponent implements OnInit {
     }
 
   }
-  suggestIfsc(): void {
+  suggestIfsc(ifscent : string): void {
+debugger;
 
-
-    if (this.neftPayRet.bene_ifsc_code.length > 3) {
-      const ifscentred = this.neftPayRet.bene_ifsc_code;
+    if (ifscent.length > 3) {
+      const ifscentred = ifscent;
       let neftPaySearch = new td_outward_payment();
       neftPaySearch.bene_ifsc_code = ifscentred.toUpperCase();
       this.isLoading = true;
       this.svc.addUpdDel<any>('Deposit/GetIfscCode', neftPaySearch).subscribe(
         res => {
-
+debugger;
           this.isLoading = false;
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedIfsc = res.slice(0, 10);
@@ -443,6 +468,7 @@ export class NeftOutwardComponent implements OnInit {
               else {
                 this.neftPayRet.bank_dr_acc_no='0000';
                 this.neftPayRet.bank_dr_acc_name=temp_acc_master.acc_name;
+                this.neftPayRet.credit_narration='TRF FRM '+temp_acc_master.acc_name;
               }
             },
             err => {
@@ -461,6 +487,7 @@ export class NeftOutwardComponent implements OnInit {
           else {
             this.neftPayRet.bank_dr_acc_no='0000';
             this.neftPayRet.bank_dr_acc_name=temp_acc_master.acc_name;
+            this.neftPayRet.credit_narration='TRF FRM '+temp_acc_master.acc_name;
           }
         }
       }
@@ -520,6 +547,7 @@ debugger;
   public SelectCustomer(cust: any): void {
     this.neftPayRet.bank_dr_acc_no=cust.acc_num;
     this.neftPayRet.bank_dr_acc_name=cust.cust_name;
+    this.neftPayRet.credit_narration='TRF FRM '+cust.cust_name;
     this.suggestedCustomer = null;
   }
 
