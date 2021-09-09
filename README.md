@@ -70,3 +70,8 @@ npm i
 
 ## Report Oracle.dataaccess problem to be resolved via checking entry in Webconfig
 search oracle dataaccess assembly binding and match its version with dll version.
+
+## Before deployment make sure to replace the below
+find all 
+../../../../../assets/         with assets/   
+../../../assets/               with assets/

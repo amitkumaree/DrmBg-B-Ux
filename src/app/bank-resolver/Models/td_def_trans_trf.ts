@@ -66,4 +66,5 @@ export class td_def_trans_trf extends baseModel {
   public clr_bal: number;
 
   public TransDtAsString: string;
+  public Balance: number; // used to show previous balance total
 }

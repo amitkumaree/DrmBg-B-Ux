@@ -704,8 +704,19 @@ export class AccounTransactionsComponent implements OnInit {
     this.svc.addUpdDel<any>('Deposit/GetPrevTransaction', t).subscribe(
       res => {
         this.preTransactionDtlForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
-        this.preTransactionDtlForSelectedAcc.forEach(ele => {
+        let tot = 0;
+        this.preTransactionDtlForSelectedAcc.forEach((ele, index) => {
           ele.TransDtAsString = ele.trans_dt.toString().substring(0, 10);
+          if (index === 0) {
+            tot += ele.amount;
+          } else {
+            if (ele.trans_type === 'D') { // deposit
+              tot += ele.amount;
+            } else {
+              tot -= ele.amount;
+            }
+          }
+          ele.Balance = tot;
         });
         // this.preTransactionDtlForSelectedAcc = this.preTransactionDtlForSelectedAcc.((a, b) => (a.trans_dt < b.trans_dt ? -1 : 1));
       },
