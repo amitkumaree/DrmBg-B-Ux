@@ -51,7 +51,7 @@ export class RecoveryRegisterComponent implements OnInit {
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required]
     });
-    // this.onLoadScreen(this.content);
+    this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
@@ -70,7 +70,7 @@ export class RecoveryRegisterComponent implements OnInit {
       this.fromdate = this.reportcriteria.controls.fromDate.value;
       this.toDate = this.reportcriteria.controls.toDate.value;
       this.UrlString = this.svc.getReportUrl();
-      this.UrlString = this.UrlString + 'WebForm/Deposit/neftoutwardpay?'
+      this.UrlString = this.UrlString + 'WebForm/Loan/loanrecoveryregister?'
         + 'brn_cd=' + this.sys.BranchCode
         + '&from_dt=' + Utils.convertDtToString(this.fromdate)
         + '&to_dt=' + Utils.convertDtToString(this.toDate);

@@ -47,26 +47,18 @@ export class LoanStatementComponent implements OnInit {
     private modalService: BsModalService, private _domSanitizer: DomSanitizer,
     private router: Router) { }
   ngOnInit(): void {
-    // this.fromdate = this.sys.CurrentDate;
+    this.fromdate = this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
       toDate: [null, Validators.required],
-      acct_num: [{ value: '', disabled: true }, Validators.required],
-      acc_type_cd: [null, Validators.required]
+      acct_num: [null, Validators.required]
     });
-    // this.onLoadScreen(this.content);
+    this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
   }
 
-  public onAccountTypeChange(): void {
-    this.reportcriteria.controls.acct_num.setValue('');
-    this.suggestedCustomer = null;
-    if (+this.reportcriteria.controls.acc_type_cd.value > 0) {
-      this.reportcriteria.controls.acct_num.enable();
-    }
-  }
   public suggestCustomer(): void {
     if (this.reportcriteria.controls.acct_num.value.length > 0) {
       const prm = new p_gen_param();
@@ -106,10 +98,9 @@ export class LoanStatementComponent implements OnInit {
       this.fromdate = this.reportcriteria.controls.fromDate.value;
       this.toDate = this.reportcriteria.controls.toDate.value;
       this.UrlString = this.svc.getReportUrl();
-      this.UrlString = this.UrlString + 'WebForm/Deposit/assavings?'
-        + 'acc_num=' + this.reportcriteria.controls.acct_num.value
-        + '&acc_type_cd=' + (+this.reportcriteria.controls.acc_type_cd.value)
-        + '&brn_cd=' + this.sys.BranchCode
+      this.UrlString = this.UrlString + 'WebForm/Loan/loanstatement?'
+        + 'brn_cd=' + this.sys.BranchCode
+        + '&loan_id=' + this.reportcriteria.controls.acct_num.value
         + '&from_dt=' + Utils.convertDtToString(this.fromdate)
         + '&to_dt=' + Utils.convertDtToString(this.toDate);
       this.isLoading = true;

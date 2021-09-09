@@ -1,5 +1,4 @@
-<img src="../../../../../assets/images/underCons.gif" class="img-fluid">
-<!-- <ng-template #content let-modal data-keyboard="false" data-backdrop="false">
+<ng-template #content let-modal data-keyboard="false" data-backdrop="false">
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Report Criteria</h4>
     <button type="button" class="close text-danger" aria-label="Close" data-dismiss="modal" (click)="modalRef.hide()">
@@ -16,7 +15,7 @@
 
     <form [formGroup]="reportcriteria">
       <div class="form-row">
-        <div class="form-group col-3">
+        <!-- <div class="form-group col-3">
           <small for="acc_type_cd">Account Cd</small>
           <select id="acc_type_cd" class="form-control form-control-sm" formControlName="acc_type_cd"
           (change)="onAccountTypeChange()">
@@ -25,15 +24,14 @@
             <option [value]="7">7 - Share</option>
             <option [value]="8">8 - Current</option>
           </select>
-        </div>
-        <div class="col-9">
+        </div> -->
+        <div class="col-4">
           <small for="acct_num" >Loan ID</small>
           <input type="text"class="form-control form-control-sm "
-          formControlName="acct_num" id="acct_num" placeholder="Enter Acc# / Customer Name / Phone number"
+          formControlName="acct_num" id="acct_num" placeholder="Enter Acc#"
            name="x-field-1" autocomplete="new-field-1">
-
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <small for="fromDate" >From Date</small>
           <div class="input-group">
             <input type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="fromdate" disabled bsDatepicker
@@ -46,7 +44,7 @@
           </div>
           </div>
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <small for="toDate" >To Date</small>
           <div class="input-group">
             <input type="text" placeholder="dd/mm/yyyy" class="form-control" [ngModel]="toDate" disabled bsDatepicker
@@ -83,4 +81,4 @@ style="background-color: #78c2ad21; min-height: 20vh;">
 </div>
 </div>
 </div>
-<loading *ngIf="isLoading"></loading> -->
+<loading *ngIf="isLoading"></loading>

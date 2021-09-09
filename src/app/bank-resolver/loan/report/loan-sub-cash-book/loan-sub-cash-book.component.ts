@@ -51,7 +51,7 @@ export class LoanSubCashBookComponent implements OnInit {
       fromDate: [null, Validators.required],
       toDate: [null, null]
     });
-    // this.onLoadScreen(this.content);
+    this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
@@ -69,9 +69,9 @@ export class LoanSubCashBookComponent implements OnInit {
       this.showAlert = false;
       this.fromdate = this.reportcriteria.controls.fromDate.value;
       this.UrlString = this.svc.getReportUrl();
-      this.UrlString = this.UrlString + 'WebForm/Deposit/depositsubcashbook?'
-        + 'brn_cd=' + this.sys.BranchCode + '&from_dt='
-        + Utils.convertDtToString(this.fromdate);
+      this.UrlString = this.UrlString + 'WebForm/Loan/loansubcashbook?'
+        + 'brn_cd=' + this.sys.BranchCode
+        + '&adt_as_on_dt=' + Utils.convertDtToString(this.fromdate);
       this.isLoading = true;
       this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
       // this.modalRef.hide();

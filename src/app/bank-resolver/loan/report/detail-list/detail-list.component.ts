@@ -42,8 +42,8 @@ export class DetailListComponent implements OnInit {
   fromdate: Date;
   // todate: Date;
   constructor(private svc: RestService, private formBuilder: FormBuilder,
-              private modalService: BsModalService, private _domSanitizer: DomSanitizer,
-              private router: Router) { }
+    private modalService: BsModalService, private _domSanitizer: DomSanitizer,
+    private router: Router) { }
   ngOnInit(): void {
     this.fromdate = this.sys.CurrentDate;
     // this.todate = this.sys.CurrentDate;
@@ -51,7 +51,7 @@ export class DetailListComponent implements OnInit {
       fromDate: [null, Validators.required],
       acct_num: [null, Validators.required]
     });
-    // this.onLoadScreen(this.content);
+    this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
@@ -69,12 +69,12 @@ export class DetailListComponent implements OnInit {
       this.showAlert = false;
       this.fromdate = this.reportcriteria.controls.fromDate.value;
       this.UrlString = this.svc.getReportUrl();
-      this.UrlString = this.UrlString + 'WebForm/Deposit/depositsubcashbook?'
-        + 'acc_num=' + this.reportcriteria.controls.acct_num.value
-        + 'brn_cd=' + this.sys.BranchCode + '&from_dt='
-        + Utils.convertDtToString(this.fromdate);
+      this.UrlString = this.UrlString + 'WebForm/Loan/detailedlistforloan?'
+        + 'brn_cd=' + this.sys.BranchCode
+        + '&acc_cd=' + this.reportcriteria.controls.acct_num.value
+        + '&adt_dt=' + Utils.convertDtToString(this.fromdate);
       this.isLoading = true;
-      this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString)
+      this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString);
       // this.modalRef.hide();
       // setTimeout(() => {
       //   this.isLoading = false;
