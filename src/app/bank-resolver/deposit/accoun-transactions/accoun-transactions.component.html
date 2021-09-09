@@ -666,9 +666,7 @@
                 <td *ngIf="tran.trans_type === 'D'">Cr</td>
                 <td *ngIf="tran.trans_type !== 'D'">Dr</td>
                 <td>{{tran.amount | INRCurrency}}</td>
-                <td *ngIf="i === 0">{{tran.amount | INRCurrency}}</td>
-                <td *ngIf="i !== 0 && tran.trans_type === 'D'">{{(tran.amount + preTransactionDtlForSelectedAcc[i-1].amount) | INRCurrency}}</td>
-                <td *ngIf="i !== 0 && tran.trans_type !== 'D'">{{(preTransactionDtlForSelectedAcc[i-1].amount) - tran.amount | INRCurrency}}</td>
+                <td>{{tran.Balance| INRCurrency}}</td>
               </tr>
             </tbody>
           </table>
