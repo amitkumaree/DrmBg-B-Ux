@@ -28,11 +28,17 @@
         </div>
       </div>
       <div >
-        <small for="acct_num" >Account Number</small>
+        <!-- <small for="acct_num" >Account Number</small>
         <input type="text"class="form-control form-control-sm "
-        formControlName="acct_num" id="acct_num" placeholder="Enter Acc#"
-         name="x-field-1" autocomplete="new-field-1">
-
+        formControlName="acct_num" id="acct_num" placeholder="Loan Type"
+         name="x-field-1" autocomplete="new-field-1"> -->
+         <small for="acc_type_cd">Loan Type</small>
+         <select id="acc_type_cd" class="form-control form-control-sm" formControlName="acc_type_cd">
+           <option *ngIf="AcctTypes" disabled>Choose</option>
+           <option *ngFor="let acctType of AcctTypes" [value]="acctType.acc_type_cd">
+             {{acctType.acc_type_cd +' ' + acctType.acc_type_desc}}
+           </option>
+         </select>
       </div>
     </form>
   </div>

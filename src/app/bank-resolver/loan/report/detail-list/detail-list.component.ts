@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { SystemValues, mm_customer, p_report_param } from 'src/app/bank-resolver/Models';
+import { SystemValues, mm_customer, p_report_param, mm_operation } from 'src/app/bank-resolver/Models';
 import { p_gen_param } from 'src/app/bank-resolver/Models/p_gen_param';
 import { tt_trial_balance } from 'src/app/bank-resolver/Models/tt_trial_balance';
 import { RestService } from 'src/app/_service';
@@ -15,7 +15,7 @@ import Utils from 'src/app/_utility/utils';
   styleUrls: ['./detail-list.component.css']
 })
 export class DetailListComponent implements OnInit {
-
+  public static operations: mm_operation[] = [];
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   modalRef: BsModalRef;
   isOpenFromDp = false;
@@ -27,6 +27,8 @@ export class DetailListComponent implements OnInit {
     ignoreBackdropClick: true // disable backdrop click to close the modal
   };
   trailbalance: tt_trial_balance[] = [];
+
+  AcctTypes: mm_operation[];
   prp = new p_report_param();
   reportcriteria: FormGroup;
   closeResult = '';
@@ -49,14 +51,49 @@ export class DetailListComponent implements OnInit {
     // this.todate = this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
-      acct_num: [null, Validators.required]
+      acc_type_cd: [null, Validators.required]
     });
+    this.getOperationMaster();
     this.onLoadScreen(this.content);
   }
   private onLoadScreen(content) {
     this.modalRef = this.modalService.show(content, this.config);
   }
 
+  private getOperationMaster(): void {
+
+    this.isLoading = true;
+    if (undefined !== DetailListComponent.operations &&
+      null !== DetailListComponent.operations &&
+      DetailListComponent.operations.length > 0) {
+      this.isLoading = false;
+      this.AcctTypes = DetailListComponent.operations.filter(e => e.module_type === 'LOAN')
+        .filter((thing, i, arr) => {
+          return arr.indexOf(arr.find(t => t.acc_type_cd === thing.acc_type_cd)) === i;
+        });
+      this.AcctTypes = this.AcctTypes.sort((a, b) => (a.acc_type_cd > b.acc_type_cd ? 1 : -1));
+    } else {
+      this.svc.addUpdDel<mm_operation[]>('Mst/GetOperationDtls', null).subscribe(
+        res => {
+
+          DetailListComponent.operations = res;
+          this.isLoading = false;
+          this.AcctTypes = DetailListComponent.operations.filter(e => e.module_type === 'LOAN')
+            .filter((thing, i, arr) => {
+              return arr.indexOf(arr.find(t => t.acc_type_cd === thing.acc_type_cd)) === i;
+            });
+          this.AcctTypes = this.AcctTypes.sort((a, b) => (a.acc_type_cd > b.acc_type_cd ? 1 : -1));
+        },
+        err => { this.isLoading = false; }
+      );
+    }
+  }
+
+  // public onAcctTypeChange(): void {
+  //   const acctTypCdTofilter = +this.reportcriteria.controls.acc_type_cd.value;
+  //   const acctTypeDesription = DetailListComponent.operations
+  //     .filter(e => e.acc_type_cd === acctTypCdTofilter)[0].acc_type_desc;
+  // }
 
   public SubmitReport() {
     if (this.reportcriteria.invalid) {
@@ -71,7 +108,7 @@ export class DetailListComponent implements OnInit {
       this.UrlString = this.svc.getReportUrl();
       this.UrlString = this.UrlString + 'WebForm/Loan/detailedlistforloan?'
         + 'brn_cd=' + this.sys.BranchCode
-        + '&acc_cd=' + this.reportcriteria.controls.acct_num.value
+        + '&acc_cd=' + this.reportcriteria.controls.acc_type_cd.value
         + '&adt_dt=' + Utils.convertDtToString(this.fromdate);
       this.isLoading = true;
       this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString);

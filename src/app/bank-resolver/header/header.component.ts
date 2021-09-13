@@ -38,6 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showScreenTitle = false;
   selectedScreenToShow: string;
   sys = new SystemValues();
+  show = false;
 
   ngOnInit(): void {
     this.bankName = localStorage.getItem('__bName');
@@ -47,6 +48,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleCollapsed(): void {
     this.collapsed = !this.collapsed;
+  }
+  over(): void {
+    this.show = true;
+  }
+  out(): void {
+    this.show = false;
   }
 
   getBankConfigMaster() {
