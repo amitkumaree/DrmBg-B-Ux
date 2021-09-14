@@ -84,6 +84,7 @@ export class AccounTransactionsComponent implements OnInit {
   denominationGrandTotal = 0;
   modalRef: BsModalRef;
   editDeleteMode = false;
+  showCloseInterest = false;
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
@@ -167,7 +168,8 @@ export class AccounTransactionsComponent implements OnInit {
       intt_trf_type: [''],
       intt_rate: [''],
       interest: [''],
-      td_def_mat_amt: ['']
+      td_def_mat_amt: [''],
+      closeIntrest: ['']
     });
     this.resetTransfer();
     this.resetAccDtlsFrmFormData();
@@ -297,6 +299,28 @@ export class AccounTransactionsComponent implements OnInit {
       res => {
         this.tdDefTransFrm.patchValue({
           interest: +res
+        });
+        this.isLoading = false;
+      },
+      err => {
+        this.isLoading = false;
+        ;
+      }
+    );
+  }
+
+  F_CALC_SB_INTT(): void {
+    debugger;
+    this.isLoading = true;
+    const prm = new p_gen_param();
+    prm.as_acc_num = this.f.acct_num.value;
+    prm.brn_cd = this.sys.BranchCode;
+    this.svc.addUpdDel<any>('Deposit/F_CALC_SB_INTT', prm).subscribe(
+      res => {
+        this.showCloseInterest = true;
+        this.tdDefTransFrm.patchValue({
+          amount: this.accNoEnteredForTransaction.curr_bal + (+res),
+          closeIntrest: (+res)
         });
         this.isLoading = false;
       },
@@ -1336,9 +1360,8 @@ export class AccounTransactionsComponent implements OnInit {
       }
       this.hideOnClose = true;
       if (accTypCode === 1) { // Special logic for Saving on close
-        this.tdDefTransFrm.patchValue({
-          amount: this.accNoEnteredForTransaction.curr_bal
-        });
+        debugger;
+        this.F_CALC_SB_INTT();
       }
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
       /* check if for acct_type 2,4,5 mat is past today date

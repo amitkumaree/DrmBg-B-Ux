@@ -51,7 +51,7 @@
     <div class="row justify-content-center">
       <form [formGroup]="accTransFrm" class="col-12">
         <div class="form-row">
-          <div class="form-group col-3 offset-2">
+          <div class="form-group col-2 offset-1">
             <small for="acc_type_cd">Loan Type</small>
             <select id="acc_type_cd" class="form-control form-control-sm" formControlName="acc_type_cd"
               (change)="onAcctTypeChange()">
@@ -61,15 +61,44 @@
               </option>
             </select>
           </div>
-          <div class="form-group col-2">
-            <small for="acct_num">Account Number
-              <small style="display: inline;" class="form-text text-muted">
+          <div class="form-group col-6">
+            <small for="acct_num">Search by Loan ID / Customer Name / Phone number
+              <!-- <small style="display: inline;" class="form-text text-muted">
                 Press tab.
-              </small>
+              </small> -->
             </small>
-            <input type="number" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
+            <!-- <input type="number" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
               formControlName="acct_num" id="acct_num" placeholder="Account Number" (keydown.Tab)="onAccountNumTabOff()"
-              name="x-field-1" autocomplete="new-field-1">
+              name="x-field-1" autocomplete="new-field-1"> -->
+              <input type="text" [attr.disabled]="null == operations ? '' : null" class="form-control form-control-sm "
+              formControlName="acct_num" id="acct_num" placeholder="Enter Loan ID / Customer Name / Phone number"
+              (input)="suggestCustomer()" name="x-field-1" autocomplete="new-field-1">
+              <div class="suggestions" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
+                <table class="table table-hover table-bordered table-sm w-auto small">
+                  <thead>
+                    <tr>
+                      <th scope="col">Acc#</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Phone</th>
+                      <th scope="col">Gurdian Name</th>
+                      <th scope="col">Address</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let cust of suggestedCustomer" (click)="SelectCustomer(cust)">
+                      <td scope="row">{{cust.loan_id}}</td>
+                      <td>{{cust.cust_name}}</td>
+                      <td>{{((null === cust.phone) ? '' : cust.phone)}}</td>
+                      <td>{{cust.guardian_name}}</td>
+                      <td>{{cust.present_address}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <div class="suggestions border p-2" style="width: 98%; font-size: small;"
+            *ngIf="suggestedCustomer && !(suggestedCustomer.length > 0)">
+            <strong class="text-danger">" {{this.f.acct_num.value}} " does not match with any customer</strong>
+            </div>
           </div>
           <div class="form-group col-2">
             <small for="oprn_cd">Operation Type</small>
@@ -88,7 +117,7 @@
           <div class="col-12 mt-2">
             <!-- <app-account-details-for-acct-trans></app-account-details-for-acct-trans> -->
             <form [formGroup]="accDtlsFrm">
-              <h6 style="background-color:lightskyblue">Account Details</h6>
+              <h6 style="background-color:lightskyblue">Loan Details</h6>
               <div class="form-row">
                 <div class="form-group col-12">
                   <small for="cust_name">Party</small>

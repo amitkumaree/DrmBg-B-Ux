@@ -260,9 +260,15 @@
               <small for="amount">Amount <span class="text-danger">*</span> </small>
               <input *ngIf="!showAmtDrpDn" type="text" class="form-control form-control-sm" formControlName="amount" id="amount"
                 (change)="onAmtChng()">
+
               <select *ngIf="showAmtDrpDn" id="amount" class="form-control form-control-sm" formControlName="amount">
                 <option *ngFor="let amt of rdInstallamentOption" [value]="amt">{{amt}}</option>
               </select>
+            </div>
+            <div class="form-group col-2" *ngIf="showCloseInterest">
+              <small for="amount">Interst </small>
+              <input  type="text" class="form-control form-control-sm"
+              formControlName="closeIntrest" disabled>
             </div>
             <div class="form-group col-3" *ngIf="showOnRenewal || showOnClose">
               <small for="amount">Principal Amt <span class="text-danger">*</span> </small>

@@ -86,7 +86,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   installmenttypeList: mm_installment_type[] = [];
   denominationGrandTotal = 0;
   transferGrandTotal = 0;
-
+  suggestedCustomer: mm_customer[];
   ngOnInit(): void {
     this.isLoading = false;
 
@@ -382,6 +382,32 @@ export class LoanaccountTransactionComponent implements OnInit {
   //   else { this.isLoading = false; }
   // }
 
+  public suggestCustomer(): void {
+    if (this.f.acct_num.value.length > 0) {
+      const prm = new p_gen_param();
+      prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.f.acct_num.value.toLowerCase();
+      this.svc.addUpdDel<any>('Loan/GetLoanDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomer = res.slice(0, 10);
+          } else {
+            this.suggestedCustomer = [];
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomer = null;
+    }
+  }
+
+  public SelectCustomer(cust: any): void {
+    this.f.acct_num.setValue(cust.loan_id);
+    this.onAccountNumTabOff();
+    this.suggestedCustomer = null;
+  }
+
   private getOperationMaster(): void {
 
     this.isLoading = true;
@@ -452,7 +478,7 @@ export class LoanaccountTransactionComponent implements OnInit {
             acct_num: ''
           });
           this.HandleMessage(true, MessageType.Error,
-            'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
+            'Loan ID ' + this.f.acct_num.value + ' is not Valid/Present/LoanType doesnt match.');
           this.msg.sendCommonTmLoanAll(null);
         } else {
           if (null !== acc.tmloanall.approval_status
@@ -464,7 +490,7 @@ export class LoanaccountTransactionComponent implements OnInit {
               this.onResetClick();
               return;
           }
-          let oprn_cd_temp=this.operations.filter(e => e.acc_type_cd === acc.tddeftrans.acc_type_cd && e.oprn_desc.toLocaleLowerCase()===(acc.tddeftrans.trans_type.toLocaleUpperCase()=='B'?'disbursement':'recovery') && e.module_type.toLocaleUpperCase()==="LOAN")[0].oprn_cd;
+          const oprn_cd_temp=this.operations.filter(e => e.acc_type_cd === acc.tddeftrans.acc_type_cd && e.oprn_desc.toLocaleLowerCase()===(acc.tddeftrans.trans_type.toLocaleUpperCase()=='B'?'disbursement':'recovery') && e.module_type.toLocaleUpperCase()==="LOAN")[0].oprn_cd;
           this.accTransFrm.patchValue({
             oprn_cd: oprn_cd_temp
           });
@@ -541,21 +567,21 @@ export class LoanaccountTransactionComponent implements OnInit {
         else
         {
           debugger;
-          this.td_deftranstrfList=acc.tddeftranstrf; 
+          this.td_deftranstrfList=acc.tddeftranstrf;
           //this.f.oprn_cd.enable();
           for (let i=0;i<this.td_deftranstrfList.length;i++)
           {
           if (this.td_deftranstrfList[i].acc_num === '0000') {
             this.td_deftranstrfList[i].gl_acc_code = this.td_deftranstrfList[i].acc_type_cd.toString();
             this.checkAndSetDebitAccType('gl_acc', this.td_deftranstrfList[i]);
-    
+
           }
           else {
             this.td_deftranstrfList[i].cust_acc_type = this.td_deftranstrfList[i].acc_type_cd.toString();
             this.td_deftranstrfList[i].cust_acc_number = this.td_deftranstrfList[i].acc_num;
             this.checkAndSetDebitAccType('cust_acc', this.td_deftranstrfList[i]);
             this.setDebitAccDtls(this.td_deftranstrfList[i]);
-            
+
           }
         }
         this.sumTransfer();
@@ -590,7 +616,7 @@ export class LoanaccountTransactionComponent implements OnInit {
         this.msg.sendCommonTmLoanAll(null);
       }
     );
-      
+
       this.modalRef.hide();
   }
 
@@ -614,8 +640,8 @@ export class LoanaccountTransactionComponent implements OnInit {
       // this.accDtlsFrm.reset();
       // this.showTransactionDtl = false;
       // this.disableOperation = true;
-      
-      
+
+
       //return;
     }
     else
@@ -641,7 +667,7 @@ export class LoanaccountTransactionComponent implements OnInit {
             acct_num: ''
           });
           this.HandleMessage(true, MessageType.Error,
-            'Account number ' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
+            'Loan ID' + this.f.acct_num.value + ' is not Valid/Present/Account Type doesnt match.');
           this.msg.sendCommonTmLoanAll(null);
         } else {
           if (null !== acc.tmloanall.approval_status
@@ -839,8 +865,8 @@ export class LoanaccountTransactionComponent implements OnInit {
   private checkUnaprovedTransactionExixts(acc_num: string,acc_type_cd : number): boolean {
     this.GetUnapprovedDepTrans();
     debugger;
-    const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num 
-      === acc_num.toString()  &&  e.acc_type_cd===acc_type_cd)[0]; 
+    const unapprovedTrans = this.unApprovedTransactionLst.filter(e => e.acc_num
+      === acc_num.toString()  &&  e.acc_type_cd===acc_type_cd)[0];
 
     if (undefined === unapprovedTrans || Object.keys(unapprovedTrans).length === 0) {
       return false;
@@ -1093,7 +1119,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       }
     );
     }
-    
+
   }
 
   onDeleteClick(): void {
@@ -1105,7 +1131,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     debugger;
     this.isLoading = true;
     const param = new td_def_trans_trf();
-    param.brn_cd = this.sys.BranchCode; 
+    param.brn_cd = this.sys.BranchCode;
     param.trans_cd = this.td.trans_cd.value;
     param.trans_dt = this.sys.CurrentDate;
     param.acc_type_cd = (+this.f.acc_type_cd.value);
@@ -1365,7 +1391,7 @@ export class LoanaccountTransactionComponent implements OnInit {
 
     ;
     let temp_deposit_list: tm_deposit[] = [];
-    let temp_deposit = new tm_deposit();
+    const temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.sys.BranchCode;
     temp_deposit.acc_num = tdDefTransTrnsfr.cust_acc_number;
@@ -1388,13 +1414,13 @@ export class LoanaccountTransactionComponent implements OnInit {
             }
           });
           if (temp_deposit_list.length === 0) {
-            this.HandleMessage(true, MessageType.Error, 'Invalid Account Number in Transfer Details');
+            this.HandleMessage(true, MessageType.Error, 'Invalid Loan IDin Transfer Details');
             tdDefTransTrnsfr.cust_acc_number = null;
             return;
           }
           if (!foundOneUnclosed) {
             this.HandleMessage(true, MessageType.Error,
-              `Transfer details account number ${this.f.acct_num.value} is closed.`);
+              `Transfer details Loan ID${this.f.acct_num.value} is closed.`);
             tdDefTransTrnsfr.cust_acc_number = null;
             return;
           }
@@ -1429,7 +1455,7 @@ export class LoanaccountTransactionComponent implements OnInit {
 
         if (temp_acc_type === undefined || temp_acc_type === null) {
           tdDefTransTrnsfr.cust_acc_type = null;
-          this.HandleMessage(true, MessageType.Error, 'Invalid Account Type');
+          this.HandleMessage(true, MessageType.Error, 'Invalid Loan Type');
           return;
         }
         else {
@@ -1504,7 +1530,7 @@ export class LoanaccountTransactionComponent implements OnInit {
         }
       }
       else {
-        this.HandleMessage(true, MessageType.Error, 'Account Type in Transfer Details is not blank');
+        this.HandleMessage(true, MessageType.Error, 'Loan Type in Transfer Details is not blank');
         tdDefTransTrnsfr.gl_acc_code = null;
         return;
       }
@@ -1607,7 +1633,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     this.msg.sendCommonAccountNum('9');
     this.modalRef = this.modalService.show(template);
   }
-  
+
 }
 export class DynamicSelect {
   key: any;

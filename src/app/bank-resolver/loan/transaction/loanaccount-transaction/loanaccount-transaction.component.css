@@ -7,9 +7,13 @@
     -webkit-appearance: none;
     margin: 0;
   }
-  
+
   /* Firefox */
   input[type=number] {
     -moz-appearance: textfield;
   }
-  
+  .suggestions{
+    position: absolute;
+    background-color: white;
+    z-index: 1;
+  }
