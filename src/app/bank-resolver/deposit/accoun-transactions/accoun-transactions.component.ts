@@ -27,8 +27,8 @@ import { LoanOpenDM } from '../../Models/loan/LoanOpenDM';
 })
 export class AccounTransactionsComponent implements OnInit {
   constructor(private svc: RestService, private msg: InAppMessageService,
-    private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
-    private modalService: BsModalService) { }
+              private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
+              private modalService: BsModalService) { }
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
   static existingCustomers: mm_customer[] = [];
@@ -213,7 +213,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   processInterest(): void {
-    let temp_gen_param = new p_gen_param();
+    const temp_gen_param = new p_gen_param();
 
     temp_gen_param.ad_acc_type_cd = this.tm_deposit.acc_type_cd;
 
@@ -266,7 +266,7 @@ export class AccounTransactionsComponent implements OnInit {
 
       const o = Utils.convertStringToDt(this.td.opening_dt.value);
       const m = Utils.convertStringToDt(this.td.mat_dt.value);
-      var diffDays = Math.ceil((Math.abs(m.getTime() - o.getTime())) / (1000 * 3600 * 24));
+      const diffDays = Math.ceil((Math.abs(m.getTime() - o.getTime())) / (1000 * 3600 * 24));
 
       temp_gen_param.ai_period = diffDays;
       temp_gen_param.ad_intt_rt = +this.td.intt_rate.value;
@@ -277,10 +277,8 @@ export class AccounTransactionsComponent implements OnInit {
 
   calCrdIntReg(tempGenParam: p_gen_param): void {
     this.isLoading = true;
-    ;
     this.svc.addUpdDel<any>('Deposit/F_CALCRDINTT_REG', tempGenParam).subscribe(
       res => {
-        ;
         this.tm_deposit.intt_amt = res;
         this.tm_deposit.mat_val = Number(this.tm_deposit.intt_amt) + Number(this.tm_deposit.prn_amt);
         this.isLoading = false;
@@ -288,7 +286,7 @@ export class AccounTransactionsComponent implements OnInit {
       err => {
         this.tm_deposit.intt_amt = 0;
         this.isLoading = false;
-        ;
+
       }
     );
   }
@@ -304,16 +302,17 @@ export class AccounTransactionsComponent implements OnInit {
       },
       err => {
         this.isLoading = false;
-        ;
+
       }
     );
   }
 
   F_CALC_SB_INTT(): void {
-    debugger;
     this.isLoading = true;
     const prm = new p_gen_param();
     prm.as_acc_num = this.f.acct_num.value;
+    prm.from_dt = this.sys.SBInttCalTillDt;
+    prm.to_dt = this.sys.CurrentDate;
     prm.brn_cd = this.sys.BranchCode;
     this.svc.addUpdDel<any>('Deposit/F_CALC_SB_INTT', prm).subscribe(
       res => {
@@ -326,7 +325,6 @@ export class AccounTransactionsComponent implements OnInit {
       },
       err => {
         this.isLoading = false;
-        ;
       }
     );
   }
@@ -593,7 +591,7 @@ export class AccounTransactionsComponent implements OnInit {
         },
         err => {
           this.isLoading = false;
-          ;
+
         }
       );
     }
@@ -601,7 +599,7 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   private getOperationMaster(): void {
-    ;
+
     this.isLoading = true;
     if (undefined !== AccounTransactionsComponent.operations &&
       null !== AccounTransactionsComponent.operations &&
@@ -615,7 +613,7 @@ export class AccounTransactionsComponent implements OnInit {
     } else {
       this.svc.addUpdDel<mm_operation[]>('Mst/GetOperationDtls', null).subscribe(
         res => {
-          ;
+
           AccounTransactionsComponent.operations = res;
           this.isLoading = false;
           this.AcctTypes = AccounTransactionsComponent.operations.filter(e => e.module_type === 'DEPOSIT')
@@ -795,7 +793,7 @@ export class AccounTransactionsComponent implements OnInit {
           return false;
         }
         /* check if account is dormant */
-        const temp = new tm_deposit()
+        const temp = new tm_deposit();
         temp.brn_cd = this.sys.BranchCode;
         temp.acc_num = acc.acc_num;
         console.log(JSON.stringify(temp));
@@ -1002,7 +1000,7 @@ export class AccounTransactionsComponent implements OnInit {
             });
             debugger;
             // this.td_deftranstrfList = acc.tddeftranstrf;
-            //this.f.oprn_cd.enable();
+            // this.f.oprn_cd.enable();
             for (let i = 0; i < this.td_deftranstrfList.length; i++) {
               if (this.td_deftranstrfList[i].acc_num === '0000') {
                 this.td_deftranstrfList[i].gl_acc_code = this.td_deftranstrfList[i].acc_type_cd.toString();
@@ -1035,7 +1033,8 @@ export class AccounTransactionsComponent implements OnInit {
       acc_type_desc: acctTypeDesription,
       acc_num: tdDefTransTrf.acc_num,
       // trans_type_key:  tdDefTransTrf.trans_type_key ,
-      trans_type: tdDefTransTrf.trans_type,
+      trans_type: tdDefTransTrf.trans_type.toLowerCase() === 'w' ? 'Withdraw' : 'Deposit',
+      trans_type_key: tdDefTransTrf.trans_type,
       trans_mode: tdDefTransTrf.trans_mode,
       trf_type: tdDefTransTrf.trf_type,
       amount: tdDefTransTrf.amount,
@@ -1369,7 +1368,7 @@ export class AccounTransactionsComponent implements OnInit {
 
       if ((accTypCode === 2 || accTypCode === 4 || accTypCode === 5)) {
         const cDt = this.sys.CurrentDate.getTime();
-        const chDt = Utils.convertStringToDt(this.accNoEnteredForTransaction.mat_dt.toString()).getTime()
+        const chDt = Utils.convertStringToDt(this.accNoEnteredForTransaction.mat_dt.toString()).getTime();
         if (chDt > cDt) {
           this.HandleMessage(true, MessageType.Error,
             `Can not re-new, account number ${this.f.acct_num.value} it\'s not matured yet.`);
@@ -1483,7 +1482,7 @@ export class AccounTransactionsComponent implements OnInit {
     this.tdDefTransFrm.patchValue({
       mat_dt: ''
     });
-    let d = Utils.convertStringToDt(this.td.opening_dt.value);
+    const d = Utils.convertStringToDt(this.td.opening_dt.value);
     if ((+this.td.dep_period_y.value) > 0) {
       matDt = d.setFullYear(d.getFullYear() + (+this.td.dep_period_y.value));
     }
@@ -1777,7 +1776,7 @@ export class AccounTransactionsComponent implements OnInit {
           this.getShadowBalance();
           this.isLoading = false;
         },
-        err => { this.isLoading = false; console.error('Error on onSaveClick' + JSON.stringify(err));; }
+        err => { this.isLoading = false; console.error('Error on onSaveClick' + JSON.stringify(err)); }
       );
     } else {
       const updateTransaction = new LoanOpenDM();
@@ -1787,12 +1786,17 @@ export class AccounTransactionsComponent implements OnInit {
       //   updateTransaction.tmdepositrenew = this.mapRenewData();
       // }
       if (this.td.trf_type.value === 'C') {
+        // this.td.trans_cd.value;
+        this.tm_denominationList.forEach(ele => {
+          ele.trans_cd = this.td.trans_cd.value;
+        });
         updateTransaction.tmdenominationtrans = this.tm_denominationList;
       } else if (this.td.trf_type.value === 'T') {
         let i = 0;
         this.td_deftranstrfList.forEach(e => {
           const tdDefTransAndTranfer = this.mappTddefTransFromFrm();
           if (e.trans_type === 'cust_acc') {
+            tdDefTransAndTranfer.trans_cd = this.td.trans_cd.value;
             tdDefTransAndTranfer.acc_type_cd = +e.cust_acc_type;
             tdDefTransAndTranfer.acc_num = e.cust_acc_number;
             tdDefTransAndTranfer.acc_name = e.cust_name;
@@ -1801,6 +1805,7 @@ export class AccounTransactionsComponent implements OnInit {
             tdDefTransAndTranfer.remarks = 'D';
             tdDefTransAndTranfer.disb_id = ++i;
           } else {
+            tdDefTransAndTranfer.trans_cd = this.td.trans_cd.value;
             tdDefTransAndTranfer.acc_type_cd = +e.gl_acc_code;
             tdDefTransAndTranfer.acc_num = '0000';
             tdDefTransAndTranfer.acc_name = e.gl_acc_desc;
@@ -1815,12 +1820,18 @@ export class AccounTransactionsComponent implements OnInit {
       }
       this.svc.addUpdDel<LoanOpenDM>('Common/UpdateTransactionDetails', updateTransaction).subscribe(
         res => {
-          this.HandleMessage(true, MessageType.Sucess, 'Updated sucessfully');
-          this.tdDefTransFrm.reset(); this.f.oprn_cd.reset();
-          this.getShadowBalance();
+          const accNum = this.f.acct_num.value;
+          if ((+res) === -1) {
+            this.HandleMessage(true, MessageType.Error, `Transaction for Acc# ${accNum},
+            Not updated sucessfully.`);
+          } else {
+            this.HandleMessage(true, MessageType.Sucess, `Transaction for Acc# ${accNum},
+            updated sucessfully.`);
+            this.onResetClick();
+          }
           this.isLoading = false;
         },
-        err => { this.isLoading = false; console.error('Error on Update Transaction' + JSON.stringify(err));; }
+        err => { this.isLoading = false; console.error('Error on Update Transaction' + JSON.stringify(err)); }
       );
     }
   }
@@ -1932,7 +1943,7 @@ export class AccounTransactionsComponent implements OnInit {
       toReturn.trans_cd = this.td.trans_cd.value;
       toReturn.acc_type_cd = this.td.acc_type_cd.value;
       toReturn.acc_num = this.td.acc_num.value;
-      toReturn.trans_type = this.td.trans_type.value;
+      toReturn.trans_type = this.td.trans_type_key.value;
       toReturn.trans_mode = this.td.trans_mode.value;
       toReturn.amount = this.td.amount.value;
       toReturn.instrument_dt = this.td.instrument_dt.value;
@@ -2217,7 +2228,7 @@ export class AccounTransactionsComponent implements OnInit {
     if (this.tm_denominationList.length >= 1) {
       this.tm_denominationList.pop();
       this.denominationGrandTotal = 0;
-      for (let l of this.tm_denominationList) {
+      for (const l of this.tm_denominationList) {
         this.denominationGrandTotal = this.denominationGrandTotal + l.total;
       }
     }
@@ -2247,7 +2258,7 @@ export class AccounTransactionsComponent implements OnInit {
     this.tm_denominationList[idx].total = r * c;
 
     this.denominationGrandTotal = 0;
-    for (let l of this.tm_denominationList) {
+    for (const l of this.tm_denominationList) {
       this.denominationGrandTotal = this.denominationGrandTotal + l.total;
     }
   }
@@ -2260,13 +2271,13 @@ export class AccounTransactionsComponent implements OnInit {
 
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
-        ;
+
         this.accountTypeList = res;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'D');
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
       },
       err => {
-        ;
+
       }
     );
   }
@@ -2289,7 +2300,7 @@ export class AccounTransactionsComponent implements OnInit {
       return;
     }
     let temp_deposit_list: tm_deposit[] = [];
-    let temp_deposit = new tm_deposit();
+    const temp_deposit = new tm_deposit();
 
     temp_deposit.brn_cd = this.sys.BranchCode;
     temp_deposit.acc_num = tdDefTransTrnsfr.cust_acc_number;
@@ -2375,7 +2386,7 @@ export class AccounTransactionsComponent implements OnInit {
         tdDefTransTrnsfr.gl_acc_desc = null;
         return;
       }
-      ;
+
       if (tdDefTransTrnsfr.gl_acc_code === this.sys.CashAccCode.toString()) {
         this.HandleMessage(true, MessageType.Error, this.sys.CashAccCode.toString() +
           ' cash acount code is not permissible.');
@@ -2392,7 +2403,7 @@ export class AccounTransactionsComponent implements OnInit {
           let temp_acc_master = new m_acc_master();
           this.svc.addUpdDel<any>('Mst/GetAccountMaster', null).subscribe(
             res => {
-              ;
+
               this.acc_master = res;
               this.isLoading = false;
               temp_acc_master = this.acc_master.filter(x => x.acc_cd.toString() === tdDefTransTrnsfr.gl_acc_code)[0];
@@ -2407,10 +2418,10 @@ export class AccounTransactionsComponent implements OnInit {
               }
             },
             err => {
-              ;
+
               this.isLoading = false;
             }
-          )
+          );
         }
         else {
           let temp_acc_master = new m_acc_master();
@@ -2508,7 +2519,7 @@ export class AccounTransactionsComponent implements OnInit {
   private resetTransfer() {
     const td_deftranstrf: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftranstrf;
-    let temp_deftranstrf = new td_def_trans_trf()
+    const temp_deftranstrf = new td_def_trans_trf();
     this.td_deftranstrfList.push(temp_deftranstrf);
   }
 

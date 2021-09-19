@@ -145,6 +145,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('__pnlIntRtFrAccPreMatClos', this.systemParam.find(x => x.param_cd === '802').param_value);
           localStorage.setItem('__curFinyr', this.systemParam.find(x => x.param_cd === '207').param_value);
           localStorage.setItem('__neftPayDrAcc', this.systemParam.find(x => x.param_cd === '820').param_value);
+          localStorage.setItem('__sbInttCalTilDt', this.systemParam.find(x => x.param_cd === '799').param_value);
           this.msg.sendisLoggedInShowHeader(true);
           this.router.navigate([__bName + '/la']);
 

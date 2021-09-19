@@ -17,6 +17,7 @@ export class SystemValues {
   private __neftPayDrAcc: string;
   private __pnlIntRtFrAccPreMatClos: string;
   private __curFinyr: string;
+  private __sbInttCalTilDt: string;
   // private __allCustomerLst: mm_customer[];
 
   constructor() {
@@ -38,6 +39,7 @@ export class SystemValues {
     this.__pnlIntRtFrAccPreMatClos = localStorage.getItem('__pnlIntRtFrAccPreMatClos');
     this.__curFinyr = localStorage.getItem('__curFinyr');
     this.__neftPayDrAcc = localStorage.getItem('__neftPayDrAcc');
+    this.__sbInttCalTilDt = localStorage.getItem('__sbInttCalTilDt');
   }
 
   // get AllCustomer(): mm_customer[] {
@@ -94,6 +96,9 @@ export class SystemValues {
   }
   get NeftPayDrAcc(): number {
     return +this.__neftPayDrAcc;
+  }
+  get SBInttCalTillDt(): Date {
+    return Utils.convertStringToDt(this.__sbInttCalTilDt);
   }
 
   /** expected format of the string is dd/mm/yyyy */

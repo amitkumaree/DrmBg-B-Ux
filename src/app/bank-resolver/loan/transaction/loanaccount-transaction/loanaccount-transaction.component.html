@@ -23,8 +23,8 @@
     </table>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" (click)="Submit()">View/Edit</button>
-    <button class="btn btn-light" (click)="modalRef.hide()">Cancel</button>
+    <button class="btn btn-default" (click)="modalRef.hide()">Cancel</button>
+    <button class="btn btn-primary float-right" (click)="Submit()">View/Edit</button>
   </div>
 </ng-template>
 <loading *ngIf="isLoading"></loading>
