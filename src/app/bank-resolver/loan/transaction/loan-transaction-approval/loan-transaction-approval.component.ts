@@ -322,7 +322,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
 
     this.svc.addUpdDel<any>('Loan/GetLoanData', tmLoanAll).subscribe(
       res => {
-        ;
+        debugger;
         loanOpnDm = res;
         this.selectedVm.loan = loanOpnDm;
         // this.msg.sendCommonLoanTransactionInfo(res); // show transaction details
@@ -381,7 +381,7 @@ export class LoanTransactionApprovalComponent implements OnInit {
     this.tdDepTrans.trans_type = 'L';
     this.svc.addUpdDel<any>('Common/GetUnapprovedDepTrans', this.tdDepTrans).subscribe(
       res => {
-        ;
+        debugger;
         const tdDepTransRet = res as td_def_trans_trf[];
         this.vm = [];
         tdDepTransRet.forEach(element => {

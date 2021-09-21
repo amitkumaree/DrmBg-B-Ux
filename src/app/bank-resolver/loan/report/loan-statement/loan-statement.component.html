@@ -25,11 +25,44 @@
             <option [value]="8">8 - Current</option>
           </select>
         </div> -->
-        <div class="col-4">
-          <small for="acct_num" >Loan ID</small>
-          <input type="text"class="form-control form-control-sm "
+        <div class="col-12">
+          <small for="acct_num">Search by Loan ID / Customer Name / Phone number
+            <!-- <small style="display: inline;" class="form-text text-muted">
+              Press tab.
+            </small> -->
+          </small>
+          <!-- <input type="text"class="form-control form-control-sm "
           formControlName="acct_num" id="acct_num" placeholder="Loan Id"
-           name="x-field-1" autocomplete="new-field-1">
+           name="x-field-1" autocomplete="new-field-1"> -->
+           <input type="text"class="form-control form-control-sm "
+              formControlName="acct_num" id="acct_num" placeholder="Enter Loan ID / Customer Name / Phone number"
+              (input)="suggestCustomer()" name="x-field-1" autocomplete="new-field-1">
+              <div class="suggestions" *ngIf="suggestedCustomer && suggestedCustomer.length > 0">
+                <table class="table table-hover table-bordered table-sm w-auto small">
+                  <thead>
+                    <tr>
+                      <th scope="col">Acc#</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Phone</th>
+                      <th scope="col">Gurdian Name</th>
+                      <th scope="col">Address</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let cust of suggestedCustomer" (click)="SelectCustomer(cust)">
+                      <td scope="row">{{cust.loan_id}}</td>
+                      <td>{{cust.cust_name}}</td>
+                      <td>{{((null === cust.phone) ? '' : cust.phone)}}</td>
+                      <td>{{cust.guardian_name}}</td>
+                      <td>{{cust.present_address}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <div class="suggestions border p-2" style="width: 98%; font-size: small;"
+            *ngIf="suggestedCustomer && !(suggestedCustomer.length > 0)">
+            <strong class="text-danger">" {{this.reportcriteria.controls.acct_num.value}} " does not match with any customer</strong>
+            </div>
         </div>
         <div class="col-4">
           <small for="fromDate" >From Date</small>

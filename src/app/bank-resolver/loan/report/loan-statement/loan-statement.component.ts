@@ -60,11 +60,11 @@ export class LoanStatementComponent implements OnInit {
   }
 
   public suggestCustomer(): void {
+    debugger;
     if (this.reportcriteria.controls.acct_num.value.length > 0) {
       const prm = new p_gen_param();
-      prm.ad_acc_type_cd = (+this.reportcriteria.controls.acc_type_cd.value);
       prm.as_cust_name = this.reportcriteria.controls.acct_num.value.toLowerCase();
-      this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
+      this.svc.addUpdDel<any>('Loan/GetLoanDtlsByID', prm).subscribe(
         res => {
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedCustomer = res.slice(0, 10);
@@ -80,9 +80,7 @@ export class LoanStatementComponent implements OnInit {
   }
 
   public SelectCustomer(cust: any): void {
-    this.reportcriteria.controls.acct_num.setValue(cust.acc_num);
-    this.fromdate = Utils.convertStringToDt(cust.opening_dt);
-    this.toDate = this.sys.CurrentDate;
+    this.reportcriteria.controls.acct_num.setValue(cust.loan_id);
     this.suggestedCustomer = null;
   }
 
