@@ -59,7 +59,7 @@ const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
   { path: 'Loan', component: OpenLoanAccountComponent },
-  { path: 'te-st3', component: LoanAccwiseinttcalcComponent },
+  { path: 'te-st3', component: UTSelfHelpComponent },
   { path: 'te-st1', component: TransactionapprovalComponent },
   { path: 'te-st2', component: AccounTransactionsComponent },
   { path: 'te-st4', component: LoanTransactionApprovalComponent },

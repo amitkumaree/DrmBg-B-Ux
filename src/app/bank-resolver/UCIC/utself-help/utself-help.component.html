@@ -1,6 +1,116 @@
-<div class="row d-flex justify-content-center align-items-center p-5"
-  style="min-height: 100vh;">
-  <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 shadow-lg mb-5 bg-white p-3">
-    <img src="../../../../assets/images/underCons.gif" class="img-fluid">
+<loading *ngIf="isLoading"></loading>
+<div class="row d-flex justify-content-center align-items-center">
+  <div
+    class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="deleteData()">Delete</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
   </div>
-</div>
+
+
+  <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
+ <form [formGroup]="shgFrm">
+   <h6 class="mt-2" style="background-color:lightskyblue">Self Helf Group Master</h6>
+    <div class="form-row">
+      <div *ngIf="showMsg && showMsg.Show" class="col-12 mt-1">
+        <div class="alert alert-dismissible fade show" role="alert" [ngClass]="{'alert-success': showMsg.Type === 0,
+         'alert-warning':showMsg.Type === 1, 'alert-info':showMsg.Type === 2, 'alert-danger':showMsg.Type === 3 }">
+          <strong>{{showMsg.Message}}</strong>
+          <button type="button" class="close" data-dismiss="alert" (click)="showMsg = null" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <div class="form-group col-12">
+        <small for="shg_id">SHG ID</small>
+        <input type="text" class="form-control form-control-sm" formControlName="shg_id" id="shg_id"
+          placeholder="Id" disabled>
+      </div>
+      <div class="form-group col-12">
+        <small for="chairman_name">Chairman Name</small>
+        <input type="text" class="form-control form-control-sm" formControlName="chairman_name" id="chairman_name"
+          placeholder="chairman name" >
+      </div>
+      <div class="form-group col-12">
+        <small for="secretary_name">Secretary Name</small>
+        <input type="text" class="form-control form-control-sm" formControlName="secretary_name" id="secretary_name"
+          placeholder="Secretary Name" >
+      </div>
+      <div class="form-group col-12">
+        <small for="village">Village</small>
+        <input type="text" class="form-control form-control-sm" formControlName="village" id="village"
+          placeholder="Village" >
+      </div>
+      <div class="form-group col-12">
+        <small for="gruop_sex">Gruop Sex</small>
+        <input type="text" class="form-control form-control-sm" formControlName="gruop_sex" id="gruop_sex"
+          placeholder="Gruop Sex" >
+      </div>
+      <div class="form-group col-12">
+        <small for="monthly_subcription">Monthly Subcription</small>
+        <input type="text" class="form-control form-control-sm" formControlName="monthly_subcription" id="monthly_subcription"
+          placeholder="Monthly Subcription" >
+      </div>
+      <div class="form-group col-12">
+        <small for="min_member_limit">Min Member Limit</small>
+        <input type="text" class="form-control form-control-sm" formControlName="min_member_limit" id="min_member_limit"
+          placeholder="Min Member Limit" >
+      </div>
+      <div class="form-group col-12">
+        <small for="male_member">Male Member</small>
+        <input type="text" class="form-control form-control-sm" formControlName="male_member" id="male_member"
+          placeholder="Male Member" >
+      </div>
+      <div class="form-group col-12">
+        <small for="female_member">Female Member</small>
+        <input type="text" class="form-control form-control-sm" formControlName="female_member" id="female_member"
+          placeholder="Female Member" >
+      </div>
+      <div class="form-group col-12">
+        <small for="caste_sc">SC</small>
+        <input type="text" class="form-control form-control-sm" formControlName="caste_sc" id="caste_sc"
+          placeholder="SC" >
+      </div>
+      <div class="form-group col-12">
+        <small for="caste_gen">General</small>
+        <input type="text" class="form-control form-control-sm" formControlName="caste_gen" id="caste_gen"
+          placeholder="General" >
+      </div>
+      <div class="form-group col-12">
+        <small for="caste_st">ST</small>
+        <input type="text" class="form-control form-control-sm" formControlName="caste_st" id="caste_st"
+          placeholder="ST" >
+      </div>
+      <div class="form-group col-12">
+        <small for="caste_muslim">Muslim</small>
+        <input type="text" class="form-control form-control-sm" formControlName="caste_muslim" id="caste_muslim"
+          placeholder="Muslim" >
+      </div>
+      <div class="form-group col-12">
+        <small for="form_dt">Date of Foundation</small>
+        <input type="text" class="form-control form-control-sm" formControlName="form_dt" id="form_dt"
+          placeholder="Date of Foundation" >
+      </div>
+      <div class="form-group col-12">
+        <small for="sb_accno">Savings A/c No</small>
+        <input type="text" class="form-control form-control-sm" formControlName="sb_accno" id="sb_accno"
+          placeholder="Savings A/c No" >
+      </div>
+
+
+
+
+    </div>
+ </form>
+  </div>
+
+  <div
+    class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
+      <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="deleteData()">Delete</button>
+    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="backScreen()">Back</button>
+  </div>
