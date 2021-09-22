@@ -93,6 +93,7 @@ export class UTSelfHelpComponent implements OnInit {
   }
   setShgMemberCaste(caste: string)
   {
+    debugger;
     // this.neftPayRet.payment_type = accType;
   }
   setShgMemberReligion(religion: string)
@@ -155,10 +156,15 @@ export class UTSelfHelpComponent implements OnInit {
     debugger;
   }
   clearData(){
+    debugger;
     this.shgFrm.reset();
     this.shgFrm.enable();
     this.shgFrm.controls.shg_id.disable();
-    this.mmshgmember= null;
+    this.mmshgmember= [];
+    // const temp_mmshgmember = new mm_shg_member();
+    // temp_mmshgmember.brn_cd = localStorage.getItem('__brnCd');
+    // temp_mmshgmember.shg_id = 0;
+    // this.mmshgmember.push(temp_mmshgmember);
     //this.isRetrieve = true;
   }
   saveData(){
@@ -207,6 +213,12 @@ export class UTSelfHelpComponent implements OnInit {
     }
   }
   deleteData(){
+    if (this.f.chairman_name.value == null || this.f.chairman_name.value === 'undefined') {
+      this.HandleMessage(true, MessageType.Error, 'Please Retrieve a group first !!!');
+      return;
+    }
+    if (this.f.shg_id.value>0)
+    {
     if (this.mmshgmember.length >= 1) {
       if(this.mmshgmember[this.mmshgmember.length-1].shg_member_id>0)
       {
@@ -231,6 +243,11 @@ export class UTSelfHelpComponent implements OnInit {
       err => { debugger; this.isLoading=false;
         this.HandleMessage(true, MessageType.Error, 'Delete Failed!!!');}
     );
+      }
+      else{
+          this.HandleMessage(true, MessageType.Error, 'Please Retrieve a group first !!!');
+          return;
+        }     
   }
   backScreen(){this.router.navigate([this.sys.BankName + '/la']); }
   private getVillageMaster(): void { 

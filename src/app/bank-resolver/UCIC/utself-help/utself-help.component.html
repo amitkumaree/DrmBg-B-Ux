@@ -119,7 +119,7 @@
             <th scope="col" class="col-3">SHG Member Name</th>
             <th scope="col" class="col-3">Guardian Name</th>
             <th scope="col" class="col-2">Gender</th>
-            <th scope="col" class="col-2">Caste</th>
+            <th scope="col" class="col-3">Caste</th>
             <th scope="col" class="col-2">Religion</th>
             <th scope="col" class="col-2">Join Date</th>
             <th scope="col" class="col-2">Education</th>
@@ -161,7 +161,7 @@
                 <option value="M">MALE</option>
               </select>
             </td>
-            <td class="col-2">
+            <td class="col-3">
               <!-- <small for="shg_member_caste">Caste</small> <br> -->
               <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
                 [(ngModel)]="t.shg_member_caste" (change)="setShgMemberCaste($event.target.value)" id="shg_member_caste"  
@@ -172,7 +172,7 @@
                 <option value="GENERAL">GENERAL</option>
                 <option value="OBC">OBC</option>
                 <option value="OTHER">OTHER</option>
-              </select>
+              </select>              
             </td>
             <td class="col-2">
               <!-- <small for="religion">Gender</small> <br> -->
@@ -212,7 +212,7 @@
             <td class="col-2">
               <!-- <small for="date_of_birth">Date of Birth</small> -->
               <input type="text" style="height:30px;" placeholder="dd/mm/yyyy" class="form-control"  
-                [ngModel]="t.date_of_birth" disabled bsDatepicker
+                [ngModel]="t.date_of_birth" bsDatepicker
                 [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
             </td>
             <td class="col-2">
