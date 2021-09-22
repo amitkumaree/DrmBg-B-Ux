@@ -25,22 +25,24 @@
         </div>
         <div class="form-group col-1">
           <small for="shg_id">SHG ID</small>
-          <input type="text" class="form-control form-control-sm" formControlName="shg_id" id="shg_id" placeholder="Id"
-            disabled>
+          <input type="text" class="form-control form-control-sm"  [disabled]="isRetrieve" 
+          formControlName="shg_id" id="shg_id" placeholder="Id" (keydown.Tab)="getShgData()">
         </div>
         <div class="form-group col-4">
           <small for="chairman_name">Chairman Name</small>
-          <input type="text" class="form-control form-control-sm" formControlName="chairman_name" id="chairman_name"
-            placeholder="chairman name">
+          <input type="text" class="form-control form-control-sm" formControlName="chairman_name" 
+           id="chairman_name"
+            placeholder="Chairman Name">
         </div>
         <div class="form-group col-4">
           <small for="secretary_name">Secretary Name</small>
-          <input type="text" class="form-control form-control-sm" formControlName="secretary_name" id="secretary_name"
+          <input type="text" class="form-control form-control-sm" formControlName="secretary_name" 
+          id="secretary_name"
             placeholder="Secretary Name">
         </div>
         <div class="form-group col-2">
           <small for="village">Village</small>
-          <select class="form-control form-control-sm" formControlName="village"
+          <select class="form-control form-control-sm" formControlName="village" 
             (change)="setVillage($event.target.value)">
             <option disabled selected>Select..</option>
             <option [value]="l.vill_cd" *ngFor="let l of villageList">{{l.vill_name}}</option>
@@ -49,7 +51,7 @@
         <div class="form-group col-1">
           <small for="gruop_sex">Group Sex<span class="text-danger">*</span></small> <br>
           <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-            formControlName="gruop_sex" id="gruop_sex" (change)="setShgMemberGroupSex($event.target.value)"
+            formControlName="gruop_sex" id="gruop_sex" (change)="setShgMemberGroupSex($event.target.value)" 
             class="form-control form-control-sm">
             <option>Select..</option>
             <option value="F">FEMALE</option>
@@ -58,52 +60,53 @@
         </div>
         <div class="form-group col-2">
           <small for="monthly_subcription">Monthly Subcription</small>
-          <input type="text" class="form-control form-control-sm" formControlName="monthly_subcription"
+          <input type="text" class="form-control form-control-sm" formControlName="monthly_subcription"  
             id="monthly_subcription" placeholder="Monthly Subcription">
         </div>
         <div class="form-group col-2">
           <small for="min_member_limit">Min Member Limit</small>
-          <input type="text" class="form-control form-control-sm" formControlName="min_member_limit"
+          <input type="text" class="form-control form-control-sm" formControlName="min_member_limit"  
             id="min_member_limit" placeholder="Min Member Limit">
         </div>
         <div class="form-group col-2">
           <small for="male_member">Male Member</small>
-          <input type="text" class="form-control form-control-sm" formControlName="male_member" id="male_member"
+          <input type="text" class="form-control form-control-sm" formControlName="male_member" id="male_member"  
             placeholder="Male Member">
         </div>
         <div class="form-group col-2">
           <small for="female_member">Female Member</small>
-          <input type="text" class="form-control form-control-sm" formControlName="female_member" id="female_member"
+          <input type="text" class="form-control form-control-sm" formControlName="female_member" id="female_member"  
             placeholder="Female Member">
         </div>
         <div class="form-group col-1">
           <small for="caste_sc">SC</small>
-          <input type="text" class="form-control form-control-sm" formControlName="caste_sc" id="caste_sc"
+          <input type="text" class="form-control form-control-sm" formControlName="caste_sc" id="caste_sc"  
             placeholder="SC">
         </div>
         <div class="form-group col-1">
           <small for="caste_st">ST</small>
-          <input type="text" class="form-control form-control-sm" formControlName="caste_st" id="caste_st"
+          <input type="text" class="form-control form-control-sm" formControlName="caste_st" id="caste_st"  
             placeholder="ST">
         </div>
         <div class="form-group col-1">
           <small for="caste_gen">General</small>
-          <input type="text" class="form-control form-control-sm" formControlName="caste_gen" id="caste_gen"
+          <input type="text" class="form-control form-control-sm" formControlName="caste_gen" id="caste_gen"  
             placeholder="General">
         </div>
         <div class="form-group col-1">
           <small for="caste_muslim">Muslim</small>
-          <input type="text" class="form-control form-control-sm" formControlName="caste_muslim" id="caste_muslim"
+          <input type="text" class="form-control form-control-sm" formControlName="caste_muslim" id="caste_muslim"  
             placeholder="Muslim">
         </div>
         <div class="form-group col-2">
           <small for="form_dt">Date of Foundation</small>
-          <input type="text" class="form-control form-control-sm" formControlName="form_dt" id="form_dt"
-            placeholder="Date of Foundation">
+             <input type="text" style="height:30px;" placeholder="dd/mm/yyyy" class="form-control" id="form_dt"   
+            formControlName="form_dt" bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
         </div>
         <div class="form-group col-2">
           <small for="sb_accno">Savings A/c No</small>
-          <input type="text" class="form-control form-control-sm" formControlName="sb_accno" id="sb_accno"
+          <input type="text" class="form-control form-control-sm" formControlName="sb_accno" id="sb_accno"  
             placeholder="Savings A/c No">
         </div>
       </div>
@@ -136,22 +139,22 @@
             <td class="col-2">
               <!-- <small for="shg_member_id">Member ID</small> -->
               <input [(ngModel)]="t.shg_member_id" type="text" disabled
-                class="form-control form-control-sm text-capitalize" id="shg_member_id" placeholder="Member ID">
+                class="form-control form-control-sm text-capitalize" id="shg_member_id" placeholder="Member ID"  >
             </td>
             <td class="col-3">
               <!-- <small for="shg_member_name">SHG Member Name</small> -->
-              <input [(ngModel)]="t.shg_member_name" type="text" disabled
-                class="form-control form-control-sm text-capitalize" id="shg_member_name" placeholder="SHG Member Name">
+              <input [(ngModel)]="t.shg_member_name" type="text" 
+                class="form-control form-control-sm text-capitalize" id="shg_member_name" placeholder="SHG Member Name"  >
             </td>
             <td class="col-3">
               <!-- <small for="guardian_name">Guardian Name</small> -->
-              <input [(ngModel)]="t.guardian_name" type="text" disabled
-                class="form-control form-control-sm text-capitalize" id="guardian_name" placeholder="Guardian Name">
+              <input [(ngModel)]="t.guardian_name" type="text" 
+                class="form-control form-control-sm text-capitalize" id="guardian_name" placeholder="Guardian Name"  >
             </td>
             <td class="col-2">
               <!-- <small for="shg_member_sex">Gender<span class="text-danger">*</span></small> <br> -->
               <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-                [(ngModel)]="t.shg_member_sex" (change)="setShgMemberSex($event.target.value)" id="shg_member_sex"
+                [(ngModel)]="t.shg_member_sex" (change)="setShgMemberSex($event.target.value)" id="shg_member_sex"  
                 class="form-control form-control-sm">
                 <option>Select..</option>
                 <option value="F">FEMALE</option>
@@ -161,7 +164,7 @@
             <td class="col-2">
               <!-- <small for="shg_member_caste">Caste</small> <br> -->
               <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-                [(ngModel)]="t.shg_member_caste" (change)="setShgMemberCaste($event.target.value)" id="shg_member_caste"
+                [(ngModel)]="t.shg_member_caste" (change)="setShgMemberCaste($event.target.value)" id="shg_member_caste"  
                 class="form-control form-control-sm">
                 <option>Select..</option>
                 <option value="SC">SC</option>
@@ -174,7 +177,7 @@
             <td class="col-2">
               <!-- <small for="religion">Gender</small> <br> -->
               <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-                [(ngModel)]="t.religion" (change)="setShgMemberReligion($event.target.value)" id="religion"
+                [(ngModel)]="t.religion" (change)="setShgMemberReligion($event.target.value)" id="religion"  
                 class="form-control form-control-sm">
                 <option>Select..</option>
                 <option value="HINDU">HINDU</option>
@@ -188,14 +191,14 @@
             </td>
             <td class="col-2">
               <!-- <small for="date_of_join">Join Date</small> -->
-              <input type="text" style="height:30px;" placeholder="dd/mm/yyyy" class="form-control"
-                [ngModel]="t.date_of_join" disabled bsDatepicker
+              <input type="text" style="height:30px;" placeholder="dd/mm/yyyy" class="form-control"  
+                [(ngModel)]="t.date_of_join" bsDatepicker
                 [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
             </td>
             <td class="col-2">
               <!-- <small for="education">Education</small> <br> -->
               <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
-                [(ngModel)]="t.education" (change)="setShgMemberEducation($event.target.value)" id="education"
+                [(ngModel)]="t.education" (change)="setShgMemberEducation($event.target.value)" id="education"  
                 class="form-control form-control-sm">
                 <option>Select..</option>
                 <option value="MATRIC">MATRIC</option>
@@ -208,18 +211,18 @@
             </td>
             <td class="col-2">
               <!-- <small for="date_of_birth">Date of Birth</small> -->
-              <input type="text" style="height:30px;" placeholder="dd/mm/yyyy" class="form-control"
+              <input type="text" style="height:30px;" placeholder="dd/mm/yyyy" class="form-control"  
                 [ngModel]="t.date_of_birth" disabled bsDatepicker
                 [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
             </td>
             <td class="col-2">
               <!-- <small for="age">Age</small> -->
-              <input [(ngModel)]="t.count" type="number" class="form-control form-control-sm text-capitalize" id="age"
+              <input [(ngModel)]="t.count" type="number" class="form-control form-control-sm text-capitalize" id="age"  
                 placeholder="Age">
             </td>
             <td class="col-2">
               <!-- <small for="widow">Widow Flag</small> <br> -->
-              <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"  
                 [(ngModel)]="t.widow" (change)="setShgMemberWidow($event.target.value)" id="widow"
                 class="form-control form-control-sm">
                 <option>Select..</option>
@@ -229,7 +232,7 @@
             </td>
             <td class="col-2">
               <!-- <small for="toilet_flag">Toilet Flag</small> <br> -->
-              <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
+              <select style="font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"  
                 [(ngModel)]="t.toilet_flag" (change)="setShgMemberToilet($event.target.value)" id="toilet_flag"
                 class="form-control form-control-sm">
                 <option>Select..</option>
@@ -239,27 +242,27 @@
             </td>
             <td class="col-2">
               <!-- <small for="mobile">Mobile</small> -->
-              <input [(ngModel)]="t.mobile" type="number" class="form-control form-control-sm text-capitalize" id="mobile"
+              <input [(ngModel)]="t.mobile" type="number" class="form-control form-control-sm text-capitalize" id="mobile"  
                 placeholder="Mobile">
             </td>
             <td class="col-2">
               <!-- <small for="adhar_no">Aadhar </small> -->
-              <input [(ngModel)]="t.adhar_no" type="text" class="form-control form-control-sm text-capitalize" id="adhar_no"
+              <input [(ngModel)]="t.adhar_no" type="text" class="form-control form-control-sm text-capitalize" id="adhar_no"  
                 placeholder="Aadhar ">
             </td>
             <td class="col-2">
               <!-- <small for="pan">PAN</small> -->
-              <input [(ngModel)]="t.pan" type="text" class="form-control form-control-sm text-capitalize" id="pan"
+              <input [(ngModel)]="t.pan" type="text" class="form-control form-control-sm text-capitalize" id="pan"  
                 placeholder="PAN">
             </td>
             <td class="col-2">
               <!-- <small for="disability_remarks">Disability Remarks </small> -->
-              <input [(ngModel)]="t.disability_remarks" type="text" class="form-control form-control-sm text-capitalize"
+              <input [(ngModel)]="t.disability_remarks" type="text" class="form-control form-control-sm text-capitalize"  
                 id="disability_remarks" placeholder="Disability Remarks ">
             </td>
             <td class="col-2">
               <!-- <small for="training_remarks">Training Remarks </small> -->
-              <input [(ngModel)]="t.training_remarks" type="text" class="form-control form-control-sm text-capitalize"
+              <input [(ngModel)]="t.training_remarks" type="text" class="form-control form-control-sm text-capitalize"  
                 id="training_remarks" placeholder="Training Remarks ">
             </td>
           </tr>
