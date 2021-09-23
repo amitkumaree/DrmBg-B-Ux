@@ -27,8 +27,8 @@ import { LoanOpenDM } from '../../Models/loan/LoanOpenDM';
 })
 export class AccounTransactionsComponent implements OnInit {
   constructor(private svc: RestService, private msg: InAppMessageService,
-              private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
-              private modalService: BsModalService) { }
+    private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
+    private modalService: BsModalService) { }
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
   static existingCustomers: mm_customer[] = [];
@@ -1150,6 +1150,7 @@ export class AccounTransactionsComponent implements OnInit {
           this.showAmtDrpDn = true;
         }
       }
+      if (accTypCode === 1) { this.hideOnClose = false; }
     }
   }
 
@@ -1361,6 +1362,11 @@ export class AccounTransactionsComponent implements OnInit {
       if (accTypCode === 1) { // Special logic for Saving on close
         debugger;
         this.F_CALC_SB_INTT();
+        this.tdDefTransFrm.patchValue({
+          paid_to: 'SELF',
+          particulars: 'To Closing ',
+        });
+        this.hideOnClose = false;
       }
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
       /* check if for acct_type 2,4,5 mat is past today date
