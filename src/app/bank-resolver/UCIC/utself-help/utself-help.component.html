@@ -2,7 +2,7 @@
 <div class="row d-flex justify-content-center align-items-center">
   <div
     class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
-    <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button>
+    <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button> -->
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
     <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="deleteData()">Delete</button>
@@ -23,18 +23,38 @@
             </button>
           </div>
         </div>
-        <div class="form-group col-1">
+        <!-- <div class="form-group col-1">
           <small for="shg_id">SHG ID</small>
           <input type="text" class="form-control form-control-sm"  [disabled]="isRetrieve"
           formControlName="shg_id" id="shg_id" placeholder="Id" (keydown.Tab)="getShgData()">
+        </div> -->
+        <div class="form-group col-1">
+          <small for="cust_name">SHG Id</small>
+          <input type="text" class="form-control form-control-sm text-capitalize" id="shg_id" disabled
+            placeholder="Id" formControlName="shg_id" name="x-field-1" autocomplete="new-field-1">
+            
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-3">
+          <small for="cust_name">Cust Name</small>
+          <input type="text" class="form-control form-control-sm"   (input)="suggestCustomer()" 
+          formControlName="cust_name" id="cust_name" placeholder="Cust Name" >
+          <div class="suggestions border p-2" *ngIf="suggestedCustomer">
+            <strong> [ Customer Cd / Phone ] Name </strong>
+            <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer"
+            (click)="setCustDtls(cust.cust_cd,1,0)">
+            {{'[' + cust.cust_cd + ' / '
+            + ((null === cust.phone) ? '' : cust.phone) +'] '
+            + cust.cust_name}}
+          </p>
+          </div>
+        </div> 
+        <div class="form-group col-3">
           <small for="chairman_name">Chairman Name</small>
           <input type="text" class="form-control form-control-sm" formControlName="chairman_name"
            id="chairman_name"
             placeholder="Chairman Name">
         </div>
-        <div class="form-group col-4">
+        <div class="form-group col-3">
           <small for="secretary_name">Secretary Name</small>
           <input type="text" class="form-control form-control-sm" formControlName="secretary_name"
           id="secretary_name"
@@ -143,8 +163,17 @@
             </td>
             <td>
               <!-- <small for="shg_member_name">SHG Member Name</small> -->
-              <input [(ngModel)]="t.shg_member_name" type="text" style="width: 200px!important;"
+              <input [(ngModel)]="t.shg_member_name" type="text" style="width: 200px!important;"  (input)="suggestCustomer1(i)" 
                 class="form-control form-control-sm text-capitalize" id="shg_member_name" placeholder="SHG Member Name"  >
+                <div class="suggestions border p-2" *ngIf="suggestedCustomer1 && indxsuggestedCustomer1==i">
+                  <strong> [ Customer Cd / Phone ] Name </strong>
+                  <p style="margin-bottom:.2rem; cursor: pointer;" *ngFor="let cust of suggestedCustomer1"
+                  (click)="setCustDtls1(cust.cust_cd,2,i)">
+                  {{'[' + cust.cust_cd + ' / '
+                  + ((null === cust.phone) ? '' : cust.phone) +'] '
+                  + cust.cust_name}}
+                </p>
+                </div>
             </td>
             <td>
               <!-- <small for="guardian_name">Guardian Name</small> -->
@@ -422,7 +451,7 @@
 
   <div
   class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3 d-flex justify-content-center align-items-center">
-  <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button>
+  <!-- <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="retrieveData()">Retrieve</button> -->
   <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="clearData()">Clear</button>
   <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="saveData()">Save</button>
   <button type="button" class="btn btn-primary btn-sm ml-1 mr-1" (click)="deleteData()">Delete</button>
