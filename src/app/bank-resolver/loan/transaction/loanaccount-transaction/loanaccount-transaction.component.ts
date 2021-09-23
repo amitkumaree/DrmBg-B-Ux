@@ -533,8 +533,8 @@ export class LoanaccountTransactionComponent implements OnInit {
             periodicity: this.installmenttypeList.filter(x => x.desc_type === acc.tmloanall.piriodicity)[0].ins_desc,
             instl_no: acc.tmloanall.instl_no,
             recov_type: 'A',
-            intt_recov_dt: Utils.convertStringToDt(acc.tmloanall.last_intt_calc_dt.toString().substr(0, 10)),
-            intt_till_dt: Utils.convertStringToDt(acc.tmloanall.last_intt_calc_dt.toString().substr(0, 10)),
+            intt_recov_dt: Utils.convertStringToDt(acc.tddeftrans.intt_till_dt.toString().substr(0, 10)),
+            intt_till_dt: Utils.convertStringToDt(acc.tddeftrans.intt_till_dt.toString().substr(0, 10)),
             trans_type_key: acc.tddeftrans.trans_type,
             trans_mode: acc.tddeftrans.trans_mode,
             amount: acc.tddeftrans.amount,
@@ -1021,6 +1021,26 @@ export class LoanaccountTransactionComponent implements OnInit {
     if (this.checkUnaprovedTransactionExixts(this.td.acc_num.value, this.td.acc_cd.value)) {
       this.HandleMessage(true, MessageType.Error,
         'Un-approved Transaction already exists for the Account ' + this.td.acc_num.value);
+      return;
+    }
+    if (undefined === this.td.trf_type.value
+      || null === this.td.trf_type.value
+      || this.td.trf_type.value === '') {
+      this.HandleMessage(true, MessageType.Error, 'Please choose transfer type.');
+      return;
+    }
+
+    if (this.td.trf_type.value === 'C' && this.denominationGrandTotal !== (+this.td.amount.value)) {
+      this.HandleMessage(true, MessageType.Error,
+        `Denomination total amount ₹${this.denominationGrandTotal}, ` +
+        ` do not match with transaction amount ₹${this.td.amount.value}`);
+      return;
+    }
+
+    if (this.td.trf_type.value === 'T' && this.TrfTotAmt !== (+this.td.amount.value)) {
+      this.HandleMessage(true, MessageType.Error,
+        `Transfer total amount ₹${this.TrfTotAmt}, ` +
+        ` do not match with transaction amount ₹${this.td.amount.value}`);
       return;
     }
 
