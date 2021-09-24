@@ -1,15 +1,14 @@
-small{
+small {
   font-size: 70%;
   font-weight: 500;
 }
-.suggestions{
+.suggestions {
   position: absolute;
   background-color: white;
   margin-left: 3%;
   z-index: 1;
   font-size: x-small;
 }
-
 
 .mat-icon {
   height: 20px;
@@ -21,5 +20,10 @@ small{
   margin: 6px 8px 6px 8px;
   min-width: 88px;
   border-radius: 3px;
+}
 
+.scroll-style {
+  max-height: 45vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

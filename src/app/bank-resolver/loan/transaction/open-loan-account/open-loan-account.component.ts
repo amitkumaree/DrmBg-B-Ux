@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, TemplateRef } from '@angular/
 import { Router } from '@angular/router';
 import { InAppMessageService, RestService } from 'src/app/_service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { mm_customer } from 'src/app/bank-resolver/Models';
+// import { mm_customer } from 'src/app/bank-resolver/Models';
 import { SystemValues } from './../../../Models/SystemValues';
 import { tm_loan_all } from 'src/app/bank-resolver/Models/loan/tm_loan_all';
 import { mm_acc_type } from 'src/app/bank-resolver/Models/deposit/mm_acc_type';
@@ -20,6 +20,13 @@ import { mm_activity } from 'src/app/bank-resolver/Models/loan/mm_activity';
 import { mm_crop } from 'src/app/bank-resolver/Models/loan/mm_crop';
 import { p_loan_param } from 'src/app/bank-resolver/Models/loan/p_loan_param';
 import { sm_kcc_param } from 'src/app/bank-resolver/Models/loan/sm_kcc_param';
+import { sm_loan_sanction } from 'src/app/bank-resolver/Models/loan/sm_loan_sanction';
+import { td_loan_sanc } from 'src/app/bank-resolver/Models/loan/td_loan_sanc';
+import { td_loan_sanc_set } from 'src/app/bank-resolver/Models/loan/td_loan_sanc_set';
+import Utils from 'src/app/_utility/utils';
+import { MessageType, mm_category, mm_customer, m_acc_master, ShowMessage, td_def_trans_trf } from 'src/app/bank-resolver/Models';
+
+
 
 
 @Component({
@@ -33,6 +40,7 @@ export class OpenLoanAccountComponent implements OnInit {
               private modalService: BsModalService,
               private router: Router,
               private msg: InAppMessageService,
+
   ) { }
 
   @ViewChild('kycContent', { static: true }) kycContent: TemplateRef<any>;
@@ -52,9 +60,14 @@ export class OpenLoanAccountComponent implements OnInit {
 
   isLoading = false;
 
+  showMsg: ShowMessage;
+
   customerList: mm_customer[] = [];
   accountTypeList: mm_acc_type[] = [];
   instalmentTypeList: mm_instalment_type[] = [];
+
+  smLoanSanctionList: sm_loan_sanction[] = [];
+  selectedSmLoanSanctionList: sm_loan_sanction[] = [];
 
   sectorList: mm_sector[] = [];
   activityList: mm_activity[] = [];
@@ -64,9 +77,9 @@ export class OpenLoanAccountComponent implements OnInit {
   selectedActivityList: mm_activity[] = [];
   selectedCorpList: mm_crop[] = [];
 
-  showAlert = false;
-  alertMsg: string;
-  alertMsgType: string;
+  // showAlert = false;
+  // alertMsg: string;
+  // alertMsgType: string;
   suggestedCustomer: mm_customer[];
   suggestedJointCustomer: mm_customer[];
   suggestedCustomerJointHolderIdx: number;
@@ -78,6 +91,8 @@ export class OpenLoanAccountComponent implements OnInit {
   td_accholder: td_accholder[] = [];
   tm_loan_sanction: tm_loan_sanction[] = [];
   tm_loan_sanction_dtls: tm_loan_sanction_dtls[] = [];
+
+  td_loan_sanc_set_list: td_loan_sanc_set[] = [];
 
   sys = new SystemValues();
 
@@ -119,6 +134,7 @@ export class OpenLoanAccountComponent implements OnInit {
       this.getActivityList();
       this.getCorpList();
       this.getSmKccParam();
+      this.getSmLoanSanctionList();
     }, 150);
 
     this.initializeModels();
@@ -156,6 +172,8 @@ export class OpenLoanAccountComponent implements OnInit {
     this.tm_loan_sanction_dtls = loansancdtl;
     this.masterModel.tmlaonsanctiondtls = this.tm_loan_sanction_dtls;
 
+    this.associateChildRecordsWithHeader();
+
     this.selectedActivityList = [];
     this.selectedCorpList = [];
 
@@ -191,8 +209,8 @@ export class OpenLoanAccountComponent implements OnInit {
     this.tm_loan_sanction_dtls = loansancdtl;
     this.tm_loan_sanction_dtls = this.masterModel.tmlaonsanctiondtls;
 
-    // this.selectedActivityList = [];
-    // this.selectedCorpList = [];
+    this.td_loan_sanc_set_list = this.masterModel.tdloansancsetlist;
+    this.parseSecurityDetailsRecord();
 
   }
 
@@ -228,12 +246,37 @@ export class OpenLoanAccountComponent implements OnInit {
     this.masterModel.tmlaonsanctiondtls[cnt - 1].sanc_no = cnt;
   }
 
+
+  parseSecurityDetailsRecord()
+  {
+    for (const i in this.masterModel.tdloansancsetlist) {
+      for (const j in this.masterModel.tdloansancsetlist[i].tdloansancset) {
+        this.masterModel.tdloansancsetlist[i].tdloansancset[j].loan_id = this.tm_loan_all.loan_id;
+
+        if (this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_type === 'DATE') {
+          debugger;
+          if (this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value === undefined ||
+            this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value === null)
+            {
+            this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value_dt = null;
+          }
+          else
+          {
+            debugger;
+            this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value_dt = Utils.convertStringToDt(this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value);
+          }
+        }
+      }
+    }
+  }
+
   getCustomerList() {
 
     const cust = new mm_customer();
     cust.cust_cd = 0;
     cust.brn_cd = this.branchCode;
 
+    // this.isLoading = true;
     if (this.customerList === undefined || this.customerList === null || this.customerList.length === 0) {
       this.svc.addUpdDel<any>('UCIC/GetCustomerDtls', cust).subscribe(
         res => {
@@ -258,15 +301,17 @@ export class OpenLoanAccountComponent implements OnInit {
     }
     this.accountTypeList = [];
 
+    this.isLoading = true;
     this.svc.addUpdDel<any>('Mst/GetAccountTypeMaster', null).subscribe(
       res => {
 
+        this.isLoading = false;
         this.accountTypeList = res;
         this.accountTypeList = this.accountTypeList.filter(c => c.dep_loan_flag === 'L');
         this.accountTypeList = this.accountTypeList.sort((a, b) => (a.acc_type_cd > b.acc_type_cd) ? 1 : -1);
       },
       err => {
-
+        this.isLoading = false;
       }
     );
   }
@@ -351,7 +396,6 @@ export class OpenLoanAccountComponent implements OnInit {
 
   getSmKccParam() {
 
-
     if (this.smKccParamList.length > 0) {
       return;
     }
@@ -370,16 +414,93 @@ export class OpenLoanAccountComponent implements OnInit {
   }
 
 
-  // public suggestCustomer(): void {
-  //   this.suggestedCustomer = this.customerList
-  //     .filter(c => c.cust_name.toLowerCase().startsWith(this.tm_loan_all.cust_name.toLowerCase())
-  //       || c.cust_cd.toString().startsWith(this.tm_loan_all.cust_name)
-  //       || (c.phone !== null && c.phone.startsWith(this.tm_loan_all.cust_name)))
-  //     .slice(0, 20);
-  // }
+  getSmLoanSanctionList() {
+    debugger;
+    if (this.smLoanSanctionList.length > 0) {
+      return;
+    }
+    this.svc.addUpdDel<any>('Loan/GetSmLoanSanctionList', null).subscribe(
+      res => {
+        this.smLoanSanctionList = res;
+      },
+
+      err => {
+      }
+    );
+  }
+
+  setSmLoanSanctionList(acc_cd: number) {
+    debugger;
+    // if (this.masterModel.tdloansancsetlist === undefined ||
+    //   this.masterModel.tdloansancsetlist === null ||
+    //   this.masterModel.tdloansancsetlist.length === 0)
+    if ( this.operationType === 'N')
+      {
+      const loanSancSetList: td_loan_sanc_set[] = [];
+      this.td_loan_sanc_set_list = loanSancSetList;
+      this.masterModel.tdloansancsetlist = this.td_loan_sanc_set_list;
+    }
+
+    this.selectedSmLoanSanctionList = this.smLoanSanctionList.filter(c => c.acc_cd.toString() === acc_cd.toString());
+
+    if ( this.operationType === 'N'
+        && this.selectedSmLoanSanctionList !== undefined
+        && this.selectedSmLoanSanctionList !== null
+        && this.selectedSmLoanSanctionList.length > 0 )
+      {
+      this.createSecurityDtlList();
+      debugger;
+     }
+  }
+
+// createSecurityDtlList()
+// {
+//   debugger;
+//   this.td_loan_sanc_set_list.push(this.populateTdLoanSanc());
+// }
+
+removeSecurityDtlList()
+{
+    debugger;
+    if (this.td_loan_sanc_set_list.length > 1)
+    {
+      this.td_loan_sanc_set_list.pop();
+    }
+  }
+
+  createSecurityDtlList(): any {
+    debugger;
+    if (this.selectedSmLoanSanctionList !== undefined && this.selectedSmLoanSanctionList !== null && this.selectedSmLoanSanctionList.length > 0)
+    {
+      const tdLoanSancList: td_loan_sanc[] = [];
+      const tdLoanSancLocalSet = new td_loan_sanc_set();
+
+      for (let i in this.selectedSmLoanSanctionList) {
+        const tdLoanSanc = new td_loan_sanc();
+        tdLoanSanc.sanc_no = 1;
+        // tdLoanSanc.dataset_no = this.selectedSmLoanSanctionList[i].dataset_no;
+        tdLoanSanc.dataset_no = this.td_loan_sanc_set_list.length + 1;
+        tdLoanSanc.field_name = this.selectedSmLoanSanctionList[i].field_name;
+        tdLoanSanc.param_cd = this.selectedSmLoanSanctionList[i].param_cd;
+        tdLoanSanc.param_type = this.selectedSmLoanSanctionList[i].param_type;
+        tdLoanSanc.param_desc = this.selectedSmLoanSanctionList[i].param_desc;
+
+        tdLoanSancList.push(tdLoanSanc);
+      }
+
+      tdLoanSancLocalSet.tdloansancset = tdLoanSancList;
+      // return tdLoanSancLocalSet;
+      this.td_loan_sanc_set_list.push(tdLoanSancLocalSet);
+
+    }
+
+  }
+
+
+
   public suggestCustomer(): void {
     debugger;
-    if (this.tm_loan_all.cust_name.length > 0) {
+    if (this.tm_loan_all.cust_name.length > 2) {
       const prm = new p_gen_param();
       // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
       prm.as_cust_name = this.tm_loan_all.cust_name.toLowerCase();
@@ -399,34 +520,26 @@ export class OpenLoanAccountComponent implements OnInit {
   }
 
   public setCustDtls(cust_cd: number): void {
+    this.suggestedCustomer = null;
     this.kycEnable = false;
     this.tm_loan_all.party_cd = cust_cd;
     this.msg.sendcustomerCodeForKyc(cust_cd);
     this.kycEnable = true;
     this.populateCustDtls(cust_cd);
-    this.suggestedCustomer = null;
+
   }
 
   populateCustDtls(cust_cd: number) {
-
+    debugger;
     let temp_mm_cust = new mm_customer();
     temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === cust_cd.toString())[0];
     this.tm_loan_all.cust_name = temp_mm_cust.cust_name;
   }
 
-  // public suggestJointCustomer(idx: number): void {
-
-  //   this.suggestedCustomerJointHolderIdx = idx;
-  //   this.suggestedJointCustomer = this.customerList
-  //     .filter(c => c.cust_name.toLowerCase().startsWith(this.td_accholder[idx].acc_holder.toLowerCase())
-  //       || c.cust_cd.toString().startsWith(this.td_accholder[idx].acc_holder)
-  //       || (c.phone !== null && c.phone.startsWith(this.td_accholder[idx].acc_holder)))
-  //     .slice(0, 20);
-  // }
 
   public suggestJointCustomer(idx: number): void {
     this.suggestedCustomerJointHolderIdx = idx;
-    if (this.td_accholder[idx].acc_holder.length > 0) {
+    if (this.td_accholder[idx].acc_holder.length > 2) {
       const prm = new p_gen_param();
       // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
       prm.as_cust_name = this.td_accholder[idx].acc_holder.toLowerCase();
@@ -494,14 +607,13 @@ export class OpenLoanAccountComponent implements OnInit {
     }
 
     if (this.tm_loan_all.acc_cd === 23103 && this.operationType === 'N') {
-      // this.tm_loan_all.curr_intt_rate = null;
-      // this.tm_loan_all.ovd_intt_rate = null;
-      // this.tm_loan_all.instl_no = null;
 
       this.tm_loan_all.curr_intt_rate = Number(this.smKccParamList.filter(x => x.param_cd.toString() === 'curr_intt_rt')[0].param_value);
       this.tm_loan_all.ovd_intt_rate = Number(this.smKccParamList.filter(x => x.param_cd.toString() === 'ovd_intt_rt')[0].param_value);
       this.tm_loan_all.instl_no = 1;
     }
+
+    this.setSmLoanSanctionList(accType);
 
   }
 
@@ -597,31 +709,34 @@ export class OpenLoanAccountComponent implements OnInit {
 
   setSanctionAmountAndValidity(loan_param: p_loan_param, idx: number) {
 
-
     if (loan_param.status === 0) {
       this.tm_loan_sanction_dtls[idx].sanc_amt = +loan_param.recov_amt;
       this.tm_loan_sanction_dtls[idx].due_dt = loan_param.due_dt;
     }
 
     if (loan_param.status === 1) {
-      this.showAlertMsg('ERROR', 'Please Set The Disbursement Start & End Date For This Crop!!!');
+      // this.showAlertMsg('ERROR', 'Please Set The Disbursement Start & End Date For This Crop!!!');
+      this.HandleMessage(true, MessageType.Error, 'Please Set The Disbursement Start & End Date For This Crop!!!');
     }
 
     if (loan_param.status === 2) {
-      this.showAlertMsg('ERROR', 'This is Not Disbursement Time For This Crop!!!');
+      // this.showAlertMsg('ERROR', 'This is Not Disbursement Time For This Crop!!!');
+      this.HandleMessage(true, MessageType.Warning, 'This is Not Disbursement Time For This Crop!!!');
     }
 
     if (loan_param.status === 3) {
-      this.showAlertMsg('ERROR', 'A loan for this crop is already sanctioned for this Member!!!');
+      // this.showAlertMsg('ERROR', 'A loan for this crop is already sanctioned for this Member!!!');
+      this.HandleMessage(true, MessageType.Warning, 'A loan for this crop is already sanctioned for this Member!!!');
     }
 
     if (loan_param.status === 4) {
-      this.showAlertMsg('ERROR', 'Loan for this Crop is not sanctioned in KCC Card for this Member!!!');
+      // this.showAlertMsg('ERROR', 'Loan for this Crop is not sanctioned in KCC Card for this Member!!!');
+      this.HandleMessage(true, MessageType.Warning, 'Loan for this Crop is not sanctioned in KCC Card for this Member!!!');
     }
 
   }
 
-  newAccount() {    // document.getElementById('account_type').id = '';
+  newAccount() {
 
     this.clearData();
     this.operationType = 'N';
@@ -633,13 +748,6 @@ export class OpenLoanAccountComponent implements OnInit {
 
   }
 
-
-  clearData() {
-    this.operationType = '';
-    // this.disablePersonal = 'Y';
-    this.initializeModels();
-  }
-
   retrieveData() {
 
     this.clearData();
@@ -647,16 +755,23 @@ export class OpenLoanAccountComponent implements OnInit {
     this.disableAll = 'N';
     // this.disablePersonal = 'Y';
 
-    this.isLoading = true;
+    // this.isLoading = true;
     this.getCustomerList();
+  }
 
+  clearData() {
+    this.operationType = '';
+    this.closeAlertMsg();
+    // this.disablePersonal = 'Y';
+    this.initializeModels();
   }
 
 
   modifyData() {
 
     if (this.operationType !== 'Q') {
-      this.showAlertMsg('WARNING', 'Record not retrived to modify');
+      // this.showAlertMsg('WARNING', 'Record not retrived to modify');
+      this.HandleMessage(true, MessageType.Warning, 'Record not retrived to modify');
       return;
     }
     this.operationType = 'U';
@@ -667,7 +782,8 @@ export class OpenLoanAccountComponent implements OnInit {
   approveData(idx: number) {
     if (this.masterModel.tmlaonsanction[idx].approval_status !== undefined &&
       this.masterModel.tmlaonsanction[idx].approval_status === 'A') {
-      this.showAlertMsg('WARNING', 'Loan Already Approved !!');
+      // this.showAlertMsg('WARNING', 'Loan Already Approved !!');
+      this.HandleMessage(true, MessageType.Warning, 'Loan Already Approved !!');
       return;
     }
 
@@ -682,7 +798,8 @@ export class OpenLoanAccountComponent implements OnInit {
   saveData(saveType: string) {
 
     if (this.operationType !== 'N' && this.operationType !== 'U') {
-      this.showAlertMsg('WARNING', 'Loan Account not Created or Updated to Save');
+      // this.showAlertMsg('WARNING', 'Loan Account not Created or Updated to Save');
+      this.HandleMessage(true, MessageType.Warning, 'Loan Account not Created or Updated to Save');
       exit(0);
     }
 
@@ -703,7 +820,8 @@ export class OpenLoanAccountComponent implements OnInit {
   }
 
   GetLoanAccountNumberAndInsertData() {
-    this.ValidatLoanOpenData();
+    this.ValidateLoanOpenHeaderData(); // Validation for Loan Account Header
+    // this.ValidateLoanUpdateData();     // Validation for Loan Account Child
     this.p_gen_param.brn_cd = this.branchCode;
     this.isLoading = true;
 
@@ -714,7 +832,8 @@ export class OpenLoanAccountComponent implements OnInit {
         this.isLoading = false;
         val = res;
         if (val === '' || val == null) {
-          this.showAlertMsg('ERROR', 'Loan Account Number not created !!');
+          // this.showAlertMsg('ERROR', 'Loan Account Number not created !!');
+          this.HandleMessage(true, MessageType.Error, 'Loan Account Number not created !!');
           return;
         }
         this.tm_loan_all.loan_id = val.toString();
@@ -729,7 +848,8 @@ export class OpenLoanAccountComponent implements OnInit {
       },
       err => {
         this.isLoading = false;
-        this.showAlertMsg('ERROR', 'Loan Account Number not created !!!');
+        // this.showAlertMsg('ERROR', 'Loan Account Number not created !!!');
+        this.HandleMessage(true, MessageType.Error, 'Loan Account Number not created !!!');
 
       }
 
@@ -737,9 +857,11 @@ export class OpenLoanAccountComponent implements OnInit {
   }
 
   InsertLoanAccountOpeningData() {
-    // // debugger;
-    this.isLoading = true;
+    debugger;
     this.masterModel.tmloanall.approval_status = 'U';
+    this.ValidateLoanUpdateData(); // Validation for Loan Account Child
+
+    this.isLoading = true;
     this.svc.addUpdDel<any>('Loan/InsertLoanAccountOpeningData', this.masterModel).subscribe(
       res => {
         // debugger;
@@ -747,13 +869,15 @@ export class OpenLoanAccountComponent implements OnInit {
         // this.disablePersonal = 'Y';
         this.operationType = 'U';
         this.associateChildRecordsWithHeader();
-        this.showAlertMsg('INFORMATION', 'Loan Account Created Successfully. LoanId: ' + this.tm_loan_all.loan_id);
+        // this.showAlertMsg('INFORMATION', 'Loan Account Created Successfully. LoanId: ' + this.tm_loan_all.loan_id);
+        this.HandleMessage(true, MessageType.Sucess, 'Loan Account Created Successfully. LoanId: ' + this.tm_loan_all.loan_id);
       },
       err => {
         // debugger;
         this.isLoading = false;
         console.error('Error on SaveClick' + JSON.stringify(err));
-        this.showAlertMsg('ERROR', 'Record Not Saved !!!');
+        // this.showAlertMsg('ERROR', 'Record Not Saved !!!');
+        this.HandleMessage(true, MessageType.Error, 'Record Not Saved !!!');
 
       }
     );
@@ -762,7 +886,7 @@ export class OpenLoanAccountComponent implements OnInit {
 
   UpdateLoanAccountOpeningData(saveType: string) {
     this.ValidateLoanUpdateData();
-    // debugger;
+    debugger;
     this.isLoading = true;
     this.svc.addUpdDel<any>('Loan/InsertLoanAccountOpeningData', this.masterModel).subscribe(
       res => {
@@ -771,10 +895,12 @@ export class OpenLoanAccountComponent implements OnInit {
         this.operationType = 'U';
 
         if (saveType === 'A') {
-          this.showAlertMsg('INFORMATION', 'LoanId: ' + this.tm_loan_all.loan_id + '  Approved Successfully.');
+          // this.showAlertMsg('INFORMATION', 'LoanId: ' + this.tm_loan_all.loan_id + '  Approved Successfully.');
+          this.HandleMessage(true, MessageType.Sucess, 'LoanId: ' + this.tm_loan_all.loan_id + '  Approved Successfully.');
         }
         else {
-          this.showAlertMsg('INFORMATION', 'Record Saved Successfully for LoanId: ' + this.tm_loan_all.loan_id);
+          //  this.showAlertMsg('INFORMATION', 'Record Saved Successfully for LoanId: ' + this.tm_loan_all.loan_id);
+          this.HandleMessage(true, MessageType.Sucess, 'Record Saved Successfully for LoanId: ' + this.tm_loan_all.loan_id );
         }
         this.associateChildRecordsWithHeader();
       },
@@ -782,7 +908,8 @@ export class OpenLoanAccountComponent implements OnInit {
         // debugger;
         this.isLoading = false;
         console.error('Error on SaveClick' + JSON.stringify(err));
-        this.showAlertMsg('ERROR', 'Record Not Saved !!!');
+        // this.showAlertMsg('ERROR', 'Record Not Saved !!!');
+        this.HandleMessage(true, MessageType.Error, 'Record Not Saved !!!' );
 
       }
     );
@@ -800,7 +927,8 @@ export class OpenLoanAccountComponent implements OnInit {
         this.masterModel = res;
 
         if (this.masterModel === undefined || this.masterModel === null) {
-          this.showAlertMsg('WARNING', 'No record found!!');
+          // this.showAlertMsg('WARNING', 'No record found!!');
+          this.HandleMessage(true, MessageType.Warning, 'No record found!!' );
         }
         else {
           if (this.masterModel.tmloanall.loan_id !== null) {
@@ -811,7 +939,8 @@ export class OpenLoanAccountComponent implements OnInit {
             this.disableAll = 'Y';
           }
           else {
-            this.showAlertMsg('WARNING', 'No record found!!!');
+            // this.showAlertMsg('WARNING', 'No record found!!!');
+            this.HandleMessage(true, MessageType.Warning, 'No record found!!!');
           }
 
         }
@@ -819,14 +948,15 @@ export class OpenLoanAccountComponent implements OnInit {
       },
       err => {
         this.isLoading = false;
-        this.showAlertMsg('ERROR', 'Unable to find record!!');
+        // this.showAlertMsg('ERROR', 'Unable to find record!!');
+        this.HandleMessage(true, MessageType.Warning, 'Unable to find record!!' );
 
       }
 
     );
   }
 
-  ValidatLoanOpenData() {
+  ValidateLoanOpenHeaderData() {
     if (this.tm_loan_all.party_cd === null || this.tm_loan_all.party_cd === undefined ||
       this.tm_loan_all.cust_name === null || this.tm_loan_all.cust_name === undefined ||
       this.tm_loan_all.loan_acc_type === null || this.tm_loan_all.loan_acc_type === undefined ||
@@ -837,7 +967,8 @@ export class OpenLoanAccountComponent implements OnInit {
       this.tm_loan_all.instl_no === null || this.tm_loan_all.instl_no === undefined ||
       this.tm_loan_all.piriodicity === null || this.tm_loan_all.piriodicity === undefined ||
       this.tm_loan_all.emi_formula_no === null || this.tm_loan_all.emi_formula_no === undefined) {
-      this.showAlertMsg('WARNING', 'Please provide all the required data in Personal Information');
+      // this.showAlertMsg('WARNING', 'Please provide all the required data in Personal Information');
+      this.HandleMessage(true, MessageType.Warning, 'Please provide all the required data in Personal Information');
       exit(0);
     }
   }
@@ -850,7 +981,8 @@ export class OpenLoanAccountComponent implements OnInit {
         this.tm_guaranter.gua_add === undefined || this.tm_guaranter.gua_add == null || this.tm_guaranter.gua_add === '' ||
         this.tm_guaranter.salary === undefined || this.tm_guaranter.salary == null ||
         this.tm_guaranter.mobile === undefined || this.tm_guaranter.mobile == null) {
-        this.showAlertMsg('WARNING', 'Please provide all the required data in Guaranter Details');
+        // this.showAlertMsg('WARNING', 'Please provide all the required data in Guaranter Details');
+        this.HandleMessage(true, MessageType.Warning, 'Please provide all the required data in Guaranter Details');
         exit(0);
       }
 
@@ -867,7 +999,8 @@ export class OpenLoanAccountComponent implements OnInit {
       }
       else {
         if (this.masterModel.tdaccholder[i].relation === undefined || this.masterModel.tdaccholder[i].relation == null) {
-          this.showAlertMsg('WARNING', 'Please provide all the required data for Joint Holder');
+          // this.showAlertMsg('WARNING', 'Please provide all the required data for Joint Holder');
+          this.HandleMessage(true, MessageType.Warning, 'Please provide all the required data for Joint Holder');
           exit(0);
         }
         else {
@@ -880,7 +1013,8 @@ export class OpenLoanAccountComponent implements OnInit {
 
     // All Sanction Validation
     if (this.masterModel.tmlaonsanction[0].sanc_dt === undefined) {
-      this.showAlertMsg('WARNING', 'Please provide Sanction Date in All Sanction');
+      // this.showAlertMsg('WARNING', 'Please provide Sanction Date in All Sanction');
+      this.HandleMessage(true, MessageType.Warning, 'Please provide Sanction Date in All Sanction');
       exit(0);
     }
     else {
@@ -905,7 +1039,8 @@ export class OpenLoanAccountComponent implements OnInit {
       || this.masterModel.tmlaonsanctiondtls[0].sanc_amt === undefined || this.masterModel.tmlaonsanctiondtls[0].sanc_amt == null
       || this.masterModel.tmlaonsanctiondtls[0].due_dt === undefined
     ) {
-      this.showAlertMsg('WARNING', 'Please provide all the required data for Sanction Details');
+      // this.showAlertMsg('WARNING', 'Please provide all the required data for Sanction Details');
+      this.HandleMessage(true, MessageType.Warning, 'Please provide all the required data for Sanction Details');
       exit(0);
     }
     else {
@@ -917,6 +1052,29 @@ export class OpenLoanAccountComponent implements OnInit {
       }
       this.masterModel.tmlaonsanctiondtls[0].sanc_status = 'C';
     }
+
+
+    for (const i in this.masterModel.tdloansancsetlist) {
+      for (const j in this.masterModel.tdloansancsetlist[i].tdloansancset) {
+        this.masterModel.tdloansancsetlist[i].tdloansancset[j].loan_id = this.tm_loan_all.loan_id;
+
+        if (this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_type === 'DATE')
+        {
+          debugger;
+          if (this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value_dt === undefined ||
+            this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value_dt === null)
+            {
+            this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value = null;
+            }
+          else
+          {
+            this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value = Utils.convertDtToString(this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value_dt);
+            // this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value = this.masterModel.tdloansancsetlist[i].tdloansancset[j].param_value_dt.toString();
+          }
+        }
+      }
+    }
+
 
   }
 
@@ -932,31 +1090,40 @@ export class OpenLoanAccountComponent implements OnInit {
   }
 
   checkAndSetOverdueInterest() {
-    if (this.tm_loan_all.ovd_intt_rate === undefined ||
-      this.tm_loan_all.ovd_intt_rate === null ||
-      this.tm_loan_all.ovd_intt_rate === 0) {
-      this.tm_loan_all.ovd_intt_rate = this.tm_loan_all.curr_intt_rate + 2;
-    }
+    // if (this.tm_loan_all.ovd_intt_rate === undefined ||
+    //   this.tm_loan_all.ovd_intt_rate === null ||
+    //   this.tm_loan_all.ovd_intt_rate === 0) {
+    //   this.tm_loan_all.ovd_intt_rate = this.tm_loan_all.curr_intt_rate + 2;
+    // }
+    this.tm_loan_all.ovd_intt_rate = this.tm_loan_all.curr_intt_rate + 2;
 
   }
 
-  public showAlertMsg(msgTyp: string, msg: string) {
-    this.alertMsgType = msgTyp;
-    this.alertMsg = msg;
-    this.showAlert = true;
+  // public showAlertMsg(msgTyp: string, msg: string) {
+  //   this.alertMsgType = msgTyp;
+  //   this.alertMsg = msg;
+  //   this.showAlert = true;
+  //   this.disableAll = 'Y';
+
+  //   // this.disablePersonal = 'Y';
+  // }
+
+  private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
+    this.showMsg = new ShowMessage();
+    this.showMsg.Show = show;
+    this.showMsg.Type = type;
+    this.showMsg.Message = message;
+
     this.disableAll = 'Y';
-
-    // this.disablePersonal = 'Y';
   }
+
 
   public closeAlertMsg() {
-    this.showAlert = false;
+
+    this.HandleMessage(false);
     this.disableAll = 'N';
-    // if(this.operationType == 'N')
-    // {
-    //   this.disablePersonal = 'N';
-    // }
   }
+
 
   backScreen() {
     this.router.navigate([this.sys.BankName + '/la']);

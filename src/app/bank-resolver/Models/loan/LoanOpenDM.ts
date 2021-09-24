@@ -2,6 +2,7 @@ import { td_def_trans_trf } from '..';
 import { td_accholder } from '../deposit/td_accholder';
 import { tm_denomination_trans } from '../deposit/tm_denomination_trans';
 import { tm_transfer } from '../deposit/tm_transfer';
+import { td_loan_sanc_set } from './td_loan_sanc_set';
 import { tm_guaranter } from './tm_guaranter';
 import { tm_loan_all } from './tm_loan_all';
 import { tm_loan_sanction } from './tm_loan_sanction';
@@ -18,5 +19,6 @@ export class LoanOpenDM {
   public tmtransfer: tm_transfer[] = [];
   public tddeftranstrf: td_def_trans_trf[] = [];
   public tddeftrans: td_def_trans_trf;
+  public tdloansancsetlist: td_loan_sanc_set[] = [];
 
 }
