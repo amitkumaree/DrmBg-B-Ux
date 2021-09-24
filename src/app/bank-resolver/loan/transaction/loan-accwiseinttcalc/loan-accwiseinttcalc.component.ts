@@ -20,9 +20,12 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
     isTrade: boolean = false;
     isLoading = false;
     showMsg: ShowMessage;
+    isOpenFromDp = false;
+    asOnDate : any;
 
   ngOnInit(): void {
     this.getAccountTypeList();
+    this.asOnDate =this.sys.CurrentDate;
   }
 
   onBackClick() {
@@ -70,7 +73,7 @@ export class LoanAccwiseinttcalcComponent implements OnInit {
       {
         var p = new p_loan_param();
         p.acc_cd=this.accountTypeList[i].acc_type_cd.toString();
-        p.intt_dt=this.sys.CurrentDate;
+        p.intt_dt=this.asOnDate;
         this.param.push(p)
       }
     }

@@ -23,7 +23,22 @@
         <div class="row">
           <div class="col-12 ">
             <h6 style="background-color:lightskyblue">Calculate Interest</h6>
-           
+            <div class="row  align-items-center  text-align: center;">
+            <div class="form-group col-4">
+              <small for="date_of_payment">As on Date<span class="text-danger">*</span></small>
+                <div class="input-group">
+                <input type="text" style="height:30px;" placeholder="dd/mm/yyyy" class="form-control" 
+                [(ngModel)]="asOnDate"  bsDatepicker
+                [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }"
+                [isOpen]="isOpenFromDp">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" style="height:30px;"  type="button" (click)="isOpenFromDp = !isOpenFromDp">
+                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            </div>
             <div class="table-responsive" class="scroll-when-long">
               <table class="table table-sm table-hover">
                 <thead>
