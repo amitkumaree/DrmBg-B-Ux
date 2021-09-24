@@ -282,7 +282,7 @@ export class UTSelfHelpComponent implements OnInit {
       return;
     }
     else if (this.f.min_member_limit.value < (this.f.male_member.value+ this.f.female_member.value)) {
-      this.HandleMessage(true, MessageType.Error, 'Minimum member limiy can not be less');
+      this.HandleMessage(true, MessageType.Error, 'Minimum member limit can not be less');
       return;
     }
     else if (this.f.sb_accno.value == null || this.f.sb_accno.value === 'undefined') {
