@@ -27,6 +27,49 @@
     <button class="btn btn-primary float-right" (click)="Submit()">View/Edit</button>
   </div>
 </ng-template>
+<ng-template #contentLoanRep let-modal bd-example-modal-lg>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Loan Repayment Schedule</h4>
+  </div>
+  <div class="modal-body">
+
+    <table class="table table-sm table-hover">
+      <tr>
+        <td>Rep Id</td>
+        <td>Due Date</td>
+        <td>Instl Prn</td>
+        <td>Instl Paid</td>
+        <td>Status</td>
+      </tr>
+      <tr *ngFor="let item of LoanRepSch; let i = index;" >
+        <td>{{item.rep_id}}</td>
+        <td>{{item.due_dt1}}</td>
+        <td>{{item.instl_prn}}</td>
+        <td>{{item.instl_paid}}</td>
+        <td>{{item.status=='U'?"Unpaid":item.status=='P'?"Paid":"Overdue"}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default" (click)="modalRef.hide()">Ok</button>    
+  </div>
+</ng-template>
+<ng-template #contentLoanStmt let-modal bd-example-modal-lg>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Loan Statement</h4>
+  </div>
+  <div class="modal-body">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 shadow-lg mb-4 bg-white p-3">
+      <iframe *ngIf="ReportUrl" [src]="ReportUrl" width="100%" height="400px"
+       allowfullscreen></iframe>
+      </div>    
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default" (click)="modalRef.hide()">Ok</button>    
+  </div>
+</ng-template>
+
+
 <loading *ngIf="isLoading"></loading>
 <div class="row d-flex justify-content-center align-items-center"
   style="background-color: #78c2ad21; min-height: 90vh;">
@@ -165,50 +208,15 @@
                   <small for="curr_bal">Total Due</small>
                   <input type="text" class="form-control form-control-sm" formControlName="total_due" id="total_due" disabled>
                 </div>
-
-              </div>
-              <!-- <div class="form-row">
-                <div class="form-group col-6" >
-                  <small for="intt_rt">Interest Rate</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="intt_rt" disabled>
-                </div>
-                <div class="form-group col-6" >
-                  <small for="intt_trf_type">Interest Type</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="intt_trf_type" disabled>
-                </div>
-                <div class="form-group col-6" >
-                  <small for="instl_amt">Installment Amt</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="instl_amt" disabled>
-                </div>
                 <div class="form-group col-4">
-                  <small for="mat_dt">Maturity Date</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="mat_dt" disabled>
-                </div>
-                <div class="form-group col-4" >
-                  <small for="mat_status">Maturity Status</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="mat_status" disabled>
-                </div>
-                <div class="form-group col-4" >
-                  <small for="cert_no">Certificate No.</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="cert_no" disabled>
+                 <input type="text" class="form-control form-control-sm" formControlName="disb_dt" id="disb_dt"
+                    hidden disabled>
                 </div>
               </div>
-              <div class="form-row">
-                <div class="form-group col-4" >
-                  <small for="prn_amt">Principal Amt</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="prn_amt" disabled>
-                </div>
-                <div class="form-group col-4" >
-                  <small for="intt_amt">Interest Amt</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="intt_amt" disabled>
-                </div>
-                <div class="form-group col-4">
-                  <small for="mat_amt">Maturity Amt</small>
-                  <input type="text" class="form-control form-control-sm" formControlName="mat_amt" disabled>
-                </div>
-              </div> -->
-
+              <button type="button" class="btn btn-link"  (click)="openModalC5(contentLoanRep)">Show Rep Sch</button>
               <button type="button" class="btn btn-link"  (click)="openModal(content)">Show Sanction Dtls</button>
+              <button type="button" class="btn btn-link"  (click)="openModalC1(contentLoanStmt)">Show Loan Stmt</button>
+              
               <ng-template #content>
                 <div class="modal-header">
                   <h4 class="modal-title pull-left">Sanction Details </h4>
@@ -237,8 +245,8 @@
                   </table>
                 </div>
               </ng-template>
-
-
+             
+             
 
             </form>
           </div>

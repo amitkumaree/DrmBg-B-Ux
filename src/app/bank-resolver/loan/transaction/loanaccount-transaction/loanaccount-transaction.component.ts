@@ -22,6 +22,8 @@ import { LoanOpenDM } from 'src/app/bank-resolver/Models/loan/LoanOpenDM';
 import { tm_loan_sanction_dtls } from 'src/app/bank-resolver/Models/loan/tm_loan_sanction_dtls';
 import { mm_installment_type } from 'src/app/bank-resolver/Models/mm_installment_type';
 import { p_loan_param } from 'src/app/bank-resolver/Models/loan/p_loan_param';
+import { tt_loan_rep } from 'src/app/bank-resolver/Models/loan/tt_loan_rep';
+import { SafeResourceUrl,DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-loanaccount-transaction',
@@ -31,7 +33,7 @@ import { p_loan_param } from 'src/app/bank-resolver/Models/loan/p_loan_param';
 })
 export class LoanaccountTransactionComponent implements OnInit {
   constructor(private svc: RestService, private msg: InAppMessageService, private modalService: BsModalService,
-              private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router) { }
+              private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,private _domSanitizer: DomSanitizer) { }
   get f() { return this.accTransFrm.controls; }
   get fd() { return this.accDtlsFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
@@ -39,12 +41,16 @@ export class LoanaccountTransactionComponent implements OnInit {
   private static operations: mm_operation[] = [];
   @ViewChild('content', { static: true }) content: TemplateRef<any>;
   @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
+  @ViewChild('contentLoanRep', { static: true }) contentLoanRep: TemplateRef<any>; 
+  @ViewChild('contentLoanStmt', { static: true }) contentLoanStmt: TemplateRef<any>;
+   
   operations: mm_operation[];
   unApprovedTransactionLst: td_def_trans_trf[] = [];
   unapprovedTrans: td_def_trans_trf[] = [];
   disableOperation = true;
   modalRef: BsModalRef;
   AcctTypes: mm_operation[];
+  LoanRepSch:tt_loan_rep[];
   transType: DynamicSelect;
   isLoading: boolean;
   sys = new SystemValues();
@@ -52,6 +58,8 @@ export class LoanaccountTransactionComponent implements OnInit {
   tdDefTransFrm: FormGroup;
   accDtlsFrm: FormGroup;
   sancDetails: FormGroup;
+  ReportUrl: SafeResourceUrl;
+  UrlString = '';
   // sancdtls: FormArray;
   showTransMode = false;
   showTransactionDtl = false;
@@ -106,7 +114,8 @@ export class LoanaccountTransactionComponent implements OnInit {
       ovd_intt_rate: [''],
       principal: [''],
       total_due: [''],
-      disb_amt: ['']
+      disb_amt: [''],
+      disb_dt:['']
     });
     this.tdDefTransFrm = this.frmBldr.group({
       trans_dt: [''],
@@ -507,6 +516,7 @@ export class LoanaccountTransactionComponent implements OnInit {
           // this.accDtlsFrm.reset();
           // this.showTransactionDtl = false;
           // this.disableOperation = false;
+          debugger;
           this.accNoEnteredForTransaction = acc.tmloanall;
           this.accDtlsFrm.patchValue({
             cust_name: acc.tmloanall.cust_name,
@@ -519,7 +529,8 @@ export class LoanaccountTransactionComponent implements OnInit {
             ovd_intt_rate: acc.tmloanall.ovd_intt_rate,
             principal: acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
             total_due: acc.tmloanall.curr_intt + acc.tmloanall.ovd_intt + acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
-            disb_amt: acc.tmloanall.disb_amt
+            disb_amt: acc.tmloanall.disb_amt,
+            disb_dt :acc.tmloanall.disb_dt
           });
           this.msg.sendCommonTmLoanAll(acc.tmloanall);
           this.tdDefTransFrm.patchValue({
@@ -705,7 +716,8 @@ export class LoanaccountTransactionComponent implements OnInit {
               ovd_intt_rate: acc.tmloanall.ovd_intt_rate,
               principal: acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
               total_due: acc.tmloanall.curr_intt + acc.tmloanall.ovd_intt + acc.tmloanall.curr_prn + acc.tmloanall.ovd_prn,
-              disb_amt: acc.tmloanall.disb_amt
+              disb_amt: acc.tmloanall.disb_amt,
+              disb_dt :acc.tmloanall.disb_dt
             });
             this.msg.sendCommonTmLoanAll(acc.tmloanall);
             this.tdDefTransFrm.patchValue({
@@ -1009,6 +1021,8 @@ export class LoanaccountTransactionComponent implements OnInit {
       }
     );
   }
+  
+  
 
   onSaveClick(): void {
 
@@ -1651,6 +1665,49 @@ export class LoanaccountTransactionComponent implements OnInit {
   openModal(template: TemplateRef<any>) {
     this.msg.sendCommonAccountNum('9');
     this.modalRef = this.modalService.show(template);
+  }
+  openModalC5(template: TemplateRef<any>) {
+    debugger;
+   this.PopulateLoanRepSch(template);   
+  }
+  PopulateLoanRepSch(template: TemplateRef<any>): void {
+    this.isLoading=true;
+    const tmDep = new p_loan_param();
+    tmDep.loan_id = this.f.acct_num.value;
+    this.svc.addUpdDel<any>('Loan/PopulateLoanRepSch', tmDep).subscribe(
+      res => {
+        debugger;
+        if (undefined !== res) {
+          this.LoanRepSch = res; 
+          this.LoanRepSch.forEach(x=>x.due_dt1=x.due_dt.toString().substr(0, 10))
+          this.modalRef = this.modalService.show(template); 
+          this.isLoading=false;        
+        }
+      },
+      err => {
+        this.isLoading = false; 
+        this.HandleMessage(true, MessageType.Error, 'Loan Repayment Schedule not found, Try again later.');
+      }
+    );
+  }
+  openModalC1(template: TemplateRef<any>) {
+    debugger;
+    this.SubmitReport(template);
+    
+   // this.PopulateLoanRepSch(template);   
+  }
+  public SubmitReport(template: TemplateRef<any>) {
+     debugger;
+      this.UrlString = this.svc.getReportUrl();
+      this.UrlString = this.UrlString + 'WebForm/Loan/loanstatement?'
+        + 'brn_cd=' + this.sys.BranchCode
+        + '&loan_id=' +  this.f.acct_num.value
+        + '&from_dt=' + this.fd.disb_dt.value.toString().substr(0, 10)
+        + '&to_dt=' + Utils.convertDtToString(this.sys.CurrentDate);
+      this.isLoading = false;//this.fd.disb_dt.value
+      this.ReportUrl = this._domSanitizer.bypassSecurityTrustResourceUrl(this.UrlString);
+      this.modalRef = this.modalService.show(template); 
+     
   }
 
 }
