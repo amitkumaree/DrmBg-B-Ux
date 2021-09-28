@@ -468,6 +468,7 @@ export class LoanaccountTransactionComponent implements OnInit {
     this.f.oprn_cd.disable();
     this.disableOperation = true;
     this.showTranferType = true;
+    this.isOpenToDp=false;
     this.isLoading = true;
     this.showMsg = null;
     const acc1 = new tm_loan_all();
@@ -782,7 +783,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       this.isRecovery = false;
       // this.td.trf_type.value !== '';
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'recovery') {
-
+      this.isOpenToDp=false;
       this.dayDiff(this.td.intt_recov_dt.value, this.td.intt_till_dt.value);
       this.transType.key = 'R';
       this.transType.Description = 'Recovery';
@@ -927,7 +928,7 @@ export class LoanaccountTransactionComponent implements OnInit {
       return;
     }
     if (this.td.trans_type_key.value === 'R') {
-      this.PopulateRecoveryDetails();
+      this.PopulateRecoveryDetails(2);
     }
     else {
       this.onMiscChng();
@@ -937,7 +938,7 @@ export class LoanaccountTransactionComponent implements OnInit {
   onRecoveryTillDateChng(ev: any): void {
 
     if (this.td.trans_type_key.value === 'R') {
-      if (+this.td.amount.value > 0) {
+      // if (+this.td.amount.value > 0) {
         if (this.dayDiff(this.td.intt_recov_dt.value, this.td.intt_till_dt.value) <= 0) {
           this.HandleMessage(true, MessageType.Error, 'Interest Already calculated upto ' + this.td.intt_till_dt.value);
           this.tdDefTransFrm.patchValue({
@@ -949,17 +950,17 @@ export class LoanaccountTransactionComponent implements OnInit {
           });
         }
         else {
-          this.PopulateRecoveryDetails();
+          this.PopulateRecoveryDetails(3);
           this.geteffectiveinttrt();
           this.tdDefTransFrm.patchValue({
             no_of_day: this.dayDiff(this.td.intt_recov_dt.value, this.td.intt_till_dt.value)
           });
         }
-      }
-      else {
-        this.HandleMessage(true, MessageType.Error, 'Recovery amount can not be blank or negative');
-        this.td.amount.setValue('');
-      }
+     // }
+      // else {
+      //   this.HandleMessage(true, MessageType.Error, 'Recovery amount can not be blank or negative');
+      //   this.td.amount.setValue('');
+      // }
     }
   }
 
@@ -968,27 +969,50 @@ export class LoanaccountTransactionComponent implements OnInit {
     - Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate())) / (1000 * 60 * 60 * 24));
     return diffDays;
   }
-  PopulateRecoveryDetails() {
+  PopulateRecoveryDetails(callval:any) {
     const tmDep = new p_loan_param();
     let inttRet = new p_loan_param();
     tmDep.loan_id = this.f.acct_num.value;
     tmDep.brn_cd = this.sys.BranchCode;
     tmDep.gs_user_id = this.sys.UserId;
-    tmDep.curr_intt_rate = this.td.curr_intt_rate.value;
+    if (callval==2){
+    tmDep.curr_intt_rate = this.td.intt_rate.value==null?this.td.curr_intt_rate.value:this.td.intt_rate.value;
     tmDep.recov_amt = this.td.amount.value;
-    tmDep.commit_roll_flag = 0;
+    }
+    tmDep.commit_roll_flag = callval;
     tmDep.intt_dt = this.td.intt_recov_dt.value;
     this.svc.addUpdDel<any>('Loan/CalculateLoanInterest', tmDep).subscribe(
       res => {
 
         if (undefined !== res) {
           inttRet = res;
+          // this.tdDefTransFrm.patchValue({
+          //   curr_prn_recov: inttRet.curr_prn_recov,
+          //   curr_intt_recov: inttRet.curr_intt_recov,
+          //   ovd_prn_recov: inttRet.ovd_prn_recov,
+          //   ovd_intt_recov: inttRet.ovd_prn_recov
+          // });
+          if (callval==2)
+          {
           this.tdDefTransFrm.patchValue({
-            curr_prn_recov: inttRet.curr_prn_recov,
-            curr_intt_recov: inttRet.curr_intt_recov,
-            ovd_prn_recov: inttRet.ovd_prn_recov,
-            ovd_intt_recov: inttRet.ovd_prn_recov
-          });
+               curr_prn_recov: inttRet.curr_prn_recov,
+               curr_intt_recov: inttRet.curr_intt_recov,
+               ovd_prn_recov: inttRet.ovd_prn_recov,
+               ovd_intt_recov: inttRet.ovd_prn_recov
+             });
+            }
+            else if (callval==3)
+            {
+              this.accDtlsFrm.patchValue({
+                curr_principal: inttRet.curr_prn_recov,
+                intt_recev:  inttRet.curr_intt_recov,
+                curr_intt:  inttRet.curr_intt_recov,
+                ovd_principal: inttRet.ovd_prn_recov,
+                ovd_intt: inttRet.ovd_prn_recov,
+                total_due: inttRet.curr_intt_recov + inttRet.ovd_intt_recov + inttRet.curr_prn_recov + inttRet.ovd_prn_recov,
+              });
+          
+            }
 
         }
       },
@@ -1012,6 +1036,9 @@ export class LoanaccountTransactionComponent implements OnInit {
           this.tdDefTransFrm.patchValue({
             intt_rate: inttRet
           });
+          if(this.td.amount.value>0)
+          this.PopulateRecoveryDetails(2);
+
 
         }
       },
@@ -1057,23 +1084,46 @@ export class LoanaccountTransactionComponent implements OnInit {
         ` do not match with transaction amount ₹${this.td.amount.value}`);
       return;
     }
-
+    if ( this.td.recov_type.value=='A')
+    {
+    const tmDep = new p_loan_param();
+    let inttRet = new p_loan_param();
+    tmDep.loan_id = this.f.acct_num.value;
+    tmDep.brn_cd = this.sys.BranchCode;
+    tmDep.gs_user_id = this.sys.UserId;
+    tmDep.curr_intt_rate = this.td.intt_rate.value==null?this.td.curr_intt_rate.value:this.td.intt_rate.value;
+    tmDep.recov_amt = this.td.amount.value;
+    tmDep.commit_roll_flag = 2;
+    tmDep.intt_dt = this.td.intt_recov_dt.value;
     this.isLoading = true;
-    const saveTransaction = new LoanOpenDM();
-    const tdDefTrans = this.mappTddefTransFromFrm();
-    saveTransaction.tddeftrans = tdDefTrans;
-    if (this.td.trf_type.value === 'C') {
-      saveTransaction.tmdenominationtrans = this.tm_denominationList;
-      for (let i = 0; i < saveTransaction.tmdenominationtrans.length; i++) {
-        debugger;
-        if (this.td.trans_cd.value > 0) {
-          saveTransaction.tmdenominationtrans[i].trans_cd = this.td.trans_cd.value;
-        }
-      }
-      // saveTransaction.tmdenominationtrans.forEach(x=>x.trans_cd = this.td.trans_cd.value);
-    } else if (this.td.trf_type.value === 'T') {
-      let i = 0;
-      this.td_deftranstrfList.forEach(e => {
+    this.svc.addUpdDel<any>('Loan/CalculateLoanInterest', tmDep).subscribe(
+      res => {
+
+        if (undefined !== res) {
+          inttRet = res;
+          this.tdDefTransFrm.patchValue({
+               curr_prn_recov: inttRet.curr_prn_recov,
+               curr_intt_recov: inttRet.curr_intt_recov,
+               ovd_prn_recov: inttRet.ovd_prn_recov,
+               ovd_intt_recov: inttRet.ovd_prn_recov
+             });
+        /////////////////////
+        //this.isLoading = true;
+        const saveTransaction = new LoanOpenDM();
+        const tdDefTrans = this.mappTddefTransFromFrm();
+        saveTransaction.tddeftrans = tdDefTrans;
+        if (this.td.trf_type.value === 'C') {
+          saveTransaction.tmdenominationtrans = this.tm_denominationList;
+          for (let i = 0; i < saveTransaction.tmdenominationtrans.length; i++) 
+          {
+             debugger;
+              if (this.td.trans_cd.value > 0) {
+                saveTransaction.tmdenominationtrans[i].trans_cd = this.td.trans_cd.value;
+                }
+          }
+        } else if (this.td.trf_type.value === 'T') {
+        let i = 0;
+        this.td_deftranstrfList.forEach(e => {
         const tdDefTransAndTranfer = this.mappTddefTransAndTransFrFromFrm();
         if (e.trans_type === 'cust_acc') {
           tdDefTransAndTranfer.acc_type_cd = +e.cust_acc_type;
@@ -1104,8 +1154,6 @@ export class LoanaccountTransactionComponent implements OnInit {
       tmTrnsfr.brn_cd = this.sys.BranchCode;
       tmTrnsfr.trf_dt = this.sys.CurrentDate;
       tmTrnsfr.created_by = this.sys.UserId;
-      // tmTrnsfr.created_dt = this.sys.CurrentDate;
-      // tmTrnsfr.trf_cd=this.td.trans_cd.value;
       tmTrnsfr.approval_status = 'U';
       saveTransaction.tmtransfer.push(tmTrnsfr);
     }
@@ -1127,17 +1175,15 @@ export class LoanaccountTransactionComponent implements OnInit {
           this.HandleMessage(true, MessageType.Error, 'Update Failed !!!!');
           console.error('Error on onSaveClick' + JSON.stringify(err));
         }
-      );
-
-    }
-    else {
-      this.svc.addUpdDel<LoanOpenDM>('Loan/InsertLoanTransactionData', saveTransaction).subscribe(
+        );
+         }
+        else {
+        this.svc.addUpdDel<LoanOpenDM>('Loan/InsertLoanTransactionData', saveTransaction).subscribe(
         res => {
           debugger;
+          tdDefTrans.trans_cd=+res;
           this.unApprovedTransactionLst.push(tdDefTrans);
           this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
-          // this.tdDefTransFrm.reset();
-          // this.accTransFrm.reset();
           this.tdDefTransFrm.patchValue({
             trans_cd: res
           });
@@ -1148,8 +1194,123 @@ export class LoanaccountTransactionComponent implements OnInit {
           this.HandleMessage(true, MessageType.Error, 'Save Failed !!!!');
           console.error('Error on onSaveClick' + JSON.stringify(err));
         }
-      );
+        );
+        }
+        ////////////////////
+
+        }
+      },
+      err => {
+        this.isLoading = false;
+        this.isLoading = false; console.log(err);
+        this.HandleMessage(true, MessageType.Error, 'Interest Can not be calculated, Try again later.');
+      }
+    );
     }
+    else
+    {
+      debugger;
+      if (this.td.curr_prn_recov.value+this.td.curr_intt_recov.value+this.td.ovd_prn_recov.value+this.td.ovd_intt_recov.value <=0 ) {
+        this.HandleMessage(true, MessageType.Error, 'Please input all recovery Amount');
+        return;
+      }
+      /////////////////////
+       this.isLoading = true;
+       const saveTransaction = new LoanOpenDM();
+       const tdDefTrans = this.mappTddefTransFromFrm();
+       saveTransaction.tddeftrans = tdDefTrans;
+       if (this.td.trf_type.value === 'C') {
+         saveTransaction.tmdenominationtrans = this.tm_denominationList;
+         for (let i = 0; i < saveTransaction.tmdenominationtrans.length; i++) 
+         {
+            debugger;
+             if (this.td.trans_cd.value > 0) {
+               saveTransaction.tmdenominationtrans[i].trans_cd = this.td.trans_cd.value;
+               }
+         }
+       } else if (this.td.trf_type.value === 'T') {
+       let i = 0;
+       this.td_deftranstrfList.forEach(e => {
+       const tdDefTransAndTranfer = this.mappTddefTransAndTransFrFromFrm();
+       if (e.trans_type === 'cust_acc') {
+         tdDefTransAndTranfer.acc_type_cd = +e.cust_acc_type;
+         tdDefTransAndTranfer.acc_num = e.cust_acc_number;
+         tdDefTransAndTranfer.acc_name = e.cust_name;
+         tdDefTransAndTranfer.instrument_num = e.instrument_num;
+         tdDefTransAndTranfer.acc_cd = e.acc_cd;
+         tdDefTransAndTranfer.remarks = 'D';
+         tdDefTransAndTranfer.disb_id = ++i;
+       } else {
+         tdDefTransAndTranfer.acc_type_cd = +e.gl_acc_code;
+         tdDefTransAndTranfer.acc_num = '0000';
+         tdDefTransAndTranfer.acc_name = e.gl_acc_desc;
+         tdDefTransAndTranfer.instrument_num = e.instrument_num;
+         tdDefTransAndTranfer.acc_cd = +e.gl_acc_code;
+         tdDefTransAndTranfer.remarks = 'X';
+         tdDefTransAndTranfer.disb_id = ++i;
+       }
+       tdDefTransAndTranfer.amount = e.amount;
+       debugger;
+       saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
+     });
+
+     const tmTrnsfr = new tm_transfer();
+     if (this.td.trans_cd.value > 0) {
+       tmTrnsfr.trans_cd = this.td.trans_cd.value;
+     }
+     tmTrnsfr.brn_cd = this.sys.BranchCode;
+     tmTrnsfr.trf_dt = this.sys.CurrentDate;
+     tmTrnsfr.created_by = this.sys.UserId;
+     tmTrnsfr.approval_status = 'U';
+     saveTransaction.tmtransfer.push(tmTrnsfr);
+   }
+   debugger;
+   if (this.td.trans_cd.value > 0) {
+     this.svc.addUpdDel<LoanOpenDM>('Common/UpdateTransactionDetails', saveTransaction).subscribe(
+       res => {
+         debugger;
+         // this.unApprovedTransactionLst.push(tdDefTrans);
+         const loanId = this.td.acc_num.value;
+         this.HandleMessage(true, MessageType.Sucess, `Transaction for Loan Id ${loanId}, updated sucessfully !!!!`);
+         this.isLoading = false;
+         this.onResetClick();
+         // this.tdDefTransFrm.reset();
+         // this.accTransFrm.reset();
+       },
+       err => {
+         this.isLoading = false;
+         this.HandleMessage(true, MessageType.Error, 'Update Failed !!!!');
+         console.error('Error on onSaveClick' + JSON.stringify(err));
+       }
+       );
+        }
+       else {
+       this.svc.addUpdDel<LoanOpenDM>('Loan/InsertLoanTransactionData', saveTransaction).subscribe(
+       res => {
+         debugger;
+         tdDefTrans.trans_cd=+res;
+         this.unApprovedTransactionLst.push(tdDefTrans);
+         this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
+         this.tdDefTransFrm.patchValue({
+           trans_cd: res
+         });
+         this.isLoading = false;
+       },
+       err => {
+         this.isLoading = false;
+         this.HandleMessage(true, MessageType.Error, 'Save Failed !!!!');
+         console.error('Error on onSaveClick' + JSON.stringify(err));
+       }
+       );
+       }
+       ////////////////////
+
+    }
+
+
+
+
+    
 
   }
 
