@@ -27,8 +27,8 @@ import { LoanOpenDM } from '../../Models/loan/LoanOpenDM';
 })
 export class AccounTransactionsComponent implements OnInit {
   constructor(private svc: RestService, private msg: InAppMessageService,
-    private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
-    private modalService: BsModalService) { }
+              private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
+              private modalService: BsModalService) { }
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
   static existingCustomers: mm_customer[] = [];
@@ -725,21 +725,24 @@ export class AccounTransactionsComponent implements OnInit {
     console.log(JSON.stringify(t));
     this.svc.addUpdDel<any>('Deposit/GetPrevTransaction', t).subscribe(
       res => {
-        this.preTransactionDtlForSelectedAcc = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
-        let tot = 0;
-        this.preTransactionDtlForSelectedAcc.forEach((ele, index) => {
-          ele.TransDtAsString = ele.trans_dt.toString().substring(0, 10);
-          if (index === 0) {
-            tot += ele.amount;
-          } else {
-            if (ele.trans_type === 'D') { // deposit
-              tot += ele.amount;
+        let prTrans = [];
+        prTrans = Utils.ChkArrNotEmptyRetrnEmptyArr(res);
+        this.preTransactionDtlForSelectedAcc = [];
+        let tot = acc.clr_bal;
+        this.preTransactionDtlForSelectedAcc.push(prTrans[0]);
+        this.preTransactionDtlForSelectedAcc[0].Balance = tot;
+        for (let i = 0; i <= prTrans.length; i++) {
+          prTrans[i].TransDtAsString = prTrans[i].trans_dt.toString().substring(0, 10);
+          if (i > 0) {
+            if (prTrans[i - 1].trans_type === 'D') { // deposit
+              tot -= +(prTrans[i - 1].amount);
             } else {
-              tot -= ele.amount;
+              tot += +(prTrans[i - 1].amount);
             }
+            prTrans[i].Balance = tot;
+            this.preTransactionDtlForSelectedAcc.push(prTrans[i]);
           }
-          ele.Balance = tot;
-        });
+        }
         // this.preTransactionDtlForSelectedAcc = this.preTransactionDtlForSelectedAcc.((a, b) => (a.trans_dt < b.trans_dt ? -1 : 1));
       },
       err => { console.log(err); }
@@ -1919,7 +1922,10 @@ export class AccounTransactionsComponent implements OnInit {
           }
         }
       } else { toReturn.particulars = this.td.particulars.value; }
-
+      if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close' &&
+          accTypeCd === 1) {
+            toReturn.particulars = 'To Closing';
+      }
       if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'
         && this.td.trf_type.value === '') {
         toReturn.trans_type = 'T';

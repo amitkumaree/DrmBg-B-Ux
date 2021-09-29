@@ -64,6 +64,7 @@ import { AccOpeningViewComponent } from './deposit/acc-opening-view/acc-opening-
 import { NeftOutwardComponent } from './deposit/neft-outward/neft-outward.component';
 import { NeftInwardReportComponent } from './deposit/report/neft-inward-report/neft-inward-report.component';
 import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report/neft-outward-report.component';
+import { PassBookPrintingComponent } from './deposit/report/pass-book-printing/pass-book-printing.component';
 
 @NgModule({
   declarations: [
@@ -73,35 +74,19 @@ import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report
     VoucherprintComponent, AccountDetailsComponent, TransactionDetailsComponent,
     GenLedger2Component, TransactionapprovalComponent, AccOpeningComponent,
     CustomerInfoComponent, VoucherComponent, TestComponent,
-    ScrollbookComponent,
-    DwRdInstlViewComponent,
-    DwTdInttDtlsViewComponent,
-    DwRenewalViewComponent,
-    AccounTransactionsComponent,
-    AccountDetailsForAcctTransComponent,
-    VoucherapprovalComponent,
-    DayinitializationComponent,
-    DaycomplitionComponent,
-    AdduserComponent,
-    KycComponent,
-    MemberListComponent,
-    OpenLoanAccountComponent,
-    LoanaccountTransactionComponent,
-    LoanTransactionApprovalComponent, INRCurrencyPipe,
-    LoanTransactionDetailsComponent,
-    LoanAccwiseinttcalcComponent, LienAccLockUnlockComponent,
-    NetworthStatementComponent, SubCashBookComponent,
-    DetailListSBCAComponent, DetailListRDComponent,
-    DetailListFDMISComponent, AccStmtSBCAComponent,
-    AccStmtRDComponent, AccStmtTDComponent,
+    ScrollbookComponent, DwRdInstlViewComponent, DwTdInttDtlsViewComponent,
+    DwRenewalViewComponent, AccounTransactionsComponent, AccountDetailsForAcctTransComponent,
+    VoucherapprovalComponent, DayinitializationComponent, DaycomplitionComponent,
+    AdduserComponent, KycComponent, MemberListComponent, OpenLoanAccountComponent,
+    LoanaccountTransactionComponent, LoanTransactionApprovalComponent, INRCurrencyPipe,
+    LoanTransactionDetailsComponent, LoanAccwiseinttcalcComponent, LienAccLockUnlockComponent,
+    NetworthStatementComponent, SubCashBookComponent, DetailListSBCAComponent, DetailListRDComponent,
+    DetailListFDMISComponent, AccStmtSBCAComponent, AccStmtRDComponent, AccStmtTDComponent,
     NearMaturityReportComponent, OpenClosingRegisterComponent,
     LoanStatementComponent, DetailListComponent,
     LoanDisbursementRegisterComponent, RecoveryRegisterComponent,
-    LoanSubCashBookComponent,
-    AccOpeningViewComponent,
-    NeftOutwardComponent,
-    NeftInwardReportComponent,
-    NeftOutwardReportComponent,
+    LoanSubCashBookComponent, AccOpeningViewComponent, NeftOutwardComponent,
+    NeftInwardReportComponent, NeftOutwardReportComponent, PassBookPrintingComponent,
   ],
   imports: [
     CommonModule,

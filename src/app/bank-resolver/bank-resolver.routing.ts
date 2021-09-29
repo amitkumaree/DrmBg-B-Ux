@@ -54,6 +54,7 @@ import { AccOpeningViewComponent } from './deposit/acc-opening-view/acc-opening-
 import { NeftOutwardComponent } from './deposit/neft-outward/neft-outward.component';
 import { NeftInwardReportComponent } from './deposit/report/neft-inward-report/neft-inward-report.component';
 import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report/neft-outward-report.component';
+import { PassBookPrintingComponent } from './deposit/report/pass-book-printing/pass-book-printing.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -121,6 +122,7 @@ const routes: Routes = [
       { path: 'DT_NEFTPayment', component: NeftOutwardComponent, canActivate: [AuthGuard] },
       { path: 'DR_NeftIn', component: NeftInwardReportComponent, canActivate: [AuthGuard] },
       { path: 'DR_NeftOut', component: NeftOutwardReportComponent, canActivate: [AuthGuard] },
+      { path: 'DR_PbkPrn', component: PassBookPrintingComponent, canActivate: [AuthGuard] },
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
