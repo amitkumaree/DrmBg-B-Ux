@@ -27,8 +27,8 @@ import { LoanOpenDM } from '../../Models/loan/LoanOpenDM';
 })
 export class AccounTransactionsComponent implements OnInit {
   constructor(private svc: RestService, private msg: InAppMessageService,
-              private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
-              private modalService: BsModalService) { }
+    private frmBldr: FormBuilder, public datepipe: DatePipe, private router: Router,
+    private modalService: BsModalService) { }
   get f() { return this.accTransFrm.controls; }
   get td() { return this.tdDefTransFrm.controls; }
   static existingCustomers: mm_customer[] = [];
@@ -59,7 +59,8 @@ export class AccounTransactionsComponent implements OnInit {
   showMisInstalment = false;
   accDtlsFrm: FormGroup;
   ShadowBalance: number;
-
+  showBalance = false;
+  showTransfrTyp = true;
   suggestedCustomer: mm_customer[];
   customerList: mm_customer[] = [];
   td_deftrans = new td_def_trans_trf();
@@ -169,7 +170,8 @@ export class AccounTransactionsComponent implements OnInit {
       intt_rate: [''],
       interest: [''],
       td_def_mat_amt: [''],
-      closeIntrest: ['']
+      closeIntrest: [''],
+      balance: ['']
     });
     this.resetTransfer();
     this.resetAccDtlsFrmFormData();
@@ -1166,6 +1168,8 @@ export class AccounTransactionsComponent implements OnInit {
     this.HandleMessage(false);
     // this.showTranferType = true;
     this.hideOnClose = false;
+    this.showBalance = false;
+    this.showTransfrTyp = true;
     this.showAmtDrpDn = false;
     this.showOnClose = false;
     this.showOnRenewal = false;
@@ -1372,6 +1376,12 @@ export class AccounTransactionsComponent implements OnInit {
         this.hideOnClose = false;
       }
     } else if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
+      /** hide transfer type for renewal of FD */
+      if (accTypCode === 2) {
+        this.showTransfrTyp = false;
+      } else {
+        this.showTransfrTyp = true;
+      }
       /* check if for acct_type 2,4,5 mat is past today date
              pre mature acctype shpuld not be shown */
 
@@ -1684,6 +1694,8 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   onAmtChngDuringRenewal(): void {
+    debugger;
+    const accTypeCd = +this.f.acc_type_cd.value;
     // this.showTranferType = false;
     this.HandleMessage(false);
     if ((+this.td.amount.value) <= 0) {
@@ -1695,13 +1707,24 @@ export class AccounTransactionsComponent implements OnInit {
       const mat_amt = this.accNoEnteredForTransaction.prn_amt
         + this.accNoEnteredForTransaction.intt_amt;
 
-      if ((mat_amt - (+this.td.amount.value)) >= 0) {
-        // open transfer area
-        // this.showTranferType = true;
+      if ((mat_amt - (+this.td.amount.value)) > 0) {
+        this.showBalance = true;
+        this.showTransfrTyp = true;
+        this.td.balance.setValue((mat_amt - (+this.td.amount.value)));
+      } else if ((mat_amt - (+this.td.amount.value)) === 0) {
+        this.showBalance = false;
+        this.showTransfrTyp = false;
+        this.td.balance.setValue((mat_amt - (+this.td.amount.value)));
       } else if (((+this.td.amount.value) - mat_amt) > 0) {
         // close transfer area
         this.HandleMessage(true, MessageType.Error, 'Amount can not be greater than maturity amount.');
         this.td.amount.setValue('');
+        this.showBalance = false;
+        this.td.balance.setValue('');
+        if (accTypeCd === 2) {
+          this.td.amount.setValue(mat_amt);
+          this.showTransfrTyp = false;
+        }
         return;
       }
     }
@@ -1709,30 +1732,51 @@ export class AccounTransactionsComponent implements OnInit {
   }
 
   onSaveClick(): void {
+    const accTypeCd = +this.f.acc_type_cd.value;
     if ((+this.td.amount.value) <= 0) {
       this.HandleMessage(true, MessageType.Error, 'Amount can not be blank');
       return;
     }
-    if (undefined === this.td.trf_type.value
-      || null === this.td.trf_type.value
-      || this.td.trf_type.value === '') {
-      this.HandleMessage(true, MessageType.Error, 'Please choose transfer type.');
-      return;
+
+    /** do not check transfer type for FD renewal which doesnt have balance */
+    if (accTypeCd !== 2 && !this.showBalance) {
+      if (undefined === this.td.trf_type.value
+        || null === this.td.trf_type.value
+        || this.td.trf_type.value === '') {
+        this.HandleMessage(true, MessageType.Error, 'Please choose transfer type.');
+        return;
+      }
+    }
+    if (accTypeCd !== 2 && !this.showBalance) {
+      if (this.td.trf_type.value === 'C' && this.denominationGrandTotal !== (+this.td.amount.value)) {
+        this.HandleMessage(true, MessageType.Error,
+          `Denomination total amount ₹${this.denominationGrandTotal}, ` +
+          ` do not match with transaction amount ₹${this.td.amount.value}`);
+        return;
+      }
+
+      if (this.td.trf_type.value === 'T' && this.TrfTotAmt !== (+this.td.amount.value)) {
+        this.HandleMessage(true, MessageType.Error,
+          `Transfer total amount ₹${this.TrfTotAmt}, ` +
+          ` do not match with transaction amount ₹${this.td.amount.value}`);
+        return;
+      }
+    } else {
+      if (this.td.trf_type.value === 'C' && this.denominationGrandTotal !== (+this.td.balance.value)) {
+        this.HandleMessage(true, MessageType.Error,
+          `Denomination total amount ₹${this.denominationGrandTotal}, ` +
+          ` do not match with balance amount ₹${this.td.balance.value}`);
+        return;
+      }
+
+      if (this.td.trf_type.value === 'T' && this.TrfTotAmt !== (+this.td.balance.value)) {
+        this.HandleMessage(true, MessageType.Error,
+          `Transfer total amount ₹${this.TrfTotAmt}, ` +
+          ` do not match with balance amount ₹${this.td.balance.value}`);
+        return;
+      }
     }
 
-    if (this.td.trf_type.value === 'C' && this.denominationGrandTotal !== (+this.td.amount.value)) {
-      this.HandleMessage(true, MessageType.Error,
-        `Denomination total amount ₹${this.denominationGrandTotal}, ` +
-        ` do not match with transaction amount ₹${this.td.amount.value}`);
-      return;
-    }
-
-    if (this.td.trf_type.value === 'T' && this.TrfTotAmt !== (+this.td.amount.value)) {
-      this.HandleMessage(true, MessageType.Error,
-        `Transfer total amount ₹${this.TrfTotAmt}, ` +
-        ` do not match with transaction amount ₹${this.td.amount.value}`);
-      return;
-    }
 
     if (!this.editDeleteMode) {
       this.isLoading = true;
@@ -1923,8 +1967,8 @@ export class AccounTransactionsComponent implements OnInit {
         }
       } else { toReturn.particulars = this.td.particulars.value; }
       if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close' &&
-          accTypeCd === 1) {
-            toReturn.particulars = 'To Closing';
+        accTypeCd === 1) {
+        toReturn.particulars = 'To Closing';
       }
       if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'
         && this.td.trf_type.value === '') {

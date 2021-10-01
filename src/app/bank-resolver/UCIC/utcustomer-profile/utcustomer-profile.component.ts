@@ -403,11 +403,6 @@ export class UTCustomerProfileComponent implements OnInit {
     this.retrieveClicked = false;
   }
 
-  public onNewClick(): void {
-    this.onClearClick();
-    this.f.status.setValue('A');
-  }
-
   public onSaveClick(): void {
     // ;
     if (!this.validateControls()) { return; }
@@ -579,7 +574,7 @@ export class UTCustomerProfileComponent implements OnInit {
 
   public onClearClick(): void {
     this.custMstrFrm.reset();
-    this.showMsgs = []
+    this.showMsgs = [];
     this.enableModifyAndDel = false;
     this.custMstrFrm.enable();
     this.f.cust_cd.disable();
@@ -592,6 +587,7 @@ export class UTCustomerProfileComponent implements OnInit {
     this.f.age.disable();
     // this.f.date_of_death.disable();
     this.suggestedCustomer = null;
+    this.f.status.setValue('A');
   }
 
   mapFormGrpToCustMaster(): mm_customer {
