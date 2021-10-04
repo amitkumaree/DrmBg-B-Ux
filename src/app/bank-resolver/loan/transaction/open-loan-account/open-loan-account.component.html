@@ -172,7 +172,7 @@
   <!-- <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3" *ngIf="tm_loan_all.loan_id != undefined"> -->
   <div class="col-xs-12 col-sm-12 col-md-11 col-lg-11 shadow mb-2 bg-white p-3">
     <div class="row">
-      <div class="col-9 border-right">
+      <div class="col-8 border-right">
 
         <h1></h1>
         <h6 style="background-color:lightskyblue">Guaranter Details</h6>
@@ -235,7 +235,7 @@
             <section *ngFor="let l of tm_loan_sanction; let i=index">
               <div class="form-row ">
                 <div class="form-group col-3">
-                  <small>Sanction No</small>
+                  <small>Sanc No</small>
                   <input class="form-control form-control-sm text-capitalize" id="l.sanc_no"
                     style="height:25px; text-align: right;" disabled
                     [(ngModel)]="l.sanc_no" type="number" min="0" step='any' placeholder="Sanction No">
@@ -243,7 +243,7 @@
 
                 <div class="form-group col-1"></div>
                 <div class="form-group col-7">
-                  <small for=sanc_date>Sanctio Date</small>
+                  <small for=sanc_date>Sanction Date</small>
                   <div class="input-group">
                     <input class="form-control form-control-sm text-capitalize" id="sanc_date"
                       style="height:25px; text-align: right;" bsDatepicker
@@ -387,7 +387,7 @@
       </div>
 
 
-      <div class="col-3 border-left">
+      <div class="col-4 border-left">
         <h1></h1>
         <h6 style="background-color:lightskyblue">Security Details</h6>
         <div class="scroll-style">
@@ -396,22 +396,22 @@
             <section *ngFor="let rec of set.tdloansancset; let j=index">
 
               <div class="form-row">
-                <div class="form-group col-7">
+                <div class="form-group col-6">
                   <input class="form-control form-control-sm text-capitalize" disabled style="height:25px; text-align: rigt;"
                   [(ngModel)]="rec.param_desc" id="sec_val" type="text" placeholder="SecurityQ">
                 </div>
 
-                <div *ngIf="rec.param_type=='CHAR'" class="form-group col-5">
+                <div *ngIf="rec.param_type=='CHAR'" class="form-group col-6">
                   <input class="form-control form-control-sm text-capitalize" style="height:25px; text-align: left;"
                   [(ngModel)]="rec.param_value" [disabled]="disableAll == 'Y' " type="text" id="sec_val" placeholder="Enter Text">
                 </div>
 
-                <div *ngIf="rec.param_type=='NUMBER'" class="form-group col-5">
+                <div *ngIf="rec.param_type=='NUMBER'" class="form-group col-6">
                   <input class="form-control form-control-sm text-capitalize" style="height:25px; text-align: left;"
                   [(ngModel)]="rec.param_value" [disabled]="disableAll == 'Y' " type="number" min="1" id="sec_val" placeholder="Enter Value">
                 </div>
 
-                <div *ngIf="rec.param_type=='DATE'" class="form-group col-5">
+                <div *ngIf="rec.param_type=='DATE'" class="form-group col-6">
                   <div class="input-group">
                     <input class="form-control form-control-sm text-capitalize" id="sanc_date"
                       style="height:25px; text-align: left;" bsDatepicker
