@@ -410,9 +410,10 @@ export class LoanTransactionApprovalComponent implements OnInit {
 
   public onApproveClick(): void {
     this.isLoading = true;
+    debugger;
     const param = new p_loan_param();
     param.brn_cd = this.sys.BranchCode; // localStorage.getItem('__brnCd');
-    // param.intt_dt = this.selectedVm.loan.tmloanall.intt_dt;
+    param.intt_dt = this.selectedVm.loan.tddeftrans.intt_till_dt;
     // const dt = this.sys.CurrentDate;
     param.loan_id = this.selectedVm.loan.tmloanall.loan_id;
     param.acc_type_cd = this.selectedVm.mm_acc_type.acc_type_cd;

@@ -69,6 +69,7 @@ export class UTSelfHelpComponent implements OnInit {
       this.svc.addUpdDel<any>('Deposit/GetCustDtls', prm).subscribe(
         res => {
           debugger;
+          res=res.filter(x=>x.catg_cd===11);
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedCustomer = res.slice(0, 20);
           } else {
@@ -273,15 +274,15 @@ export class UTSelfHelpComponent implements OnInit {
       this.HandleMessage(true, MessageType.Error, 'Gender Group Can not be Blank');
       return;
     }
-    else if (this.f.monthly_subcription.value == 0 || this.f.monthly_subcription.value === 'undefined') {
+    else if (this.f.monthly_subcription.value == null || this.f.monthly_subcription.value === 'undefined') {
       this.HandleMessage(true, MessageType.Error, 'Monthly Subcription Can not be 0');
       return;
     }
-    else if (this.f.min_member_limit.value == 0 || this.f.min_member_limit.value === 'undefined') {
+    else if (this.f.min_member_limit.value == null || this.f.min_member_limit.value === 'undefined') {
       this.HandleMessage(true, MessageType.Error, 'Minimum Member limit Can not be 0');
       return;
     }
-    else if (this.f.min_member_limit.value < (this.f.male_member.value+ this.f.female_member.value)) {
+    else if ((+this.f.min_member_limit.value) < ((+this.f.male_member.value)+ (+this.f.female_member.value))) {
       this.HandleMessage(true, MessageType.Error, 'Minimum member limit can not be less');
       return;
     }
@@ -289,6 +290,11 @@ export class UTSelfHelpComponent implements OnInit {
       this.HandleMessage(true, MessageType.Error, 'Savings A/C Can not be Blank');
       return;
     }
+    else if (this.f.form_dt.value == null || this.f.form_dt.value === 'undefined') {
+      this.HandleMessage(true, MessageType.Error, 'Date of Foundation Can not be Blank');
+      return;
+    }
+    
     else if (this.mmshgmember.length<1)
     {
       this.HandleMessage(true, MessageType.Error, 'SHG Member can not be Blank');
@@ -466,12 +472,12 @@ export class UTSelfHelpComponent implements OnInit {
     _mmshg.gruop_sex           =this.f.gruop_sex.value;           
     _mmshg.monthly_subcription =this.f.monthly_subcription.value; 
     _mmshg.min_member_limit    =this.f.min_member_limit.value;    
-    _mmshg.male_member         =this.f.male_member.value;         
-    _mmshg.female_member       =this.f.female_member.value;       
-    _mmshg.caste_sc            =this.f.caste_sc.value;            
-    _mmshg.caste_st            =this.f.caste_st.value;            
-    _mmshg.caste_gen           =this.f.caste_gen.value;           
-    _mmshg.caste_muslim        =this.f.caste_muslim.value;        
+    _mmshg.male_member         =this.f.male_member.value==null?0:+this.f.male_member.value;         
+    _mmshg.female_member       =this.f.female_member.value==null?0:+this.f.female_member.value;       
+    _mmshg.caste_sc            =this.f.caste_sc.value==null?0:+this.f.caste_sc.value;            
+    _mmshg.caste_st            =this.f.caste_st.value==null?0:+this.f.caste_st.value;            
+    _mmshg.caste_gen           =this.f.caste_gen.value==null?0:+this.f.caste_gen.value;           
+    _mmshg.caste_muslim        =this.f.caste_muslim.value==null?0:+this.f.caste_muslim.value;        
     _mmshg.form_dt             =this.f.form_dt.value;             
     _mmshg.sb_accno            =this.f.sb_accno.value;
     this.mmshgmember.forEach(x=>x.brn_cd=this.sys.BranchCode );

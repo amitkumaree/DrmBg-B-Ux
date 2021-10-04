@@ -65,6 +65,8 @@ import { NeftOutwardComponent } from './deposit/neft-outward/neft-outward.compon
 import { NeftInwardReportComponent } from './deposit/report/neft-inward-report/neft-inward-report.component';
 import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report/neft-outward-report.component';
 import { PassBookPrintingComponent } from './deposit/report/pass-book-printing/pass-book-printing.component';
+import { TransTransactionComponent } from './transfer/trans-transaction/trans-transaction.component';
+import { TransApproveComponent } from './transfer/trans-approve/trans-approve.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,7 @@ import { PassBookPrintingComponent } from './deposit/report/pass-book-printing/p
     LoanStatementComponent, DetailListComponent,
     LoanDisbursementRegisterComponent, RecoveryRegisterComponent,
     LoanSubCashBookComponent, AccOpeningViewComponent, NeftOutwardComponent,
-    NeftInwardReportComponent, NeftOutwardReportComponent, PassBookPrintingComponent,
+    NeftInwardReportComponent, NeftOutwardReportComponent, PassBookPrintingComponent, TransTransactionComponent, TransApproveComponent,
   ],
   imports: [
     CommonModule,
