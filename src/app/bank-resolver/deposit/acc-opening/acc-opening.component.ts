@@ -1258,7 +1258,7 @@ export class AccOpeningComponent implements OnInit {
   // }
 
   public suggestCustomer(): void {
-    if (this.tm_deposit.cust_name.length > 0) {
+    if (this.tm_deposit.cust_name.length > 2) {
       const prm = new p_gen_param();
       // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
       prm.as_cust_name = this.tm_deposit.cust_name.toLowerCase();
@@ -1291,7 +1291,7 @@ export class AccOpeningComponent implements OnInit {
 
     this.suggestedCustomerSignatoriesIdx = idx;
 
-    if (this.td_signatoryList[idx].signatory_name.toString().length > 0) {
+    if (this.td_signatoryList[idx].signatory_name.toString().length > 2) {
       const prm = new p_gen_param();
       prm.as_cust_name = this.td_signatoryList[idx].signatory_name.toString().toLowerCase();
       this.isLoading = true;
@@ -1891,8 +1891,8 @@ export class AccOpeningComponent implements OnInit {
     );
   }
 
-  checkDebitBalance(amount: number) {
 
+  checkDebitBalance(amount: number) {
 
     if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null) {
       exit(0);
@@ -1949,8 +1949,31 @@ export class AccOpeningComponent implements OnInit {
 
   }
 
-  xxxxxxxx(val: any) {
-    null;
+  validateSbAccount() {
+    debugger;
+    let temp_deposit_list: tm_deposit[] = [];
+    const temp_deposit = new tm_deposit();
+    temp_deposit.brn_cd = this.branchCode;
+    temp_deposit.acc_num = this.tm_deposit.user_acc_num;
+    temp_deposit.acc_type_cd = 1;
+
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
+      res => {
+        debugger;
+        temp_deposit_list = res;
+        this.isLoading = false;
+
+        if (temp_deposit_list.length === 0) {
+          this.HandleMessage(true, MessageType.Warning, 'Invalid Account Number for Standing Instruction');
+          this.tm_deposit.user_acc_num = null;
+          exit(0);
+        }
+      },
+      err => {
+        this.isLoading = false;
+      }
+    );
   }
 
   setStandingInstrAfterMatu(val: number) {

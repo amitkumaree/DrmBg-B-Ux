@@ -86,7 +86,7 @@ export class tm_deposit extends baseModel{
     this.year = 0;
     this.month = 0;
     this.day = 0;
-
+    this.cheque_facility_flag = 'N' ;
   }
 
 }
