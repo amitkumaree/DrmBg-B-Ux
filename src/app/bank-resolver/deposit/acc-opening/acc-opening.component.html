@@ -423,13 +423,7 @@
 
 
         <div class="form-row">
-          <!-- <div class="form-group col-2">
-            <small for="dep_mat_dt">Maturity Date</small>
-            <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy"
-              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
-          </div> -->
-
-          <div class="form-group col-2">
+          <div class="form-group col-3">
             <small for="dbs_acc_open_dt">Maturity Date</small>
             <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
               [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
@@ -455,20 +449,19 @@
           <div class="form-group col-3">
             <small for="dep_cert_no">S/B Account No</small>
             <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
-            (focusout)="validateSbAccount()" id="dep_cert_no">
+            (focusout)="validateSbAccount()" id="dep_sb_ac_no">
           </div>
 
-          <div class="form-group col-3">
+          <div class="form-group col-2">
             <br>
-            <div class="container border">
+            <!-- <div class="container border"> -->
             <label class="form-check-label">
               <input [disabled]='disableAll || tm_deposit.intt_trf_type == undefined || tm_deposit.intt_trf_type == null || tm_deposit.intt_trf_type == "O"'
               type="checkbox" value="false" [checked]="tm_deposit.cheque_facility_flag == 'Y'"
               (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Standing Instr</small>
             </label>
-
             </div>
-          </div>
+          <!-- </div> -->
 
         </div>
       </div>
@@ -833,7 +826,7 @@
               [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
           </div> -->
 
-          <div class="form-group col-2">
+          <div class="form-group col-3">
             <small for="dbs_acc_open_dt">Maturity Date</small>
             <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
             [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
@@ -858,23 +851,21 @@
 
           <div class="form-group col-3">
             <small for="mis_cert_no">S/B Account No</small>
-            <input [disabled]='disableAll' [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
-              id="mis_cert_no">
+            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
+            (focusout)="validateSbAccount()" id="mis_cert_no">
           </div>
 
-          <div class="form-group col-3">
+
+          <div class="form-group col-2">
             <br>
-            <div class="container border">
+            <!-- <div class="container border"> -->
             <label class="form-check-label">
               <input [disabled]='disableAll || tm_deposit.intt_trf_type == undefined || tm_deposit.intt_trf_type == null || tm_deposit.intt_trf_type == "O"'
               type="checkbox" value="false" [checked]="tm_deposit.cheque_facility_flag == 'Y'"
               (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Standing Instr</small>
             </label>
-            </div>
+            <!-- </div> -->
           </div>
-
-
-
         </div>
 
       </div>
@@ -935,13 +926,7 @@
               class="form-control form-control-sm text-capitalize" id="rec_dep_matu_val">
           </div>
 
-          <!-- <div class="form-group col-2">
-            <small for="rec_dep_mat_dt">Maturity Date</small>
-              <input disabled style="height:25px; width: 150px;" type="text" placeholder="dd/mm/yyyy"
-              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
-          </div> -->
-
-          <div class="form-group col-2">
+          <div class="form-group col-3">
             <small for="dbs_acc_open_dt">Maturity Date</small>
             <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
             [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
@@ -951,13 +936,6 @@
         </div>
 
         <div class="form-row">
-
-          <!-- <div class="form-group col-3">
-            <small for="rec_dep_mat_dt">Maturity Date</small>
-            <input [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt" placeholder="Maturity Date">
-          </div> -->
-
           <div class="form-group col-3">
             <small for="rec_dep_oprn_instr">Operational Instr</small> <br>
             <select
@@ -982,19 +960,16 @@
           <div class="form-group col-3">
             <small for="dbs_cert_no">S/B Account No</small>
             <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
-              id="dbs_cert_no">
+            (focusout)="validateSbAccount()" id="rec_sb_ac_no">
           </div>
-
 
           <div class="form-group col-3">
             <br>
-            <div class="container border">
             <label class="form-check-label">
               <input [disabled]='disableAll'
               type="checkbox" value="false" [checked]="tm_deposit.cheque_facility_flag == 'Y'"
-              (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Standing Instr</small>
+              (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Standing Instruction</small>
             </label>
-            </div>
           </div>
 
         </div>

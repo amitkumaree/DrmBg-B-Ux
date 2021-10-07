@@ -154,7 +154,8 @@ export class AccOpeningComponent implements OnInit {
 
   standingInstrAfterMaturity = [
     { instr_code: '1', instr_dscr: 'Auto Close' },
-    { instr_code: '2', instr_dscr: 'Auto Renew' }
+    { instr_code: '2', instr_dscr: 'Auto Renew' },
+    { instr_code: '0', instr_dscr: 'None' }
   ];
 
 
@@ -725,7 +726,7 @@ export class AccOpeningComponent implements OnInit {
       }
     }
 
-    debugger;
+
     if ((this.tm_deposit.acc_type_cd === 2 || this.tm_deposit.acc_type_cd === 5 || this.tm_deposit.acc_type_cd === 6)
       && this.tm_deposit.cheque_facility_flag === 'Y'
       && (this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null || this.tm_deposit.user_acc_num === "")) {
@@ -903,13 +904,6 @@ export class AccOpeningComponent implements OnInit {
     }
 
 
-
-
-    // if ((this.operationType === 'I') && ( this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null) &&
-    // ( this.tm_deposit.acc_type_cd ===  2 || this.tm_deposit.acc_type_cd ===  3 ||
-    //   this.tm_deposit.acc_type_cd ===  4 || this.tm_deposit.acc_type_cd ===  5
-    //   || this.tm_deposit.acc_type_cd ===  6  ) )
-
     if ((this.operationType === 'I') && (this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null || this.tm_deposit.user_acc_num === "")
       && (this.tm_deposit.acc_type_cd === 6)) {
       this.HandleMessage(true, MessageType.Warning, 'S/B Account Number not present to create the Account Type- '
@@ -919,7 +913,6 @@ export class AccOpeningComponent implements OnInit {
 
     if ((this.operationType === 'I') && (this.tm_deposit.acc_type_cd === 1 || this.tm_deposit.acc_type_cd === 7 ||
       this.tm_deposit.acc_type_cd === 8 || this.tm_deposit.acc_type_cd === 9)) {
-
       this.tm_deposit.user_acc_num = null;
     }
 
