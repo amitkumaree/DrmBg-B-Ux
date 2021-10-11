@@ -55,12 +55,16 @@ import { NeftOutwardComponent } from './deposit/neft-outward/neft-outward.compon
 import { NeftInwardReportComponent } from './deposit/report/neft-inward-report/neft-inward-report.component';
 import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report/neft-outward-report.component';
 import { PassBookPrintingComponent } from './deposit/report/pass-book-printing/pass-book-printing.component';
+import { TransTransactionComponent } from './transfer/trans-transaction/trans-transaction.component';
+import { TransApproveComponent } from './transfer/trans-approve/trans-approve.component';
+import { BakdatevoucherComponent } from './finance/bakdatevoucher/bakdatevoucher.component';
+import { KccmemberdtlsComponent } from './loan/masters/kccmemberdtls/kccmemberdtls.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
   { path: 'Loan', component: OpenLoanAccountComponent },
-  { path: 'te-st3', component: UTSelfHelpComponent },
+  { path: 'te-st3', component: TransTransactionComponent },
   { path: 'te-st1', component: TransactionapprovalComponent },
   { path: 'te-st2', component: AccounTransactionsComponent },
   { path: 'te-st4', component: LoanTransactionApprovalComponent },
@@ -85,6 +89,7 @@ const routes: Routes = [
       { path: 'FT_Voucher', component: VoucherComponent, canActivate: [AuthGuard] },
       { path: 'FT_ApproveTrns', component: VoucherapprovalComponent, canActivate: [AuthGuard] },
       { path: 'FT_PrintVoucher', component: VoucherprintComponent, canActivate: [AuthGuard] },
+      { path: 'FT_BackdateVoucher', component: BakdatevoucherComponent, canActivate: [AuthGuard] },
       { path: 'FR_DayBook', component: DailybookComponent, canActivate: [AuthGuard] },
       { path: 'FR_CashAccount', component: CashaccountComponent, canActivate: [AuthGuard] },
       { path: 'FR_CashCumTrial', component: CashcumtrialComponent, canActivate: [AuthGuard] },
@@ -123,7 +128,11 @@ const routes: Routes = [
       { path: 'DR_NeftIn', component: NeftInwardReportComponent, canActivate: [AuthGuard] },
       { path: 'DR_NeftOut', component: NeftOutwardReportComponent, canActivate: [AuthGuard] },
       { path: 'DR_PbkPrn', component: PassBookPrintingComponent, canActivate: [AuthGuard] },
-
+      { path: 'TT_TransEntry', component: TransTransactionComponent, canActivate: [AuthGuard] },
+      { path: 'TT_TransApprove', component: TransApproveComponent, canActivate: [AuthGuard] },
+      { path: 'LM_Kccmember', component: KccmemberdtlsComponent, canActivate: [AuthGuard] },
+      
+      
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,

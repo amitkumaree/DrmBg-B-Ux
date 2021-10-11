@@ -6,13 +6,12 @@ import { Router } from '@angular/router';
 import { RestService } from 'src/app/_service';
 import { T_VOUCHER_DTLS, m_acc_master, SystemValues, MessageType, ShowMessage } from '../../Models';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-
 @Component({
-  selector: 'app-voucher',
-  templateUrl: './voucher.component.html',
-  styleUrls: ['./voucher.component.css']
+  selector: 'app-bakdatevoucher',
+  templateUrl: './bakdatevoucher.component.html',
+  styleUrls: ['./bakdatevoucher.component.css']
 })
-export class VoucherComponent implements OnInit {
+export class BakdatevoucherComponent implements OnInit {
 
   tvd = new T_VOUCHER_DTLS();
   tvdRet: T_VOUCHER_DTLS[] = [];
@@ -58,6 +57,7 @@ export class VoucherComponent implements OnInit {
   @ViewChild('contentbatch', { static: true }) contentbatch: TemplateRef<any>;
   modalRef: BsModalRef;
   isOpenFromDp = false;
+  isOpenFromDp1=false;
   isOpenToDp = false;
   config = {
     keyboard: false, // ensure esc press doesnt close the modal
@@ -65,6 +65,7 @@ export class VoucherComponent implements OnInit {
     ignoreBackdropClick: true // disable backdrop click to close the modal
   };
   ngOnInit(): void {
+    debugger;
     this.fromdate=this.sys.CurrentDate;
     this.reportcriteria = this.formBuilder.group({
       fromDate: [null, Validators.required],
@@ -160,9 +161,8 @@ export class VoucherComponent implements OnInit {
     this.isApprove = true;
     this.isClear = false;
     this.Initialize();
-    this._voucherDt =this.sys.CurrentDate;// this.convertDate(localStorage.getItem('__currentDate'));//TBD
-    //Date.UTC(this._voucherDt.getFullYear(), this._voucherDt.getMonth(), this._voucherDt.getDate());
-    this._voucherTyp = "C";
+    this._voucherDt =this.sys.CurrentDate;
+    this._voucherTyp = "T";
     this.insertMode = true;
     ;
   }
