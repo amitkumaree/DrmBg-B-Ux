@@ -25,3 +25,8 @@ small {
   min-width: 88px;
   border-radius: 3px;
 }
+.scroll-style {
+  max-height: 65vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

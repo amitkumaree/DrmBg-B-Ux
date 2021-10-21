@@ -54,10 +54,9 @@ smParameter= new sm_parameter();
 sectorList: mm_sector[] = [];
 
   ngOnInit(): void {
-
-    // this.smParameterList.push(this.s);
-    // this.smParameterList.push(this.t);
-    this.getSmParameterList();
+    setTimeout(() => {
+      this.getSmParameterList();
+    }, 150);
   }
 
 
