@@ -60,6 +60,8 @@ import { TransTransactionComponent } from './transfer/trans-transaction/trans-tr
 import { TransApproveComponent } from './transfer/trans-approve/trans-approve.component';
 import { BakdatevoucherComponent } from './finance/bakdatevoucher/bakdatevoucher.component';
 import { KccmemberdtlsComponent } from './loan/masters/kccmemberdtls/kccmemberdtls.component';
+import { YearopenComponent } from './system/yearopen/yearopen.component';
+import { YearcloseComponent } from './system/yearclose/yearclose.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -110,6 +112,7 @@ const routes: Routes = [
       { path: 'LT_LoanTrans', component: LoanaccountTransactionComponent, canActivate: [AuthGuard] },
       { path: 'LT_CalcIntt', component: LoanAccwiseinttcalcComponent, canActivate: [AuthGuard] },
       { path: 'LT_LoanAprv', component: LoanTransactionApprovalComponent, canActivate: [AuthGuard] },
+      { path: 'LM_Kccmember', component: KccmemberdtlsComponent, canActivate: [AuthGuard] },
       { path: 'DT_AccLockUnlock', component: LienAccLockUnlockComponent, canActivate: [AuthGuard] },
       { path: 'UR_Networth', component: NetworthStatementComponent, canActivate: [AuthGuard] },
       { path: 'DR_SubCashBook', component: SubCashBookComponent, canActivate: [AuthGuard] },
@@ -132,6 +135,10 @@ const routes: Routes = [
       { path: 'DR_NeftOut', component: NeftOutwardReportComponent, canActivate: [AuthGuard] },
       { path: 'DR_PbkPrn', component: PassBookPrintingComponent, canActivate: [AuthGuard] },
       { path: 'SP_Update', component: SystemParameterUpdateComponent, canActivate: [AuthGuard] },
+      { path: 'DA_YearOpn', component: YearopenComponent, canActivate: [AuthGuard] },
+      { path: 'DA_YearCls', component: YearcloseComponent, canActivate: [AuthGuard] },
+      { path: 'TT_TransEntry', component: TransTransactionComponent, canActivate: [AuthGuard] },
+      { path: 'TT_TransApprove', component: TransApproveComponent, canActivate: [AuthGuard] },
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
