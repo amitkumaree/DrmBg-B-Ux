@@ -152,7 +152,8 @@ export class AccOpeningViewComponent implements OnInit {
 
   standingInstrAfterMaturity = [
     { instr_code: '1', instr_dscr: 'Auto Close' },
-    { instr_code: '2', instr_dscr: 'Auto Renew' }
+    { instr_code: '2', instr_dscr: 'Auto Renew' },
+    { instr_code: '0', instr_dscr: 'None' }
   ];
 
 
@@ -596,6 +597,14 @@ export class AccOpeningViewComponent implements OnInit {
       }
     }
 
+    if ((this.tm_deposit.acc_type_cd === 2 || this.tm_deposit.acc_type_cd === 5 || this.tm_deposit.acc_type_cd === 6)
+      && this.tm_deposit.cheque_facility_flag === 'Y'
+      && (this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null || this.tm_deposit.user_acc_num === "")) {
+      this.HandleMessage(true, MessageType.Warning, 'Enter Account Number for Standing Instruction');
+      exit(0);
+    }
+
+
     // For Nominee ====================================================================================
 
     for (const l in this.td_nomineeList) {
@@ -624,9 +633,60 @@ export class AccOpeningViewComponent implements OnInit {
       exit(0);
     }
 
+    if ((this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null || this.tm_deposit.user_acc_num === "")
+    && (this.tm_deposit.acc_type_cd === 6)) {
+    this.HandleMessage(true, MessageType.Warning, 'S/B Account Number not present to update the Account Type- '
+      + this.tm_deposit.acc_type_desc);
+    exit(0);
   }
 
+    if ((this.tm_deposit.acc_type_cd === 1 || this.tm_deposit.acc_type_cd === 7
+      || this.tm_deposit.acc_type_cd === 8 || this.tm_deposit.acc_type_cd === 9)) {
+      this.tm_deposit.user_acc_num = null;
+    }
 
+
+  }
+
+ validateSbAccount() {
+    debugger;
+
+    if (this.tm_deposit.user_acc_num === undefined
+        || this.tm_deposit.user_acc_num === null
+        || this.tm_deposit.user_acc_num === "") {
+      return;
+    }
+
+    let temp_deposit_list: tm_deposit[] = [];
+    const temp_deposit = new tm_deposit();
+    temp_deposit.brn_cd = this.branchCode;
+    temp_deposit.acc_num = this.tm_deposit.user_acc_num;
+    temp_deposit.acc_type_cd = 1;
+
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
+      res => {
+        debugger;
+        temp_deposit_list = res;
+        this.isLoading = false;
+
+        if (temp_deposit_list.length > 0)
+        {
+          temp_deposit_list = temp_deposit_list.filter( x => x.acc_status.toUpperCase() !== 'C')
+        }
+
+        if (temp_deposit_list.length === 0) {
+          this.HandleMessage(true, MessageType.Warning, 'Invalid Account Number for Standing Instruction');
+          this.tm_deposit.user_acc_num = null;
+          exit(0);
+        }
+
+      },
+      err => {
+        this.isLoading = false;
+      }
+    );
+  }
 
   UpdateAccountOpenData() {
     let ret = -1;

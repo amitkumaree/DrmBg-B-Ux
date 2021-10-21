@@ -1777,7 +1777,7 @@ export class AccounTransactionsComponent implements OnInit {
       }
     }
 
-
+    debugger;
     if (!this.editDeleteMode) {
       this.isLoading = true;
       const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
@@ -1824,7 +1824,7 @@ export class AccounTransactionsComponent implements OnInit {
       }
       this.svc.addUpdDel<AccOpenDM>('Deposit/InsertAccountOpeningData', saveTransaction).subscribe(
         res => {
-          this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is -' + res);
+          this.HandleMessage(true, MessageType.Sucess, 'Saved sucessfully, your transaction code is :' + res);
           this.tdDefTransFrm.reset(); this.f.oprn_cd.reset();
           this.getShadowBalance();
           this.isLoading = false;
@@ -1966,10 +1966,18 @@ export class AccounTransactionsComponent implements OnInit {
           }
         }
       } else { toReturn.particulars = this.td.particulars.value; }
+
       if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close' &&
         accTypeCd === 1) {
         toReturn.particulars = 'To Closing';
+        toReturn.curr_intt_recov = +this.td.closeIntrest.value;
       }
+
+      if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close' &&
+        accTypeCd === 1) {
+        toReturn.curr_intt_recov = +this.td.closeIntrest.value;
+      }
+
       if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal'
         && this.td.trf_type.value === '') {
         toReturn.trans_type = 'T';

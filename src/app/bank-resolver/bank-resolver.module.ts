@@ -67,8 +67,12 @@ import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report
 import { PassBookPrintingComponent } from './deposit/report/pass-book-printing/pass-book-printing.component';
 import { TransTransactionComponent } from './transfer/trans-transaction/trans-transaction.component';
 import { TransApproveComponent } from './transfer/trans-approve/trans-approve.component';
+<<<<<<< HEAD
 import { BakdatevoucherComponent } from './finance/bakdatevoucher/bakdatevoucher.component';
 import { KccmemberdtlsComponent } from './loan/masters/kccmemberdtls/kccmemberdtls.component';
+=======
+import { SystemParameterUpdateComponent } from './system/systemparameter/system-parameter-update/system-parameter-update.component';
+>>>>>>> d3c82710c5ec2ccb3189cafd9037d465f1b75007
 
 @NgModule({
   declarations: [
@@ -90,7 +94,11 @@ import { KccmemberdtlsComponent } from './loan/masters/kccmemberdtls/kccmemberdt
     LoanStatementComponent, DetailListComponent,
     LoanDisbursementRegisterComponent, RecoveryRegisterComponent,
     LoanSubCashBookComponent, AccOpeningViewComponent, NeftOutwardComponent,
+<<<<<<< HEAD
     NeftInwardReportComponent, NeftOutwardReportComponent, PassBookPrintingComponent, TransTransactionComponent, TransApproveComponent, BakdatevoucherComponent, KccmemberdtlsComponent,
+=======
+    NeftInwardReportComponent, NeftOutwardReportComponent, PassBookPrintingComponent, TransTransactionComponent, TransApproveComponent, SystemParameterUpdateComponent,
+>>>>>>> d3c82710c5ec2ccb3189cafd9037d465f1b75007
   ],
   imports: [
     CommonModule,

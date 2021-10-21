@@ -597,8 +597,16 @@ removeSecurityDtlList()
 
 
   public setLoanAccountType(accType: number): void {
+    var accTyp = new mm_acc_type();
+
     this.tm_loan_all.acc_cd = Number(accType);
-    this.tm_loan_all.loan_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
+    accTyp = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0];
+
+    // this.tm_loan_all.loan_acc_type = this.accountTypeList.filter(x => x.acc_type_cd.toString() === accType.toString())[0].acc_type_desc;
+    this.tm_loan_all.loan_acc_type = accTyp.acc_type_desc;
+    this.tm_loan_all.cc_flag = accTyp.cc_flag;
+    this.tm_loan_all.rep_sch_flag = accTyp.rep_sch_flag;
+    this.tm_loan_all.intt_calc_type = accTyp.intt_calc_type;
 
     if (this.operationType === 'N') {
       this.tm_loan_all.curr_intt_rate = null;

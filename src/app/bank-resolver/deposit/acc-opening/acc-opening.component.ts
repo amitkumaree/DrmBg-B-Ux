@@ -154,7 +154,8 @@ export class AccOpeningComponent implements OnInit {
 
   standingInstrAfterMaturity = [
     { instr_code: '1', instr_dscr: 'Auto Close' },
-    { instr_code: '2', instr_dscr: 'Auto Renew' }
+    { instr_code: '2', instr_dscr: 'Auto Renew' },
+    { instr_code: '0', instr_dscr: 'None' }
   ];
 
 
@@ -725,6 +726,15 @@ export class AccOpeningComponent implements OnInit {
       }
     }
 
+
+    if ((this.tm_deposit.acc_type_cd === 2 || this.tm_deposit.acc_type_cd === 5 || this.tm_deposit.acc_type_cd === 6)
+      && this.tm_deposit.cheque_facility_flag === 'Y'
+      && (this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null || this.tm_deposit.user_acc_num === "")) {
+      this.HandleMessage(true, MessageType.Warning, 'Enter Account Number for Standing Instruction');
+      exit(0);
+    }
+
+
     if ((this.td_deftrans.trf_type === null || this.td_deftrans.trf_type === undefined) && this.operationType === 'I') {
       // this.showAlertMsg('WARNING', 'Please supply required value in transaction details');
       this.HandleMessage(true, MessageType.Warning, 'Please supply required value in transaction details');
@@ -894,16 +904,8 @@ export class AccOpeningComponent implements OnInit {
     }
 
 
-
-
-    // if ((this.operationType === 'I') && ( this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null) &&
-    // ( this.tm_deposit.acc_type_cd ===  2 || this.tm_deposit.acc_type_cd ===  3 ||
-    //   this.tm_deposit.acc_type_cd ===  4 || this.tm_deposit.acc_type_cd ===  5
-    //   || this.tm_deposit.acc_type_cd ===  6  ) )
-    if ((this.operationType === 'I') && (this.tm_deposit.user_acc_num === undefined ||
-      this.tm_deposit.user_acc_num === null) &&
-      (this.tm_deposit.acc_type_cd === 6)) {
-      // this.showAlertMsg('WARNING', 'S/B Account Number not present to create the Account Type- ' + this.tm_deposit.acc_type_desc);
+    if ((this.operationType === 'I') && (this.tm_deposit.user_acc_num === undefined || this.tm_deposit.user_acc_num === null || this.tm_deposit.user_acc_num === "")
+      && (this.tm_deposit.acc_type_cd === 6)) {
       this.HandleMessage(true, MessageType.Warning, 'S/B Account Number not present to create the Account Type- '
         + this.tm_deposit.acc_type_desc);
       exit(0);
@@ -911,7 +913,6 @@ export class AccOpeningComponent implements OnInit {
 
     if ((this.operationType === 'I') && (this.tm_deposit.acc_type_cd === 1 || this.tm_deposit.acc_type_cd === 7 ||
       this.tm_deposit.acc_type_cd === 8 || this.tm_deposit.acc_type_cd === 9)) {
-
       this.tm_deposit.user_acc_num = null;
     }
 
@@ -1258,7 +1259,7 @@ export class AccOpeningComponent implements OnInit {
   // }
 
   public suggestCustomer(): void {
-    if (this.tm_deposit.cust_name.length > 0) {
+    if (this.tm_deposit.cust_name.length > 2) {
       const prm = new p_gen_param();
       // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
       prm.as_cust_name = this.tm_deposit.cust_name.toLowerCase();
@@ -1291,7 +1292,7 @@ export class AccOpeningComponent implements OnInit {
 
     this.suggestedCustomerSignatoriesIdx = idx;
 
-    if (this.td_signatoryList[idx].signatory_name.toString().length > 0) {
+    if (this.td_signatoryList[idx].signatory_name.toString().length > 2) {
       const prm = new p_gen_param();
       prm.as_cust_name = this.td_signatoryList[idx].signatory_name.toString().toLowerCase();
       this.isLoading = true;
@@ -1891,8 +1892,8 @@ export class AccOpeningComponent implements OnInit {
     );
   }
 
-  checkDebitBalance(amount: number) {
 
+  checkDebitBalance(amount: number) {
 
     if (this.td_deftranstrfList[0].amount === undefined || this.td_deftranstrfList[0].amount === null) {
       exit(0);
@@ -1949,8 +1950,44 @@ export class AccOpeningComponent implements OnInit {
 
   }
 
-  xxxxxxxx(val: any) {
-    null;
+  validateSbAccount() {
+    debugger;
+
+    if (this.tm_deposit.user_acc_num === undefined
+        || this.tm_deposit.user_acc_num === null
+        || this.tm_deposit.user_acc_num === "") {
+      return;
+    }
+
+    let temp_deposit_list: tm_deposit[] = [];
+    const temp_deposit = new tm_deposit();
+    temp_deposit.brn_cd = this.branchCode;
+    temp_deposit.acc_num = this.tm_deposit.user_acc_num;
+    temp_deposit.acc_type_cd = 1;
+
+    this.isLoading = true;
+    this.svc.addUpdDel<any>('Deposit/GetDeposit', temp_deposit).subscribe(
+      res => {
+        debugger;
+        temp_deposit_list = res;
+        this.isLoading = false;
+
+        if (temp_deposit_list.length > 0)
+        {
+          temp_deposit_list = temp_deposit_list.filter( x => x.acc_status.toUpperCase() !== 'C')
+        }
+
+        if (temp_deposit_list.length === 0) {
+          this.HandleMessage(true, MessageType.Warning, 'Invalid Account Number for Standing Instruction');
+          this.tm_deposit.user_acc_num = null;
+          exit(0);
+        }
+
+      },
+      err => {
+        this.isLoading = false;
+      }
+    );
   }
 
   setStandingInstrAfterMatu(val: number) {

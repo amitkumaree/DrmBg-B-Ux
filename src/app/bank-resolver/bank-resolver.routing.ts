@@ -51,6 +51,7 @@ import { LoanDisbursementRegisterComponent } from './loan/report/loan-disburseme
 import { RecoveryRegisterComponent } from './loan/report/recovery-register/recovery-register.component';
 import { LoanSubCashBookComponent } from './loan/report/loan-sub-cash-book/loan-sub-cash-book.component';
 import { AccOpeningViewComponent } from './deposit/acc-opening-view/acc-opening-view.component';
+import { SystemParameterUpdateComponent } from './system/systemparameter/system-parameter-update/system-parameter-update.component';
 import { NeftOutwardComponent } from './deposit/neft-outward/neft-outward.component';
 import { NeftInwardReportComponent } from './deposit/report/neft-inward-report/neft-inward-report.component';
 import { NeftOutwardReportComponent } from './deposit/report/neft-outward-report/neft-outward-report.component';
@@ -71,6 +72,8 @@ const routes: Routes = [
   { path: 'te-st5', component: LoanaccountTransactionComponent },
   { path: 'te-st', component: UTCustomerProfileComponent },
   { path: 't6', component: AccOpeningComponent },
+  { path: 't7', component: AccOpeningViewComponent },
+  { path: 't8', component: SystemParameterUpdateComponent },
   { path: 'BankConfig', component: BankConfigComponent },
   { path: 'MasterConfig', component: MasterConfigComponent },
   { path: 'BankWiseConfig', component: BankWiseConfigComponent },
@@ -128,11 +131,8 @@ const routes: Routes = [
       { path: 'DR_NeftIn', component: NeftInwardReportComponent, canActivate: [AuthGuard] },
       { path: 'DR_NeftOut', component: NeftOutwardReportComponent, canActivate: [AuthGuard] },
       { path: 'DR_PbkPrn', component: PassBookPrintingComponent, canActivate: [AuthGuard] },
-      { path: 'TT_TransEntry', component: TransTransactionComponent, canActivate: [AuthGuard] },
-      { path: 'TT_TransApprove', component: TransApproveComponent, canActivate: [AuthGuard] },
-      { path: 'LM_Kccmember', component: KccmemberdtlsComponent, canActivate: [AuthGuard] },
-      
-      
+      { path: 'SP_Update', component: SystemParameterUpdateComponent, canActivate: [AuthGuard] },
+
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'finance', component: FinanceComponent,

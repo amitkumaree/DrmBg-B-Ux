@@ -256,8 +256,6 @@
           <input style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
           [ngModel]="tm_deposit.opening_dt" disabled bsDatepicker
           [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
-
-
         </div>
 
       </div>
@@ -355,7 +353,7 @@
           </div>
 
           <div class="form-group col-3">
-            <small for="dep_oprn_instr">Operational Instr.</small> <br>
+            <small for="dep_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
               id="acc_oprn_instr" [(ngModel)]="tm_deposit.oprn_instr_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
@@ -422,17 +420,15 @@
           </div>
         </div>
 
+
+
         <div class="form-row">
           <div class="form-group col-3">
-            <small for="dep_mat_dt">Maturity Date</small>
-            <!-- <input [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-              class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Maturity Date"> -->
-
-            <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
-              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
-
+            <small for="dbs_acc_open_dt">Maturity Date</small>
+            <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
+              [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
+              [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
           </div>
-
 
           <div class="form-group col-2">
             <small for="dep_cert_no">Certificate No</small>
@@ -440,8 +436,8 @@
               id="dep_cert_no">
           </div>
 
-          <div class="form-group col-4">
-            <small for="stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+          <div class="form-group col-2">
+            <small for="stand_ins_after_matu">After Maturity Instr</small> <br>
             <select
             [disabled]='disableAll' style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
             id="stand_ins_after_matu" [(ngModel)]="tm_deposit.standing_instr_flag" class="form-control form-control-sm" (change)="setStandingInstrAfterMatu($event.target.value)">
@@ -452,11 +448,22 @@
 
           <div class="form-group col-3">
             <small for="dep_cert_no">S/B Account No</small>
-            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
-              id="dep_cert_no">
+            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
+            (focusout)="validateSbAccount()" id="dep_sb_ac_no">
           </div>
-        </div>
 
+          <div class="form-group col-2">
+            <br>
+            <!-- <div class="container border"> -->
+            <label class="form-check-label">
+              <input [disabled]='disableAll || tm_deposit.intt_trf_type == undefined || tm_deposit.intt_trf_type == null || tm_deposit.intt_trf_type == "O"'
+              type="checkbox" value="false" [checked]="tm_deposit.cheque_facility_flag == 'Y'"
+              (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Standing Instr</small>
+            </label>
+            </div>
+          <!-- </div> -->
+
+        </div>
       </div>
       <!-- <-----------End: Fixed Deposit-------------->
 
@@ -477,7 +484,7 @@
           </div>
 
           <div class="form-group col-3">
-            <small for="dep_oprn_instr">Operational Instr.</small> <br>
+            <small for="dep_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
               id="acc_oprn_instr" [(ngModel)]="tm_deposit.oprn_instr_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
@@ -553,24 +560,27 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group col-3">
+          <!-- <div class="form-group col-3">
             <small for="dbs_mat_dt">Maturity Date</small>
-            <!-- <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="dep_mat_dt" placeholder="Maturity Date"> -->
-
             <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
               [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+          </div> -->
 
+          <div class="form-group col-3">
+            <small for="dbs_acc_open_dt">Maturity Date</small>
+            <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
+            [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
           </div>
 
-          <div class="form-group col-2">
+          <div class="form-group col-3">
             <small for="dbs_cert_no">Certificate No</small>
             <input [(ngModel)]="tm_deposit.cert_no" [disabled]='disableAll' style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
               id="dbs_cert_no">
           </div>
 
-          <div class="form-group col-4">
-            <small for="stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+          <div class="form-group col-3">
+            <small for="stand_ins_after_matu">After Maturity Instr</small> <br>
             <select
             [disabled]='disableAll' style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
             id="stand_ins_after_matu" [(ngModel)]="tm_deposit.standing_instr_flag" class="form-control form-control-sm" (change)="setStandingInstrAfterMatu($event.target.value)">
@@ -581,7 +591,7 @@
 
           <div class="form-group col-3">
             <small for="dbs_cert_no">S/B Account No</small>
-            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
               id="dbs_cert_no">
           </div>
         </div>
@@ -606,7 +616,7 @@
           </div>
 
           <div class="form-group col-3">
-            <small for="term_dep_oprn_instr">Operational Instr.</small> <br>
+            <small for="term_dep_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
               id="acc_oprn_instr" [(ngModel)]="tm_deposit.oprn_instr_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
@@ -683,23 +693,27 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group col-3">
+          <!-- <div class="form-group col-3">
             <small for="term_dep_mat_dt">Maturity Date</small>
-            <!-- <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="term_dep_mat_dt" placeholder="Maturity Date"> -->
-
             <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
               [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+          </div> -->
+
+          <div class="form-group col-3">
+            <small for="dbs_acc_open_dt">Maturity Date</small>
+            <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
+            [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
           </div>
 
-          <div class="form-group col-2">
+          <div class="form-group col-3">
             <small for="term_dep_cert_no">Certificate No</small>
             <input [(ngModel)]="tm_deposit.cert_no" [disabled]='disableAll' style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
               id="term_dep_cert_no">
           </div>
 
-          <div class="form-group col-4">
-            <small for="term_dep_stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+          <div class="form-group col-3">
+            <small for="term_dep_stand_ins_after_matu">After Maturity Instr</small> <br>
             <select
             [disabled]='disableAll' style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
             id="term_dep_stand_ins_after_matu" [(ngModel)]="tm_deposit.standing_instr_flag" class="form-control form-control-sm" (change)="setStandingInstrAfterMatu($event.target.value)">
@@ -710,7 +724,7 @@
 
           <div class="form-group col-3">
             <small for="term_dep_cert_no">S/B Account No</small>
-            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
+            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
               id="term_dep_cert_no">
           </div>
         </div>
@@ -734,7 +748,7 @@
           </div>
 
           <div class="form-group col-3">
-            <small for="mis_oprn_instr">Operational Instr.</small> <br>
+            <small for="mis_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
               id="acc_oprn_instr" [(ngModel)]="tm_deposit.oprn_instr_cd" [disabled]='disableAll' class="form-control form-control-sm" (change)="setOperationalInstr($event.target.value)">
@@ -806,15 +820,17 @@
 
 
         <div class="form-row">
-
-          <div class="form-group col-3">
+          <!-- <div class="form-group col-3">
             <small for="mis_mat_dt">Maturity Date</small>
-            <!-- <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="mis_mat_dt" placeholder="Maturity Date"> -->
-
             <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
               [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+          </div> -->
 
+          <div class="form-group col-3">
+            <small for="dbs_acc_open_dt">Maturity Date</small>
+            <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
+            [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
           </div>
 
           <div class="form-group col-2">
@@ -823,8 +839,8 @@
               id="mis_cert_no">
           </div>
 
-          <div class="form-group col-4">
-            <small for="mis_stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+          <div class="form-group col-2">
+            <small for="mis_stand_ins_after_matu">After Maturity Instr</small> <br>
             <select
             [disabled]='disableAll' style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
             id="mis_stand_ins_after_matu" [(ngModel)]="tm_deposit.standing_instr_flag" class="form-control form-control-sm" (change)="setStandingInstrAfterMatu($event.target.value)">
@@ -835,8 +851,20 @@
 
           <div class="form-group col-3">
             <small for="mis_cert_no">S/B Account No</small>
-            <input [disabled]='disableAll' [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
-              id="mis_cert_no">
+            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
+            (focusout)="validateSbAccount()" id="mis_cert_no">
+          </div>
+
+
+          <div class="form-group col-2">
+            <br>
+            <!-- <div class="container border"> -->
+            <label class="form-check-label">
+              <input [disabled]='disableAll || tm_deposit.intt_trf_type == undefined || tm_deposit.intt_trf_type == null || tm_deposit.intt_trf_type == "O"'
+              type="checkbox" value="false" [checked]="tm_deposit.cheque_facility_flag == 'Y'"
+              (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Standing Instr</small>
+            </label>
+            <!-- </div> -->
           </div>
         </div>
 
@@ -898,26 +926,17 @@
               class="form-control form-control-sm text-capitalize" id="rec_dep_matu_val">
           </div>
 
-          <div class="form-group col-2">
-            <small for="rec_dep_mat_dt">Maturity Date</small>
-            <!-- <input [disabled]='disableAll' [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt" placeholder="Maturity Date"> -->
-
-              <input disabled style="height:25px; width: 150px;" type="text" placeholder="dd/mm/yyyy"
-              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
-
+          <div class="form-group col-3">
+            <small for="dbs_acc_open_dt">Maturity Date</small>
+            <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
+            [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
           </div>
+
         </div>
 
         <div class="form-row">
-
-          <!-- <div class="form-group col-3">
-            <small for="rec_dep_mat_dt">Maturity Date</small>
-            <input [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-            class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt" placeholder="Maturity Date">
-          </div> -->
-
-          <div class="form-group col-4">
+          <div class="form-group col-3">
             <small for="rec_dep_oprn_instr">Operational Instr</small> <br>
             <select
               style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
@@ -927,8 +946,8 @@
             </select>
           </div>
 
-          <div class="form-group col-4">
-            <small for="rec_dep_stand_ins_after_matu">Standing Instruction After Maturity</small> <br>
+          <div class="form-group col-3">
+            <small for="rec_dep_stand_ins_after_matu">After Maturity Instr</small> <br>
             <select
             [disabled]='disableAll' [disabled]='disableAll' style="height:25px; font-size: small; align-content:center; padding-top: 0px; background-color: whitesmoke;"
             id="rec_dep_stand_ins_after_matu" [(ngModel)]="tm_deposit.standing_instr_flag" class="form-control form-control-sm" (change)="setStandingInstrAfterMatu($event.target.value)">
@@ -938,14 +957,22 @@
           </div>
 
 
-          <div class="form-group col-4">
+          <div class="form-group col-3">
             <small for="dbs_cert_no">S/B Account No</small>
-            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm text-capitalize"
-              id="dbs_cert_no">
+            <input [disabled]='disableAll' [(ngModel)]="tm_deposit.user_acc_num" style="height:25px" type="text" class="form-control form-control-sm"
+            (focusout)="validateSbAccount()" id="rec_sb_ac_no">
+          </div>
+
+          <div class="form-group col-3">
+            <br>
+            <label class="form-check-label">
+              <input [disabled]='disableAll'
+              type="checkbox" value="false" [checked]="tm_deposit.cheque_facility_flag == 'Y'"
+              (change)="tm_deposit.cheque_facility_flag = $event.target.checked ? 'Y' : 'N' "><small> Standing Instruction</small>
+            </label>
           </div>
 
         </div>
-
       </div>
       <!-- <-----------End: Recurring Deposit-------------->
 
@@ -1214,15 +1241,19 @@
                     value='.00' step='any' class="form-control form-control-sm text-capitalize" id="rec_dep_principal">
                 </div>
 
-                <div class="form-group col-4">
+                <!-- <div class="form-group col-4">
                   <small for="rec_dep_mat_dt">Maturity Date</small>
-                  <!-- <input [disabled]='disableAll' [ngModel]="tm_deposit.mat_dt | date:'yyyy-MM-dd'" style="height:25px" type="date"
-                    class="form-control form-control-sm text-capitalize" id="rec_dep_mat_dt" placeholder="Maturity Date"> -->
+                  <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy" [(ngModel)]="tm_deposit.mat_dt"
+                    bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
+                </div> -->
 
-                    <input disabled style="height:25px; width: 150px" type="text" placeholder="dd/mm/yyyy"
-              [(ngModel)]="tm_deposit.mat_dt" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
-
+                <div class="form-group col-4">
+                  <small for="dbs_acc_open_dt">Maturity Date</small>
+                  <input disabled style="height:25px;" type="text" placeholder="dd/mm/yyyy" class="form-control"
+                  [(ngModel)]="tm_deposit.mat_dt" disabled bsDatepicker
+                  [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass:'theme-dark-blue' }">
                 </div>
+
               </div>
 
               <div class="form-row">
