@@ -279,7 +279,7 @@ if (res.mmkccmemberdtls.member_id===0)
 this.isLoading=false;
 this.kccFrm.enable();
 this.kccFrm.controls.member_id.disable();
-this.kccFrm.controls.bank_member_id.disable();
+//this.kccFrm.controls.bank_member_id.disable();
 this.HandleMessage(true, MessageType.Warning, 'No KCC created with this customer!!!');
 return;
 }
