@@ -1475,7 +1475,7 @@
 
         <section *ngFor="let l of td_deftranstrfList; let i=index">
           <div class="form-row">
-            <div class="form-group col-1">
+            <!-- <div class="form-group col-1">
               <small for="debit_ac">Account Type</small>
               <input type="text" [(ngModel)]="l.cust_acc_type" (focusout)="checkAndSetDebitAccType('cust_acc', l.cust_acc_type)" style="height:25px"
               [disabled]='disableAll' class="form-control form-control-sm text-capitalize" id="debit_ac">
@@ -1485,19 +1485,63 @@
               <small for="debit_ac_dsc">Account Desc</small>
               <input type="text" [(ngModel)]="l.cust_acc_desc" style="height:25px" disabled class="form-control form-control-sm text-capitalize"
                 id="debit_ac_dsc">
+            </div> -->
+            <div class="form-group col-2">
+              <small for="credit_ac">Account Type</small>
+              <select id="credit_ac" class="form-control form-control-sm" [(ngModel)]="l.cust_acc_type"
+              [disabled]="undefined !== l.gl_acc_code && l.gl_acc_code.length > 0"
+              (focusout)="checkAndSetDebitAccType('cust_acc', l.cust_acc_type)">
+              <option *ngIf="accountTypeList" disabled>Choose</option>
+              <option *ngFor="let acctType of accountTypeList" [value]="acctType.acc_type_cd">
+              {{acctType.acc_type_cd +' ' + acctType.acc_type_desc}}
+              </option>
+              </select>
             </div>
+            <div class="form-group col-3">  
+              <small for="credit_ac_name">Acc Holder Name</small>
+              <input type="text"  class="form-control form-control-sm " [disabled]="undefined !== l.gl_acc_code && l.gl_acc_code.length > 0"
+               [(ngModel)]="l.cust_name" type="text" placeholder="Enter Acc# / Customer Name / Phone number"
+               (input)="suggestCustomerCr(i)" name="x-field-1" autocomplete="new-field-1">
+               <div class="suggestions" *ngIf="suggestedCustomerCr && suggestedCustomerCr.length > 0 && indxsuggestedCustomerCr==i ">
+               <table class="table table-hover table-bordered table-sm w-auto small">
+               <thead>
+               <tr>
+                 <th scope="col">Acc#</th>
+                 <th scope="col">Name</th>
+                 <th scope="col">Phone</th>
+                 <th scope="col">Gurdian Name</th>
+                 <th scope="col">Address</th>
+               </tr>
+             </thead>
+             <tbody>
+               <tr *ngFor="let cust of suggestedCustomerCr" (click)="setCustDtlsCr(cust.acc_num,cust.cust_name,i)">
+                 <td scope="row">{{cust.acc_num}}</td>
+                 <td>{{cust.cust_name}}</td>
+                 <td>{{((null === cust.phone) ? '' : cust.phone)}}</td>
+                 <td>{{cust.guardian_name}}</td>
+                 <td>{{cust.present_address}}</td>
+               </tr>
+             </tbody>
+           </table>
+       </div>
+       <div class="suggestions border p-2" style="width: 150%; font-size: small;"
+       *ngIf="suggestedCustomerCr && !(suggestedCustomerCr.length > 0) && indxsuggestedCustomerCr==i">
+       <strong class="text-danger"> does not match with any customer</strong>
+       </div>
+       </div>
+
 
             <div class="form-group col-2">
               <small for="debit_ac_no">Account Number</small>
-              <input type="text" [(ngModel)]="l.cust_acc_number" style="height:25px" (focusout)="setDebitAccDtls( l.cust_acc_number)"
+              <input type="text" [(ngModel)]="l.cust_acc_number" disablled style="height:25px" (focusout)="setDebitAccDtls( l.cust_acc_number)"
               [disabled]='disableAll' class="form-control form-control-sm text-capitalize" id="debit_ac_no">
             </div>
 
-            <div class="form-group col-3">
+            <!-- <div class="form-group col-3">
               <small for="debit_ac_name">Acc Holder Name</small>
               <input type="text" disabled [(ngModel)]="l.cust_name" style="height:25px" class="form-control form-control-sm text-capitalize"
                 id="debit_ac_name">
-            </div>
+            </div> -->
 
             <div class="form-group col-2">
               <small for="debit_amount">Amount</small>

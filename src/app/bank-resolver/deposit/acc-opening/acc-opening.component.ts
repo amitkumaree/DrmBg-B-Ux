@@ -61,7 +61,9 @@ export class AccOpeningComponent implements OnInit {
   };
 
 
-
+  suggestedCustomerCr: mm_customer[];
+  indxsuggestedCustomerCr=0;
+  
   createUser = '';
   updateUser = '';
   createDate: Date;
@@ -2451,6 +2453,35 @@ export class AccOpeningComponent implements OnInit {
       this.disableAccountTypeAndNo = false;
     }
   }
+  public suggestCustomerCr(i:number): void {
+    debugger;
+    if (this.td_deftranstrfList[i].cust_name.length > 2) {
+      const prm = new p_gen_param();
+      // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.td_deftranstrfList[i].cust_name.toLowerCase();
+      prm.ad_acc_type_cd = +this.td_deftranstrfList[i].cust_acc_type;
+      this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomerCr = res.slice(0, 20);
+            this.indxsuggestedCustomerCr=i;
+          } else {
+            this.suggestedCustomerCr = [];
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomerCr = null;
+    }
+  }
+  setCustDtlsCr(acc_num: string,cust_name:string,indx:number) {
+      this.suggestedCustomerCr = null;
+      this.td_deftranstrfList[indx].cust_acc_number=acc_num;
+      this.td_deftranstrfList[indx].cust_name=cust_name;
+       
+  }
+
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
     this.showMsg = new ShowMessage();
     this.showMsg.Show = show;

@@ -3,8 +3,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { RestService } from 'src/app/_service';
-import { MessageType, mm_acc_type, m_acc_master, ShowMessage, SystemValues, td_def_trans_trf, tm_deposit } from '../../Models';
+import { AccounTransactionsComponent } from '../../deposit/accoun-transactions/accoun-transactions.component';
+import { MessageType, mm_acc_type, mm_customer, mm_operation, m_acc_master, ShowMessage, SystemValues, td_def_trans_trf, tm_deposit } from '../../Models';
 import { tm_transfer } from '../../Models/deposit/tm_transfer';
+import { p_gen_param } from '../../Models/p_gen_param';
 import { TransferDM } from '../../Models/TransferDM';
 
 @Component({
@@ -29,6 +31,11 @@ export class TransTransactionComponent implements OnInit {
   accountTypeList: mm_acc_type[] = [];
   sys = new SystemValues();
   acc_master: m_acc_master[] = [];
+  suggestedCustomerCr: mm_customer[];
+  indxsuggestedCustomerCr=0;
+  suggestedCustomerDr: mm_customer[];
+  indxsuggestedCustomerDr=0;
+  
   TrfTotAmt = 0;
   CrTrfTotAmt = 0;
   isOpenFromDp = false;
@@ -55,8 +62,9 @@ export class TransTransactionComponent implements OnInit {
     this.f.trf_dt.setValue(this.sys.CurrentDate);
     this.getAccountTypeList();
     this.isRetrieve=true;
-   this.tmtransfer.controls.trans_cd.disable();
+    this.tmtransfer.controls.trans_cd.disable();
   }
+  
   retrieve()
   {
     this.isRetrieve=false;
@@ -169,8 +177,9 @@ export class TransTransactionComponent implements OnInit {
     this.tmtransfer.reset();
     this.f.trf_dt.setValue(this.sys.CurrentDate);
     const td_deftranstrf: td_def_trans_trf[] = [];
+    const cr_td_deftranstrf: td_def_trans_trf[] = [];
     this.td_deftranstrfList = td_deftranstrf;
-    this.cr_td_deftranstrfList=td_deftranstrf;
+    this.cr_td_deftranstrfList=cr_td_deftranstrf;
     this.CrTrfTotAmt=0;
     this.TrfTotAmt=0;
     this.isRetrieve=true;
@@ -915,6 +924,7 @@ export class TransTransactionComponent implements OnInit {
          this.tmtransfer.controls.trans_cd.disable();
         },
         err => {
+          debugger;
           this.isLoading = false;
           this.isRetrieve=true;
          this.tmtransfer.controls.trans_cd.disable();
@@ -949,6 +959,64 @@ export class TransTransactionComponent implements OnInit {
   {
     this.router.navigate([localStorage.getItem('__bName') + '/la']);
   }
+
+  public suggestCustomerCr(i:number): void {
+    debugger;
+    if (this.cr_td_deftranstrfList[i].cust_name.length > 2) {
+      const prm = new p_gen_param();
+      // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.cr_td_deftranstrfList[i].cust_name.toLowerCase();
+      prm.ad_acc_type_cd = +this.cr_td_deftranstrfList[i].cust_acc_type;
+      this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomerCr = res.slice(0, 20);
+            this.indxsuggestedCustomerCr=i;
+          } else {
+            this.suggestedCustomerCr = [];
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomerCr = null;
+    }
+  }
+  setCustDtlsCr(acc_num: string,cust_name:string,indx:number) {
+      this.suggestedCustomerCr = null;
+      this.cr_td_deftranstrfList[indx].cust_acc_number=acc_num;
+      this.cr_td_deftranstrfList[indx].cust_name=cust_name;
+       
+  }
+  public suggestCustomerDr(i:number): void {
+    debugger;
+    if (this.td_deftranstrfList[i].cust_name.length > 2) {
+      const prm = new p_gen_param();
+      // prm.ad_acc_type_cd = +this.f.acc_type_cd.value;
+      prm.as_cust_name = this.td_deftranstrfList[i].cust_name.toLowerCase();
+      prm.ad_acc_type_cd = +this.td_deftranstrfList[i].cust_acc_type;
+      this.svc.addUpdDel<any>('Deposit/GetAccDtls', prm).subscribe(
+        res => {
+          if (undefined !== res && null !== res && res.length > 0) {
+            this.suggestedCustomerDr = res.slice(0, 20);
+            this.indxsuggestedCustomerDr=i;
+          } else {
+            this.suggestedCustomerDr = [];
+          }
+        },
+        err => { this.isLoading = false; }
+      );
+    } else {
+      this.suggestedCustomerDr = null;
+    }
+  }
+  setCustDtlsDr(acc_num: string,cust_name:string,indx:number) {
+      this.suggestedCustomerDr = null;
+      this.td_deftranstrfList[indx].cust_acc_number=acc_num;
+      this.td_deftranstrfList[indx].cust_name=cust_name;
+       
+  }
+  
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
     this.showMsg = new ShowMessage();
     this.showMsg.Show = show;
