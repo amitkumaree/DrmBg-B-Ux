@@ -87,8 +87,8 @@ export class AccounTransactionsComponent implements OnInit {
   editDeleteMode = false;
   showCloseInterest = false;
   suggestedCustomerCr: mm_customer[];
-  indxsuggestedCustomerCr=0;
-  
+  indxsuggestedCustomerCr = 0;
+
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
@@ -1970,14 +1970,15 @@ export class AccounTransactionsComponent implements OnInit {
         }
       } else { toReturn.particulars = this.td.particulars.value; }
 
-      if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close' &&
-        accTypeCd === 1) {
-        toReturn.particulars = 'To Closing';
-        toReturn.curr_intt_recov = +this.td.closeIntrest.value;
-      }
+      // if (selectedOperation.oprn_desc.toLocaleLowerCase() !== 'close' &&
+      //   accTypeCd === 1) {
+      //   toReturn.particulars = 'To Closing';
+      //   toReturn.curr_intt_recov = +this.td.closeIntrest.value;
+      // }
 
       if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'close' &&
         accTypeCd === 1) {
+        toReturn.particulars = 'To Closing';
         toReturn.curr_intt_recov = +this.td.closeIntrest.value;
       }
 
@@ -2348,7 +2349,7 @@ export class AccounTransactionsComponent implements OnInit {
       }
     );
   }
-  public suggestCustomerCr(i:number): void {
+  public suggestCustomerCr(i: number): void {
     debugger;
     if (this.td_deftranstrfList[i].cust_name.length > 2) {
       const prm = new p_gen_param();
@@ -2359,7 +2360,7 @@ export class AccounTransactionsComponent implements OnInit {
         res => {
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedCustomerCr = res.slice(0, 20);
-            this.indxsuggestedCustomerCr=i;
+            this.indxsuggestedCustomerCr = i;
           } else {
             this.suggestedCustomerCr = [];
           }
@@ -2370,14 +2371,16 @@ export class AccounTransactionsComponent implements OnInit {
       this.suggestedCustomerCr = null;
     }
   }
-  setCustDtlsCr(acc_num: string,cust_name:string,indx:number) {
-      this.suggestedCustomerCr = null;
-      this.td_deftranstrfList[indx].cust_acc_number=acc_num;
-      this.td_deftranstrfList[indx].cust_name=cust_name;
-       
+  setCustDtlsCr(acc_num: string, cust_name: string, indx: number) {
+    this.suggestedCustomerCr = null;
+    this.td_deftranstrfList[indx].cust_acc_number = acc_num;
+    this.td_deftranstrfList[indx].cust_name = cust_name;
+
+    this.setDebitAccDtls(this.td_deftranstrfList[indx]);
   }
 
   setDebitAccDtls(tdDefTransTrnsfr: td_def_trans_trf) {
+    debugger;
     this.HandleMessage(false);
     if (tdDefTransTrnsfr.cust_acc_type === undefined
       || tdDefTransTrnsfr.cust_acc_type === null

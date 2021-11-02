@@ -62,8 +62,8 @@ export class AccOpeningComponent implements OnInit {
 
 
   suggestedCustomerCr: mm_customer[];
-  indxsuggestedCustomerCr=0;
-  
+  indxsuggestedCustomerCr = 0;
+
   createUser = '';
   updateUser = '';
   createDate: Date;
@@ -1599,7 +1599,7 @@ export class AccOpeningComponent implements OnInit {
           return;
         }
 
-        this.getIntroducerName(temp_deposit_list[0].cust_cd , idx);
+        this.getIntroducerName(temp_deposit_list[0].cust_cd, idx);
 
         // let temp_mm_cust = new mm_customer();
         // temp_mm_cust = this.customerList.filter(c => c.cust_cd.toString() === temp_deposit_list[0].cust_cd.toString())[0];
@@ -1612,8 +1612,7 @@ export class AccOpeningComponent implements OnInit {
     );
   }
 
-  getIntroducerName(cust_cd: number, idx: number)
-  {
+  getIntroducerName(cust_cd: number, idx: number) {
     debugger;
     let temp_mm_cust = new mm_customer();
     let temp_mm_cust_list: mm_customer[] = [];
@@ -1874,8 +1873,7 @@ export class AccOpeningComponent implements OnInit {
 
             this.isLoading = false;
             this.customerList = res;
-            if (this.customerList !== undefined && this.customerList.length > 0)
-            {
+            if (this.customerList !== undefined && this.customerList.length > 0) {
               this.td_deftranstrfList[0].cust_name = this.customerList[0].cust_name;
               this.customerList = null;
             }
@@ -1956,8 +1954,8 @@ export class AccOpeningComponent implements OnInit {
     debugger;
 
     if (this.tm_deposit.user_acc_num === undefined
-        || this.tm_deposit.user_acc_num === null
-        || this.tm_deposit.user_acc_num === "") {
+      || this.tm_deposit.user_acc_num === null
+      || this.tm_deposit.user_acc_num === "") {
       return;
     }
 
@@ -1974,9 +1972,8 @@ export class AccOpeningComponent implements OnInit {
         temp_deposit_list = res;
         this.isLoading = false;
 
-        if (temp_deposit_list.length > 0)
-        {
-          temp_deposit_list = temp_deposit_list.filter( x => x.acc_status.toUpperCase() !== 'C')
+        if (temp_deposit_list.length > 0) {
+          temp_deposit_list = temp_deposit_list.filter(x => x.acc_status.toUpperCase() !== 'C')
         }
 
         if (temp_deposit_list.length === 0) {
@@ -2453,7 +2450,7 @@ export class AccOpeningComponent implements OnInit {
       this.disableAccountTypeAndNo = false;
     }
   }
-  public suggestCustomerCr(i:number): void {
+  public suggestCustomerCr(i: number): void {
     debugger;
     if (this.td_deftranstrfList[i].cust_name.length > 2) {
       const prm = new p_gen_param();
@@ -2464,7 +2461,7 @@ export class AccOpeningComponent implements OnInit {
         res => {
           if (undefined !== res && null !== res && res.length > 0) {
             this.suggestedCustomerCr = res.slice(0, 20);
-            this.indxsuggestedCustomerCr=i;
+            this.indxsuggestedCustomerCr = i;
           } else {
             this.suggestedCustomerCr = [];
           }
@@ -2475,11 +2472,14 @@ export class AccOpeningComponent implements OnInit {
       this.suggestedCustomerCr = null;
     }
   }
-  setCustDtlsCr(acc_num: string,cust_name:string,indx:number) {
-      this.suggestedCustomerCr = null;
-      this.td_deftranstrfList[indx].cust_acc_number=acc_num;
-      this.td_deftranstrfList[indx].cust_name=cust_name;
-       
+
+
+  setCustDtlsCr(acc_num: string, cust_name: string, indx: number) {
+    this.suggestedCustomerCr = null;
+    this.td_deftranstrfList[indx].cust_acc_number = acc_num;
+    this.td_deftranstrfList[indx].cust_name = cust_name;
+
+    this.setDebitAccDtls(this.td_deftranstrfList[indx].cust_acc_number);
   }
 
   private HandleMessage(show: boolean, type: MessageType = null, message: string = null) {
