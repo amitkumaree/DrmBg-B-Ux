@@ -72,6 +72,9 @@ import { BakdatevoucherComponent } from './finance/bakdatevoucher/bakdatevoucher
 import { KccmemberdtlsComponent } from './loan/masters/kccmemberdtls/kccmemberdtls.component';
 import { YearcloseComponent } from './system/yearclose/yearclose.component';
 import { YearopenComponent } from './system/yearopen/yearopen.component';
+import { BalanaceSheetComponent } from './finance/report/balanace-sheet/balanace-sheet.component';
+import { ProfitLossAccComponent } from './finance/report/profit-loss-acc/profit-loss-acc.component';
+import { TradingAccComponent } from './finance/report/trading-acc/trading-acc.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +98,7 @@ import { YearopenComponent } from './system/yearopen/yearopen.component';
     LoanSubCashBookComponent, AccOpeningViewComponent, NeftOutwardComponent,
     NeftInwardReportComponent, NeftOutwardReportComponent, PassBookPrintingComponent,
     TransTransactionComponent, TransApproveComponent, SystemParameterUpdateComponent,
-    BakdatevoucherComponent, KccmemberdtlsComponent, YearcloseComponent, YearopenComponent
+    BakdatevoucherComponent, KccmemberdtlsComponent, YearcloseComponent, YearopenComponent, BalanaceSheetComponent, ProfitLossAccComponent, TradingAccComponent
   ],
   imports: [
     CommonModule,

@@ -62,6 +62,9 @@ import { BakdatevoucherComponent } from './finance/bakdatevoucher/bakdatevoucher
 import { KccmemberdtlsComponent } from './loan/masters/kccmemberdtls/kccmemberdtls.component';
 import { YearopenComponent } from './system/yearopen/yearopen.component';
 import { YearcloseComponent } from './system/yearclose/yearclose.component';
+import { BalanaceSheetComponent } from './finance/report/balanace-sheet/balanace-sheet.component';
+import { ProfitLossAccComponent } from './finance/report/profit-loss-acc/profit-loss-acc.component';
+import { TradingAccComponent } from './finance/report/trading-acc/trading-acc.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -139,6 +142,9 @@ const routes: Routes = [
       { path: 'DA_YearCls', component: YearcloseComponent, canActivate: [AuthGuard] },
       { path: 'TT_TransEntry', component: TransTransactionComponent, canActivate: [AuthGuard] },
       { path: 'TT_TransApprove', component: TransApproveComponent, canActivate: [AuthGuard] },
+      { path: 'FR_BalanceSheet', component: BalanaceSheetComponent, canActivate: [AuthGuard] },
+      { path: 'FR_ProfitLoss', component: ProfitLossAccComponent, canActivate: [AuthGuard] },
+      { path: 'FR_Trading', component: TradingAccComponent, canActivate: [AuthGuard] },
 
       // { path: '**', redirectTo: 'login', pathMatch: 'full' },
       {
