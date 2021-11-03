@@ -1779,12 +1779,10 @@ export class AccounTransactionsComponent implements OnInit {
         return;
       }
     }
-
+    const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
     debugger;
     if (!this.editDeleteMode) {
-      this.isLoading = true;
-      const selectedOperation = this.operations.filter(e => e.oprn_cd === +this.f.oprn_cd.value)[0];
-      const saveTransaction = new AccOpenDM();
+      this.isLoading = true; const saveTransaction = new AccOpenDM();
       const tdDefTrans = this.mappTddefTransFromFrm();
       if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'renewal') {
         saveTransaction.tmdepositrenew = this.mapRenewData();
@@ -1812,6 +1810,14 @@ export class AccounTransactionsComponent implements OnInit {
             tdDefTransAndTranfer.acc_cd = +e.gl_acc_code;
             tdDefTransAndTranfer.remarks = 'X';
             tdDefTransAndTranfer.disb_id = ++i;
+          }
+          if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'rd installment') {
+            tdDefTransAndTranfer.trans_type = 'W';
+            tdDefTransAndTranfer.trans_mode = 'C';
+          }
+          if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'interest payment') {
+            tdDefTransAndTranfer.trans_type = 'D';
+            tdDefTransAndTranfer.trans_mode = 'C';
           }
           tdDefTransAndTranfer.amount = e.amount;
           saveTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
@@ -1869,6 +1875,14 @@ export class AccounTransactionsComponent implements OnInit {
             tdDefTransAndTranfer.acc_cd = +e.gl_acc_code;
             tdDefTransAndTranfer.remarks = 'X';
             tdDefTransAndTranfer.disb_id = ++i;
+          }
+          if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'rd installment') {
+            tdDefTransAndTranfer.trans_type = 'W';
+            tdDefTransAndTranfer.trans_mode = 'C';
+          }
+          if (selectedOperation.oprn_desc.toLocaleLowerCase() === 'interest payment') {
+            tdDefTransAndTranfer.trans_type = 'D';
+            tdDefTransAndTranfer.trans_mode = 'C';
           }
           tdDefTransAndTranfer.amount = e.amount;
           updateTransaction.tddeftranstrf.push(tdDefTransAndTranfer);
