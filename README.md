@@ -55,7 +55,7 @@ git pull https://github.com/amitkumaree/DrmBg-B-Ux.git master
 ## after cloning please run the below
 npm install
 npm prune ## removes all unused pacakages
-2G2d5abS
+Elq6bajVn
 Synergic#AM@2906
 1013605
 
