@@ -3,13 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
 import { first, tap } from 'rxjs/operators';
 import { ConfigurationService } from './configuration.service';
-import { BankConfiguration } from '../bank-resolver/Models';
+import { BankConfig, BankConfiguration } from '../bank-resolver/Models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RestService {
-  static configuration: BankConfiguration[] = [];
+  // static configuration: BankConfiguration[] = [];
+  static bankconfigurationList: BankConfig[] = [];
+  static serverIp = '36.255.3.143';
+
 
   constructor(private http: HttpClient, private confSvc: ConfigurationService) {
     this.getConfiginSysn();
@@ -22,33 +25,76 @@ export class RestService {
   }
 
   async getConfiginSysn() {
-    RestService.configuration = (await this.confSvc.getAllConfiguration() as BankConfiguration[])
+    // RestService.configuration = (await this.confSvc.getAllConfiguration() as BankConfiguration[]);
+    RestService.bankconfigurationList = (await this.confSvc.getAllConfiguration(RestService.serverIp) as BankConfig[]);
   }
+
+
+  // private getUrl(): string {
+  //   debugger;
+  //   let url = '';
+  //   const __bName = localStorage.getItem('__bName');
+  //   if (null !== RestService.masterConfiguration
+  //     && RestService.masterConfiguration.length > 0) {
+  //     url = RestService.masterConfiguration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
+  //   }
+  //   url += 'api/';
+  //   console.log(url);
+  //   //url = 'https://localhost:5001/api/';
+  //   return url;
+  // }
+
 
   private getUrl(): string {
     let url = '';
+    let ip = '';
     const __bName = localStorage.getItem('__bName');
-    if (null !== RestService.configuration
-      && RestService.configuration.length > 0) {
-      url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
+
+    if (null !== RestService.bankconfigurationList
+      && RestService.bankconfigurationList.length > 0) {
+      ip = RestService.bankconfigurationList.filter(e => e.bank_name.toLowerCase() === __bName.toLowerCase())[0].server_ip;
+      url = 'http://' + ip + '/' + __bName + '/api/';
+      console.log(url);
+      //url = 'https://localhost:5001/api/';
     }
-    url += 'api/';
+    return url;
+  }
+
+  private getMasterUrl(): string {
+    let url = 'http://' + RestService.serverIp + '/MasterConfig/api/';
     // console.log(url);
-   // url = 'https://localhost:5001/api/';
+    // url = 'https://localhost:5001/api/';
     return url;
   }
+
+
+
+  // public getReportUrl(): string {
+  //   let url = '';
+  //   const __bName = localStorage.getItem('__bName');
+  //   if (null !== RestService.configuration
+  //     && RestService.configuration.length > 0) {
+  //     url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
+  //   }
+  //   url = url.substr(0, url.length - 1) + 'Rpt/'
+  //   debugger;
+  //   return url;
+  // }
+
+
   public getReportUrl(): string {
-    // ;
     let url = '';
+    let ip = '';
     const __bName = localStorage.getItem('__bName');
-    if (null !== RestService.configuration
-      && RestService.configuration.length > 0) {
-      url = RestService.configuration.filter(e => e.name.toLowerCase() === __bName.toLowerCase())[0].apiUrl
+    if (null !== RestService.bankconfigurationList
+      && RestService.bankconfigurationList.length > 0) {
+      ip = RestService.bankconfigurationList.filter(e => e.bank_name.toLowerCase() === __bName.toLowerCase())[0].server_ip;
     }
-    url = url.substr(0, url.length - 1) + 'Rpt/'
-    debugger;
+    url = 'http://' + ip + '/' + __bName + 'Rpt/';
     return url;
   }
+
+
 
   public getAll<T>(ofwhat: string): Observable<T> {
     return this.http.get<T>(this.getUrl() + ofwhat);
@@ -82,8 +128,13 @@ export class RestService {
   }
 
   public addUpdDel<T>(ofwhat: string, data: T): Observable<T> {
-    // ;
+    debugger;
     return this.http.post<T>((this.getUrl() + ofwhat), data);
+  }
+
+  public addUpdDelMaster<T>(ofwhat: string, data: T): Observable<T> {
+    debugger;
+    return this.http.post<T>((this.getMasterUrl() + ofwhat), data);
   }
 
   public update<T>(ofwhat: string, data: T): Observable<T> {

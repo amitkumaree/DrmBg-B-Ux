@@ -34,3 +34,4 @@ export * from './kyc_sig';
 export * from './loan/p_loan_param';
 export * from './deposit/td_outward_payment';
 export * from './mm_ifsc_code';
+export * from './BankConfig'
