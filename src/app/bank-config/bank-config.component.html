@@ -6,233 +6,147 @@
 
 
 <div *ngIf="!spinner">
+  <div class="container" class="divc4">
 
-  <div class="divc3">
-
-    <table class="table ml-2 mb-0" style="background-color:  rgb(245, 245, 184); width: 1250px;">
-      <tr>
+    <table class="table ml-2 mb-0" >
+      <tr class="divc5">
         <td style="width: 5%;">
-          <button type="button" class="btn btn-primary mt-1 ml-1" (click)="navigateBack()">
+          <button type="button" class="btn btn-primary" (click)="navigateBack()">
             <i class="fa fa-arrow-circle-left fa-1x "></i></button>
         </td>
-
-        <td style="width: 95%;">
-          <!-- <tr style="background-color: #1076eb"> -->
-      <tr>
-        <td style="width: 20%;"><b>Bank Name</b></td>
-        <td style="width: 20%;"><b>DB Server</b></td>
-        <td style="width: 15%;"><b>User Id</b></td>
-        <td style="width: 15%;"><b>PassWord</b></td>
-        <td style="width: 15%;"><b>Sig User Id</b></td>
-        <td style="width: 15%;"><b>Sig PassWord</b></td>
-        <!-- <td style="width: 5%;"></td> -->
-      </tr>
-      <tr>
-        <td><input disabled mdbInput class="inp1" size="20" placeholder="Enter Bank Name.."
-            [(ngModel)]="bankConfigMst.bankname" type="text"></td>
-
-        <td><input class="inp1" size="20" placeholder="Enter Server IP.." [(ngModel)]="bankConfigMst.connstring.server"
-            type="text"></td>
-
-        <td><input class="inp1" size="15" placeholder="Enter Server UserId.."
-            [(ngModel)]="bankConfigMst.connstring.userId" type="text"></td>
-
-        <td *ngIf="!showPass">
-          <div class="input-group">
-            <input type="password" class="form-control" size="15" placeholder="Enter Server Password.."
-              style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58); background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
-              [(ngModel)]="bankConfigMst.connstring.password">
-            <i class="fa fa-eye-slash" style="font-size:20px; color: black;  margin-top: 5px; margin-left: 2px;"
-              (click)="showPassword()"></i>
-          </div>
+        <td style="width: 95%; text-align: center;">
+          <h4> Menu Configuration for {{bankName}}
+          </h4>
         </td>
+      </tr>
+    </table>
 
-        <td *ngIf="showPass">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
-            [(ngModel)]="bankConfigMst.connstring.password" type="text">
-            <div class="input-group-append">
-              <span class="input-group-icon" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"><i class="fa fa-eye" style="font-size:20px; color:#1076eb;;  margin-top: 5px; margin-left: 2px;"
-                (click)="showPassword()"></i></span>
+
+    <div>
+      <table class="table ml-2" >
+        <tr>
+          <div *ngIf="showAlert2" style="width:1300px;">
+            <div class="alert alert-danger alert-dismissible fade show ml-2 " role="alert">
+              <strong>Error!</strong> {{alertMsg}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
           </div>
 
-        </td>
-
-        <td><input class="inp1" size="15" placeholder="Enter Server Signature UserId.."
-          [(ngModel)]="bankConfigMst.connstring.sigUserId" type="text"></td>
-
-      <td *ngIf="!showPass">
-        <div class="input-group">
-          <input type="password" class="form-control" size="15" placeholder="Enter Server Signature Password.."
-            style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58); background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
-            [(ngModel)]="bankConfigMst.connstring.sigPassword">
-          <i class="fa fa-eye-slash" style="font-size:20px; color: black;  margin-top: 5px; margin-left: 2px;"
-            (click)="showPassword()"></i>
-        </div>
-      </td>
-
-      <td *ngIf="showPass">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"
-          [(ngModel)]="bankConfigMst.connstring.sigPassword" type="text">
-          <div class="input-group-append">
-            <span class="input-group-icon" style="height: 30px; border-radius: 6px;  color: rgb(3, 3, 58);  background-color: whitesmoke; border-color:  rgb(3, 3, 58); border-width: 2px;"><i class="fa fa-eye" style="font-size:20px; color:#1076eb;;  margin-top: 5px; margin-left: 2px;"
-              (click)="showPassword()"></i></span>
+          <div *ngIf="showAlert" style="width:1300px;">
+            <div class="alert alert-success alert-dismissible fade show ml-2 " role="alert">
+              <strong>Info!</strong> {{alertMsg}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="closeAlert()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
           </div>
-        </div>
+        </tr>
 
-      </td>
-
-
-        <!-- <td>
-          <i *ngIf="showPass" class="fa fa-eye" style="font-size:20px; color:#1076eb; margin-top: 5px;"
-            (click)="showPassword()"></i>
-          <i *ngIf="!showPass" class="fa fa-eye-slash" style="font-size:20px; color: black;  margin-top: 5px;"
-            (click)="showPassword()"></i>
-        </td> -->
-
-      </tr>
-
-      <tr class="divc4"></tr>
-
-    </table>
-
-    <div>
-      <table class="table" m-1>
+        <!-- <p>-----------------MODULE---Level1--------------------------</p> -->
         <tr>
-          <td style="width: 25%">
-
-            <div class="divc">
+          <td style="width: 5%">
+            <div class="divc0">
               <strong class="mg1">Module</strong>
-              <section *ngFor="let t1 of bankConfigMst.menu">
-                <input disabled class="inp2" placeholder="Enter Module Name.." [(ngModel)]="t1.name" type="text">
+              <section *ngFor="let t1 of menuConfigLevel1List">
+                <input disabled class="inp1" placeholder="Enter Module Name.." [(ngModel)]="t1.menu_name" type="text">
 
-                <label> Active
-                  <input class="chk" type="checkbox" [checked]="t1.activeflag == 'Y'"
-                    (change)="t1.activeflag = $event.target.checked ? 'Y' : 'N' " />
+                <label> Act
+                  <input class="chk" type="checkbox" [checked]="t1.active_flag == 'Y'"
+                    (change)="t1.active_flag = $event.target.checked ? 'Y' : 'N' " />
                 </label>
 
-                <button type="button" class="btn btn-primary btn-sm" (click)="showSubMenu(t1.name, t1.menu)"> <i
+                <button type="button" class="btn btn-primary btn-sm"
+                  (click)="filterMenuList(t1.menu_id  , 2 , t1.menu_name )"> <i
                     class="fa fa-arrow-circle-right fa-x "></i></button>
               </section>
 
-              <section *ngIf="menuFlg">
-                <input class="inp" placeholder="Enter Module like UCIC.." [(ngModel)]="tempMenu.name" type="text">
-
-                <label> Active
-                  <input type="checkbox" [checked]="tempMenu.activeflag == 'Y'"
-                    (change)="tempMenu.activeflag = $event.target.checked ? 'Y' : 'N' " />
-                </label>
-              </section>
-              <p></p>
-              <!-- <button type="button" class="btn btn-primary btn-sm ml-5" (click)="createMenu()">Add Module</button>
-              <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="menuFlg"
-                (click)="acceptMenu()">Accept</button>
-              <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="menuFlg"
-                (click)="cancelMenu()">Cancel</button> -->
             </div>
             <p></p>
           </td>
 
-          <!-- <p>-----------------MENU-----------------------------</p> -->
+          <!-- <p>-----------------MENU--Level2---------------------------</p> -->
+          <td style="width: 20%">
+          <div class="divc1" *ngIf="showLevel2Flg">
+            <strong class="mg1">Menu: {{menuName}}</strong>
 
+            <section *ngFor="let t2 of menuConfigLevel2List">
+              <input disabled class="inp3" placeholder="Enter Menu Name.." [(ngModel)]="t2.menu_name" type="text">
 
-          <td style="width: 25%">
-            <div class="divc" *ngIf="showSubMenuFlg">
-              <strong class="mg1">Menu: {{tempManuName}}</strong>
-              <section *ngFor="let t2 of viewSubmenu">
-                <input disabled class="inp2" placeholder="Enter Menu Name.." [(ngModel)]="t2.name" type="text">
+              <label> Act
+                <input class="chk" type="checkbox" [checked]="t2.active_flag == 'Y'"
+                  (change)="t2.active_flag = $event.target.checked ? 'Y' : 'N' " />
+              </label>
 
-                <label> Active
-                  <input class="chk" type="checkbox" [checked]="t2.activeflag == 'Y'"
-                    (change)="t2.activeflag = $event.target.checked ? 'Y' : 'N' " />
+              <button type="button" class="btn btn-primary btn-sm"
+                (click)="filterMenuList(t2.menu_id, 3, t2.menu_name)"><i
+                  class="fa fa-arrow-circle-right fa-1x "></i></button>
+            </section>
+          </div>
+          </td>
+          <!-----------------------SUB-MEMU/SCREEN1-----Level3---------------------->
+          <td style="width: 33%">
+            <div class="divc2" *ngIf="showLevel3Flg">
+              <strong class="mg1">SubMenu / Screen: {{screenName1}}</strong>
+
+              <section *ngFor="let t3 of menuConfigLevel3List">
+                <input disabled class="inp3" placeholder="Enter Screen Name" [(ngModel)]="t3.menu_name" type="text">
+
+                <label> IsScr
+                  <input disabled class="chk" type="checkbox" [checked]="t3.is_screen == 'Y'"
+                    (change)="t3.is_screen = $event.target.checked ? 'Y' : 'N' " />
                 </label>
 
-                <button type="button" class="btn btn-primary btn-sm" (click)="showScreenList(t2.name, t2.menu)"><i
+                <input disabled class="inp3" placeholder="Enter Page Name" [(ngModel)]="t3.ref_page" type="text">
+
+                <label> Act
+                  <input class="chk" type="checkbox" [checked]="t3.active_flag == 'Y'"
+                    (change)="t3.active_flag = $event.target.checked ? 'Y' : 'N' " />
+                </label>
+
+                <button [disabled]="t3.is_screen == 'Y'" type="button" class="btn btn-primary btn-sm"
+                  (click)="filterMenuList(t3.menu_id, 4, t3.menu_name)"><i
                     class="fa fa-arrow-circle-right fa-1x "></i></button>
               </section>
-
-              <section *ngIf="createSubMenuFlg">
-                <input class="inp" placeholder="Enter Menu.." [(ngModel)]="tempSubMenu.name" type="text">
-                <label> Active
-                  <input type="checkbox" [checked]="tempSubMenu.activeflag == 'Y'"
-                    (change)="tempSubMenu.activeflag = $event.target.checked ? 'Y' : 'N' " />
-                </label>
-
-              </section>
-
-              <p></p>
-              <!-- <button type="button" class="btn btn-primary btn-sm ml-5" (click)="createSubMenu()">Add Menu</button>
-            <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="createSubMenuFlg"
-              (click)="acceptSubMenu()">Accept</button>
-            <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="createSubMenuFlg"
-              (click)="cancelSubMenu()">Cancel</button> -->
             </div>
             <p></p>
           </td>
-          <!-----------------------SCREEN--------------------------->
-          <td style="width: 45%">
-            <div class="divc2" *ngIf="showScreenFlg">
-              <strong class="mg1">Screen: {{tempSubManuName}}</strong>
-              <section *ngFor="let t3 of viewScreenlist">
-                <input disabled class="inp2" placeholder="Enter Screen Name.." [(ngModel)]="t3.screen" type="text">
-                <input disabled class="inp2" placeholder="Enter Screen Value.." [(ngModel)]="t3.value" type="text">
-                <label> Active
-                  <input type="checkbox" name="sc1" [checked]="t3.activeflag == 'Y'"
-                    (change)="t3.activeflag = $event.target.checked ? 'Y' : 'N' " />
+
+          <!-----------------------SCREEN2--------------------------->
+          <td style="width: 33%">
+            <div class="divc3" *ngIf="showLevel4Flg">
+              <strong class="mg1">Screen: {{screenName2}}</strong>
+
+              <section *ngFor="let t4 of menuConfigLevel4List">
+                <input disabled class="inp3" placeholder="Enter Screen Name" [(ngModel)]="t4.menu_name" type="text">
+
+                <label> IsScr
+                  <input disabled class="chk" type="checkbox" [checked]="t4.is_screen == 'Y'"
+                    (change)="t4.is_screen = $event.target.checked ? 'Y' : 'N' " />
+                </label>
+
+                <input disabled class="inp3" placeholder="Enter Page Name" [(ngModel)]="t4.ref_page" type="text">
+
+                <label> Act
+                  <input class="chk" type="checkbox" [checked]="t4.active_flag == 'Y'"
+                    (change)="t4.active_flag = $event.target.checked ? 'Y' : 'N' " />
                 </label>
 
               </section>
-
-              <section *ngIf="createScreenFlg">
-                <input class="inp" placeholder="Enter Screen Name.." [(ngModel)]="tempScreenlist.screen" type="text">
-                <input class="inp" placeholder="Enter Screen Value.." [(ngModel)]="tempScreenlist.value" type="text">
-
-                <label> Active
-                  <input type="checkbox" name="sc2" [checked]="tempScreenlist.activeflag == 'Y'"
-                    (change)="tempScreenlist.activeflag = $event.target.checked ? 'Y' : 'N' " />
-                </label>
-
-              </section>
-
-              <p></p>
-              <!-- <button type="button" class="btn btn-primary btn-sm ml-5" (click)="createScreenList()">Add Screen</button>
-              <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="createScreenFlg"
-                (click)="acceptScreenList()">Accept</button>
-              <button type="button" class="btn btn-primary btn-sm m-1" *ngIf="createScreenFlg"
-                (click)="cancelScreen()">Cancel</button> -->
             </div>
             <p></p>
-
           </td>
         </tr>
+
       </table>
 
-
-
-      <table class="table">
-        <tr>
-          <td style="width: 25%">
-          </td>
-          <td style="width: 50%">
-            <button type="button" class="btn btn-primary btn-sm m-1" (click)="updateData()">Update</button>
-            <button type="button" class="btn btn-primary btn-sm m-1" (click)="navigateBack()">Cancel</button>
-
-            <button type="button" class="btn btn-primary btn-sm m-1" (click)="showJson()">ShowBankConfig</button>
-            <button *ngIf="showJsonFlg" type="button" class="btn btn-primary btn-sm m-1"
-              (click)="hideJson()">Hide</button>
-          </td>
-        </tr>
-      </table>
-      <hr>
-
-      <div *ngIf="showJsonFlg" class="divc4">
-        <ngx-json-viewer [json]="bankConfigMst" [expanded]="false"></ngx-json-viewer>
+      <div>
+        <table class="table" ml-5>
+          <button type="button" class="btn btn-primary btn-sm m-1" (click)="updateMenuConfigList()">Save</button>
+          <button type="button" class="btn btn-primary btn-sm m-1" (click)="resetListAndFlag()">Cancel</button>
+        </table>
       </div>
-      <hr>
-      <p></p>
-
 
 
     </div>

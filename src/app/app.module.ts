@@ -10,13 +10,13 @@ import { BankConfigComponent } from './bank-config/bank-config.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
-import { MasterConfigComponent } from './master-config/master-config.component';
 import { BankWiseConfigComponent } from './bank-wise-config/bank-wise-config.component';
-import { NewBankConfigComponent } from './new-bank-config/new-bank-config.component';
 import { TestComponent } from './test/test/test.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ConfigNewBankComponent } from './config-new-bank/config-new-bank.component';
+import { MasterMenuConfigComponent } from './master-menu-config/master-menu-config.component';
 
 @NgModule({
   declarations: [
@@ -25,10 +25,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     FinanceComponent,
     BankConfigComponent,
     AdminPanelComponent,
-    MasterConfigComponent,
     BankWiseConfigComponent,
-    NewBankConfigComponent,
-    TestComponent 
+    TestComponent,
+    ConfigNewBankComponent,
+    MasterMenuConfigComponent
 
   ],
   imports: [

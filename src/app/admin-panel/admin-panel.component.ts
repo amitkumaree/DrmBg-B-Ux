@@ -1,4 +1,3 @@
-
 import { BankConfiguration } from '../bank-resolver/Models';
 import { ConfigurationService } from '../_service';
 import { Router } from '@angular/router';
@@ -15,41 +14,25 @@ export class AdminPanelComponent implements OnInit {
   masterConfig: BankConfiguration[] = [];
   allBankConfig: any;
 
-  constructor(private confSvc: ConfigurationService,
-              private router: Router) { }
+  constructor(private router: Router) { }
 
-  ngOnInit(): void {
-    this.getAllConfiguration();
+  ngOnInit(): void { }
+
+
+  configNewBank() {
+    // this.router.navigate(['/NewBankConfig'], );
+    this.router.navigate(['/ConfigNewBank']);
   }
 
-
-  private getAllConfiguration() {
-    this.confSvc.getAllConfiguration().then(
-      res => {
-        this.BC = res;
-
-        this.masterConfig = this.BC.filter(
-          m => m.name === 'MasterConfig');
-
-        this.allBankConfig = this.BC.filter(
-            // tslint:disable-next-line: triple-equals
-            a => a.name != 'MasterConfig');
-      },
-      err => { }
-    );
-  }
 
   navMasterConfig() {
-    this.router.navigate(['/MasterConfig'], );
+    // this.router.navigate(['/MasterConfig'], );
+    this.router.navigate(['/MasterMenuConfig']);
+
   }
 
   navBankWiseConfig() {
-    this.router.navigate(['/BankWiseConfig'], );
+    this.router.navigate(['/BankWiseConfig']);
   }
-
-  configNewBank() {
-    this.router.navigate(['/NewBankConfig'], );
-  }
-
 
 }

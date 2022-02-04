@@ -1,4 +1,3 @@
-
 .divc1{
   background-color: rgb(245, 245, 184);
   margin: 15px;
@@ -17,11 +16,12 @@
 
 .divc3{
   background-color: rgb(245, 245, 184);
-  width: 1200px;
+  width: 1150px;
+  height: 5px;
 }
 
 .divc4{
-  width: 1200px;
+  width: 1100px;
   height: 5px;
   border-radius: 15px;
   background-color: white;
@@ -30,13 +30,14 @@
 .divc5{
   background-color: #1076eb;
   /* background-color: white; */
-  width: 1200px;
+  width: 1100px;
+  height: 5px;
 
 }
 
 .divc6{
   background-color: rgb(245, 245, 184);
-  width: 1000px;
+  width: 1100px;
   border-radius: 15px;
 }
 
@@ -50,7 +51,7 @@
 
 .divch{
   background-color: white;
-  width: 1200px;
+  width: 1100px;
   border-radius: 10px;
   margin-left: 9px;
 }
@@ -60,9 +61,9 @@
 }
 
 .inp2{
-  margin: 9px;
+  /* margin: 9px; */
   background-color: whitesmoke;
-  border-radius: 6px;
+  border-radius: 4px;
   color: rgb(3, 3, 58);
   border-color:  rgb(3, 3, 58);
 }

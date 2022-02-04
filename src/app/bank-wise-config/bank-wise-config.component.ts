@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BankConfiguration } from '../bank-resolver/Models';
+import { BankConfig } from '../bank-resolver/Models';
 import { ConfigurationService } from '../_service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { RestService } from '../_service/rest.service';
 
 
 @Component({
@@ -12,30 +13,29 @@ import { Location } from '@angular/common';
 })
 export class BankWiseConfigComponent implements OnInit {
 
-  BC: BankConfiguration[] = [];
-  // masterConfig: BankConfiguration[] = [];
-  allBankConfig: any;
+
+  spinner = true;
+  bnkConfigList: BankConfig[] = [];
+
 
   constructor(private confSvc: ConfigurationService,
+              private rstSvc: RestService,
               private router: Router,
               private location: Location) { }
 
   ngOnInit(): void {
-    this.getAllConfiguration();
+    this.getAllBankConfigData();
   }
 
 
-  private getAllConfiguration() {
-    this.confSvc.getAllConfiguration().then(
-      res => {
-        ;
-        this.BC = res;
-        // this.masterConfig = this.BC.filter(
-        //   m => m.name === 'MasterConfig');
 
-        this.allBankConfig = this.BC.filter(
-            // tslint:disable-next-line: triple-equals
-            a => a.name != 'MasterConfig');
+  private getAllBankConfigData() {
+    this.spinner = true;
+    this.rstSvc.addUpdDelMaster<any>('Admin/GetBankConfigDtls', null).subscribe(
+      res => {
+        this.bnkConfigList = res;
+        this.bnkConfigList = this.bnkConfigList.filter(x => x.bank_name !== 'MASTER');
+        this.spinner = false;
       },
       err => { }
     );
@@ -46,9 +46,8 @@ export class BankWiseConfigComponent implements OnInit {
   }
 
   navBankConfig(data1: string, data2: string, data3: string) {
-    ;
     this.router.navigate(['/BankConfig'], {
-      queryParams: { bankName: data1, bankUrl: data2 , bankDesc: data3}
+      queryParams: { bankName: data1, bankDesc: data2, bankConfigId: data3 }
     });
   }
 

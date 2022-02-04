@@ -1,7 +1,7 @@
-
 .mg1
 {
-  margin: 9px
+  margin: 5px;
+  text-align: center;
 }
 
 .btn2{
@@ -36,16 +36,9 @@
 
 }
 
-.inp{
-  margin-left: 10px;
-  background-color:#dce5e7;
-  border-radius: 6px;
-  color: rgb(3, 3, 58);
-  border-color:  rgb(3, 3, 58);
-}
-
 .inp1{
-  margin-top: 0px;
+  margin: 5px;
+  width: 100px;
   background-color: whitesmoke;
   border-radius: 6px;
   color: rgb(3, 3, 58);
@@ -53,7 +46,17 @@
 }
 
 .inp2{
-  margin: 9px;
+  margin: 5px;
+  width: 100px;
+  background-color:#dce5e7;
+  border-radius: 6px;
+  color: rgb(3, 3, 58);
+  border-color:  rgb(3, 3, 58);
+}
+
+.inp3{
+  margin: 5px;
+  width: 120px;
   background-color: whitesmoke;
   border-radius: 6px;
   color: rgb(3, 3, 58);
@@ -61,11 +64,38 @@
 }
 
 
+.inp4{
+  margin: 5px;
+  width: 130px;
+  background-color:#dce5e7;
+  border-radius: 6px;
+  color: rgb(3, 3, 58);
+  border-color:  rgb(3, 3, 58);
+}
+
+.inp5{
+  margin: 5px;
+  width: 140px;
+  background-color: whitesmoke;
+  border-radius: 6px;
+  color: rgb(3, 3, 58);
+  border-color:  rgb(3, 3, 58);
+}
+
+.inp6{
+  margin: 5px;
+  width: 120px;
+  background-color:#dce5e7;
+  border-radius: 6px;
+  color: rgb(3, 3, 58);
+  border-color:  rgb(3, 3, 58);
+}
 
 .divch{
   background-color: rgb(245, 245, 184);
-  width: 1200px;
+  width: 1250px;
   border-radius: 10px;
+  margin-left: 9px;
 }
 
 .chk
@@ -73,33 +103,43 @@
   margin: 6px 8px 6px 8px;
 }
 
-.divc{
+
+.divc0{
   background-color: rgb(245, 245, 184);
-  width: 350px;
+  width: 205px;
+  border-radius: 10px;
+}
+
+.divc1{
+  background-color: rgb(245, 245, 184);
+  width: 225px;
   border-radius: 10px;
 }
 
 .divc2{
   background-color: rgb(245, 245, 184);
-  width: 500px;
+  width: 420px;
   border-radius: 10px;
 }
 
 
 .divc3{
-
-  margin: 15px;
-  width: 1200px;
+  background-color: rgb(245, 245, 184);
+  width: 385px;
   border-radius: 10px;
-
 }
+
 
 .divc4{
-
-  margin: 15px;
-  width: 1200px;
+  /* margin: 15px; */
+  width: 1350px;
   border-radius: 10px;
-  background-color: rgb(245, 245, 184);
-
 }
 
+
+
+.divc5{
+  background-color: rgb(245, 245, 184);
+  width: 1300px;
+
+}

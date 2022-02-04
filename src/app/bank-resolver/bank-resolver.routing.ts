@@ -10,10 +10,8 @@ import { UTCustomerProfileComponent } from './UCIC/utcustomer-profile/utcustomer
 import { UTSelfHelpComponent } from './UCIC/utself-help/utself-help.component';
 import { AdminPanelComponent } from '../admin-panel/admin-panel.component';
 import { BankConfigComponent } from '../bank-config/bank-config.component';
-import { MasterConfigComponent } from '../master-config/master-config.component';
 import { DailybookComponent } from './finance/report/dailybook/dailybook.component';
 import { BankWiseConfigComponent } from '../bank-wise-config/bank-wise-config.component';
-import { NewBankConfigComponent } from '../new-bank-config/new-bank-config.component';
 import { CashaccountComponent } from './finance/report/cashaccount/cashaccount.component';
 import { CashcumtrialComponent } from './finance/report/cashcumtrial/cashcumtrial.component';
 import { TrialbalanceComponent } from './finance/report/trialbalance/trialbalance.component';
@@ -65,6 +63,8 @@ import { YearcloseComponent } from './system/yearclose/yearclose.component';
 import { BalanaceSheetComponent } from './finance/report/balanace-sheet/balanace-sheet.component';
 import { ProfitLossAccComponent } from './finance/report/profit-loss-acc/profit-loss-acc.component';
 import { TradingAccComponent } from './finance/report/trading-acc/trading-acc.component';
+import { MasterMenuConfigComponent } from '../master-menu-config/master-menu-config.component';
+import { ConfigNewBankComponent } from '../config-new-bank/config-new-bank.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
@@ -80,9 +80,9 @@ const routes: Routes = [
   { path: 't7', component: AccOpeningViewComponent },
   { path: 't8', component: SystemParameterUpdateComponent },
   { path: 'BankConfig', component: BankConfigComponent },
-  { path: 'MasterConfig', component: MasterConfigComponent },
   { path: 'BankWiseConfig', component: BankWiseConfigComponent },
-  { path: 'NewBankConfig', component: NewBankConfigComponent },
+  { path: 'MasterMenuConfig', component: MasterMenuConfigComponent },
+  { path: 'ConfigNewBank', component: ConfigNewBankComponent },
   { path: 'test', component: TestComponent },
 
   {
