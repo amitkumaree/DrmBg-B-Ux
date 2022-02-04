@@ -13,16 +13,16 @@ import { Title } from '@angular/platform-browser';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(private rstSvc: RestService, private router: Router,
-              private msg: InAppMessageService) {
-      this.subscription = this.msg.gethideTitleOnHeader().subscribe(
-        res => {
-          ;
-          if (res){
-            this.hideScreenTitle();
-          }
-        },
-        err => { }
-      );
+    private msg: InAppMessageService) {
+    this.subscription = this.msg.gethideTitleOnHeader().subscribe(
+      res => {
+        ;
+        if (res) {
+          this.hideScreenTitle();
+        }
+      },
+      err => { }
+    );
   }
 
   subscription: Subscription;
@@ -92,9 +92,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     usr.user_id = this.sys.UserId;
     usr.login_status = 'N';
     this.rstSvc.addUpdDel('Mst/Updateuserstatus', usr).subscribe(
-      res => {
-        debugger;
-      },
+      res => { },
       err => { }
     );
   }
@@ -118,7 +116,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   showSubChildMenuFor(submenu: submenu): void {
-    ;
     this.subMenu = submenu;
     this.showMenu = false;
     this.showChildMenu = false;

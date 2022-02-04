@@ -46,6 +46,7 @@ export class RestService {
 
 
   private getUrl(): string {
+    debugger;
     let url = '';
     let ip = '';
     const __bName = localStorage.getItem('__bName');
