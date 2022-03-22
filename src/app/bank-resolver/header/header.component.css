@@ -35,3 +35,19 @@ font-size: small;
 .navigation ul li:last-child{padding-right: 0;}
 .navigation ul li a{color: #fff; font-size: 13px;}
 nav{font-family: 'Roboto', sans-serif;}
+.drpdwn-prnt{
+  font-size: 13px;
+}
+.dropdown-menu-right {
+  font-size: 13px;
+  position: absolute;
+  margin-right: -200px;
+  margin-top: -20%;
+  min-width: 200px!important;
+}
+.dropdown-divider{
+  height:0;
+  margin:0px !important;
+  overflow:hidden;
+  border-top:1px solid #e9ecef
+}

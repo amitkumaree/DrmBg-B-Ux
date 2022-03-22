@@ -73,7 +73,6 @@ sectorList: mm_sector[] = [];
       this.isLoading = true;
       this.svc.addUpdDel<any>('Mst/GetSystemParameter', null).subscribe(
       res => {
-        debugger;
         this.smParameterList = res;
         this.isLoading = false;
       },
@@ -88,19 +87,16 @@ sectorList: mm_sector[] = [];
 
   saveData(idx: number) {
     this.smParameter = this.smParameterList[idx];
-    debugger;
 
     this.isLoading = true;
     this.svc.addUpdDel<any>('Mst/UpdateSystemParameter', this.smParameter).subscribe(
       res => {
-        debugger;
         this.smParameterList = res;
         this.isLoading = false;
         this.HandleMessage(true, MessageType.Info, 'Record Updated Successfully !!');
         this.retrieveData();
       },
       err => {
-        debugger;
         this.isLoading = false;
         this.HandleMessage(true, MessageType.Error, 'Record Not Updated !!!');
 

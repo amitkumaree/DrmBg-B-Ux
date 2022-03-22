@@ -8,7 +8,6 @@ import { SystemValues } from '../bank-resolver/Models';
 export class AuthenticationService implements CanActivate {
   constructor(private router: Router) { }
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    debugger;
     const sys = new SystemValues();
     if (sys.IsUsrLoggedIn) { return true; }
 

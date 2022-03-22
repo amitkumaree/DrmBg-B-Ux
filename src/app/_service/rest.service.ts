@@ -46,23 +46,22 @@ export class RestService {
 
 
   private getUrl(): string {
-    debugger;
     let url = '';
     let ip = '';
     const __bName = localStorage.getItem('__bName');
-
+    debugger;
     if (null !== RestService.bankconfigurationList
       && RestService.bankconfigurationList.length > 0) {
       ip = RestService.bankconfigurationList.filter(e => e.bank_name.toLowerCase() === __bName.toLowerCase())[0].server_ip;
       url = 'http://' + ip + '/' + __bName + '/api/';
-      console.log(url);
+      // console.log(url);
       //url = 'https://localhost:5001/api/';
     }
     return url;
   }
 
   private getMasterUrl(): string {
-    let url = 'http://' + RestService.serverIp + '/MasterConfig/api/';
+    let url = 'http://' + RestService.serverIp + '/devMasterConfig/api/';
     // console.log(url);
     // url = 'https://localhost:5001/api/';
     return url;
@@ -129,12 +128,10 @@ export class RestService {
   }
 
   public addUpdDel<T>(ofwhat: string, data: T): Observable<T> {
-    debugger;
     return this.http.post<T>((this.getUrl() + ofwhat), data);
   }
 
   public addUpdDelMaster<T>(ofwhat: string, data: T): Observable<T> {
-    debugger;
     return this.http.post<T>((this.getMasterUrl() + ofwhat), data);
   }
 

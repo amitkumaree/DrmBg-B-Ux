@@ -75,6 +75,7 @@ import { YearopenComponent } from './system/yearopen/yearopen.component';
 import { BalanaceSheetComponent } from './finance/report/balanace-sheet/balanace-sheet.component';
 import { ProfitLossAccComponent } from './finance/report/profit-loss-acc/profit-loss-acc.component';
 import { TradingAccComponent } from './finance/report/trading-acc/trading-acc.component';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 @NgModule({
   declarations: [
@@ -98,13 +99,14 @@ import { TradingAccComponent } from './finance/report/trading-acc/trading-acc.co
     LoanSubCashBookComponent, AccOpeningViewComponent, NeftOutwardComponent,
     NeftInwardReportComponent, NeftOutwardReportComponent, PassBookPrintingComponent,
     TransTransactionComponent, TransApproveComponent, SystemParameterUpdateComponent,
-    BakdatevoucherComponent, KccmemberdtlsComponent, YearcloseComponent, YearopenComponent, BalanaceSheetComponent, ProfitLossAccComponent, TradingAccComponent
+    BakdatevoucherComponent, KccmemberdtlsComponent, YearcloseComponent,
+    YearopenComponent, BalanaceSheetComponent, ProfitLossAccComponent, TradingAccComponent
   ],
   imports: [
     CommonModule,
     BankResolverRouting,
     ReactiveFormsModule, FormsModule, AutocompleteLibModule,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(), AccordionModule.forRoot()
   ],
   providers: [
     // { provide: ErrorHandler, useClass: GlobalErrorHandler },

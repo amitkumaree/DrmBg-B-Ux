@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as configuration from '../../assets/constants/bankconfig.json';
+// import * as configuration from '../../assets/constants/bankconfig.json';
 import { BankConfig, BankConfiguration } from '../bank-resolver/Models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigurationService {
-  static configuration: BankConfiguration[] = [];
+  // static configuration: BankConfiguration[] = [];
   static bankconfigurationList: BankConfig[] = [];
 
   constructor(private http: HttpClient) { }
@@ -28,14 +28,11 @@ export class ConfigurationService {
   // }
 
   getAllConfiguration(serverIp: string): Promise<BankConfig[]> {
-
-    debugger;
     // let serverIp = '36.255.3.143';
-    let masterApi = 'Admin/GetBankConfigDtlsNoPass';
-    let masterApiUrl = 'http://' + serverIp + '/MasterConfig/api/' + masterApi;
-
-    // masterApiUrl = 'https://localhost:5001/api/Admin/GetBankConfigDtlsNoPass';
-
+    console.log('getAllConfiguration called');
+    const masterApi = 'Admin/GetBankConfigDtlsNoPass';
+    const masterApiUrl = 'http://' + serverIp + '/devMasterConfig/api/'
+      + masterApi;
     const p = new Promise<BankConfig[]>((resolve, reject) => {
 
       this.http.post(masterApiUrl, null).subscribe(
@@ -68,22 +65,22 @@ export class ConfigurationService {
 
 
 
-  getConfigurationForName(findConf: string): Promise<BankConfiguration> {
-    const p = new Promise<BankConfiguration>((resolve, reject) => {
-      this.http.get('./assets/constants/BankConfig.json').subscribe(data => {
-        // console.log(data);
-        if (null !== data) {
-          ConfigurationService.configuration = (data as BankConfiguration[]);
-        }
-        resolve(ConfigurationService.configuration.
-          filter(e => e.name.toLowerCase() === findConf.toLowerCase())[0]);
-      });
-      // even here if the this.configuration is null
-      // then we should reject with error
-    });
+  // getConfigurationForName(findConf: string): Promise<BankConfiguration> {
+  //   const p = new Promise<BankConfiguration>((resolve, reject) => {
+  //     this.http.get('./assets/constants/BankConfig.json').subscribe(data => {
+  //       // console.log(data);
+  //       if (null !== data) {
+  //         ConfigurationService.configuration = (data as BankConfiguration[]);
+  //       }
+  //       resolve(ConfigurationService.configuration.
+  //         filter(e => e.name.toLowerCase() === findConf.toLowerCase())[0]);
+  //     });
+  //     // even here if the this.configuration is null
+  //     // then we should reject with error
+  //   });
 
-    return p;
-  }
+  //   return p;
+  // }
 
 
   // public getAllUrl(url: string): Promise<BankConfig[]> {

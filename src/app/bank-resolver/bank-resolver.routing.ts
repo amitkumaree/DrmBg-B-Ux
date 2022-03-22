@@ -65,10 +65,12 @@ import { ProfitLossAccComponent } from './finance/report/profit-loss-acc/profit-
 import { TradingAccComponent } from './finance/report/trading-acc/trading-acc.component';
 import { MasterMenuConfigComponent } from '../master-menu-config/master-menu-config.component';
 import { ConfigNewBankComponent } from '../config-new-bank/config-new-bank.component';
+import { AdminLoginComponent } from '../admin-login/admin-login.component';
 
 const routes: Routes = [
   { path: 'Admin', component: AdminPanelComponent },
   { path: 'admin', component: AdminPanelComponent },
+  { path: 'AdmLogin', component: AdminLoginComponent },
   { path: 'Loan', component: OpenLoanAccountComponent },
   { path: 'te-st3', component: TransTransactionComponent },
   { path: 'te-st1', component: TransactionapprovalComponent },

@@ -41,19 +41,21 @@ export class LoginComponent implements OnInit {
     });
     this.loginForm.enable();
     this.msg.sendisLoggedInShowHeader(false);
-    const sys = new SystemValues();
-    if (null !== sys.UserId && sys.UserId.length > 0) {
-      const usr = new LOGIN_MASTER();
-      usr.brn_cd = sys.BranchCode;
-      usr.user_id = sys.UserId;
-      usr.login_status = 'N';
-      this.updateUsrStatus(usr);
-    }
-    localStorage.removeItem('__userId');
+    this.isLoading = true;
 
     setTimeout(() => {
+      this.isLoading = false;
       this.GetBranchMaster();
-    }, 150);
+      const sys = new SystemValues();
+      if (null !== sys.UserId && sys.UserId.length > 0) {
+        const usr = new LOGIN_MASTER();
+        usr.brn_cd = sys.BranchCode;
+        usr.user_id = sys.UserId;
+        usr.login_status = 'N';
+        this.updateUsrStatus(usr);
+      }
+      localStorage.removeItem('__userId');
+    }, 300);
   }
   get f() { return this.loginForm.controls; }
 
@@ -63,7 +65,6 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-    debugger;
     this.isLoading = true;
     const __bName = localStorage.getItem('__bName');
     // this.router.navigate([__bName + '/la']); // TODO remove this it will be after login
@@ -120,9 +121,8 @@ export class LoginComponent implements OnInit {
   private updateUsrStatus(usr: any): void {
     this.rstSvc.addUpdDel('Mst/Updateuserstatus', usr).subscribe(
       res => {
-        debugger;
       },
-      err => { }
+      err => { console.log(err); }
     );
   }
 
@@ -132,7 +132,7 @@ export class LoginComponent implements OnInit {
         try {
           const __bName = localStorage.getItem('__bName');
           this.systemParam = sysRes;
-          console.log('ParameterList Sucess');
+          // console.log('ParameterList Sucess');
           localStorage.setItem('__brnCd', this.f.branch.value); // "101"
           localStorage.setItem('__brnName', this.brnDtls.find(x => x.brn_cd === this.f.branch.value).brn_name); // "101"
           localStorage.setItem('__currentDate', this.systemParam.find(x => x.param_cd === '206').param_value); // Day initilaze
@@ -174,15 +174,12 @@ export class LoginComponent implements OnInit {
   }
 
   private GetBranchMaster() {
-    debugger;
     this.isLoading = true;
     this.rstSvc.addUpdDel('Mst/GetBranchMaster', null).subscribe(
       res => {
         this.loginForm.disable();
-        debugger;
         this.http.get<{ ip: string }>('https://jsonip.com').subscribe(
           data => {
-            debugger;
             // console.log('th data', data);
             this.ipAddress = data;
             this.isLoading = false;
@@ -206,7 +203,7 @@ export class LoginComponent implements OnInit {
           }
         );
       },
-      err => { this.isLoading = false; }
+      err => { this.isLoading = false; console.log(err);}
     );
   }
 }

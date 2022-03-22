@@ -17,6 +17,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfigNewBankComponent } from './config-new-bank/config-new-bank.component';
 import { MasterMenuConfigComponent } from './master-menu-config/master-menu-config.component';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
 
 @NgModule({
   declarations: [
@@ -28,14 +30,15 @@ import { MasterMenuConfigComponent } from './master-menu-config/master-menu-conf
     BankWiseConfigComponent,
     TestComponent,
     ConfigNewBankComponent,
-    MasterMenuConfigComponent
+    MasterMenuConfigComponent,
+    AdminLoginComponent
 
   ],
   imports: [
     BrowserModule, HttpClientModule, BrowserAnimationsModule,
     AppRoutingModule, // NgbModule,
     NgxJsonViewerModule, FormsModule, ReactiveFormsModule,
-    ModalModule.forRoot(), BsDatepickerModule.forRoot()
+    ModalModule.forRoot(), BsDatepickerModule.forRoot(), AccordionModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

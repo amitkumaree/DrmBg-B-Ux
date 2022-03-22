@@ -51,7 +51,6 @@ checkComplete()
 }
 private dayCompletionCall (clsDt :any,clsamt:any)
 {
-  debugger;
   this.showMsg =null;
   var pgp = new p_gen_param();
   pgp.brn_cd = this.sys.BranchCode;
@@ -61,7 +60,6 @@ private dayCompletionCall (clsDt :any,clsamt:any)
   ;
   this.svc.addUpdDel<any>('Sys/W_DAY_CLOSE', pgp).subscribe(
     res => {
-      debugger;
       this.isLoading = false;
       this.alertMsg = res.output;
       this.closingdata.setValue['closingbal']=0;

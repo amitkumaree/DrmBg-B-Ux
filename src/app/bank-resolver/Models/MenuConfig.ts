@@ -10,6 +10,8 @@ export class MenuConfig {
   public active_flag: string;
   public del_flag: string;
   public bank_name: string;
+  public childMenuConfigs: MenuConfig[];
+  public show: boolean;
 
   public MenuConfig() {
     this.bank_config_id = 0;
@@ -17,5 +19,6 @@ export class MenuConfig {
     this.is_screen = 'N';
     this.active_flag = 'Y';
     this.del_flag = 'N';
+    this.show = false;
   }
 }

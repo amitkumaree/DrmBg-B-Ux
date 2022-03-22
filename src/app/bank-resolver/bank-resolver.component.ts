@@ -1,10 +1,11 @@
 import { ConfigurationService } from './../_service/configuration.service';
 import { BankConfiguration } from './Models/bankConfiguration';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { InAppMessageService } from '../_service';
+import { InAppMessageService, RestService } from '../_service';
 import { Title } from '@angular/platform-browser';
+import { LOGIN_MASTER, SystemValues } from './Models';
 
 
 @Component({
@@ -13,15 +14,17 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./bank-resolver.component.css']
 })
 export class BankResolverComponent implements OnInit, OnDestroy {
-
+  idleLogoutTimer: any;
   passedValue: BankConfiguration;
   subscription: Subscription;
   showHeader = false;
   showTitle = true;
+  sys = new SystemValues();
   constructor(private route: ActivatedRoute,
               private confSvc: ConfigurationService,
               private msg: InAppMessageService,
               private router: Router,
+              private rstSvc: RestService,
               private titleService: Title) {
     this.subscription = this.msg.getisLoggedInShowHeader().subscribe(
       res => {
@@ -58,21 +61,66 @@ export class BankResolverComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe(param => {
       const paramValue = param.get('bankName');
       if (null !== paramValue) {
+        // todo we can chek if the bank name exists in our db or else route to
+        // todo pageNotfound
         localStorage.setItem('__bName', paramValue);
-        this.confSvc.getConfigurationForName(paramValue).then(
-          res => {
-            if (undefined === res) {
-              // todo need to block the user
-            }
-            this.passedValue = res;
-            this.titleService.setTitle('Welcome to ' + this.passedValue.description);
-          },
-          err => { }
-        );
+        // this.confSvc.getConfigurationForName(paramValue).then(
+        //   res => {
+        //     if (undefined === res) {
+        //       // todo need to block the user
+        //     }
+        //     this.passedValue = res;
+        //     this.titleService.setTitle('Welcome to ' + this.passedValue.description);
+        //   },
+        //   err => { }
+        // );
       } else {
         // TODO need to think what we will do if the bank name doesnt come
       }
     });
+  }
+  @HostListener('document:mousemove')
+  @HostListener('document:keyup')
+  @HostListener('document:click')
+  @HostListener('document:wheel')
+  resetTimer() {
+    if (!this.router.url.includes('/login')) {
+      console.log('still active');
+      this.restartIdleLogoutTimer();
+    }
+  }
+  restartIdleLogoutTimer() {
+    clearTimeout(this.idleLogoutTimer);
+    this.idleLogoutTimer = setTimeout(() => {
+      this.logoutUser();
+      console.log('Logout - ' +  localStorage.getItem('__bName'));
+    }, 3000);
+  }
+
+  logoutUser() {
+    if (null !== this.sys.BranchCode && null !== this.sys.UserId) {
+      this.updateUsrStatus();
+      localStorage.removeItem('__brnName');
+      localStorage.removeItem('__brnCd');
+      localStorage.removeItem('__currentDate');
+      localStorage.removeItem('__cashaccountCD');
+      localStorage.removeItem('__ddsPeriod');
+      localStorage.removeItem('__userId');
+      this.msg.sendisLoggedInShowHeader(false);
+      const bankName = localStorage.getItem('__bName');
+      this.router.navigate([bankName + '/login']);
+    }
+  }
+
+  private updateUsrStatus(): void {
+    const usr = new LOGIN_MASTER();
+    usr.brn_cd = this.sys.BranchCode;
+    usr.user_id = this.sys.UserId;
+    usr.login_status = 'N';
+    this.rstSvc.addUpdDel('Mst/Updateuserstatus', usr).subscribe(
+      res => { },
+      err => { }
+    );
   }
 
   ngOnDestroy(): void {

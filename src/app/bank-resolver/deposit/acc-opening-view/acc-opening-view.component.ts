@@ -1,4 +1,4 @@
-import { isNumeric } from 'rxjs/internal-compatibility/index';
+import { isNumeric } from 'rxjs/internal-compatibility';
 import { SystemValues } from './../../Models/SystemValues';
 
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
