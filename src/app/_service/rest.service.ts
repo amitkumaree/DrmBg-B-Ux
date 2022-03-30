@@ -49,19 +49,19 @@ export class RestService {
     let url = '';
     let ip = '';
     const __bName = localStorage.getItem('__bName');
-    debugger;
+    // debugger;
     if (null !== RestService.bankconfigurationList
       && RestService.bankconfigurationList.length > 0) {
       ip = RestService.bankconfigurationList.filter(e => e.bank_name.toLowerCase() === __bName.toLowerCase())[0].server_ip;
       url = 'http://' + ip + '/' + __bName + '/api/';
-      // console.log(url);
-      //url = 'https://localhost:5001/api/';
+      console.log(url);
+      // url = 'https://localhost:5001/api/';
     }
     return url;
   }
 
   private getMasterUrl(): string {
-    let url = 'http://' + RestService.serverIp + '/devMasterConfig/api/';
+    const url = 'http://' + RestService.serverIp + '/devMasterConfig/api/';
     // console.log(url);
     // url = 'https://localhost:5001/api/';
     return url;

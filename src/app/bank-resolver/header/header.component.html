@@ -14,7 +14,12 @@
     <nav class="navbar navbar-expand-lg col-md-12 col-xl-12">
       <ul class="navbar-nav mr-auto">
         <ng-container *ngFor="let firstLvlMenu of menuConfigs">
-          <li class="nav-item dropdown">
+          <!-- first lvl is screen -->
+          <li class="nav-item dropdown" *ngIf="firstLvlMenu.is_screen === 'Y'">
+            <a class="dropdown-item" (click)="gotoNewScreen(firstLvlMenu)">{{firstLvlMenu.menu_name}}</a>
+          </li>
+          <!-- first lvl is NOT screen -->
+          <li class="nav-item dropdown" *ngIf="firstLvlMenu.is_screen === 'N'">
             <a class="nav-link dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false"
               (click)='over(firstLvlMenu)'> {{firstLvlMenu.menu_name}}
             </a>
@@ -22,7 +27,12 @@
             <div  class="dropdown-menu drpdwn-prnt"
               [ngClass]="{'show': firstLvlMenu.show}">
               <ng-container *ngFor="let secondLvlMenu of firstLvlMenu.childMenuConfigs; index as i">
-                <li class="nav-item dropdown">
+                <!-- secnd lvl is screen -->
+                <li class="nav-item dropdown" *ngIf="secondLvlMenu.is_screen === 'Y'">
+                  <a class="dropdown-item" (click)="gotoNewScreen(secondLvlMenu)">{{secondLvlMenu.menu_name}}</a>
+                </li>
+                <!-- secnd lvl is NOT screen -->
+                <li class="nav-item dropdown" *ngIf="secondLvlMenu.is_screen === 'N'">
                   <div *ngIf="i===0" class="dropdown-divider"></div>
                   <a class="dropdown-item" class="nav-link dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false"
                   (click)='over(secondLvlMenu)'>
@@ -33,7 +43,12 @@
                   <div  class="dropdown-menu dropdown-menu-right"
                   [ngClass]="{'show': secondLvlMenu.show}">
                   <ng-container *ngFor="let thrdLvlMenu of secondLvlMenu.childMenuConfigs; index as isec">
-                    <li class="nav-item dropdown">
+                     <!-- 3rd lvl is screen -->
+                    <li class="nav-item dropdown" *ngIf="thrdLvlMenu.is_screen === 'Y'">
+                      <a class="dropdown-item" (click)="gotoNewScreen(thrdLvlMenu)">{{thrdLvlMenu.menu_name}}</a>
+                    </li>
+                     <!-- 3rd lvl is NOT screen -->
+                    <li class="nav-item dropdown" *ngIf="thrdLvlMenu.is_screen === 'N'">
                       <div  *ngIf="isec===0" class="dropdown-divider"></div>
                       <a class="dropdown-item" (click)="over(thrdLvlMenu)">{{thrdLvlMenu.menu_name}}</a>
                       <div class="dropdown-divider"></div>

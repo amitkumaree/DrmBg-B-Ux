@@ -85,7 +85,7 @@ export class BankResolverComponent implements OnInit, OnDestroy {
   @HostListener('document:wheel')
   resetTimer() {
     if (!this.router.url.includes('/login')) {
-      console.log('still active');
+      // console.log('still active');
       this.restartIdleLogoutTimer();
     }
   }
@@ -93,11 +93,12 @@ export class BankResolverComponent implements OnInit, OnDestroy {
     clearTimeout(this.idleLogoutTimer);
     this.idleLogoutTimer = setTimeout(() => {
       this.logoutUser();
-      console.log('Logout - ' +  localStorage.getItem('__bName'));
-    }, 3000);
+      // console.log('Logout - ' +  localStorage.getItem('__bName'));
+    }, 120000);
   }
 
   logoutUser() {
+    // console.log(JSON.stringify(this.sys));
     if (null !== this.sys.BranchCode && null !== this.sys.UserId) {
       this.updateUsrStatus();
       localStorage.removeItem('__brnName');

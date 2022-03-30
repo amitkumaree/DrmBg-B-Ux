@@ -14,10 +14,9 @@ import { lvLocale } from 'ngx-bootstrap/chronos';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(private rstSvc: RestService, private router: Router,
-    private msg: InAppMessageService) {
+              private msg: InAppMessageService) {
     this.subscription = this.msg.gethideTitleOnHeader().subscribe(
       res => {
-        ;
         if (res) {
           this.hideScreenTitle();
         }
@@ -93,6 +92,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       const diff = this.currentMenu.level_no - menu.level_no;
       switch (diff) {
         case 1:
+        case -1:
           this.currentMenu.childMenuConfigs.forEach(lv2 => {
             lv2.show = false;
           });
@@ -193,7 +193,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   getBankConfigMaster() {
     this.rstSvc.getAll<BankConfigMst>('BankConfigMst').subscribe(
       res => {
-        ;
         console.log(res);
         this.bankConfig = res;
         this.bankFullName = this.bankConfig.bankname;
@@ -203,7 +202,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         // TODO roles if required.
       },
       err => { }
-    )
+    );
   }
 
   logout() {
